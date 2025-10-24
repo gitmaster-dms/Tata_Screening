@@ -1,0 +1,114 @@
+.navbar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  background-color: rgba(255, 255, 255, 1);
+  height: 2.7em;
+  z-index: 1000;
+}
+
+.navbar-expand {
+  transition: background-color 0.3s ease;
+}
+
+.welcomeName {
+  font-family: 'Roboto', sans-serif;
+  padding: 0.4em;
+}
+
+.logo {
+  height: 2.2em;
+  margin-top: 0.3em;
+}
+
+.navbartitle {
+  color: #4c4c4c;
+  font-family: Inter, sans-serif;
+  font-size: 25px;
+  font-style: normal;
+  margin-left: 8px;
+  margin-top: 8px;
+}
+
+.navbartitle:hover {
+  color: #4c4c4c;
+  cursor: pointer;
+}
+
+.nav-item .nav-link .fa {
+  color: #000000;
+  font-size: 1.5em;
+  font-weight: 200;
+}
+
+.nav-item .nav-link .fa-language {
+  color: #000000;
+  font-size: 1.5em;
+  margin-right: -0.2em;
+}
+
+.iconss {
+  padding: 0.4em;
+}
+
+.userlogin {
+  height: 1em;
+}
+
+.profile-card {
+  position: fixed;
+  right: -4em;
+  width: 300px;
+  /* Adjust the width as needed */
+  height: 40%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  /* Make sure it's above other content */
+}
+
+.blur-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.cardlogin {
+  background-color: #f4fcfb;
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  z-index: 1;
+  width: 80%;
+  margin-left: -5em;
+  margin-top: 3.5em;
+}
+
+.welcomeName {
+  font-size: 18px;
+  margin-bottom: 10px;
+}
+
+.btnname {
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.mailidddddddddd {
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;
+  margin-left: 1em;
+}
+
+.mailcolor {
+  color: #69A5EB;
+  height: 36px !important;
+  width: 30px !important;
+}
+
+.loginformcontrol {
+  margin-top: -0.35em;
+}

@@ -1,0 +1,168 @@
+.backgroundadd {
+    background-color: #f4f4f4;
+}
+
+.css-1v4ccyo {
+    color: rgb(255 255 255 / 87%) !important;
+}
+
+.css-k4qjio-MuiFormHelperText-root.Mui-error{
+    color: rgb(231, 213, 213) !important;
+}
+
+.citizencard {
+    background-color: rgba(49, 55, 116, 1);
+    height: 6.8em;
+}
+
+.addcitizensubmit {
+    background-color: white;
+    color: black;
+    margin-top: 0.3rem;
+    width: 100%;
+    height: 2.1em;
+    text-align: center;
+    align-items: center;
+}
+
+.namecitizen {
+    font-family: 'Roboto', sans-serif;
+    color: #f8f7f7;
+    margin-top: 0.4em;
+    font-size: 18px;
+}
+
+.headercitizen {
+    margin-left: 1.5em;
+    margin-top: -0.4em;
+}
+
+.back {
+    background-color: white;
+    border-radius: 3.5em;
+    height: 1.7em;
+    margin: 0.3em 0.3em 1em 0em;
+}
+
+.sign {
+    margin-left: 0.3em;
+    margin-bottom: 0.3em;
+    color: #080e42;
+}
+
+/* ///////////// dropdown /////////////// */
+.addcitizen,
+.addcitizen:hover,
+.addcitizensubmit,
+.addcitizensubmit:hover,
+.namecitizen,
+.label {
+    font-family: 'Roboto', sans-serif;
+}
+
+.small {
+    font-size: 10px !important;
+    font-weight: 200 !important;
+}
+
+.custom-menu-paper {
+    max-height: 180px;
+}
+
+.addcitizenheaderdropdown {
+    width: 180px;
+    color: white;
+}
+
+.addcitizenheaderdropdown .MuiOutlinedInput-root fieldset {
+    border-color: rgba(255, 255, 255, 1);
+}
+
+.addcitizenheaderdropdown .MuiOutlinedInput-root:hover fieldset {
+    border-color: rgba(255, 255, 255, 1);
+}
+
+.addcitizenheaderdropdown .MuiOutlinedInput-root.Mui-focused fieldset {
+    border-color: rgba(255, 255, 255, 1);
+}
+
+.addcitizenheaderdropdown .MuiInputLabel-root {
+    color: rgba(255, 255, 255, 1);
+}
+
+.addcitizenheaderdropdown .MuiInputLabel-root.Mui-focused {
+    color: rgba(255, 255, 255, 1);
+}
+
+.addcitizenheaderdropdown .MuiSelect-icon {
+    color: rgba(255, 255, 255, 1);
+}
+
+.addcitizenheaderdropdown .MuiSelect-icon.Mui-focused {
+    color: rgba(255, 255, 255, 1);
+}
+
+.addcitizenheaderdropdown .MuiMenuItem-root {
+    color: rgba(255, 255, 255, 1);
+}
+
+@media only screen and (min-width: 768px) and (max-width : 1024px) {
+    .addcitizenheaderdropdown {
+        width: 100px;
+    }
+}
+
+@media screen and (max-width: 767px) {
+    .addcitizenheaderdropdown {
+        width: 145px;
+        margin-bottom: 1em;
+    }
+
+    .citizencard {
+        background-color: rgba(49, 55, 116, 1);
+        height: 16em;
+
+    }
+
+    .addcitizensubmit {
+        margin: 4em 0em 0em -13em;
+        width: 6em;
+    }
+}
+
+/* mediam mobile */
+@media screen and (max-width: 375px) {
+    .addcitizenheaderdropdown {
+        width: 170px;
+        margin-bottom: 1em;
+    }
+
+    .citizencard {
+        background-color: rgba(49, 55, 116, 1);
+        height: 16em;
+
+    }
+
+    .addcitizensubmit {
+        margin: 4em 0em 0em -13em;
+        width: 6em;
+    }
+}
+
+@media screen and (max-width: 320px) {
+    .addcitizenheaderdropdown {
+        width: 120px;
+        margin-bottom: 1em;
+    }
+
+    .citizencard {
+        background-color: rgba(49, 55, 116, 1);
+        height: 16em;
+
+    }
+
+    .addcitizensubmit {
+        margin: 4em 0em 0em -10em;
+        width: 6em;
+    }
+}
