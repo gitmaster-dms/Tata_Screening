@@ -1369,8 +1369,8 @@ class agg_sc_schedule_screening (models.Model):
     # screening_vitals = models.JSONField(null=True)
     # sub_screening_vitals = models.JSONField(null=True)
     
-    screening_vitals = models.JSONField(default=lambda: [1, 2, 3, 4, 5, 6, 8, 13, 14],null=True,blank=True)
-    sub_screening_vitals = models.JSONField(default=lambda: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],null=True,blank=True)
+    # screening_vitals = models.JSONField(default=lambda: [1, 2, 3, 4, 5, 6, 8, 13, 14],null=True,blank=True)
+    # sub_screening_vitals = models.JSONField(default=lambda: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],null=True,blank=True)
     
     
     created_at = models.DateField(default=timezone.now, editable=False)
@@ -1385,9 +1385,9 @@ class agg_sc_schedule_screening (models.Model):
     location2 = models.CharField(max_length=255, null=True, blank=True)
     location3 = models.CharField(max_length=255, null=True, blank=True)
     location4 = models.CharField(max_length=255, null=True, blank=True)
-    route = models.CharField(max_length=255, null=True, blank=True)
-    ambulance_no = models.CharField(max_length=255, null=True, blank=True)
-    pilot_name = models.CharField(max_length=255, null=True, blank=True)
+    # route = models.CharField(max_length=255, null=True, blank=True)
+    # ambulance_no = models.CharField(max_length=255, null=True, blank=True)
+    # pilot_name = models.CharField(max_length=255, null=True, blank=True)
 
     def save(self, *args, **kwargs):
         if not self.schedule_id:
