@@ -1,0 +1,546 @@
+/* Common styles for active elements */
+.today.active,
+.month.active,
+.date.active {
+  background-color: rgba(49, 55, 116, 1);
+  color: rgba(255, 255, 255, 1);
+  height: 1.9em;
+  border-radius: 0.4em;
+  cursor: pointer;
+  font-family: 'Roboto' sans-serif;
+}
+
+.css-9ddj71-MuiInputBase-root-MuiOutlinedInput-root {
+  color: white !important;
+}
+
+.css-1v4ccyo {
+  color: rgb(255 255 255 / 87%) !important;
+}
+
+.custom-menu-paper {
+  max-height: 180px;
+}
+
+/* Common styles for date elements */
+.today,
+.month,
+.date {
+  border: 1px solid rgb(226, 226, 226);
+  background-color: #f4f4f4;
+  font-family: 'Roboto' sans-serif;
+}
+
+.today,
+.month {
+  width: 3em;
+}
+
+/* Common styles for card elements */
+.cardfilter,
+.cardwidth {
+  background-color: #f4f4f9;
+  margin-left: 0.7em;
+}
+
+.cardwidth {
+  width: 6em !important;
+}
+
+.cardbodyuser,
+.cardheaduser {
+  flex-direction: row;
+  width: 97%;
+  text-align: center;
+  background-color: rgba(255, 255, 255, 1);
+  align-items: center;
+  transform: scale(1);
+  transition: transform 0.2s;
+  font-family: 'Roboto', sans-serif;
+  margin-left: 1em;
+  font-size: 14px;
+}
+
+.cardbodyuser {
+  height: auto;
+  margin-bottom: 0.8em;
+}
+
+.cardheaduser {
+  margin-top: -0.3em;
+  background-color: rgba(49, 55, 116, 1);
+  color: white;
+  border: rgba(255, 255, 255, 1);
+  box-shadow: none;
+  height: auto;
+}
+
+/* Common styles for search elements */
+.searchbar {
+  margin-left: 50%;
+}
+
+.newsearch {
+  float: right;
+  width: 14em;
+  height: 2em;
+  border: grey;
+  box-shadow: 0px 1px 2px rgba(40, 40, 45, 0.04), 0px 2px 6px rgba(40, 40, 40, 0.08);
+}
+
+.newsearch:hover {
+  box-shadow: 0px 1px 2px rgba(40, 40, 45, 0.04), 0px 2px 6px rgba(40, 40, 40, 0.08);
+}
+
+.searchiconnew {
+  margin-left: 6.3em;
+  margin-top: -2.5em;
+  background-color: rgba(49, 55, 116, 1);
+  height: 1.35em !important;
+  width: 1.3em !important;
+  color: rgba(255, 255, 255, 1);
+  border-radius: 0.3em;
+  padding: 0.16em;
+}
+
+/* Common styles for icons */
+.iconuser {
+  color: #080e42;
+  padding-right: 0.15em;
+}
+
+/* Other common styles */
+.perpage {
+  font-weight: 500;
+  font-size: 14px;
+  margin-left: 1.8em;
+}
+
+.citizenperpage {
+  width: 4em;
+  margin-left: 8em;
+  margin-top: -1.5em;
+  height: 2em;
+}
+
+.userlistcard {
+  background-color: rgba(49, 55, 116, 1);
+  color: rgba(255, 255, 255, 1);
+  height: 3em;
+}
+
+.dropdownall {
+  color: rgba(255, 255, 255, 1);
+}
+
+.searchcitizen {
+  color: rgba(0, 0, 0, 1);
+  background-color: rgba(244, 245, 250, 1);
+  margin-top: 5px;
+  float: left;
+  font-weight: 500;
+}
+
+.addicon {
+  background-color: rgba(246, 92, 138, 1);
+  color: rgba(255, 255, 255, 1);
+  border-radius: 2.3em;
+  margin-top: -1.4em;
+  margin-right: 0.5em;
+  width: 3em;
+  height: 3em;
+}
+
+.addicon:hover {
+  color: white;
+}
+
+.citizencard {
+  background-color: #313774;
+}
+
+.namecitizen {
+  color: white;
+  font-family: 'Roboto', sans-serif;
+  margin-bottom: 0.7em;
+  margin-top: 0.2em;
+}
+
+.name {
+  font-family: 'Roboto', sans-serif;
+  margin-left: 1%;
+  color: rgba(255, 255, 255, 1);
+  font-weight: 100;
+  margin-top: 0.3em;
+  font-size: 17px;
+}
+
+.filterrow {
+  margin-top: -2em;
+  width: 100%;
+}
+
+.bodycolor {
+  background-color: #f1fafd;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(49, 55, 116, 1);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(49, 55, 116, 1);
+}
+
+.css-jedpe8-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input.css-jedpe8-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input.css-jedpe8-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input {
+  color: white;
+}
+
+.backgrounduser {
+  background-color: #f4f4f4 !important;
+}
+
+.dropdownrow {
+  margin: 0em 0 0em 2em;
+}
+
+.updatedropdownrow {
+  margin: 0em 0em 0em 0.8em;
+}
+
+.datefilter {
+  height: 2em;
+  width: 100%;
+  border: 1px solid rgb(234, 230, 230);
+  border-radius: 0.5em;
+  background-color: rgba(255, 255, 255, 1);
+}
+
+.haedtitle {
+  font-size: 15px;
+  font-weight: 100 !important;
+  font-family: 'Roboto', sans-serif !important;
+  border-radius: none !important;
+}
+
+.paginationnew {
+  margin: -0.65em 1.6em 0em auto;
+}
+
+.listtype {
+  margin-left: 5em;
+}
+
+.citizenlistdropdownfield {
+  width: 255px;
+  color: white;
+}
+.citizenlistdropdownfieldView {
+  width: 255px;
+  color: white;
+}
+
+.citizenlistdropdownfield .MuiOutlinedInput-root fieldset {
+  border-color: rgba(255, 255, 255, 1);
+}
+
+.citizenlistdropdownfield .MuiOutlinedInput-root:hover fieldset {
+  border-color: rgba(255, 255, 255, 1);
+}
+
+.citizenlistdropdownfield .MuiOutlinedInput-root.Mui-focused fieldset {
+  border-color: rgba(255, 255, 255, 1);
+}
+
+.citizenlistdropdownfield .MuiInputLabel-root {
+  color: rgba(255, 255, 255, 1);
+}
+
+.citizenlistdropdownfield .MuiInputLabel-root.Mui-focused {
+  color: rgba(255, 255, 255, 1);
+}
+
+.citizenlistdropdownfield .MuiSelect-icon {
+  color: rgba(255, 255, 255, 1);
+}
+
+.citizenlistdropdownfield .MuiSelect-icon.Mui-focused {
+  color: rgba(255, 255, 255, 1);
+}
+
+.citizenlistdropdownfield .MuiMenuItem-root {
+  color: rgba(255, 255, 255, 1);
+}
+
+.citizenlistdropdownfield .MuiMenuItem-root.Mui-selected {
+  background-color: rgba(255, 255, 255, 0.2);
+  /* Adjust the opacity as needed */
+  color: white;
+}
+
+/* update */
+
+.UpdateCitizenDropdown {
+  width: 185px;
+  color: white;
+}
+
+.updatecitizensubmit {
+  color: black;
+  background-color: white;
+  margin-top: 0.4em;
+}
+
+.UpdateCitizenDropdown .MuiOutlinedInput-root fieldset {
+  border-color: rgba(255, 255, 255, 1);
+}
+
+.UpdateCitizenDropdown .MuiOutlinedInput-root:hover fieldset {
+  border-color: rgba(255, 255, 255, 1);
+}
+
+.UpdateCitizenDropdown .MuiOutlinedInput-root.Mui-focused fieldset {
+  border-color: rgba(255, 255, 255, 1);
+}
+
+.UpdateCitizenDropdown .MuiInputLabel-root {
+  color: rgba(255, 255, 255, 1);
+}
+
+.UpdateCitizenDropdown .MuiInputLabel-root.Mui-focused {
+  color: rgba(255, 255, 255, 1);
+}
+
+.UpdateCitizenDropdown .MuiSelect-icon {
+  color: rgba(255, 255, 255, 1);
+}
+
+.UpdateCitizenDropdown .MuiSelect-icon.Mui-focused {
+  color: rgba(255, 255, 255, 1);
+}
+
+.UpdateCitizenDropdown .MuiMenuItem-root {
+  color: rgba(255, 255, 255, 1);
+}
+
+.UpdateCitizenDropdown .MuiMenuItem-root.Mui-selected {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+.headerupdatecitizen {
+  margin-left: 2em;
+}
+
+
+.table-container {
+  overflow-x: auto;
+  white-space: nowrap;
+  -ms-overflow-style: -ms-autohiding-scrollbar;
+}
+
+.table {
+  width: 100%;
+}
+
+@media screen and (max-width : 767px) {
+  .name {
+    margin: 1.5em 0em 1em 0.4em;
+  }
+}
+
+.circular-progress-containercitizenlist {
+  position: absolute;
+  left: 50%;
+  top: 55%;
+  width: 50px;
+  height: 50px;
+  color: rgba(49, 55, 116, 1);
+}
+
+@media screen and (min-width: 768px) and (max-width: 1024px) {
+  .citizenlistdropdownfield {
+    width: 110px;
+  }
+
+  /* 
+  .name {
+    margin-bottom: 1em;
+  } */
+
+  .addicon {
+    margin-top: -8.5em;
+    margin-left: 44em;
+    height: 2.3em;
+    width: 2.3em;
+  }
+
+  .headbody {
+    font-size: 12px;
+  }
+
+  .haedtitle {
+    font-size: 13px;
+  }
+
+  .userlistcard {
+    height: 6.4em;
+  }
+
+  .cardfilter,
+  .cardwidth {
+    background-color: #f4f4f9;
+    margin-left: 0.5em;
+    width: 13em;
+  }
+
+  .searchiconnew {
+    margin-left: 4em;
+  }
+
+  .UpdateCitizenDropdown {
+    width: 105px;
+    color: white;
+  }
+
+}
+
+@media screen and (max-width: 767px) {
+  .citizenlistdropdownfield {
+    width: 175px;
+    margin-bottom: 0.8em;
+  }
+
+  .haedtitle {
+    font-size: 12px;
+  }
+
+  .headbody {
+    font-size: 12px;
+  }
+
+  .searchcitizen {
+    margin: 4em 2em 0em -3.5em;
+    width: 8em;
+  }
+
+  .addicon {
+    margin-top: -19em;
+    height: 2.5em;
+    width: 2.5em;
+  }
+
+  .personaddicon {
+    margin-left: -0.1em;
+  }
+
+  .cardfilter {
+    width: 55%;
+  }
+
+  .newsearch {
+    width: 8em;
+    margin-top: -1.8em;
+  }
+
+  .searchiconnew {
+    margin-left: 15.5em;
+  }
+
+  .UpdateCitizenDropdown {
+    width: 80px;
+  }
+}
+
+@media screen and (max-width: 425px) {
+  .citizenlistdropdownfield {
+    width: 150px;
+    margin-bottom: 0.8em;
+  }
+
+  .searchcitizen {
+    margin: 4em 2em 0em -3.5em;
+    width: 8em;
+  }
+
+  .addicon {
+    margin-top: -19em;
+    height: 2.5em;
+    width: 2.5em;
+  }
+
+  .personaddicon {
+    margin-left: -0.1em;
+  }
+
+  .cardfilter {
+    width: 60%;
+  }
+
+  .newsearch {
+    width: 7em;
+    margin-top: -2em;
+  }
+
+  .searchiconnew {
+    margin-left: 13.2em;
+  }
+
+  /*.UpdateCitizenDropdown {
+    width: 80px;
+  } */
+}
+
+@media screen and (max-width: 320px) {
+  .citizenlistdropdownfield {
+    width: 115px;
+    margin-bottom: 0.8em;
+  }
+
+  .searchcitizen {
+    margin: 4em 2em 0em -3.5em;
+    width: 8em;
+  }
+
+  .addicon {
+    margin-top: -19em;
+    height: 2.5em;
+    width: 2.5em;
+  }
+
+  .personaddicon {
+    margin-left: -0.1em;
+  }
+
+  .cardfilter {
+    width: 25%;
+  }
+
+  .newsearch {
+    width: 7em;
+    margin-top: -5em;
+  }
+
+  .searchiconnew {
+    margin-left: 10.8em;
+    margin-top: -6.5em;
+  }
+
+  /*.UpdateCitizenDropdown {
+    width: 80px;
+  } */
+}
+
+/* /////////////////// update css */
+
+.signupdate {
+  color: rgba(49, 55, 116, 1);
+  background-color: white;
+  border-radius: 0.5em;
+}

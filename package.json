@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "device-sdk": "^0.0.5",
+    "html2pdf.js": "^0.10.1",
+    "matrix-react-sdk": "^3.92.0"
+  }
+}

@@ -1,0 +1,38 @@
+.paddingwhole {
+    margin-left: 1.2em;
+    margin-right: 1.2em;
+    margin-bottom: 0.2em;
+}
+
+.childdetailelement {
+    position: relative;
+    width: 220px;
+    margin-top: 4px;
+    margin-bottom: 8px;
+    border-bottom: 1.6px solid black;
+}
+
+.childvitaldetails {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 200 !important;
+    font-size: 13px;
+}
+
+.childvitalinput {
+    margin-top: -0.4em;
+    height: 2.1em;
+}
+
+@media screen and (max-width: 575.98px) {
+    .submitvital {
+        margin-left: 15em;
+        margin-bottom: 2em;
+    }
+}
+
+@media only screen and (min-width: 768px) and (max-width: 1024px) {
+    .submitvital {
+        margin-left: 12em;
+        margin-bottom: 2em;
+    }
+}

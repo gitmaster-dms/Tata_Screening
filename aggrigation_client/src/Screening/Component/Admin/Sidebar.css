@@ -1,0 +1,81 @@
+aside {
+  margin-top: 2.3em;
+  background-color: rgba(244, 245, 250, 1);
+  width: 7%;
+  transition: width 0.3s ease;
+  height: 100vh !important;
+  position: sticky;
+}
+
+aside:hover {
+  width: 16% !important;
+}
+
+.flex-column {
+  margin-top: 2.5em;
+  color: black;
+}
+
+.ptag {
+  font-size: 14px;
+}
+
+.sidebar-image {
+  text-align: center;
+  padding: 10px;
+  background-color: #f4f4f4;
+}
+
+.sidebar-image img {
+  max-width: 80%;
+  height: auto;
+}
+
+.nav-sidebar .listview {
+  width: 90%;
+  border-top-right-radius: 30px;
+  border-bottom-right-radius: 30px;
+  color: black;
+}
+
+.nav-sidebar .listview.active {
+  background-color: rgba(49, 55, 116, 1);
+  cursor: pointer;
+  color: white !important;
+  border-right: 5px solid white;
+  /* Add a white right border */
+
+}
+
+.nav-sidebar .listview:not(.active) a.nav-link p {
+  color: black;
+}
+
+.nav-sidebar .listview:not(.active) a.nav-link .icons {
+  color: black;
+}
+
+.nav-sidebar .listview:not(.active):hover a.nav-link p,
+.nav-sidebar .listview:not(.active):hover a.nav-link .icons {
+  transition: color 0.3s ease;
+  color: black;
+}
+
+.nav-sidebar .listview.active a.nav-link .icons,
+.nav-sidebar .listview a.nav-link p,
+.nav-sidebar .listview a.nav-link .icons {
+  transition: color 0.3s ease;
+  color: white;
+}
+
+.nav-link.clicked {
+  background-color: rgba(49, 55, 116, 1);
+  border-top-right-radius: 0.2em;
+  border-top-right-radius: 0.2em;
+  border-top-left-radius: 1em;
+  border-bottom-left-radius: 1em;
+  border-right: 2px solid white;
+  transition:
+    border-right 0.5s ease,
+    border-radius 0.5s ease;
+}

@@ -1,0 +1,319 @@
+.cont1 {
+  background-color: #cbecff;
+}
+
+.custom-menu-paper {
+  max-height: 180px;
+  max-width: 240px;
+}
+
+.css-1v4ccyo {
+  color: rgb(255 255 255 / 87%) !important;
+}
+
+.addscreen {
+  background-color: rgba(244, 245, 250, 1);
+  color: rgba(0, 0, 0, 1);
+  margin-top: 0.22em;
+  text-align: center !important;
+  align-items: center !important;
+}
+
+.addscreen:hover {
+  color: rgba(0, 0, 0, 1);
+}
+
+.start {
+  margin-left: 7em;
+  background-color: rgba(255, 255, 255, 1);
+  border: 1px solid black;
+  color: black;
+  border-radius: 0.4em;
+  margin-top: 0.9em;
+  font-family: 'Roboto', sans-serif;
+}
+
+.title {
+  align-items: center !important;
+  margin-left: 4.8em;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 500;
+}
+
+.card-text {
+  text-align: center;
+}
+
+.searchfiledss {
+  border-color: rgb(255, 255, 255);
+  background-color: white;
+}
+
+.circular-progress-containerscreeninglist {
+  position: absolute;
+  left: 50%;
+  top: 60%;
+  width: 50px;
+  height: 50px;
+  color: rgba(49, 55, 116, 1);
+}
+
+.searchscreenlist1 {
+  height: 2.2em;
+  width: 105%;
+}
+
+.searchiconnew1111 {
+  margin-top: -1.5em;
+  background-color: rgba(49, 55, 116, 1) !important;
+  padding: 0.1em;
+  border-radius: 0.3em;
+  margin-top: -2.68em;
+  color: white;
+  height: 1.55em !important;
+  width: 1.45em !important;
+  padding: 0.2em !important;
+  margin-left: 93%
+}
+
+.records {
+  margin-top: 0.5em;
+}
+
+.number {
+  width: 4em;
+  height: 1.9em;
+  margin-left: 9em;
+  margin-top: -1.4em;
+}
+
+.recordsfound {
+  margin-left: 14em;
+  color: #080e42;
+}
+
+.newpage {
+  background-color: white;
+  margin-left: 1em;
+}
+
+.Screeningperpagelistdropdown {
+  width: 4em;
+  margin-left: 9em;
+  margin-top: -1.55em;
+  height: 2em;
+}
+
+.head {
+  height: 7em;
+}
+
+/* /////////////////////// new /////////////////////////// */
+.screeninglisname {
+  margin-left: 1em;
+  margin-top: 0.2em;
+  font-family: 'Roboto', sans-serif;
+  color: rgba(255, 255, 255, 1);
+}
+
+.screenlistcard {
+  background-color: rgba(49, 55, 116, 1);
+}
+
+.content-wrapper {
+  background-color: transparent !important;
+}
+
+.cardlistrow {
+  margin-top: -1.6em;
+}
+
+.textstyle {
+  float: left;
+  font-family: 'Roboto' sans-serif;
+  font-size: 13px;
+}
+
+.spaceinrow {
+  margin-bottom: 0.14em;
+}
+
+.carddddds {
+  width: 15em;
+  height: 80%;
+}
+
+.valuestyle {
+  font-family: 'Roboto', sans-serif;
+  font-weight: 600;
+  font-size: 12px;
+  float: left !important;
+}
+
+.screeningcountcard {
+  color: grey;
+  margin-top: -1em;
+  margin-left: -0.7em;
+  font-size: 13px;
+  font-family: 'Roboto', sans-serif;
+}
+
+.outlineperson {
+  margin-right: 3px;
+  margin-bottom: 7px;
+  font-family: 'Roboto', sans-serif;
+}
+
+.citizennamehealth {
+  font-family: 'Roboto', sans-serif;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(49, 55, 116, 1);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(49, 55, 116, 1);
+}
+
+.screeningfielddropdown {
+  width: 220px;
+  color: white;
+}
+
+.screeningfielddropdown .MuiOutlinedInput-root fieldset {
+  border-color: rgba(255, 255, 255, 1);
+}
+
+.screeningfielddropdown .MuiOutlinedInput-root:hover fieldset {
+  border-color: rgba(255, 255, 255, 1);
+}
+
+.screeningfielddropdown .MuiOutlinedInput-root.Mui-focused fieldset {
+  border-color: rgba(255, 255, 255, 1);
+}
+
+.screeningfielddropdown .MuiInputLabel-root {
+  color: rgba(255, 255, 255, 1);
+}
+
+.screeningfielddropdown .MuiInputLabel-root.Mui-focused {
+  color: rgba(255, 255, 255, 1);
+}
+
+.screeningfielddropdown .MuiSelect-icon {
+  color: rgba(255, 255, 255, 1);
+}
+
+.screeningfielddropdown .MuiSelect-icon.Mui-focused {
+  color: rgba(255, 255, 255, 1);
+}
+
+.screeningfielddropdown .MuiMenuItem-root {
+  color: rgba(255, 255, 255, 1);
+}
+
+@media only screen and (min-width: 768px) and (max-width: 1024px) {
+  .screeningfielddropdown {
+    width: 130px;
+  }
+
+  .searchscreenlist1 {
+    width: 13em;
+  }
+
+  .searchiconnew1111 {
+    margin-left: 8em;
+  }
+
+  .citizennamehealth {
+    font-size: 13px;
+  }
+
+  .valuestyle {
+    font-size: 13px;
+    margin-top: 0.4px;
+  }
+
+  .start {
+    width: 8.5em;
+    margin-left: 2.3em;
+  }
+}
+
+@media only screen and (min-width: 577px) and (max-width: 767px) {
+  .screendropdownnnnnnnnnn {
+    width: 40px;
+    color: white;
+    margin-bottom: 1em;
+  }
+}
+
+@media screen and (max-width: 575.98px) {
+  .screeningfielddropdown {
+    width: 160px;
+    color: white;
+    margin-bottom: 1em;
+    margin-left: -1.5em;
+  }
+
+  .searchfiledss{
+    width: 50%
+  }
+
+  .searchiconnew1111{
+    margin-left: 7em;
+  }
+
+  .carddddds{
+    width: 100%;
+  }
+}
+
+@media (max-width: 378px) {
+  .screeningfielddropdown {
+    width: 140px;
+    color: white;
+    margin-bottom: 1em;
+    margin-left: -1.5em;
+  }
+
+  .searchfiledss{
+    width: 50%
+  }
+
+  .searchiconnew1111{
+    margin-left: 7em;
+  }
+
+  .carddddds{
+    width: 100%;
+  }
+}
+
+@media (max-width: 320px) {
+  .screeningfielddropdown {
+    width: 200px;
+    color: white;
+    margin-bottom: 1em;
+    margin-left: -1.5em;
+  }
+
+  .searchfiledss{
+    width: 70%
+  }
+
+  .searchiconnew1111{
+    margin-left: 7em;
+  }
+
+  .carddddds{
+    width: 100%;
+  }
+}

@@ -1,0 +1,131 @@
+.vitalcardsnew {
+    margin: 0.8em 0em 0em 0.5em;
+    height: 100%;
+}
+
+.vitalhealthcard {
+    font-family: 'Roboto', sans-serif;
+    font-size: 12.5px;
+    margin: 1.2em 0em 0em -0.6em;
+}
+
+.vitalhealthcardinput {
+    width: 2.7em;
+    height: 1.7em;
+    border-radius: none;
+    margin-left: 3em;
+}
+
+.reporttypehealthcard,
+.reporttypehealthcard1,
+.reporttypehealthcard2,
+.reporttypehealthcard3,
+.reporttypehealthcard4,
+.reporttypehealthcard5 {
+    width: 4em;
+    height: 1.2em;
+    margin: 0.7em 0em 0.5em 0.5em;
+}
+
+.reporttypehealthcard {
+    background-color: #FBF0F3;
+}
+
+.reporttypehealthcard1 {
+    background-color: #CCF7FB;
+}
+
+.reporttypehealthcard2 {
+    background-color: #F5F4FC;
+}
+
+.reporttypehealthcard3 {
+    background-color: #E6F2FF;
+}
+
+.reporttypehealthcard4 {
+    background-color: #E9F4EE;
+}
+
+.reporttypehealthcard6 {
+    background-color: #FCF6EA;
+}
+
+
+.healthcardtypedefine {
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    text-align: center;
+}
+
+.redheartcard {
+    background-color: #FBF0F3;
+    border-radius: 0.6em;
+    margin: 0.7em 0em 0em 0.3em;
+    width: 2em;
+    height: 1.8em;
+}
+
+.redherats {
+    height: 1.5em;
+    width: 1.5em;
+    padding: 0.2em;
+    margin: 0.2em;
+}
+
+.healthcardtypedefine1,
+.healthcardtypedefine2,
+.healthcardtypedefine3,
+.healthcardtypedefine4,
+.healthcardtypedefine5,
+.healthcardtypedefine6 {
+    background-color: #FBF0F3;
+    font-size: 12px;
+    margin: 0.1em 0em 0em 1em;
+}
+
+.healthcardtypedefine2 {
+    background-color: #CCF7FB;
+}
+
+.healthcardtypedefine3 {
+    background-color: #F5F4FC;
+}
+
+.healthcardtypedefine4 {
+    background-color: #E6F2FF;
+}
+
+.healthcardtypedefine5 {
+    background-color: #E9F4EE;
+}
+
+.healthcardtypedefine6 {
+    background-color: #FCF6EA;
+}
+
+@media only screen and (min-width: 768px) and (max-width: 1024px) {
+
+    .healthcardvital {
+        height: 90%;
+    }
+
+    .vitalhealthcard {
+        font-size: 10px;
+    }
+
+    .redherats {
+        height: 1.2em;
+        width: 1em;
+    }
+
+    .redheartcard {
+        height: 1.4em;
+        width: 1.2em;
+    }
+
+    .vitalhealthcardinput {
+        margin: 0.2em 0em 0em 1.3em;
+        width: 60%;
+    }
+}

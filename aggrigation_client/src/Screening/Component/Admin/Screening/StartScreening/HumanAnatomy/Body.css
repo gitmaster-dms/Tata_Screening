@@ -1,0 +1,713 @@
+.clickable-point-11,
+.clickable-point-22,
+.clickable-point-33,
+.clickable-point-44,
+.clickable-point-55,
+.clickable-point-66,
+.clickable-point-77,
+.clickable-point-88,
+.clickable-point-89 {
+  position: absolute;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.clickable-point-11 {
+  top: 7em;
+  left: 14.5em;
+  background-color: black;
+  border: 1.8px solid white;
+}
+
+.clickable-point-11::before {
+  content: '';
+  position: absolute;
+  right: 0em;
+  top: 0.2em;
+  width: 0em;
+  height: 1.8px;
+  background-color: black;
+  border: 1px solid black;
+}
+
+.clickable-point-11:hover::before {
+  width: 2em;
+}
+
+.clickable-point-11:hover::after {
+  content: 'Vital';
+  position: absolute;
+  top: 0.5em;
+  right: 0em;
+  background-color: black;
+  color: white;
+  padding: 0.4em;
+  border-radius: 0.8em;
+  display: inline-block;
+  font-family: 'Roboto', sans-serif;
+  font-size: 13px;
+}
+
+/* //////// Basic Screening  */
+.clickable-point-22 {
+  top: 6.6em;
+  left: 3em;
+  background-color: #E80054;
+  border: 1.8px solid white;
+}
+
+.clickable-point-22::before {
+  content: '';
+  position: absolute;
+  top: 0.2em;
+  width: 0;
+  height: 1.8px;
+  background-color: #E80054;
+  border: 1px solid #E80054;
+  transition: width 0.3s ease;
+}
+
+.clickable-point-22:hover::before {
+  width: 6em;
+}
+
+.clickable-point-22:hover::after {
+  content: 'Basic Screening';
+  position: absolute;
+  top: 1em;
+  left: 0em;
+  width: 6em;
+  background-color: #E80054;
+  color: white;
+  padding: 0.4em;
+  border-radius: 0.8em;
+  display: inline-block;
+  font-family: 'Roboto', sans-serif;
+  font-size: 13px;
+}
+
+/* ////////////// BMI Form */
+.clickable-point-33 {
+  top: 26em;
+  left: 2.5em;
+  background-color: rgb(53, 100, 220);
+  border: 1.8px solid white;
+}
+
+.clickable-point-33::before {
+  content: '';
+  position: absolute;
+  top: 0.2em;
+  width: 0;
+  height: 1.8px;
+  background-color: rgb(53, 100, 220);
+  border: 1px solid rgb(53, 100, 220);
+  transition: width 0.3s ease;
+}
+
+.clickable-point-33:hover::before {
+  width: 6em;
+}
+
+.clickable-point-33:hover::after {
+  content: 'Growth Monitoring';
+  position: absolute;
+  top: -4em;
+  left: 1em;
+  width: 7em;
+  background-color: rgb(53, 100, 220);
+  color: white;
+  padding: 0.4em;
+  border-radius: 0.8em;
+  display: inline-block;
+  font-family: 'Roboto', sans-serif;
+  font-size: 13px;
+}
+
+/* /////// Immunisation */
+.clickable-point-44 {
+  top: 12em;
+  left: 2em;
+  background-color: #4216BF;
+  border: 1.8px solid white;
+}
+
+.clickable-point-44::before {
+  content: '';
+  position: absolute;
+  top: 0.2em;
+  width: 0;
+  height: 1.8px;
+  background-color: #4216BF;
+  border: 1px solid #4216BF;
+  transition: width 0.3s ease;
+}
+
+.clickable-point-44:hover::before {
+  width: 2.5em;
+}
+
+.clickable-point-44:hover::after {
+  content: 'Immunisation';
+  position: absolute;
+  top: -2.5em;
+  left: 0em;
+  background-color: #4216BF;
+  color: white;
+  padding: 0.4em;
+  border-radius: 0.8em;
+  display: inline-block;
+  font-family: 'Roboto', sans-serif;
+  font-size: 13px;
+  z-index: 1;
+}
+
+/* //// Auditory  */
+.clickable-point-55 {
+  top: 11%;
+  left: 15.9em;
+  background-color: #9E1BA1;
+  border: 1.8px solid white;
+}
+
+.clickable-point-55::before {
+  content: '';
+  position: absolute;
+  right: 0em;
+  top: 0.2em;
+  width: 0em;
+  height: 1.8px;
+  background-color: #9E1BA1;
+  border: 1px solid #9E1BA1;
+}
+
+.clickable-point-55:hover::before {
+  width: 6em;
+}
+
+.clickable-point-55:hover::after {
+  content: 'Auditory';
+  position: absolute;
+  top: 0.5em;
+  right: 0em;
+  background-color: #9E1BA1;
+  color: white;
+  padding: 0.4em;
+  border-radius: 0.8em;
+  display: inline-block;
+  font-family: 'Roboto', sans-serif;
+  font-size: 13px;
+}
+
+/* ///// Dental  */
+.clickable-point-66 {
+  top: 11.6%;
+  left: 3em;
+  background-color: #FFC300;
+  border: 1.8px solid white;
+}
+
+
+.clickable-point-66::before {
+  content: '';
+  position: absolute;
+  top: 0.2em;
+  width: 0;
+  height: 1.8px;
+  background-color: #FFC300;
+  border: 1px solid #FFC300;
+  transition: width 0.3s ease;
+}
+
+.clickable-point-66:hover::before {
+  width: 6em;
+}
+
+.clickable-point-66:hover::after {
+  content: 'Dental';
+  position: absolute;
+  top: 0.5em;
+  left: 1em;
+  width: 7em;
+  background-color: #FFC300;
+  color: white;
+  padding: 0.4em;
+  border-radius: 0.8em;
+  display: inline-block;
+  font-family: 'Roboto', sans-serif;
+  font-size: 13px;
+}
+
+/* ////////////// Vision form */
+.clickable-point-77 {
+  top: 8%;
+  left: 3em;
+  background-color: #710808;
+  border: 1.8px solid white;
+}
+
+.clickable-point-77::before {
+  content: '';
+  position: absolute;
+  top: 0.2em;
+  height: 1.8px;
+  background-color: #710808;
+  border: 1px solid #710808;
+  transition: width 0.3s ease;
+}
+
+.clickable-point-77:hover::before {
+  width: 6em;
+}
+
+.clickable-point-77:hover::after {
+  content: 'Vision';
+  position: absolute;
+  top: -2.2em;
+  left: 0.4em;
+  background-color: #710808;
+  color: white;
+  padding: 0.4em;
+  border-radius: 0.8em;
+  display: inline-block;
+  font-family: 'Roboto', sans-serif;
+  font-size: 13px;
+}
+
+/* //// Psycho  */
+.clickable-point-88 {
+  top: 5.8%;
+  left: 15.6em;
+  background-color: #2CDFAA;
+  border: 1.8px solid white;
+}
+
+/* Roshni Code */
+.clickable-point-89 {
+  top: 5.8%;
+  left: 15.6em;
+  background-color: #359f7f;
+  border: 1.8px solid white;
+}
+
+.clickable-point-88::before {
+  content: '';
+  position: absolute;
+  right: 0em;
+  top: 0.2em;
+  width: 0em;
+  height: 1.8px;
+  background-color: #2CDFAA;
+  border: 1px solid #2CDFAA;
+}
+
+.clickable-point-88:hover::before {
+  width: 6em;
+}
+
+.clickable-point-88:hover::after {
+  content: 'Psychological';
+  position: absolute;
+  top: -2.5em;
+  right: 0em;
+  background-color: #2CDFAA;
+  color: white;
+  padding: 0.4em;
+  border-radius: 0.8em;
+  display: inline-block;
+  font-family: 'Roboto', sans-serif;
+  font-size: 13px;
+}
+
+.body-container {
+  position: relative;
+}
+
+/* //////////////////// BODY CSS ////////////// */
+.male-body-image {
+  height: 32em;
+  width: 19em;
+}
+
+.female-body-image {
+  height: 93%;
+  /* margin-top: 1em; */
+  margin-left: -1.5em;
+  width: 22em;
+}
+
+.image-container {
+  position: relative;
+}
+
+.circle {
+  width: 15em;
+  height: 4em;
+  border: 1px dashed black;
+  border-radius: 50%;
+  margin-top: 10px;
+  margin: -6.2em 0em 0em 2em;
+  overflow: hidden;
+}
+
+/* .movable-button {
+  width: 15px;
+  height: 15px;
+  background-color: rgb(120, 98, 98);
+  border: none;
+  border-radius: 50%;
+  position: absolute;
+  top: 98.5%;
+  left: 7.5em;
+  transform: translate(100%, -0%);
+  cursor: pointer;
+} */
+
+.movable-button {
+  height: 45px;
+  width: 45px;
+  border: none;
+  border-radius: 50%;
+  position: absolute;
+  top: 96.9%;
+  left: 3.3em;
+  transform: translate(100%, -0%);
+  cursor: pointer;
+}
+
+.cardWeightdatainput {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  display: none;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.circle.clicked .cardWeightdatainput {
+  display: block;
+  opacity: 1;
+  width: 2em;
+  top: 32em;
+  margin-left: 3em;
+}
+
+.backgroundbody {
+  background-color: rgba(241, 238, 229, 1) !important;
+}
+
+.content-wrapper {
+  background-color: transparent;
+}
+
+.scale {
+  position: absolute;
+  top: 0;
+  right: 0em;
+  height: 75%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  font-size: 12px;
+  margin-top: 3.5em;
+}
+
+.scale span {
+  color: #000;
+}
+
+/* ////////////// Card vital ///////////// */
+.cardshiftment {
+  margin-top: 0em;
+  margin-left: 8.4em;
+  margin-bottom: 0.8em;
+  background-color: rgba(255, 255, 255, 0.776);
+  width: 97%;
+  height: 63.5%;
+  width: 96%;
+  /* height: 53%; */
+  height: auto;
+}
+
+.vitalname {
+  font-family: 'Roboto', sans-serif;
+  margin-top: -0.5em;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.spin {
+  float: left;
+  margin-top: 0.3em;
+  margin-left: -0.5em;
+}
+
+.bmiandsymheading {
+  color: white;
+  background-color: rgba(49, 55, 116, 1);
+  width: 100%;
+  font-family: 'Roboto', sans-serif;
+  font-size: 12px;
+}
+
+.vertical-input-container {
+  display: inline-block;
+  transform-origin: top left;
+  transform: rotate(-90deg);
+  position: relative;
+  margin-top: 28.8em;
+}
+
+.vertical-input-container input[type='range'] {
+  width: 27.4em;
+  height: 20px;
+}
+
+.vertical-scale {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 467px;
+  position: absolute;
+  top: 0;
+  left: 20em;
+  transform: translate(-30%, -50%) rotate(-90deg);
+  margin-top: 2.7em;
+}
+
+.vertical-scale span {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  display: block;
+  margin-bottom: 17px;
+}
+
+.horizontal-span {
+  writing-mode: horizontal-tb;
+  transform: rotate(90deg);
+}
+
+.backdesign {
+  background-color: #f4f4f4;
+}
+
+.backbodydesignnnnn {
+  background-color: rgba(241, 238, 229, 1);
+}
+
+.vitalpoint {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid white;
+  background-color: rgba(0, 212, 255, 1);
+  left: 10px;
+  top: 6px;
+  cursor: pointer;
+  right: 1em;
+}
+
+.vitalpoint2 {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid white;
+  background-color: red;
+  left: 10px;
+  top: 6px;
+  cursor: pointer;
+}
+
+.vitalpoint3 {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid white;
+  background-color: rgba(66, 22, 191, 1);
+  left: 10px;
+  top: 6px;
+  cursor: pointer;
+}
+
+.vitalpoint4 {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid white;
+  background-color: rgba(158, 27, 161, 1);
+  left: 10px;
+  top: 6px;
+  cursor: pointer;
+}
+
+.vitalpoint5 {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid white;
+  background-color: rgba(255, 195, 0, 1);
+  left: 10px;
+  top: 6px;
+  cursor: pointer;
+}
+
+.vitalpoint6 {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid white;
+  background-color: rgba(113, 8, 8, 1);
+  left: 10px;
+  top: 6px;
+  cursor: pointer;
+}
+
+.vitalpoint7 {
+  position: absolute;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  border: 2px solid white;
+  background-color: rgba(44, 223, 170, 1);
+  left: 10px;
+  top: 6px;
+  cursor: pointer;
+}
+
+.vitalsssssname {
+  margin-left: 0.6em;
+}
+
+.btn.selected {
+  background-color: purple;
+  color: white;
+}
+
+.screeninfonamevital {
+  margin-left: 1.4em;
+  font-size: 17px;
+  font-family: 'Roboto', sans-serif;
+}
+
+.menuiconinfo {
+  margin-top: -0.1em;
+}
+
+.screningstatusinfo {
+  float: right;
+  margin-top: -2em;
+  font-size: 14px;
+}
+
+.femaleradio {
+  margin: 0em 0em 0em 0.5em;
+}
+
+.maleradio {
+  font-size: 13px;
+  margin-top: -1.7em !important;
+}
+
+.dd11 {
+  height: 1em;
+}
+
+.border-bottom-black {
+  border-bottom: 1.5px solid #44417E;
+}
+
+
+@media only screen and (min-width: 768px) and (max-width: 1024px) {
+  .dd11 {
+    height: 0.7em;
+  }
+
+  .male-body-image {
+    height: 32em;
+    width: 15em;
+  }
+
+  .female-body-image {
+    height: 30em;
+    margin-top: 0em;
+    margin-left: 0em;
+    width: 17em;
+  }
+
+  .screeninfonamevital {
+    margin-left: -0.5em;
+    font-size: 12px;
+    font-family: 'Roboto', sans-serif;
+    color: rgba(241, 238, 229, 1);
+  }
+
+  .screningstatusinfo {
+    float: right;
+    margin-top: -2em;
+    font-size: 11px;
+  }
+
+  .cardshiftment {
+    margin-left: 2em;
+    margin-top: 0em;
+    background-color: rgba(255, 255, 255, 0.776);
+    width: 159%;
+    height: auto;
+  }
+}
+
+@media screen and (max-width: 575.98px) {
+  .male-body-image {
+    height: 32em;
+    width: 18em;
+    margin-top: -31em;
+    margin-left: 2em;
+  }
+
+  .female-body-image {
+    height: 30em;
+    margin-top: -33em;
+    margin-left: 3.5em;
+    width: 17em;
+  }
+
+  .vertical-scale {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 467px;
+    position: absolute;
+    top: 0;
+    left: 16.4em;
+    transform: translate(-30%, -50%) rotate(-90deg);
+    margin-top: 2.8em;
+  }
+
+  .vertical-scale span {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    display: block;
+    margin-bottom: 17px;
+  }
+
+  .circle {
+    margin-left: 3.8em;
+  }
+
+  .cardshiftment {
+    margin-top: -30em;
+    margin-left: 14em;
+    background-color: rgba(255, 255, 255, 0.776);
+    width: 107% !important;
+    height: 53%;
+  }
+}

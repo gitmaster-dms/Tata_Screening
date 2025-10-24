@@ -1,0 +1,493 @@
+.sourceaddperpage {
+  width: 4em;
+  margin: -1.8em 0em 0em 9em;
+}
+
+.cardbody.selected {
+  border-left: 3.5px solid rgba(49, 55, 116, 1);
+  background-color: rgb(232, 233, 245);
+}
+
+.circular-progress-containersource {
+  position: absolute;
+  left: 45%;
+  top: 30%;
+  width: 50px;
+  height: 50px;
+}
+
+.paginationsource {
+  margin: 0em 0em 0em auto;
+}
+
+.css-1v4ccyo {
+  color: rgb(255 255 255 / 87%) !important;
+}
+
+.topblue {
+  margin-left: 1em;
+  background-color: #cbecff;
+}
+
+.searchsource {
+  background-color: white;
+  margin-top: 0.3em;
+}
+
+.searchaddsource {
+  width: 67%;
+  margin-left: 8.8em;
+  height: 2em;
+  box-shadow: rgba(255, 255, 255, 1);
+}
+
+.searchsourceee {
+  margin-left: 10.4em;
+}
+
+.searchiconsource {
+  margin-left: 13.9em;
+  margin-top: -2.5em;
+  background-color: rgba(49, 55, 116, 1);
+  height: 1.3em !important;
+  width: 1.2em !important;
+  color: white;
+  border-radius: 0.2em;
+  padding: 0.13em;
+}
+
+.forminputs1,
+.forminputs2,
+.forminputs3,
+.forminputs4 {
+  font-weight: 400 !important;
+  font-size: 13.3px;
+  font-family: 'Roboto', sans-serif;
+}
+
+.forminputs1 {
+  margin-top: 0.5em;
+}
+
+.forminputs2 {
+  margin-top: 0.8em;
+}
+
+.forminputs3 {
+  margin-top: 1.5em;
+}
+
+.inputfiledssouce {
+  margin-top: -0.5em;
+  height: 2.2em;
+  font-family: 'Roboto', sans-serif;
+}
+
+.elementsource {
+  position: relative;
+  width: 190px;
+  margin-top: 2em;
+  margin-left: -7em;
+  border-bottom: 1.6px solid black;
+  margin-bottom: 0.7em;
+}
+
+.elementsource::before {
+  content: '';
+  position: absolute;
+  bottom: -1em;
+  background-color: black;
+}
+
+.input3 {
+  margin-top: -0.3em;
+}
+
+.input4 {
+  margin-top: -0.8em;
+}
+
+.section1 {
+  background-color: #f2f7fa;
+}
+
+.Sourcetitle {
+  margin-left: 0.3em;
+  font-family: 'Roboto', sans-serif;
+}
+
+.submitbutton,
+.addsources,
+.newsche {
+  background-color: #F65C8A;
+  color: white;
+}
+
+.submitbutton:hover,
+.addsources:hover,
+.newsche:hover {
+  color: white;
+}
+
+.editicon {
+  background-color: #313774;
+  color: white;
+  padding: 0.1em;
+  border-radius: 0.25em;
+}
+
+.deleteicon {
+  background-color: rgba(246, 92, 138, 1);
+  color: white;
+  padding: 0.1em;
+  border-radius: 0.25em;
+}
+
+.tablerow1 {
+  background-color: #f4f4f4;
+}
+
+.newschedule {
+  background-color: #c62d5b;
+  color: white;
+  height: 2.2em;
+}
+
+.newschedule:hover {
+  color: white;
+}
+
+.error {
+  color: red;
+  font-size: 14px;
+  margin-left: 0.6em;
+}
+
+.datefilter {
+  height: 2em;
+  width: 100%;
+  border: 1px solid rgb(234, 230, 230);
+  border-radius: 0.5em;
+}
+
+.cardbody {
+  margin-top: -0.9em;
+  margin-bottom: 1.5em;
+  flex-direction: row;
+  text-align: center;
+  background-color: #f4f4f4;
+  height: 2.4em;
+  align-items: center;
+  transform: scale(1);
+  transition: transform 0.2s;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 300 !important;
+}
+
+.cardheadsource {
+  flex-direction: row;
+  border: none !important;
+  height: 2.4em;
+  align-items: center;
+  text-align: center;
+  background-color: rgba(49, 55, 116, 1);
+  color: white;
+  border: white;
+  box-shadow: none;
+  font-family: 'Roboto', sans-serif;
+  margin-bottom: 1.6em;
+}
+
+.headnamess {
+  font-size: 14.5px;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 400;
+}
+
+.sourcecard {
+  background-color: rgba(49, 55, 116, 1);
+}
+
+.sourcename {
+  margin-left: 0.5em;
+  font-family: 'Roboto', sans-serif;
+  color: rgba(255, 255, 255, 1);
+  font-size: 16px;
+}
+
+.dropdownsource,
+.dropdownrowtextfield {
+  margin-left: 1em;
+  margin-bottom: 1em;
+}
+
+.tablebackground {
+  margin-top: -1.4em;
+}
+
+.disabled label,
+.disabled .Sourcetitle,
+.disabled button {
+  color: gray;
+}
+
+.submitbutton {
+  font-family: 'Roboto' sans-serif;
+  margin: 1em 0em 0.3em 17em;
+}
+
+.formcard {
+  background-color: #f8f9fa;
+  padding: 10px;
+}
+
+.disabled {
+  opacity: 0.8;
+  pointer-events: none;
+}
+
+.submitbutton {
+  background-color: rgba(49, 55, 116, 1);
+  color: #fff;
+  border: none;
+  padding: 5px 15px;
+}
+
+.submitbutton.disabled {
+  background-color: #e9ecef;
+  cursor: not-allowed;
+}
+
+.submitbutton:hover {
+  background-color: rgba(49, 55, 116, 1);
+}
+
+.submitbutton.disabled:hover {
+  background-color: #e9ecef;
+}
+
+.editicon.disabled,
+.deleteicon.disabled {
+  background-color: rgba(230, 230, 230, 1);
+  color: rgba(255, 255, 255, 1);
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.addsourcetablepart {
+  margin-top: -1.4em;
+}
+
+.addsourcetable {
+  margin-top: -0.5em;
+}
+
+.addsourcenavfields {
+  width: 190px;
+  color: white;
+}
+
+.addsourcenavfields .MuiOutlinedInput-root fieldset {
+  border-color: rgba(255, 255, 255, 1);
+}
+
+.addsourcenavfields .MuiOutlinedInput-root:hover fieldset {
+  border-color: rgba(255, 255, 255, 1);
+}
+
+.addsourcenavfields .MuiOutlinedInput-root.Mui-focused fieldset {
+  border-color: rgba(255, 255, 255, 1);
+}
+
+.addsourcenavfields .MuiInputLabel-root {
+  color: rgba(255, 255, 255, 1);
+}
+
+.addsourcenavfields .MuiInputLabel-root.Mui-focused {
+  color: rgba(255, 255, 255, 1);
+}
+
+.addsourcenavfields .MuiSelect-icon {
+  color: rgba(255, 255, 255, 1);
+}
+
+.addsourcenavfields .MuiSelect-icon.Mui-focused {
+  color: rgba(255, 255, 255, 1);
+}
+
+.addsourcenavfields .MuiMenuItem-root {
+  color: rgba(255, 255, 255, 1);
+}
+
+.formcard {
+  transition: transform 0.3s cubic-bezier(0.42, 0, 0.58, 1);
+}
+
+.slide-in {
+  transform: translateX(0);
+  transition: transform 0.6s ease-in-out;
+}
+
+.slide-out {
+  transform: translateX(-110%);
+  transition: transform 0.6s ease-in-out;
+}
+
+.custom-menu-paper {
+  max-height: 180px;
+  max-width: 240px;
+}
+
+@media screen and (min-width: 768px) and (max-width: 1180px) {
+  .addsourcenavfields {
+    width: 105px;
+  }
+
+  /* ////// TABLE field ///// */
+  .addsources {
+    width: 10em;
+  }
+
+  .searchsourceee {
+    width: 5em;
+  }
+
+  .searchiconsource {
+    margin-left: 9.5em;
+  }
+
+  .submitbutton{
+    margin-left: 10em;
+  }
+}
+
+@media screen and (max-width: 575.98px) {
+  .addsourcenavfields {
+    width: 170px;
+    margin-bottom: 0.8em;
+    color: white;
+  }
+
+  .addsources {
+    margin-top: 1em !important;
+    background-color: #F65C8A;
+    color: white;
+  }
+
+  .searchaddsource {
+    width: 10em;
+    margin-top: -1.9em;
+    margin-left: 14em;
+  }
+
+  .searchiconsource {
+    margin-left: 15em;
+  }
+
+  .headnamess {
+    font-size: 12px;
+  }
+
+  .cardbody {
+    font-size: 12px;
+  }
+
+  .submitbutton{
+    margin-left: 10em;
+  }
+}
+
+@media (max-width: 378px) {
+  .addsourcenavfields {
+    width: 150px;
+    margin-bottom: 0.8em;
+    margin-left: -1em;
+    color: white;
+  }
+
+  .addsources,
+  .newsche {
+    margin-top: 1em !important;
+    background-color: #F65C8A;
+    color: white;
+  }
+
+  .searchaddsource {
+    width: 8em;
+    margin-top: -1.9em;
+    margin-left: 13em;
+  }
+
+  .searchiconsource {
+    margin-left: 12.89em;
+  }
+
+  .headnamess {
+    font-size: 11px;
+  }
+
+  .cardbody {
+    font-size: 11px;
+  }
+
+  .submitbutton{
+    margin-left: 10em;
+  }
+}
+
+@media (max-width: 320px) {
+
+  .sourcecard{
+    width: 110%;
+  }
+
+  .addsourcenavfields {
+    width: 130px;
+    margin-bottom: 0.8em;
+    margin-left: -1em;
+    color: white;
+  }
+
+  .searchsource{
+    margin: 4em 0em 0em -11em;
+  }
+
+  .formcard{
+    width: 110%;
+  }
+
+  .addsources,
+  .newsche {
+    margin-top: 1em !important;
+    background-color: #F65C8A;
+    color: white;
+  }
+
+  .searchaddsource {
+    width: 8em;
+    margin-top: -1.9em;
+    margin-left: 12em;
+  }
+
+  .searchiconsource {
+    margin-left: 12.3em;
+  }
+
+  .headnamess {
+    font-size: 11px;
+  }
+
+  .cardheadsource {
+     width: 110%;
+  }
+
+  .cardbody {
+    font-size: 11px;
+    margin-bottom: 1.8em;
+    width: 110%;
+  }
+
+  .submitbutton{
+    margin-left: 10em;
+  }
+}

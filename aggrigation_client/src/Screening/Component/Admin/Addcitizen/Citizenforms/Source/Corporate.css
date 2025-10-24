@@ -1,0 +1,103 @@
+.corporateinput {
+    margin-top: -0.4em;
+}
+
+.corporatelabel {
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    font-weight: 400 !important;
+}
+
+.cardsetup {
+    margin-top: -1em;
+}
+
+.employeetitle {
+    font-family: 'Roboto', sans-serif;
+    font-size: 19px;
+    margin: 0.1em 0em 0.5em 1em;
+}
+
+.formspaceemployee {
+    margin: 0.2em 0em 0.7em 0em;
+}
+
+.elementemployee1,
+.elementemployee2,
+.elementemployee3,
+.elementemployee4 {
+    position: relative;
+    width: 220px;
+    border-bottom: 1.6px solid black;
+}
+
+.elementemployee1 {
+    margin-left: -9.9em;
+}
+
+.elementemployee2 {
+    margin-left: -10.5em;
+}
+
+.elementemployee3 {
+    margin-left: -10.5em;
+}
+
+.elementemployee4 {
+    margin-left: -5.1em;
+}
+
+.card1corporate {
+    width: 103%;
+}
+
+.card2corporate {
+    width: 107%;
+}
+
+.buttoncorporate {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.corporatesubmit {
+    background-color: #243E8D;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 8px 14px;
+    margin-bottom: 60px;
+}
+
+.error-message {
+    color: red;
+}
+
+@media only screen and (min-width: 768px) and (max-width: 1024px) {
+    .cardsetup {
+        margin-left: -2.8em;
+    }
+
+    .card1corporate {
+        width: 103%;
+    }
+
+    .card2corporate {
+        width: 100%;
+        height: auto !important;
+    }
+}
+
+@media only screen and (max-width: 767px) {
+    .card1corporate {
+        width: 100%;
+        margin-left: -0.5em;
+    }
+
+    .card2corporate {
+        width: 100%;
+        height: auto !important;
+        margin-left: -0.5em !important;
+    }
+}

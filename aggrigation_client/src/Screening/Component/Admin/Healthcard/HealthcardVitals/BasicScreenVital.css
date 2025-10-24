@@ -1,0 +1,185 @@
+.basichealthcarddddd {
+    font-family: 'Roboto', sans-serif;
+    font-size: 15px;
+    margin: 0.5em 0em 0.5em 0.5em;
+}
+
+.elementbasicscreen {
+    position: relative;
+    width: 180px;
+    margin-top: 6px;
+    border-bottom: 1.6px solid black;
+    margin-bottom: 0.4em;
+}
+
+.elementbasicscreengrowthhhh {
+    position: relative;
+    width: 180px;
+    margin-top: 6px;
+    border-bottom: 1.6px solid black;
+    margin-bottom: 0.4em;
+}
+
+.immuimagsize {
+    height: 6em;
+    width: 6em;
+}
+
+.auditimages {
+    height: 6em;
+    width: 4.5em;
+    margin-left: 0.5em;
+}
+
+.psycholabel {
+    height: 6em;
+    width: 4.5em;
+    margin-left: 0.5em;
+}
+
+.dentalimages {
+    height: 6em;
+    width: 4.5em;
+    margin-left: 0.5em;
+}
+
+.basicpsychohealthvital {
+    font-family: 'Roboto', sans-serif;
+    margin: 0.5em 0em 0.5em 1em;
+}
+
+
+.elementbasicscreenpsychohealth {
+    position: relative;
+    width: 150px;
+    margin-top: 6px;
+    border-bottom: 1.6px solid black;
+    margin-bottom: 0.7em;
+    margin-left: 0.4em;
+}
+
+.conditionpsycho {
+    font-family: 'Roboto', sans-serif;
+    font-size: 18px;
+    font-weight: 550;
+}
+
+.conditionpsycho1 {
+    font-family: 'Roboto', sans-serif;
+    font-size: 15px;
+    margin-top: -0.5em;
+}
+
+.conditionpsycho2 {
+    margin-top: 0.1em;
+    font-family: 'Roboto', sans-serif;
+    font-size: 13px;
+    font-weight: 550;
+}
+
+.conditionpsycho3 {
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    font-weight: 550;
+    color: rgba(49, 55, 116, 1);
+}
+
+.vaccine-label {
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+}
+
+.vaccine-name {
+    font-family: 'Roboto', sans-serif;
+    font-size: 13px;
+    margin-left: 3px;
+}
+
+@media only screen and (min-width: 768px) and (max-width: 1024px) {
+    .conditionpsycho {
+        font-family: 'Roboto', sans-serif;
+        font-size: 18px;
+        font-weight: 550;
+    }
+
+    .conditionpsycho1 {
+        font-family: 'Roboto', sans-serif;
+        font-size: 13px;
+        margin-top: -0.5em;
+    }
+
+    .conditionpsycho2 {
+        margin-top: 0.1em;
+        font-family: 'Roboto', sans-serif;
+        font-size: 13px;
+        font-weight: 550;
+        margin-bottom: 1em;
+    }
+
+    .conditionpsycho3 {
+        font-family: 'Roboto', sans-serif;
+        font-size: 14px;
+        font-weight: 550;
+        margin-top: 10px;
+        color: rgba(49, 55, 116, 1);
+    }
+}
+
+/* /////////////// BMI */
+
+.weeethtth {
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    margin: 1em 0em 0em 0em;
+}
+
+.cardnamehealthcardss {
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    margin: 1em 0em 0em 0.7em;
+}
+
+.cardnamehealthcardss1 {
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    margin: 1em 0em 0.5em 1.5em;
+}
+
+.weightcardforagehealthcard {
+    border-radius: 0.5em;
+    border: 1px solid #E95D5C;
+    height: 100%;
+}
+
+.weightcardforagehealthcard1 {
+    border-radius: 0.5em;
+    border: 1px solid #90DF9E;
+    height: 100%;
+}
+
+.weightcardforagehealthcard2 {
+    border-radius: 0.5em;
+    border: 1px solid #C4C4C4;
+    height: 100%;
+}
+
+.dataaaaaaaa {
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    height: 100%;
+    margin-top: 0.6em;
+}
+
+.cardbmigeakthcarddsssss {
+    height: 100%;
+    background-color: rgba(49, 55, 116, 1);
+    color: white;
+    font-size: 17px;
+}
+
+.basicccc{
+    font-family: 'Roboto',sans-serif;
+    font-size: 14px;
+    margin-left: 1em;
+    margin-top: 1em;
+}

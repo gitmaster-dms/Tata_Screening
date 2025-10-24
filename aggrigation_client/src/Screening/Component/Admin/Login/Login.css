@@ -1,0 +1,33 @@
+.login-form {
+    background-color: #e1dddd;
+    padding: 2rem;
+    margin: 2rem;
+    margin-top: 1rem;
+    border-radius: 3%;
+}
+
+h2 {
+    color: #313774;
+    font-weight: 620;
+}
+
+.login_container {
+    background-image: url('../../../Images/Group 427318865.png');
+    background-size: cover;
+    margin-bottom: 0;
+    margin-top: -3em;
+    height: 37.5em;
+}
+
+.login_head {
+    color: #313774;
+}
+
+.login {
+    margin-top: 4rem;
+}
+
+.loginlabel {
+    font-family: 'Roboto',sans-serif;
+    font-weight: 400 !important;
+}

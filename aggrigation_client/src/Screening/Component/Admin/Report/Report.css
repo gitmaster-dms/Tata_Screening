@@ -1,0 +1,92 @@
+.Schedulecard {
+    background-color: rgba(49, 55, 116, 1);
+}
+
+.Schedulelisttitle {
+    color: rgba(255, 255, 255, 1);
+    margin-left: 0.6em;
+    margin-top: 0.2em;
+    font-size: 17px;
+    font-weight: 400;
+    font-family: 'Roboto', sans-serif;
+}
+
+.addschedule {
+    background-color: rgba(244, 245, 250, 1);
+    color: rgba(0, 0, 0, 1);
+    margin-top: 0.4em;
+    margin-left: 2em;
+    font-family: 'Roboto', sans-serif;
+}
+
+.addschedule:hover,
+.newsche:hover {
+    color: black;
+}
+
+/* /////////////////// dropdown ///////////////// */
+.reportinputfield {
+    width: 190px;
+    color: white;
+}
+
+.reportinputfield .MuiOutlinedInput-root fieldset {
+    border-color: rgba(255, 255, 255, 1);
+}
+
+.reportinputfield .MuiOutlinedInput-root:hover fieldset {
+    border-color: rgba(255, 255, 255, 1);
+}
+
+.reportinputfield .MuiOutlinedInput-root.Mui-focused fieldset {
+    border-color: rgba(255, 255, 255, 1);
+}
+
+.reportinputfield .MuiInputLabel-root {
+    color: rgba(255, 255, 255, 1);
+}
+
+.reportinputfield .MuiInputLabel-root.Mui-focused {
+    color: rgba(255, 255, 255, 1);
+}
+
+.reportinputfield .MuiSelect-icon {
+    color: rgba(255, 255, 255, 1);
+}
+
+.reportinputfield .MuiSelect-icon.Mui-focused {
+    color: rgba(255, 255, 255, 1);
+}
+
+.reportinputfield .MuiMenuItem-root {
+    color: rgba(255, 255, 255, 1);
+}
+
+/* ///// table */
+.cardbodyuser,
+.reportheadeuser {
+    flex-direction: row;
+    width: 97%;
+    text-align: center;
+    background-color: rgba(255, 255, 255, 1);
+    height: 3.7em;
+    align-items: center;
+    transform: scale(1);
+    transition: transform 0.2s;
+    font-family: 'Roboto', sans-serif;
+    margin-left: 1em;
+    font-size: 13px;
+    font-weight: 200;
+}
+
+.cardbodyuser {
+    height: 3em;
+}
+
+.reportheadeuser {
+    margin-top: -0.3em;
+    background-color: rgba(49, 55, 116, 1);
+    color: white;
+    border: rgba(255, 255, 255, 1);
+    box-shadow: none;
+}

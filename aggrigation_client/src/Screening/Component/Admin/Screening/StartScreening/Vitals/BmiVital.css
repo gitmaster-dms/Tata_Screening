@@ -1,0 +1,421 @@
+.nametag {
+    size: 1px;
+}
+
+.specialistedrefrresedd {
+    margin-left: 0.6em;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 550;
+}
+
+.blurred {
+    filter: blur(5px);
+    pointer-events: none;
+}
+
+.label-blurred {
+    filter: blur(2px);
+}
+
+.label-bold {
+    font-size: 13px;
+}
+
+.textdecor {
+    font-size: 16px !important;
+    font-weight: 200 !important;
+}
+
+.cardadjust {
+    margin-bottom: 0.6em;
+}
+
+.cardadjust1 {
+    height: 3em;
+    margin-bottom: 0.5em;
+}
+
+.bmicard {
+    background-color: rgba(49, 55, 116, 1);
+    color: white;
+    font-family: 'Roboto', sans-serif;
+    padding: 0.4em;
+}
+
+.progress-barbmi {
+    border: 0.25em solid white;
+    margin-top: 0.6em;
+    border-radius: 1em;
+}
+
+.BMITitle {
+    font-family: 'Roboto', sans-serif;
+    margin-top: 0.5em;
+    margin-left: 0.3em;
+    color: rgba(0, 0, 0, 1);
+    font-size: 1.1em;
+    font-weight: 500;
+}
+
+.bmielement {
+    position: relative;
+    width: 250px;
+    margin-top: -0.2em;
+    border-bottom: 1.6px solid black;
+    margin-bottom: 0.7em;
+    margin-left: 0.4em;
+}
+
+.bmielement::before {
+    content: '';
+    position: absolute;
+    bottom: -1em;
+    background-color: black;
+}
+
+.bmivitalfield {
+    font-size: 12px;
+    font-weight: 400 !important;
+    font-family: 'Roboto', sans-serif;
+    margin-left: 0.4em;
+}
+
+.inputbmivital1 {
+    margin-top: 0.5em;
+    margin-left: 0.3em;
+}
+
+.inputbmivitalscreen {
+    margin-top: -0.5em;
+    margin-left: 0.3em;
+    width: 100%;
+}
+
+.inputbmivital {
+    margin-left: 0.3em;
+}
+
+.bodymasstitle {
+    margin: 1em;
+    font-family: 'Roboto', sans-serif;
+    font-size: 15px;
+    font-weight: 300 !important;
+}
+
+.count {
+    margin-left: 0.5em;
+}
+
+.databmi {
+    margin: 0em 0.3em 0em 0.3em;
+}
+
+.belowheading {
+    margin-left: 1em;
+}
+
+.bmidatadetails {
+    background-color: rgba(49, 55, 116, 1);
+    color: white;
+    font-family: 'Roboto', sans-serif;
+    height: 100%;
+}
+
+.clickbtnm {
+    margin-left: 0.5em;
+    margin-top: 0.45em;
+}
+
+.mgenderdefine {
+    margin-left: 1.2em;
+}
+
+.fgenderdefine {
+    margin-left: 0.2em;
+}
+
+.clickbtnf {
+    margin-left: 0.5em;
+    margin-top: 0.46em;
+}
+
+.textsize {
+    font-size: 12px;
+    margin-top: 0.8em;
+    /* margin-left: 0.35em; */
+    text-align: center;
+    font-family: 'Roboto', sans-serif;
+}
+
+.wtcount {
+    margin-top: 0.35em;
+    margin-bottom: 0.7em;
+    text-align: center;
+    font-family: 'Roboto', sans-serif;
+    font-size: 15px;
+    font-weight: 550;
+}
+
+
+.heightcolor {
+    background-color: rgba(248, 222, 189, 1);
+    border: none;
+    height: 2.6em;
+}
+
+.weightcolor {
+    background-color: rgb(207, 237, 240);
+    border: none;
+    height: 2.6em;
+}
+
+.weightcolor {
+    background-color: rgba(255, 236, 242, 1);
+    border: none;
+    height: 2.6em;
+}
+
+.medicaltitle {
+    font-size: 1.1em;
+    font-family: 'Roboto', sans-serif;
+    font-weight: bold;
+    margin-top: 0.4em;
+    margin-left: 0.4em;
+}
+
+.elementmedical {
+    position: relative;
+    width: 190px;
+    margin-top: -0.2em;
+    border-bottom: 1px solid black;
+    margin-bottom: 0.7em;
+    margin-left: 0.4em;
+}
+
+.elementmedical::before {
+    content: '';
+    position: absolute;
+    bottom: -1em;
+    background-color: black;
+}
+
+.medicallabel {
+    font-size: 14px;
+    font-weight: 400 !important;
+    font-family: 'Roboto', sans-serif;
+    padding: 0em 1em 0em 1em;
+}
+
+.medicalinput {
+    margin-left: 0.8em;
+    width: 93%;
+    margin-top: -0.4em;
+}
+
+.transfercall {
+    background-color: rgba(44, 223, 170, 1);
+    color: white;
+    float: right;
+    margin-right: 0.7em;
+}
+
+.transfercall:hover {
+    color: white;
+}
+
+.prescription {
+    background-color: rgba(232, 0, 84, 1);
+    color: white;
+    /* float: right; */
+    margin-left: 0.9em;
+}
+
+.prescription:hover {
+    color: white;
+}
+
+.grothcardmonitor {
+    margin-top: -0.5em;
+}
+
+.medicalcard {
+    margin-top: -0.5em;
+}
+
+.textdecor {
+    font-size: 12px;
+    font-weight: 200 !important;
+}
+
+.heightcard {
+    margin-left: 0.3em;
+    width: 100%;
+    border: none;
+    height: 80%;
+    background-color: rgba(248, 222, 189, 1);
+    border-radius: 0.5em;
+}
+
+.weightcard {
+    margin-left: 0.3em;
+    width: 100%;
+    border: none;
+    height: 80%;
+    background-color: rgba(208, 251, 255, 1);
+    border-radius: 0.5em;
+}
+
+.armcard {
+    margin-left: 0.3em;
+    width: 100%;
+    border: none;
+    height: 80%;
+    background-color: rgba(255, 236, 242, 1);
+    border-radius: 0.5em;
+}
+
+.cardmove {
+    margin-right: 0.1em;
+}
+
+.wtforage {
+    border: 0.1px solid rgba(233, 93, 92, 1);
+    border-radius: 0.6em;
+    height: 90%;
+}
+
+.wtforht {
+    border: 0.1px solid rgba(144, 223, 158, 1);
+    border-radius: 0.6em;
+    width: 100%;
+    height: 90%;
+}
+
+.htforage {
+    border: 0.1px solid rgba(196, 196, 196, 1);
+    border-radius: 0.6em;
+    height: 90%;
+}
+
+.heightlabel {
+    grid-row-end: span 2;
+    text-align: center;
+    font-family: 'Roboto', sans-serif;
+    font-size: 15px;
+    margin-top: 10px;
+    margin-bottom: 1em;
+}
+
+
+.belowheading {
+    margin-top: 30px;
+    position: relative;
+}
+
+.widget {
+    width: 92%;
+    border-radius: 1em;
+    height: 0.7em;
+    border: 0;
+    margin-top: 0.3em;
+    background: linear-gradient(to left,
+            rgba(255, 0, 0, 1) 3%,
+            rgb(213, 161, 56) 48%,
+            rgb(6, 182, 35) 60%,
+            rgb(223, 234, 133) 90%);
+}
+
+.labels {
+    width: 92%;
+    display: flex;
+    justify-content: space-between;
+    position: absolute;
+    margin-top: 1em;
+}
+
+.label-red {
+    color: white;
+    font-size: 10px;
+    font-weight: 300 !important;
+    font-family: 'Mulish', sans-serif;
+}
+
+.arrow {
+    position: absolute;
+    top: -20px;
+    left: 42%;
+    width: 0;
+    height: 0;
+    border-left: 3px solid transparent;
+    border-right: 3px solid transparent;
+    border-bottom: 20px solid rgba(140, 205, 71, 1);
+    transform: translateX(0%);
+    transform: rotate(180deg);
+}
+
+.backdesign {
+    background-color: #f4f4f4;
+}
+
+.btnbmivital {
+    background-color: #313774;
+    color: white;
+    margin: 1em 0em 1em 26em;
+}
+
+.bmiformcontrol {
+    background-color: rgba(248, 222, 189, 1);
+    border-color: rgba(248, 222, 189, 1);
+    margin-bottom: -0.3em;
+}
+
+.bmiformcontrolweight {
+    background-color: #D0FBFF;
+    border-color: #D0FBFF;
+    margin-bottom: -0.3em;
+}
+
+
+@media only screen and (min-width: 768px) and (max-width: 1024px) {
+    .clickbtnm {
+        margin: -1em 0em 0em -1em;
+    }
+
+    .clickbtnf {
+        margin: -1em 0em 0em -1em;
+    }
+
+    .wtforage {
+        border: 0.1px solid rgba(233, 93, 92, 1);
+        border-radius: 0.6em;
+        height: 90% !important;
+    }
+
+    .wtforht {
+        border: 0.1px solid rgba(144, 223, 158, 1);
+        border-radius: 0.6em;
+        height: 90% !important;
+    }
+
+    .htforage {
+        border: 0.1px solid rgba(196, 196, 196, 1);
+        border-radius: 0.6em;
+        height: 90% !important;
+    }
+
+    .textsize {
+        font-size: 11px;
+        margin-top: 0.8em;
+        text-align: center;
+        font-family: 'Roboto', sans-serif;
+    }
+
+    .wtcount {
+        margin-top: 0.35em;
+        margin-bottom: 0.7em;
+        text-align: center;
+        font-family: 'Roboto', sans-serif;
+        font-size: 11.5px;
+        font-weight: 550;
+    }
+}

@@ -1,0 +1,49 @@
+.permission_list{
+    background-color: rgba(49, 55, 116, 1);
+    border-radius: .5rem;
+    padding-bottom: 1rem;
+}
+
+.all_permission{
+    margin-top: 2rem;
+}
+label{
+    color: #ffffff;
+    font-size: .8rem;
+}
+.modules{
+    background-color: rgba(49, 55, 116, 1);
+    margin: .3rem;
+    margin-left: 2.5rem;
+    color: #ffffff;
+    border-top-right-radius: .5rem;
+    border-top-left-radius: .5rem;
+}
+.action{
+    background-color:  rgba(49, 55, 116, 1);
+    margin: .3rem;
+    color: #ffffff;
+    border-top-right-radius: .5rem;
+    border-top-left-radius: .5rem;
+
+}
+.module-1{
+    /* background-color: #FFFFFF; */
+    margin: .3rem;
+    margin-left: 2.5rem;
+}
+.action-1{
+    /* background-color:  rgba(49, 55, 116, 1); */
+    margin: .3rem;
+}
+label{
+    color: black;
+}
+.p_lable{
+    color: #ffffff;
+}
+
+.permission-btn{
+    background-color:  rgba(49, 55, 116, 1);
+    color: #ffffff;
+}

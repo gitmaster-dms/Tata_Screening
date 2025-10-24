@@ -1,0 +1,466 @@
+.scheduledidhealthcard {
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    font-weight: 550;
+}
+
+.downloadhealthcardddddddddddddddddddddddddddd {
+    margin-top: 0.5em;
+    width: 90%;
+    margin-right: 0.2em;
+    background-color: #E80054;
+    color: white;
+    border: 0px solid #E80054;
+    border-radius: 0.2em;
+    padding: 0.2em;
+}
+
+.fitness {
+    margin-top: 0.5em;
+    width: 90%;
+    margin-right: 0.2em;
+    background-color: rgb(6, 172, 97);
+    color: white;
+    border: 0px solid rgb(6, 172, 97);
+    border-radius: 0.2em;
+    padding: 0.2em;
+}
+
+.nodatafounddddd {
+    margin-left: 30px !important;
+}
+
+/* 
+.downloadhealthcard:hover {
+    background-color: #E80054;
+} */
+
+.healthcard {
+    background-color: #313774;
+}
+
+.css-1v4ccyo {
+    color: rgb(255 255 255 / 87%) !important;
+}
+
+.malepiccc {
+    height: 60%;
+}
+
+.femalepiccc {
+    height: 40%;
+}
+
+.healthcardtitle {
+    color: white;
+    margin: 0.2em 0em 0.5em 1em;
+    font-family: 'Roboto', sans-serif;
+    font-size: 18px;
+}
+
+.titlehealth {
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    margin: 0.2em 0em 0.5em 1em;
+}
+
+.healthresponsetitle {
+    margin: 0.2em 0em 0em 0.2em;
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.titlehealth1 {
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    margin: -0.3em 0em 0em 1em;
+}
+
+.healthresponsetitle1 {
+    margin: -0.3em 0em 0em 0.2em;
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.citizenId {
+    margin: 0.2em 0em 0em 0.6em;
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+}
+
+.searchhealth {
+    color: rgba(0, 0, 0, 1);
+    background-color: rgba(244, 245, 250, 1);
+    margin-top: 5px;
+    float: left;
+    font-weight: 500;
+}
+
+.searchhealthid {
+    width: 140%;
+    margin-left: -4em;
+}
+
+.searchiconhealthid {
+    float: right;
+    margin-top: -1.2em;
+}
+
+.ealthcardtitle {
+    text-align-last: center;
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+}
+
+.ealthcardtitle1 {
+    text-align-last: center;
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.cardhealth {
+    margin-top: -1em;
+}
+
+.hrline {
+    margin-top: 0.5em;
+    border: 0.3px solid rgb(84, 83, 83);
+}
+
+.healthvitalname {
+    font-family: 'Roboto', sans-serif;
+    font-size: 13px;
+    /* margin-left: 0.1em; */
+    margin: 0.2em 0em 0.1em 0.1em;
+}
+
+.fullscreen {
+    background-color: #F4F4F4;
+    height: auto;
+}
+
+.cardheadhealthcard {
+    flex-direction: row;
+    width: 100%;
+    text-align: center;
+    height: 3em;
+    align-items: center;
+    font-family: 'Roboto', sans-serif;
+    font-size: 11px;
+    background-color: transparent !important;
+    border-radius: 0;
+    border: none !important;
+}
+
+.cardbodyhealthcard {
+    background-color: rgba(255, 255, 255, 1);
+    flex-direction: row;
+    width: 100%;
+    text-align: center;
+    /* height: 2.6em; */
+    height: auto;
+    align-items: center;
+    font-family: 'Roboto', sans-serif;
+    font-size: 12px;
+    border-radius: 0;
+}
+
+.card.data-fetched {
+    border: 1.2px solid rgb(172, 162, 188);
+    border-radius: 8px;
+}
+
+.card {
+    transition: border 0.3s ease;
+}
+
+
+.cardbodyhealthcard.hovered,
+.cardbodyhealthcard.clicked {
+    background-color: #d3cfd8;
+    cursor: pointer;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.cardbodyhealthcard {
+    transition: background-color 0.3s ease, box-shadow 0.4s ease;
+}
+
+.schdulepsycho {
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    margin-top: 0.2em;
+    font-weight: 550;
+}
+
+.healthcardlistdropdown {
+    width: 175px;
+    color: white;
+}
+
+.healthcardlistdropdown .MuiOutlinedInput-root fieldset {
+    border-color: rgba(255, 255, 255, 1);
+}
+
+.healthcardlistdropdown .MuiOutlinedInput-root:hover fieldset {
+    border-color: rgba(255, 255, 255, 1);
+}
+
+.healthcardlistdropdown .MuiOutlinedInput-root.Mui-focused fieldset {
+    border-color: rgba(255, 255, 255, 1);
+}
+
+.healthcardlistdropdown .MuiInputLabel-root {
+    color: rgba(255, 255, 255, 1);
+}
+
+.healthcardlistdropdown .MuiInputLabel-root.Mui-focused {
+    color: rgba(255, 255, 255, 1);
+}
+
+.healthcardlistdropdown .MuiSelect-icon {
+    color: rgba(255, 255, 255, 1);
+}
+
+.healthcardlistdropdown .MuiSelect-icon.Mui-focused {
+    color: rgba(255, 255, 255, 1);
+}
+
+.healthcardlistdropdown .MuiMenuItem-root {
+    color: rgba(255, 255, 255, 1);
+}
+
+.screenid {
+    font-size: 14px;
+    font-family: 'Roboto', sans-serif;
+}
+
+.screedropdown {
+    margin-top: -0.4em;
+}
+
+.idddddddd {
+    font-size: 13px;
+    margin-top: 0.3em;
+}
+
+.selected-tab {
+    /* border-bottom: 2px solid #313774; */
+    /* background-color: #313774;
+    color: white;
+    border-radius: 0.6em; */
+}
+
+.clickable-point-1,
+.clickable-point-2,
+.clickable-point-3,
+.clickable-point-4,
+.clickable-point-5,
+.clickable-point-6,
+.clickable-point-7,
+.clickable-point-8 {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.clickable-point-1 {
+    top: 15%;
+    left: 61%;
+    background-color: black;
+    border: 1.8px solid white;
+}
+
+.clickable-point-2 {
+    top: 13%;
+    left: 45%;
+    background-color: #E80054;
+    border: 1.8px solid white;
+}
+
+.clickable-point-3 {
+    top: 50%;
+    left: 40%;
+    background-color: rgb(53, 100, 220);
+    border: 1.8px solid white;
+}
+
+.clickable-point-4 {
+    top: 23%;
+    left: 17.5%;
+    background-color: #4216BF;
+    border: 1.8px solid white;
+}
+
+.clickable-point-5 {
+    top: 6%;
+    left: 51%;
+    background-color: #9E1BA1;
+    border: 1.8px solid white;
+}
+
+.clickable-point-6 {
+    top: 6.6%;
+    left: 44%;
+    background-color: #FFC300;
+    border: 1.8px solid white;
+}
+
+.clickable-point-7 {
+    top: 4.7%;
+    left: 41%;
+    background-color: #710808;
+    border: 1.8px solid white;
+}
+
+.clickable-point-8 {
+    top: 2.8%;
+    left: 45%;
+    background-color: #2CDFAA;
+    border: 1.8px solid white;
+}
+
+
+.screedropdown {
+    width: 13em !important;
+}
+
+
+@media only screen and (min-width: 768px) and (max-width: 1024px) {
+    .healthcardlistdropdown {
+        width: 110px;
+    }
+
+    .cardbodyhealthcard {
+        font-size: 10px;
+    }
+
+    .titlehealth {
+        font-size: 13px;
+    }
+
+    .titlehealth1 {
+        font-size: 13px;
+        margin-top: 0.5em;
+    }
+
+    .healthresponsetitle {
+        margin-top: 0.8em;
+    }
+
+    .healthresponsetitle1 {
+        margin-top: 0em;
+        font-size: 12px;
+    }
+
+    .healthvitalname {
+        font-size: 11px;
+    }
+
+    .malepiccc {
+        height: 50%;
+    }
+
+    .ealthcardtitle1 {
+        font-size: 13px;
+        margin-top: 0.5em;
+    }
+
+    .cardhealth {
+        margin-top: -1em;
+        margin-right: -3em;
+    }
+
+    .cardhealthcardallvitalscomponenet {
+        width: 90%;
+        margin-left: 2em;
+    }
+
+    .screedropdown {
+        width: 7em !important;
+    }
+
+
+    .clickable-point-1,
+    .clickable-point-2,
+    .clickable-point-3,
+    .clickable-point-4,
+    .clickable-point-5,
+    .clickable-point-6,
+    .clickable-point-7,
+    .clickable-point-8 {
+        position: absolute;
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        cursor: pointer;
+    }
+
+    .clickable-point-1 {
+        top: 10%;
+        left: 78%;
+        background-color: black;
+        border: 1.8px solid white;
+    }
+
+    .clickable-point-2 {
+        top: 10%;
+        left: 59%;
+        background-color: #E80054;
+        border: 1.8px solid white;
+    }
+
+    .clickable-point-3 {
+        top: 40%;
+        left: 53%;
+        background-color: rgb(53, 100, 220);
+        border: 1.8px solid white;
+    }
+
+    .clickable-point-4 {
+        top: 18.5%;
+        left: 24.5%;
+        background-color: #4216BF;
+        border: 1.8px solid white;
+    }
+
+    .clickable-point-5 {
+        top: 4.3%;
+        left: 67%;
+        background-color: #9E1BA1;
+        border: 1.8px solid white;
+    }
+
+    .clickable-point-6 {
+        top: 5.2%;
+        left: 57%;
+        background-color: #FFC300;
+        border: 1.8px solid white;
+    }
+
+    .clickable-point-7 {
+        top: 4%;
+        left: 54%;
+        background-color: #710808;
+        border: 1.8px solid white;
+    }
+
+    .clickable-point-8 {
+        top: 2.3%;
+        left: 60%;
+        background-color: #2CDFAA;
+        border: 1.8px solid white;
+    }
+
+}
+
+.paginationnewwwwwwwwwwwwwwwwwwwwwww {
+    display: flex;
+    justify-content: center;
+    margin-top: 28% !important;
+}

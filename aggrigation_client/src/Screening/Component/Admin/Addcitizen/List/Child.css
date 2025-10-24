@@ -1,0 +1,136 @@
+.inputfiledss,
+.childdetails {
+  font-size: 0.9em;
+  font-weight: 200 !important;
+  font-family: 'Roboto', sans-serif;
+}
+
+.inputfiledss {
+  float: left;
+  margin-bottom: -0.06em;
+  margin-top: 0.5em;
+}
+
+.childadd,
+.childadd:hover {
+  background-color: #080e42;
+  color: white;
+  margin-top: 0.6em;
+  margin-left: 52%;
+}
+
+.carddetailing {
+  margin-left: 0.4em;
+  width: 106%;
+}
+
+.carddetailing1 {
+  margin-left: 2.5em;
+  width: 106%;
+}
+
+.contentincard {
+  padding-left: 0.7em;
+  padding-right: 0.7em;
+}
+
+.childdetails {
+  margin-top: 0.4em;
+  margin-left: 0.9em;
+  font-family: 'Roboto', sans-serif;
+  font-size: 17px;
+}
+
+.wholebody {
+  margin-top: -2em;
+}
+
+.content-wrapper {
+  background-color: transparent;
+}
+
+.element,
+.element1,
+.element3,
+.element4 {
+  position: relative;
+  width: 220px;
+  margin-top: 6px;
+  border-bottom: 1.6px solid black;
+}
+
+.element {
+  margin-left: -9.3em;
+}
+
+.element1 {
+  margin-left: -11.8em;
+}
+
+.element3 {
+  margin-left: -12.6em;
+}
+
+.element4 {
+  margin-left: -5.6em;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb,
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(49, 55, 116, 1);
+  border-radius: 4px;
+}
+
+@media (max-width: 768px) {
+  .childadd {
+    margin: -0.2em 0em 1em 9.8em;
+  }
+
+  .carddetailing1 {
+    margin-left: 0em;
+    width: 100%;
+  }
+
+  .carddetailing {
+    margin-left: 0em;
+    width: 100%;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+  .carddetailing1 {
+    margin-left: 0.5em;
+    width: 108%;
+    height: 92%;
+  }
+
+  .carddetailing {
+    margin-left: -2em;
+    width: 108%;
+    height: 92%;
+  }
+
+  .childadd {
+    margin-left: 47%;
+  }
+}
+
+/* @media (min-width: 912px) and(max-width: 1368px) {
+  .childadd {
+    margin: -0.2em 0em 1em 9.8em;
+  }
+
+  .carddetailing1 {
+    margin-left: 0.5em;
+    width: 127%;
+  }
+
+  .carddetailing {
+    margin-left: -4em;
+  }
+} */

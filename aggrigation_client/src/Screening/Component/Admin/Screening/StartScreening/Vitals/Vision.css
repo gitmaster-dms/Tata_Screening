@@ -1,0 +1,95 @@
+.visioncard {
+    background-color: rgba(49, 55, 116, 1);
+    color: white;
+    height: 75%;
+}
+
+.progress-barvision {
+    border: 0.25em solid white;
+    margin-top: 1em;
+    border-radius: 1em;
+    width: 97%;
+}
+
+.visiontitle {
+    color: white;
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    margin-top: 0.6em;
+    margin-left: 0.5em;
+}
+
+.paddingcolvision {
+    margin: 0.3em 1.3em -0.5em 2em;
+}
+
+.checkboxdefault {
+    margin-top: 0.4em;
+}
+
+.paddingcol1vision {
+    margin: 0.9em 1.3em 1em 1.5em;
+}
+
+.paddingcol2vision {
+    margin: -0.2em 1.3em 1em 1.5em;
+}
+
+.inputvision {
+    width: 95%;
+    margin-top: -0.5em;
+}
+
+.remarkvision {
+    font-size: 14px;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 550 !important;
+}
+
+.remarklabelreffer {
+    font-size: 14.5px;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 550 !important;
+}
+
+.visionvison {
+    font-family: 'Roboto', sans-serif;
+    font-size: 13px;
+    font-weight: 400 !important;
+    margin-top: -1em;
+}
+
+.formselectttt {
+    margin-top: -0.5em;
+}
+
+.Acuity {
+    font-size: 15px;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 600 !important;
+    margin-left: 2em;
+    margin-bottom: 1em;
+}
+
+.everyrow {
+    margin: -0.7em 0em 1em 1.5em;
+}
+
+.inputradio {
+    margin-top: 0.4em;
+}
+
+.labelvision {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 500 !important;
+    font-size: 14.5px;
+}
+
+.visioninput {
+    margin-top: -0.4em;
+}
+
+.visualllllllll{
+    margin-bottom: 0.5em;
+    margin-top: -0.5em;
+}

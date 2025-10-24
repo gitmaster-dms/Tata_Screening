@@ -1,0 +1,200 @@
+.vitalcard {
+  background-color: rgba(49, 55, 116, 1);
+  border-radius: 0.4em;
+  height: 75%;
+}
+
+.editvitalheader {
+  margin-left: auto;
+  margin-right: 0.5em;
+  margin-top: -1.3em;
+  color: white;
+}
+
+.vitaltitle {
+  color: white !important;
+  font-family: 'Roboto', sans-serif;
+  font-size: 16px;
+  margin-top: 0.8em;
+  margin-left: 0.5em;
+}
+
+.vitalinfotitle {
+  color: black;
+  font-size: 17px;
+  margin-top: 0.4em;
+  margin-left: 0.4em;
+  color: black;
+  font-size: 17px;
+  margin-top: 0.4em;
+  margin-left: 0.4em;
+}
+
+.vitalinfocard {
+  margin-top: -0.5em;
+  background-color: rgba(255, 255, 255, 1);
+  border: none;
+}
+
+.vcard {
+  margin: 0em 0.5em 0em 0.5em;
+}
+
+.healthcard {
+  border: none;
+  height: 105% !important;
+  border-radius: 0.4em;
+}
+
+.elementvital {
+  position: relative;
+  width: 190px;
+  margin-top: -0.2em;
+  border-bottom: 1.35px solid black;
+  margin-bottom: 0.7em;
+  margin-left: 0.45em;
+}
+
+.elementvital::before {
+  content: '';
+  position: absolute;
+  bottom: -1em;
+  background-color: black;
+}
+
+.fromcontrolinputfield {
+  height: 1.7em;
+  width: 4.5em;
+  border-radius: 0.1em;
+  margin: 0.8em 0em 0.4em 4em;
+  margin-left: 5.2em;
+}
+
+.vitalsubheading {
+  font-family: 'Mulish', sans-serif;
+  margin-top: 1.2em;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.vitalsubheading1 {
+  font-family: 'Mulish', sans-serif;
+  margin-top: 0.5em;
+  font-size: 14px;
+  padding-right: 0.7em;
+}
+
+/* //////////////// Vitalcard/////////////// */
+
+.cardvital1,
+.cardvital2,
+.cardvital3 {
+  border: none;
+  height: 80%;
+  margin: 0.5em 0em 0em 0.6em;
+  text-align: center;
+  background-color: rgba(251, 240, 243, 1) !important;
+  box-shadow: none;
+}
+
+.cardvital2 {
+  background-color: #D0FBFF;
+}
+
+.cardvital3 {
+  background-color: #F5F4FC;
+}
+
+.reporfromcard1,
+.reporfromcard2,
+.reporfromcard3,
+.reporfromcard4,
+.reporfromcard5,
+.reporfromcard6,
+.reporfromcard7 {
+  width: 4em;
+  height: 1.3em;
+  border: 0;
+  box-shadow: none;
+  margin: 1em 0 -0.6em 0.7em;
+  background-color: #FBF0F3;
+}
+
+.pulseResponse {
+  font-size: 12.5px;
+  margin: 0.2em 0em 0.4em 0.8em;
+}
+
+.reporfromcard2,
+.reporfromcard3 {
+  background-color: #CCF7FB;
+}
+
+.reporfromcard4 {
+  background-color: #F5F4FC;
+}
+
+.reporfromcard5 {
+  background-color: #E9F4EE;
+}
+
+.reporfromcard6 {
+  background-color: #FCF6EA;
+}
+
+.reporfromcard7 {
+  background-color: #E6F2FF;
+}
+
+.healthtype {
+  font-size: 13px;
+  font-weight: 400;
+  text-align: center;
+}
+
+.submitvital,
+.submitvital:hover {
+  background-color: rgba(49, 55, 116, 1);
+  color: white;
+  margin-left: 28em;
+}
+
+.redherats {
+  height: 1.2em;
+  width: 1.2em;
+  margin: 0.7em 0em 0.5em 0.6em;
+  padding: 2em;
+  background-color: #FBF0F3;
+}
+
+.vitalbodycard {
+  height: 100%;
+}
+
+@media only screen and (min-width: 768px) and (max-width: 1024px) {
+
+  .vitalsubheading {
+    font-size: 12px;
+  }
+
+  .fromcontrolinputfield {
+    width: 3em;
+    margin-left: 3em;
+  }
+
+  .cardvital1 {
+    width: 1.7em;
+    margin-right: 1.8em;
+  }
+
+  .cardvital2 {
+    width: 1.7em;
+    margin-right: 1.8em;
+  }
+
+  .cardvital3 {
+    width: 1.7em;
+    margin-right: 1.8em;
+  }
+
+}

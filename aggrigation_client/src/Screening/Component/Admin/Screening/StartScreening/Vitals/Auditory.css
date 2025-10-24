@@ -1,0 +1,119 @@
+.auditediticon {
+    margin-left: auto;
+    margin-top: -2em;
+    margin-right: 0.5em;
+}
+
+.auditorycard {
+    background-color: rgba(49, 55, 116, 1);
+    color: white;
+    height: 75%;
+}
+
+.audittitle {
+    color: white;
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    margin-top: 0.6em;
+    margin-left: 0.5em;
+}
+
+.eartitle {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 550;
+    margin: 0.85em 0em 1em 3.3em;
+}
+
+.earimage {
+    height: 2.3em;
+    width: 2.6em;
+    margin: 1em 0em -3em 1em;
+}
+
+.checktitle {
+    margin-left: 1.3em;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 550;
+    font-size: 15px;
+}
+
+.checktitlee {
+    margin-left: 0em;
+    margin-top: 1.3em;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 550;
+    font-size: 15px;
+}
+
+.elementauditory {
+    position: relative;
+    width: 150px;
+    margin-top: -0.2em;
+    border-bottom: 1.3px solid black;
+    margin-bottom: 0.4em;
+    margin-left: 1.1em;
+}
+
+.elementauditorypresent {
+    position: relative;
+    width: 150px;
+    margin-top: -0.2em;
+    border-bottom: 1.3px solid black;
+    margin-bottom: 0.8em;
+    margin-left: 1.1em;
+}
+
+.elementauditorypresenttt {
+    position: relative;
+    width: 150px;
+    margin-top: -0.2em;
+    border-bottom: 1.3px solid black;
+    margin-bottom: 0.8em;
+}
+
+.elementauditory::before {
+    content: '';
+    position: absolute;
+    bottom: -1em;
+    background-color: black;
+}
+
+.paddingcol {
+    margin: 0.3em 1.3em 0em 1.5em;
+}
+
+.paddingcol1 {
+    margin: 0.5em 1.3em 1em 1.5em;
+}
+
+.inputaudit {
+    width: 95%;
+    margin-top: -0.5em;
+}
+
+.remarklabel {
+    font-size: 14px;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 500 !important;
+}
+
+.btnauditory {
+    background-color: #313774;
+    color: white;
+    margin: 1em 0em 1em 26em;
+}
+
+.btnauditory:hover {
+    color: white;
+}
+
+.earlabel {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 550 !important;
+    font-size: 13px !important;
+    margin-bottom: -0.3em;
+}
+
+.earinput {
+    margin-bottom: 0.2em;
+}
