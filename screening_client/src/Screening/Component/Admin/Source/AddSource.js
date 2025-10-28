@@ -1,18 +1,32 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
 import './AddSource.css'
-import Box from '@mui/material/Box';
-import MenuItem from '@mui/material/MenuItem';
-import TextField from '@mui/material/TextField';
-import DriveFileRenameOutlineOutlinedIcon from '@mui/icons-material/DriveFileRenameOutlineOutlined';
-import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import {
+    Box,
+    Grid,
+    Button,
+    TextField,
+    IconButton,
+    Table,
+    TableHead,
+    TableBody,
+    TableRow,
+    TableCell,
+    TableContainer,
+    TablePagination,
+    CircularProgress,
+    Paper,
+    Typography,
+    MenuItem,
+    InputLabel,
+    Card
+} from "@mui/material";
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
-import { Modal, Button } from 'react-bootstrap';
-import TablePagination from '@mui/material/TablePagination';
-import CircularProgress from '@mui/material/CircularProgress';
+import { Modal } from 'react-bootstrap';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
-import { Checkbox, Grid } from '@mui/material';
+import { Checkbox } from '@mui/material';
+import { DriveFileRenameOutlineOutlined, DeleteOutlineOutlined } from "@mui/icons-material";
 
 const AddSource = () => {
 
@@ -847,807 +861,733 @@ const AddSource = () => {
 
     return (
         <div>
-            <div class="content-wrapper">
-                <div class="content-header">
-                    <div class="container-fluid">
-                        <div className="card sourcecard">
-                            <div className="row sourcename">
-                                <h5 className='nameeeeeee mt-1'>Source List</h5>
-                            </div>
+            <Card
+                sx={{
+                    p: 1,
+                    m: "0.1em 1em 0 4.5em",
+                    borderRadius: "16px",
+                }}
+            >
+                <Box className="row" sx={{ mb: 2 }}>
+                    <Typography variant="h6" sx={{ fontWeight: 600, fontFamily: "Roboto", color: "#000000", ml: 2 }}>
+                        WorkShop Registration
+                    </Typography>
+                </Box>
 
-                            <div className="row">
+                <Box sx={{ mt: 2 }}>
+                    <Box sx={{ textAlign: "center" }}>
+                        <Grid
+                            container
+                            spacing={2}
+                            justifyContent="center"
+                            alignItems="center"
+                            sx={{
+                                overflowY: "auto",
+                                scrollbarWidth: "none",
+                                "&::-webkit-scrollbar": { display: "none" },
+                            }}
+                        >
+                            <Grid item xs={12} sm={6} md={2}>
+                                <TextField
+                                    fullWidth
+                                    select
+                                    size="small"
+                                    label="Workshop"
+                                    variant="outlined"
+                                    value={selectedSource}
+                                    onChange={(event) => setSelectedSource(event.target.value)}
+                                    InputLabelProps={{
+                                        style: { fontWeight: "100", fontSize: "14px" },
+                                    }}
+                                    sx={{
+                                        "& .MuiInputBase-input.MuiSelect-select": {
+                                            color: "#000 !important",
+                                        },
+                                        "& .MuiSvgIcon-root": {
+                                            color: "#000",
+                                        },
+                                    }}
+                                >
+                                    <MenuItem value="">Select Source</MenuItem>
+                                    {sourceNav.map((drop) => (
+                                        <MenuItem key={drop.source_pk_id} value={drop.source_pk_id}>
+                                            {drop.source}
+                                        </MenuItem>
+                                    ))}
+                                </TextField>
+                            </Grid>
+
+                            <Grid item xs={12} sm={6} md={2}>
+                                <TextField
+                                    fullWidth
+                                    select
+                                    size="small"
+                                    label="Workshop State"
+                                    name="source_state"
+                                    variant="outlined"
+                                    value={selectedStateNav}
+                                    onChange={(event) => setSelectedStateNav(event.target.value)}
+                                    InputLabelProps={{
+                                        style: { fontWeight: "100", fontSize: "14px" },
+                                    }}
+                                    sx={{
+                                        "& .MuiInputBase-input.MuiSelect-select": {
+                                            color: "#000 !important",
+                                        },
+                                        "& .MuiSvgIcon-root": {
+                                            color: "#000",
+                                        },
+                                    }}
+                                >
+                                    <MenuItem value="">Workshop State</MenuItem>
+                                    {sourceStateNav.map((drop) => (
+                                        <MenuItem key={drop.source_state} value={drop.source_state}>
+                                            {drop.state_name}
+                                        </MenuItem>
+                                    ))}
+                                </TextField>
+                            </Grid>
+
+                            <Grid item xs={12} sm={6} md={2}>
+                                <TextField
+                                    fullWidth
+                                    select
+                                    size="small"
+                                    label="Workshop District"
+                                    variant="outlined"
+                                    name="source_district"
+                                    value={selectedDistrictNav}
+                                    onChange={(event) => setSelectedDistrictNav(event.target.value)}
+                                    InputLabelProps={{
+                                        style: { fontWeight: "100", fontSize: "14px" },
+                                    }}
+                                    sx={{
+                                        "& .MuiInputBase-input.MuiSelect-select": {
+                                            color: "#000 !important",
+                                        },
+                                        "& .MuiSvgIcon-root": {
+                                            color: "#000",
+                                        },
+                                    }}
+                                >
+                                    <MenuItem value="">Select District</MenuItem>
+                                    {sourceDistrictNav.map((drop) => (
+                                        <MenuItem key={drop.source_district} value={drop.source_district}>
+                                            {drop.dist_name}
+                                        </MenuItem>
+                                    ))}
+                                </TextField>
+                            </Grid>
+
+                            <Grid item xs={12} sm={6} md={2}>
+                                <TextField
+                                    fullWidth
+                                    select
+                                    size="small"
+                                    label="Workshop Tehsil"
+                                    variant="outlined"
+                                    name="source_taluka"
+                                    value={selectedTehsilNav}
+                                    onChange={(event) => setSelectedTehsilNav(event.target.value)}
+                                    InputLabelProps={{
+                                        style: { fontWeight: "100", fontSize: "14px" },
+                                    }}
+                                    sx={{
+                                        "& .MuiInputBase-input.MuiSelect-select": {
+                                            color: "#000 !important",
+                                        },
+                                        "& .MuiSvgIcon-root": {
+                                            color: "#000",
+                                        },
+                                    }}
+                                >
+                                    <MenuItem value="">Select Tehsil</MenuItem>
+                                    {sourceTehsilNav.map((drop) => (
+                                        <MenuItem key={drop.source_taluka} value={drop.source_taluka}>
+                                            {drop.tahsil_name}
+                                        </MenuItem>
+                                    ))}
+                                </TextField>
+                            </Grid>
+
+                            <Grid item xs={12} sm={6} md={2}>
+                                <TextField
+                                    fullWidth
+                                    select
+                                    size="small"
+                                    label="Work Shop Name"
+                                    name="source_names"
+                                    variant="outlined"
+                                    value={selectedName}
+                                    onChange={(event) => setSelectedName(event.target.value)}
+                                    InputLabelProps={{
+                                        style: { fontWeight: "50", fontSize: "14px" },
+                                    }}
+                                    sx={{
+                                        "& .MuiInputBase-input.MuiSelect-select": {
+                                            color: "#000 !important",
+                                        },
+                                        "& .MuiSvgIcon-root": {
+                                            color: "#000",
+                                        },
+                                    }}
+                                >
+                                    <MenuItem value="">Workshop Name</MenuItem>
+                                    {sourceName.map((drop) => (
+                                        <MenuItem key={drop.source_pk_id} value={drop.source_pk_id}>
+                                            {drop.source_names}
+                                        </MenuItem>
+                                    ))}
+                                </TextField>
+                            </Grid>
+
+                            <Grid item xs={12} sm={6} md={1.5} display="flex" justifyContent="center">
+                                <Button
+                                    variant="contained"
+                                    size="small"
+                                    onClick={handleSearch}
+                                    sx={{
+                                        px: 3,
+                                        textTransform: "none",
+                                        background: "linear-gradient(90deg, #2FB3F5 0%, #1439A4 100%)",
+                                        color: "white",
+                                        "&:hover": {
+                                            background: "linear-gradient(90deg, #2FB3F5 0%, #1439A4 100%)",
+                                        },
+                                    }}
+                                >
+                                    Search
+                                </Button>
+                            </Grid>
+                        </Grid>
+                    </Box>
+                </Box>
+            </Card>
+
+            <Grid container>
+                <Grid item xs={12} md={6}>
+                    <Box sx={{ p: 2 }}>
+                        <Card sx={{ p: 2, borderRadius: "16px", ml: "3.5em" }}>
+                            <Grid container alignItems="center" justifyContent="space-between" sx={{ mb: 2, }}>
+                                <Typography variant="h6" sx={{ fontWeight: 600, fontFamily: "Roboto Sans-serif" }}>
+                                    Add Workshop
+                                </Typography>
                                 <Box>
-                                    <div class="container text-center">
-                                        <div class="row dropdownrowtextfield">
-                                            <div class="col" style={{ color: "white" }}>
-                                                <TextField
-                                                    style={{ color: 'white' }}
-                                                    select
-                                                    className="addsourcenavfields"
-                                                    size="small"
-                                                    label="Source"
-                                                    id="select-small"
-                                                    variant="outlined"
-                                                    value={selectedSource}
-                                                    onChange={event => setSelectedSource(event.target.value)}
-                                                    InputLabelProps={{
-                                                        style: {
-                                                            fontWeight: '100',
-                                                            fontSize: '14px',
-                                                        },
-                                                    }}
-                                                    SelectProps={{
-                                                        MenuProps: {
-                                                            classes: {
-                                                                paper: 'custom-menu-paper',
-                                                            },
-                                                        },
-                                                    }}
-                                                >
-                                                    <MenuItem value="">Select Source</MenuItem>
-                                                    {sourceNav.map(drop => (
-                                                        <MenuItem key={drop.source_pk_id} value={drop.source_pk_id}>
-                                                            {drop.source}
-                                                        </MenuItem>
-                                                    ))}
-                                                </TextField>
-                                            </div>
-
-                                            <div class="col" style={{ color: "white" }}>
-                                                <TextField
-                                                    select
-                                                    className="addsourcenavfields"
-                                                    size="small"
-                                                    label="Source State"
-                                                    id="select-small"
-                                                    name="source_state"
-                                                    variant="outlined"
-                                                    value={selectedStateNav}
-                                                    onChange={event => setSelectedStateNav(event.target.value)}
-                                                    InputLabelProps={{
-                                                        style: {
-                                                            fontWeight: '100',
-                                                            fontSize: '14px', // Set the desired font size for the label
-                                                        },
-                                                    }}
-                                                    SelectProps={{
-                                                        MenuProps: {
-                                                            classes: {
-                                                                paper: 'custom-menu-paper',
-                                                            },
-                                                        },
-                                                    }}
-                                                >
-                                                    <MenuItem value="">Source State</MenuItem>
-                                                    {sourceStateNav.map(drop => (
-                                                        <MenuItem key={drop.source_state} value={drop.source_state}>
-                                                            {drop.state_name}
-                                                        </MenuItem>
-                                                    ))}
-                                                </TextField>
-                                            </div>
-
-                                            <div class="col" style={{ color: "white" }}>
-                                                <TextField
-                                                    select
-                                                    className="addsourcenavfields"
-                                                    size="small"
-                                                    label="Source District"
-                                                    id="select-small"
-                                                    variant="outlined"
-                                                    name='source_district'
-                                                    value={selectedDistrictNav}
-                                                    onChange={event => setSelectedDistrictNav(event.target.value)}
-                                                    InputLabelProps={{
-                                                        style: {
-                                                            fontWeight: '100',
-                                                            fontSize: '14px',
-                                                        },
-                                                    }}
-                                                    SelectProps={{
-                                                        MenuProps: {
-                                                            classes: {
-                                                                paper: 'custom-menu-paper',
-                                                            },
-                                                        },
-                                                    }}
-                                                >
-                                                    <MenuItem value="">Select District</MenuItem>
-                                                    {sourceDistrictNav.map(drop => (
-                                                        <MenuItem key={drop.source_district} value={drop.source_district}>
-                                                            {drop.dist_name}
-                                                        </MenuItem>
-                                                    ))}
-                                                </TextField>
-                                            </div>
-
-                                            <div class="col" style={{ color: "white" }}>
-                                                <TextField
-                                                    select
-                                                    className="addsourcenavfields"
-                                                    size="small"
-                                                    label="Source Tehsil"
-                                                    id="select-small"
-                                                    variant="outlined"
-                                                    name='source_taluka'
-                                                    value={selectedTehsilNav}
-                                                    onChange={event => setSelectedTehsilNav(event.target.value)}
-                                                    InputLabelProps={{
-                                                        style: {
-                                                            fontWeight: '100',
-                                                            fontSize: '14px',
-                                                        },
-                                                    }}
-                                                    SelectProps={{
-                                                        MenuProps: {
-                                                            classes: {
-                                                                paper: 'custom-menu-paper',
-                                                            },
-                                                        },
-                                                    }}
-                                                >
-                                                    <MenuItem value="">Select Tehsil</MenuItem>
-                                                    {sourceTehsilNav.map(drop => (
-                                                        <MenuItem key={drop.source_taluka} value={drop.source_taluka}>
-                                                            {drop.tahsil_name}
-                                                        </MenuItem>
-                                                    ))}
-                                                </TextField>
-                                            </div>
-
-                                            <div class="col" style={{ color: "white" }}>
-                                                <TextField
-                                                    select
-                                                    className="addsourcenavfields"
-                                                    size="small"
-                                                    label="Source Name"
-                                                    id="select-small"
-                                                    name="source_names"
-                                                    variant="outlined"
-                                                    value={selectedName}
-                                                    onChange={event => setSelectedName(event.target.value)}
-                                                    InputLabelProps={{
-                                                        style: {
-                                                            fontWeight: '50',
-                                                            fontSize: '14px', // Set the desired font size for the label
-                                                        },
-                                                    }}
-                                                    SelectProps={{
-                                                        MenuProps: {
-                                                            classes: {
-                                                                paper: 'custom-menu-paper',
-                                                            },
-                                                        },
-                                                    }}
-                                                >
-                                                    <MenuItem value="">Source Name</MenuItem>
-                                                    {sourceName.map(drop => (
-                                                        <MenuItem key={drop.source_pk_id} value={drop.source_pk_id}>
-                                                            {drop.source_names}
-                                                        </MenuItem>
-                                                    ))}
-                                                </TextField>
-                                            </div>
-
-                                            <div className='col searchbutton'>
-                                                <button
-                                                    type='button'
-                                                    className='btn btn-sm searchsource'
-                                                    onClick={handleSearch}
-                                                >
-                                                    Search
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </Box>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="content-wrapper cardbelowsource">
-                <div class="content-header">
-                    <div class="container-fluid">
-                        <div className="row">
-                            <div className='col tablebackground' >
-                                <div className={`card formcard`}>
-                                    <div className="row">
-                                        <h5
-                                            className={`Sourcetitle ${isFormEnabled ? '' : 'disabled'}`}
-                                        >
-                                            Add Source
-                                        </h5>
-                                        <div class="elementsource"></div>
-
-                                        <div className="ml-auto mr-3">
-                                            {canEdit && <DriveFileRenameOutlineOutlinedIcon className={`editicon mr-2`} onClick={() => {
+                                    {canEdit && (
+                                        <DriveFileRenameOutlineOutlined
+                                            sx={{
+                                                background: "rgba(10, 112, 183, 1)",
+                                                cursor: "pointer",
+                                                borderRadius: "6px",
+                                                color: "#fff",
+                                                p: "2px",
+                                                mr: 1,
+                                                "&:hover": {
+                                                    opacity: 0.8,
+                                                },
+                                            }}
+                                            onClick={() => {
                                                 setFormEnabled(true);
                                                 setUpdateSrc(false);
-                                            }} />}
-                                            {canDelete && <DeleteOutlineOutlinedIcon className={`deleteicon`}
-                                                onClick={() => {
-                                                    setDeleteSrc(false);
-                                                    handleDelete();
-                                                }} />}
-                                        </div>
-                                    </div>
-
-                                    {/* <div className="row pr-3"> */}
-                                    <div className="row">
-                                        <div className="col">
-                                            <form onSubmit={handleSubmit} encType="multipart/form-data">
-                                                <div className={`row ml-2 ${isFormEnabled ? '' : 'disabled'}`}>
-                                                    <div className="col">
-                                                        <label htmlFor="select" className="visually-hidden forminputs1" id="newcal">
-                                                            Source<span className="text-danger">*</span>
-                                                        </label>
-                                                        <select
-                                                            as='select'
-                                                            className={`form-control inputfiledssouce ${errors.source ? 'is-invalid' : ''}`}
-                                                            disabled={!isFormEnabled}
-                                                            name="source"
-                                                            value={selectData.source} onChange={handleChange}
-                                                        >
-                                                            <option value="">{selectData.add_source_id ? selectData.add_source_id : 'Select Source'}</option>
-                                                            {dropdownSource.map((option) => (
-                                                                <option key={option.source_pk_id} value={option.source_pk_id}>
-                                                                    {option.source}
-                                                                </option>
-                                                            ))}
-                                                        </select>
-                                                        {errors.source && <div className="invalid-feedback">{errors.source}</div>}
-                                                    </div>
-
-                                                    {/* <Grid container spacing={2}>
-                                                        <Grid item xs={6}>
-                                                            <Box sx={{ minWidth: 120 }}>
-                                                                <FormControl fullWidth size="small">
-                                                                    <InputLabel id="demo-simple-select-label">Source</InputLabel>
-                                                                    <Select
-                                                                        labelId="demo-simple-select-label"
-                                                                        id="demo-simple-select"
-                                                                        label="Source"
-                                                                        name="source"
-                                                                        value={selectData.source}
-                                                                        onChange={handleChange}
-                                                                        sx={{
-                                                                            color: 'black',
-                                                                            '& .MuiSelect-icon': { color: 'black' }
-                                                                        }}
-                                                                    >
-                                                                        {dropdownSource.map((option) => (
-                                                                            <MenuItem key={option.source_pk_id} value={option.source_pk_id}>
-                                                                                {option.source}
-                                                                            </MenuItem>
-                                                                        ))}
-                                                                    </Select>
-                                                                </FormControl>
-                                                            </Box>
-                                                        </Grid>
-                                                    </Grid> */}
-
-                                                    <div className="col-md-6">
-                                                        <label className="visually-hidden forminputs2" id="newcal">Source Name<span className="text-danger">*</span></label>
-                                                        <input
-                                                            type="text"
-                                                            className={`form-control inputfiledssouce ${errors.source_names ? 'is-invalid' : ''}`}
-                                                            id="source_names"
-                                                            value={selectData.source_names}
-                                                            onChange={handleChange}
-                                                            disabled={!isFormEnabled}
-                                                            name="source_names"
-                                                            placeholder="Enter Name"
-                                                        />
-                                                        {errors.source_names && <div className="invalid-feedback">{errors.source_names}</div>}
-                                                    </div>
-                                                    {/* </div> */}
-
-                                                    {/* <div className={`row ml-2 mt-2 ${isFormEnabled ? '' : 'disabled'}`}> */}
-                                                    <div className="col-md-6">
-                                                        <label htmlFor="registration" className="visually-hidden forminputs2"
-                                                            id="newcal" >
-                                                            Registration Number<span className="text-danger">*</span>
-                                                        </label>
-                                                        <input type="text"
-                                                            className={`form-control inputfiledssouce ${errors.registration_no ? 'is-invalid' : ''}`}
-                                                            id="registration_no"
-                                                            value={selectData.registration_no} onChange={handleChange}
-                                                            disabled={!isFormEnabled} name="registration_no"
-                                                            placeholder="Enter" maxLength="30"
-                                                        />
-                                                        {errors.registration_no && <div className="invalid-feedback">{errors.registration_no}</div>}
-                                                    </div>
-
-                                                    <div className="col-md-6">
-                                                        <label htmlFor="mobile" className="visually-hidden forminputs2" id="newcal">
-                                                            Contact Number <span className="text-danger">*</span>
-                                                        </label>
-                                                        <input
-                                                            type="number"
-                                                            className={`form-control inputfiledssouce ${errors.mobile_no ? 'is-invalid' : ''}`}
-                                                            id="mobile_no"
-                                                            value={selectData.mobile_no}
-                                                            onChange={handleChange}
-                                                            disabled={!isFormEnabled}
-                                                            name="mobile_no"
-                                                            placeholder="+91"
-                                                            onInput={(e) => {
-                                                                let inputValue = e.target.value.replace(/[^0-9]/g, '');
-                                                                if (inputValue.length > 13) {
-                                                                    inputValue = inputValue.slice(0, 13);
-                                                                }
-                                                                e.target.value = inputValue;
-                                                            }}
-                                                        />
-                                                        {errors.mobile_no && errors.mobile_no !== 'Verified' && (
-                                                            <span className="invalid-feedback text-danger">{errors.mobile_no}</span>
-                                                        )}
-                                                    </div>
-
-                                                    <div className="col-md-6 input3">
-                                                        <label for="email" className="visually-hidden forminputs2" id="newcal">
-                                                            Email ID<span className="text-danger">*</span>
-                                                        </label>
-                                                        <input type="email" className={`form-control inputfiledssouce ${errors.email_id ? 'is-invalid' : ''}`}
-                                                            id="email_id"
-                                                            value={selectData.email_id} onChange={handleChange}
-                                                            disabled={!isFormEnabled} name="email_id" placeholder="Enter Mail" />
-                                                        {errors.email_id && errors.email_id !== 'Verified' && (
-                                                            <span className="invalid-feedback text-danger">{errors.email_id}</span>
-                                                        )}
-                                                        {errors.email_id === 'Verified' && (
-                                                            <span className="invalid-feedback text-success">{errors.email_id}</span>
-                                                        )}
-
-                                                    </div>
-
-                                                    <div className="col-md-6 input3">
-                                                        <label htmlFor="Details" className="visually-hidden forminputs2" id="newcal" >
-                                                            Source Logo
-                                                        </label>
-                                                        <input type="file" id="Registration_details"
-                                                            className={`form-control inputfiledssouce`}
-                                                            onChange={handleChange}
-                                                            disabled={!isFormEnabled} name="Registration_details" placeholder=""
-                                                        />
-                                                    </div>
-
-                                                    <div className={`col-md-6 ${isFormEnabled ? '' : 'disabled'}`}>
-                                                        <Grid item xs={6} md={6} className={isFormEnabled ? '' : 'disabled'}>
-                                                            <FormControl variant="outlined" disabled={!isFormEnabled}>
-                                                                <label htmlFor="select" className={`visually-hidden forminputs2 ${isFormEnabled ? '' : 'disabled'}`}>
-                                                                    Vitals<span className="text-danger">*</span>
-                                                                </label>
-                                                                <Select
-                                                                    id="outlined-select"
-                                                                    name="screening_vitals"
-                                                                    multiple
-                                                                    value={selectedVitals}
-                                                                    onChange={handleChange}
-                                                                    renderValue={(selected) => (
-                                                                        <div style={{
-                                                                            overflow: 'hidden',
-                                                                            textOverflow: 'ellipsis',
-                                                                            whiteSpace: 'nowrap'
-                                                                        }}>
-                                                                            {selected.map((value) => {
-                                                                                const vital = screeningVitals.find(v => v.sc_list_pk_id === value);
-                                                                                return vital ? vital.screening_list : '';
-                                                                            }).join(', ')}
-                                                                        </div>
-                                                                    )}
-                                                                    size="small"
-                                                                    className='inputfiledssouce'
-                                                                    MenuProps={{
-                                                                        PaperProps: {
-                                                                            style: {
-                                                                                maxHeight: 150,
-                                                                            },
-                                                                        },
-                                                                    }}
-                                                                    style={{ width: '260px' }}
-                                                                >
-                                                                    {screeningVitals.map((vital) => (
-                                                                        <MenuItem key={vital.sc_list_pk_id} value={vital.sc_list_pk_id} style={{ padding: '0px 0px' }}>
-                                                                            <Checkbox
-                                                                                checked={selectedVitals.indexOf(vital.sc_list_pk_id) > -1}
-                                                                                disabled={!isFormEnabled}
-                                                                                style={{ marginRight: '8px' }}
-                                                                            />
-                                                                            <span>{vital.screening_list}</span>
-                                                                        </MenuItem>
-                                                                    ))}
-                                                                </Select>
-                                                            </FormControl>
-                                                        </Grid>
-                                                    </div>
-
-                                                    {selectedVitalId === 5 && (
-                                                        <div className={`col-md-6 ${isFormEnabled ? '' : 'disabled'}`}>
-                                                            <FormControl fullWidth variant="outlined" disabled={!isFormEnabled}>
-                                                                <label htmlFor="text" className={`visually-hidden forminputs2 ${isFormEnabled ? '' : 'disabled'}`} id="newcal">
-                                                                    Sub Vitals<span className="text-danger">*</span>
-                                                                </label>
-                                                                <Select
-                                                                    className='inputfiledssouce'
-                                                                    id="outlined-select"
-                                                                    name="sub_screening_vitals"
-                                                                    size="small"
-                                                                    multiple
-                                                                    value={selectedSubVitals}
-                                                                    onChange={handleChange}
-                                                                    renderValue={(selected) => (
-                                                                        <div style={{
-                                                                            overflow: 'hidden',
-                                                                            textOverflow: 'ellipsis',
-                                                                            whiteSpace: 'nowrap'
-                                                                        }}>
-                                                                            {selected.map((value) => {
-                                                                                const subVital = subScreening.find(v => v.sc_sub_list_pk_id === value);
-                                                                                return subVital ? subVital.sub_list : '';
-                                                                            }).join(', ')}
-                                                                        </div>
-                                                                    )}
-                                                                    MenuProps={{
-                                                                        PaperProps: {
-                                                                            style: {
-                                                                                maxHeight: 150,
-                                                                            },
-                                                                        },
-                                                                    }}
-                                                                    style={{ width: '260px' }}
-                                                                >
-                                                                    {subScreening.map((subVital) => (
-                                                                        <MenuItem key={subVital.sc_sub_list_pk_id} value={subVital.sc_sub_list_pk_id} style={{ padding: '0px 0px' }}>
-                                                                            <Checkbox
-                                                                                checked={selectedSubVitals.indexOf(subVital.sc_sub_list_pk_id) > -1}
-                                                                                disabled={!isFormEnabled}
-                                                                                style={{ marginRight: '8px' }}
-                                                                            />
-                                                                            <span>{subVital.sub_list}</span>
-                                                                        </MenuItem>
-                                                                    ))}
-                                                                </Select>
-                                                            </FormControl>
-                                                        </div>
-                                                    )}
-
-                                                    {/* <div className={`col-md-6 ${isFormEnabled ? '' : 'disabled'}`}>
-                                                        <label htmlFor="select" className={`visually-hidden forminputs1 ${isFormEnabled ? '' : 'disabled'}`}>
-                                                            Vitals<span className="text-danger">*</span>
-                                                        </label>
-                                                        <Select
-                                                            className={`form-control inputfiledssouce`}
-                                                            id="outlined-select"
-                                                            name="screening_vitals"
-                                                            multiple
-                                                            value={selectedVitals}
-                                                            onChange={handleChange}
-                                                            renderValue={(selected) => (
-                                                                <div>
-                                                                    {selected.map((value) => {
-                                                                        const vital = screeningVitals.find(v => v.sc_list_pk_id === value);
-                                                                        return vital ? vital.screening_list : '';
-                                                                    }).join(', ')}
-                                                                </div>
-                                                            )}
-                                                            size="small"
-                                                            MenuProps={{
-                                                                PaperProps: {
-                                                                    style: {
-                                                                        maxHeight: 150,
-                                                                    },
-                                                                },
-                                                            }}
-                                                        >
-                                                            {screeningVitals.map((vital) => (
-                                                                <MenuItem key={vital.sc_list_pk_id} value={vital.sc_list_pk_id} style={{ padding: '0px 0px' }}>
-                                                                    <Checkbox
-                                                                        checked={selectedVitals.indexOf(vital.sc_list_pk_id) > -1}
-                                                                        disabled={!isFormEnabled}
-                                                                        style={{ marginRight: '8px' }}
-                                                                    />
-                                                                    <span>{vital.screening_list}</span>
-                                                                </MenuItem>
-                                                            ))}
-                                                        </Select>
-                                                    </div>
-
-                                                    {selectedVitalId === 5 && (
-                                                        <div className={`col-md-6 ${isFormEnabled ? '' : 'disabled'}`}>
-                                                            <label htmlFor="select" className={`visually-hidden forminputs1 ${isFormEnabled ? '' : 'disabled'}`}>
-                                                                Sub Vitals<span className="text-danger">*</span>
-                                                            </label>
-                                                            <Select
-                                                                className={`form-control inputfiledssouce`}
-                                                                id="outlined-select"
-                                                                name="sub_screening_vitals"
-                                                                multiple
-                                                                value={selectedSubVitals}
-                                                                onChange={handleChange}
-                                                                renderValue={(selected) => (
-                                                                    <div>
-                                                                        {selected.map((value) => {
-                                                                            const subVital = subScreening.find(v => v.sc_sub_list_pk_id === value);
-                                                                            return subVital ? subVital.sub_list : '';
-                                                                        }).join(', ')}
-                                                                    </div>
-                                                                )}
-                                                                size="small"
-                                                                MenuProps={{
-                                                                    PaperProps: {
-                                                                        style: {
-                                                                            maxHeight: 150,
-                                                                        },
-                                                                    },
-                                                                }}
-                                                            >
-                                                                {subScreening.map((subVital) => (
-                                                                    <MenuItem key={subVital.sc_sub_list_pk_id} value={subVital.sc_sub_list_pk_id} style={{ padding: '0px 0px' }}>
-                                                                        <Checkbox
-                                                                            checked={selectedSubVitals.indexOf(subVital.sc_sub_list_pk_id) > -1}
-                                                                            disabled={!isFormEnabled}
-                                                                            style={{ marginRight: '8px' }}
-                                                                        />
-                                                                        <span>{subVital.sub_list}</span>
-                                                                    </MenuItem>
-                                                                ))}
-                                                            </Select>
-                                                        </div>
-                                                    )} */}
-                                                    {/* </div> */}
-
-                                                    {/* <div className={`row ml-2 ${isFormEnabled ? '' : 'disabled'}`}> */}
-                                                    <div className="col-md-6">
-                                                        <label htmlFor="select" className="visually-hidden forminputs1" id="newcal">
-                                                            State<span className="text-danger">*</span>
-                                                        </label>
-                                                        <select
-                                                            className={`form-control inputfiledssouce`}
-                                                            onChange={(e) => setSelectedState(e.target.value)}
-                                                        >
-                                                            <option value="">{selectData.add_state_id ? selectData.add_state_id : 'Select State'}</option>
-                                                            {stateOptions.map((state) => (
-                                                                <option key={state.state_id} value={state.state_id}
-                                                                >
-                                                                    {state.state_name}
-                                                                </option>
-                                                            ))}
-                                                        </select>
-                                                        {/* {errors.source_state && <div className="invalid-feedback">{errors.source_state}</div>} */}
-                                                    </div>
-
-                                                    <div className="col-md-6">
-                                                        <label htmlFor="select" className="visually-hidden forminputs1" id="newcal">
-                                                            District<span className="text-danger">*</span>
-                                                        </label>
-                                                        <select
-                                                            className={`form-control inputfiledssouce`}
-                                                            onChange={(e) => setSelectedDistrict(e.target.value)}>
-                                                            <option value="">{selectData.add_district_id ? selectData.add_district_id : 'Select District'}</option>
-                                                            {districtOptions.map((district) => (
-                                                                <option key={district.dist_id} value={district.dist_id}>
-                                                                    {district.dist_name}
-                                                                </option>
-                                                            ))}
-                                                        </select>
-                                                    </div>
-
-                                                    <div className="col-md-6">
-                                                        <label htmlFor="select" className="visually-hidden forminputs1" id="newcal">
-                                                            Tehsil<span className="text-danger">*</span>
-                                                        </label>
-                                                        <select
-                                                            className={`form-control inputfiledssouce`}
-                                                            onChange={(e) => setSelectedTahsil(e.target.value)}>
-                                                            <option value="">{selectData.add_tehsil_id ? selectData.add_tehsil_id : 'Select Taluka'}</option>
-                                                            {talukaOptions.map((taluka) => (
-                                                                <option key={taluka.tal_id} value={taluka.tal_id}>
-                                                                    {taluka.tahsil_name}
-                                                                </option>
-                                                            ))}
-                                                        </select>
-                                                    </div>
-
-                                                    <div className="col-md-6 input4">
-                                                        <label for="pin" className="visually-hidden forminputs3" id="newcal">
-                                                            Pin Code<span className="text-danger">*</span>
-                                                        </label>
-                                                        <input type="text" className={`form-control inputfiledssouce ${errors.source_pincode ? 'is-invalid' : ''}`}
-                                                            id="pincode" maxLength="6"
-                                                            value={selectData.source_pincode} onChange={handleChange}
-                                                            disabled={!isFormEnabled} name="source_pincode" placeholder="Pin Code"
-                                                            onInput={(e) => {
-                                                                let inputValue = e.target.value.replace(/[^0-9]/g, '');
-                                                                if (inputValue.length > 6) {
-                                                                    inputValue = inputValue.slice(0, 6);
-                                                                }
-                                                                e.target.value = inputValue;
-                                                            }} />
-                                                        {errors.source_pincode && <div className="invalid-feedback">{errors.source_pincode}</div>}
-                                                    </div>
-
-                                                    <div className='col-md-6'>
-                                                        <label for="address" className="visually-hidden forminputs4" id="newcal">
-                                                            Address<span className="text-danger">*</span>
-                                                        </label>
-                                                        <input type="text"
-                                                            className={`form-control inputfiledssouce ${errors.source_address ? 'is-invalid' : ''}`}
-                                                            id="address" value={selectData.source_address} onChange={handleChange}
-                                                            disabled={!isFormEnabled} name="source_address" placeholder="Enter address" />
-                                                    </div>
-                                                </div>
-
-                                                <div className="row">
-                                                    <button type="submit" className={`btn btn-sm submitbutton ${!isFormEnabled ? 'disabled' : ''}`}
-                                                        disabled={!isFormEnabled}>Submit</button>
-                                                </div>
-                                            </form>
-
-                                            <Modal show={showModal} onHide={handleCloseModal}>
-                                                <Modal.Header closeButton>
-                                                    <Modal.Title></Modal.Title>
-                                                </Modal.Header>
-                                                <Modal.Body>
-                                                    Source Registered successfully.
-                                                </Modal.Body>
-                                                <Modal.Footer>
-                                                    <Button variant="success" onClick={handleCloseModal}>
-                                                        Close
-                                                    </Button>
-                                                </Modal.Footer>
-                                            </Modal>
-
-                                            <Modal show={showModalMissing} onHide={handleMissing}>
-                                                <Modal.Header>
-                                                    <Modal.Title></Modal.Title>
-                                                </Modal.Header>
-                                                <Modal.Body>
-                                                    Fill the * Mark Fields.
-                                                </Modal.Body>
-                                                <Modal.Footer>
-                                                    <Button variant="danger" className="btn btn-sm" onClick={handleMissing}>
-                                                        Close
-                                                    </Button>
-                                                </Modal.Footer>
-                                            </Modal>
-
-                                            <Modal show={showModalExist} onHide={handleExist}>
-                                                <Modal.Header>
-                                                    <Modal.Title></Modal.Title>
-                                                </Modal.Header>
-                                                <Modal.Body>
-                                                    Source Already Exist.
-                                                </Modal.Body>
-                                                <Modal.Footer>
-                                                    <Button variant="danger" className="btn btn-sm" onClick={handleExist}>
-                                                        Close
-                                                    </Button>
-                                                </Modal.Footer>
-                                            </Modal>
-
-                                            <Modal show={updateModel} onHide={handleUpdate}>
-                                                <Modal.Header>
-                                                    <Modal.Title></Modal.Title>
-                                                </Modal.Header>
-                                                <Modal.Body>
-                                                    Source Updated Successfully
-                                                </Modal.Body>
-                                                <Modal.Footer>
-                                                    <Button variant="success" className="btn btn-sm" onClick={handleUpdate}>
-                                                        Close
-                                                    </Button>
-                                                </Modal.Footer>
-                                            </Modal>
-
-                                            <Modal show={deleteModel} onHide={handleDeleteModel}>
-                                                <Modal.Header>
-                                                    <Modal.Title></Modal.Title>
-                                                </Modal.Header>
-                                                <Modal.Body>
-                                                    Source Deleted Successfully
-                                                </Modal.Body>
-                                                <Modal.Footer>
-                                                    <Button variant="success" className="btn btn-sm" onClick={handleDeleteModel}>
-                                                        Close
-                                                    </Button>
-                                                </Modal.Footer>
-                                            </Modal>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className='col addsourcetablepart'>
-                                <div className="row">
-                                    {canAddSource && <div className="col-md-4">
-                                        <button type="button" className="btn btn-sm addsources"
-                                            onClick={() => {
-                                                handleClicked();
-                                                resetForm();
                                             }}
-                                        >+ Add New Source</button>
-                                    </div>}
-                                    <div className="col-md-7">
-                                        <input className="form-control searchaddsource"
-                                            placeholder='Search Source'
-                                            value={searchQuery}
-                                            onChange={(e) => setSearchQuery(e.target.value)} />
-                                        <SearchOutlinedIcon className='searchiconsource' />
-                                    </div>
-                                </div>
-
-                                <div className="row ml-2" style={{ height: '100%' }}>
-                                    <table class="table table-borderless addsourcetable">
-                                        <thead className="belowtable">
-                                            <tr class="card cardheadsource">
-                                                <th className="col-md-2 headnamess text-left">Sr No</th>
-                                                <th className="col-md-5 headnamess text-left">Source Name</th>
-                                                <th className="col-md-5 headnamess text-left">Registration Number</th>
-                                                {/* <th className="col headnamess text-left">Modify By</th> */}
-                                            </tr>
-                                        </thead>
-
-                                        <tbody>
-                                            <div>
-                                                {
-                                                    loading ? (
-                                                        <tr>
-                                                            <td colSpan="7" className="text-center">
-                                                                <CircularProgress className='circular-progress-containersource' style={{ margin: 'auto' }} />
-                                                            </td>
-                                                        </tr>
-                                                    ) : (
-                                                        displayedData.length === 0 ? (
-                                                            <tr>
-                                                                <td colSpan="3">No results found</td>
-                                                            </tr>
-                                                        ) : (
-                                                            displayedData
-                                                                .slice(page * rowsPerPage, (page + 1) * rowsPerPage)
-                                                                .map((info, index) => {
-                                                                    const serialNumber = index + 1 + page * rowsPerPage; // Updated calculation for serial number
-                                                                    return (
-                                                                        <tr
-                                                                            style={{ height: '3.5em' }}
-                                                                            key={info.source_pk_id}
-                                                                            className={`card cardbody ${selectedRow === info.source_pk_id ? 'selected' : ''
-                                                                                }`}
-                                                                            onClick={() => handleTableRowClick(info)}
-                                                                        >
-                                                                            <td className="col-md-2 text-left">{serialNumber}</td>
-                                                                            <td className="col-md-5 text-left">{info.source_names}</td>
-                                                                            <td className="col-md-5 text-left">{info.registration_no}</td>
-                                                                        </tr>
-                                                                    );
-                                                                })
-                                                        )
-                                                    )
-                                                }
-                                            </div>
-                                        </tbody>
-                                    </table>
-
-                                    <div className="paginationsource" style={{ marginTop: '-5%' }}>
-                                        <TablePagination
-                                            component="div"
-                                            count={displayedData.length}
-                                            page={page}
-                                            onPageChange={handleChangePage}
-                                            rowsPerPage={rowsPerPage}
-                                            onRowsPerPageChange={handleChangeRowsPerPage}
-                                            rowsPerPageOptions={[5, 10, 20]}
                                         />
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div >
-        </div >
+                                    )}
+                                    {canDelete && (
+                                        <DeleteOutlineOutlined
+                                            sx={{
+                                                background: "rgba(246, 92, 138, 1)",
+                                                cursor: "pointer",
+                                                borderRadius: "6px",
+                                                color: "#fff",
+                                                p: "2px",
+                                                "&:hover": {
+                                                    opacity: 0.8,
+                                                },
+                                            }}
+                                            onClick={() => {
+                                                setDeleteSrc(false);
+                                                handleDelete();
+                                            }}
+                                        />
+                                    )}
+
+                                </Box>
+                            </Grid>
+
+                            <Box
+                                component="form"
+                                onSubmit={handleSubmit}
+                            >
+                                <Grid container spacing={2}>
+                                    {/* <Grid item xs={12} sm={6}>
+                                        <FormControl fullWidth size="small" disabled={!isFormEnabled}>
+                                            <InputLabel>Workshop *</InputLabel>
+                                            <Select
+                                                name="source"
+                                                value={selectData.source}
+                                                onChange={handleChange}
+                                                label="Source"
+                                                sx={{
+                                                    "& .MuiInputBase-input.MuiSelect-select": {
+                                                        color: "#000 !important",
+                                                    },
+                                                    "& .MuiSvgIcon-root": {
+                                                        color: "#000",
+                                                    },
+                                                }}
+                                            >
+                                                <MenuItem value="">
+                                                    {selectData.add_source_id || "Select Source"}
+                                                </MenuItem>
+                                                {dropdownSource.map((option) => (
+                                                    <MenuItem key={option.source_pk_id} value={option.source_pk_id}>
+                                                        {option.source}
+                                                    </MenuItem>
+                                                ))}
+                                            </Select>
+                                        </FormControl>
+                                    </Grid> */}
+
+                                    <Grid item xs={12} sm={6}>
+                                        <TextField
+                                            fullWidth
+                                            label="Workshop Name *"
+                                            name="source_names"
+                                            value={selectData.source_names}
+                                            onChange={handleChange}
+                                            size="small"
+                                            disabled={!isFormEnabled}
+                                            error={!!errors.source_names}
+                                            helperText={errors.source_names}
+                                        />
+                                    </Grid>
+
+                                    <Grid item xs={12} sm={6}>
+                                        <TextField
+                                            fullWidth
+                                            label="Registration Number *"
+                                            name="registration_no"
+                                            value={selectData.registration_no}
+                                            onChange={handleChange}
+                                            size="small"
+                                            disabled={!isFormEnabled}
+                                            error={!!errors.registration_no}
+                                            helperText={errors.registration_no}
+                                        />
+                                    </Grid>
+
+                                    <Grid item xs={12} sm={6}>
+                                        <TextField
+                                            fullWidth
+                                            label="Contact Number *"
+                                            name="mobile_no"
+                                            value={selectData.mobile_no}
+                                            onChange={handleChange}
+                                            size="small"
+                                            disabled={!isFormEnabled}
+                                            error={!!errors.mobile_no && errors.mobile_no !== "Verified"}
+                                            helperText={errors.mobile_no}
+                                        />
+                                    </Grid>
+
+                                    <Grid item xs={12} sm={6}>
+                                        <TextField
+                                            fullWidth
+                                            label="Email ID *"
+                                            name="email_id"
+                                            value={selectData.email_id}
+                                            onChange={handleChange}
+                                            size="small"
+                                            disabled={!isFormEnabled}
+                                            error={!!errors.email_id && errors.email_id !== "Verified"}
+                                            helperText={errors.email_id}
+                                        />
+                                    </Grid>
+
+                                    {/* <Grid item xs={12} sm={6}>
+                                        <Button
+                                            variant="outlined"
+                                            component="label"
+                                            size="small"
+                                            disabled={!isFormEnabled}
+                                        >
+                                            Upload Workshop Logo
+                                            <input type="file" hidden name="Registration_details" onChange={handleChange} />
+                                        </Button>
+                                    </Grid> */}
+
+                                    <Grid item xs={12} sm={6}>
+                                        <FormControl fullWidth size="small" disabled={!isFormEnabled}>
+                                            <InputLabel>Vitals *</InputLabel>
+                                            <Select
+                                                multiple
+                                                value={selectedVitals}
+                                                onChange={handleChange}
+                                                name="screening_vitals"
+                                                renderValue={(selected) =>
+                                                    selected
+                                                        .map((val) => {
+                                                            const vital = screeningVitals.find((v) => v.sc_list_pk_id === val);
+                                                            return vital ? vital.screening_list : "";
+                                                        })
+                                                        .join(", ")
+                                                }
+                                                sx={{
+                                                    "& .MuiInputBase-input.MuiSelect-select": {
+                                                        color: "#000 !important",
+                                                    },
+                                                    "& .MuiSvgIcon-root": {
+                                                        color: "#000",
+                                                    },
+                                                }}
+                                            >
+                                                {screeningVitals.map((vital) => (
+                                                    <MenuItem key={vital.sc_list_pk_id} value={vital.sc_list_pk_id}>
+                                                        <Checkbox checked={selectedVitals.indexOf(vital.sc_list_pk_id) > -1} />
+                                                        {vital.screening_list}
+                                                    </MenuItem>
+                                                ))}
+                                            </Select>
+                                        </FormControl>
+                                    </Grid>
+
+                                    {selectedVitalId === 5 && (
+                                        <Grid item xs={12} sm={6}>
+                                            <FormControl fullWidth size="small" disabled={!isFormEnabled}>
+                                                <InputLabel>Sub Vitals *</InputLabel>
+                                                <Select
+                                                    multiple
+                                                    value={selectedSubVitals}
+                                                    onChange={handleChange}
+                                                    name="sub_screening_vitals"
+                                                    renderValue={(selected) =>
+                                                        selected
+                                                            .map((val) => {
+                                                                const subVital = subScreening.find(
+                                                                    (v) => v.sc_sub_list_pk_id === val
+                                                                );
+                                                                return subVital ? subVital.sub_list : "";
+                                                            })
+                                                            .join(", ")
+                                                    }
+                                                    sx={{
+                                                        "& .MuiInputBase-input.MuiSelect-select": {
+                                                            color: "#000 !important",
+                                                        },
+                                                        "& .MuiSvgIcon-root": {
+                                                            color: "#000",
+                                                        },
+                                                    }}
+                                                >
+                                                    {subScreening.map((subVital) => (
+                                                        <MenuItem
+                                                            key={subVital.sc_sub_list_pk_id}
+                                                            value={subVital.sc_sub_list_pk_id}
+                                                        >
+                                                            <Checkbox
+                                                                checked={selectedSubVitals.indexOf(subVital.sc_sub_list_pk_id) > -1}
+                                                            />
+                                                            {subVital.sub_list}
+                                                        </MenuItem>
+                                                    ))}
+                                                </Select>
+                                            </FormControl>
+                                        </Grid>
+                                    )}
+
+                                    <Grid item xs={12} sm={6}>
+                                        <FormControl fullWidth size="small">
+                                            <InputLabel>State *</InputLabel>
+                                            <Select
+                                                onChange={(e) => setSelectedState(e.target.value)}
+                                                sx={{
+                                                    "& .MuiInputBase-input.MuiSelect-select": {
+                                                        color: "#000 !important",
+                                                    },
+                                                    "& .MuiSvgIcon-root": {
+                                                        color: "#000",
+                                                    },
+                                                }}
+                                            >
+                                                <MenuItem value="">
+                                                    {selectData.add_state_id || "Select State"}
+                                                </MenuItem>
+                                                {stateOptions.map((state) => (
+                                                    <MenuItem key={state.state_id} value={state.state_id}>
+                                                        {state.state_name}
+                                                    </MenuItem>
+                                                ))}
+                                            </Select>
+                                        </FormControl>
+                                    </Grid>
+
+                                    <Grid item xs={12} sm={6}>
+                                        <FormControl fullWidth size="small">
+                                            <InputLabel>District *</InputLabel>
+                                            <Select
+                                                onChange={(e) => setSelectedDistrict(e.target.value)}
+                                                sx={{
+                                                    "& .MuiInputBase-input.MuiSelect-select": {
+                                                        color: "#000 !important",
+                                                    },
+                                                    "& .MuiSvgIcon-root": {
+                                                        color: "#000",
+                                                    },
+                                                }}
+                                            >
+                                                <MenuItem value="">
+                                                    {selectData.add_district_id || "Select District"}
+                                                </MenuItem>
+                                                {districtOptions.map((district) => (
+                                                    <MenuItem key={district.dist_id} value={district.dist_id}>
+                                                        {district.dist_name}
+                                                    </MenuItem>
+                                                ))}
+                                            </Select>
+                                        </FormControl>
+                                    </Grid>
+
+                                    <Grid item xs={12} sm={6}>
+                                        <FormControl fullWidth size="small">
+                                            <InputLabel>Tehsil *</InputLabel>
+                                            <Select
+                                                onChange={(e) => setSelectedTahsil(e.target.value)}
+                                                sx={{
+                                                    "& .MuiInputBase-input.MuiSelect-select": {
+                                                        color: "#000 !important",
+                                                    },
+                                                    "& .MuiSvgIcon-root": {
+                                                        color: "#000",
+                                                    },
+                                                }}
+                                            >
+                                                <MenuItem value="">
+                                                    {selectData.add_tehsil_id || "Select Tehsil"}
+                                                </MenuItem>
+                                                {talukaOptions.map((taluka) => (
+                                                    <MenuItem key={taluka.tal_id} value={taluka.tal_id}>
+                                                        {taluka.tahsil_name}
+                                                    </MenuItem>
+                                                ))}
+                                            </Select>
+                                        </FormControl>
+                                    </Grid>
+
+                                    <Grid item xs={12} sm={6}>
+                                        <TextField
+                                            fullWidth
+                                            label="Pin Code *"
+                                            name="source_pincode"
+                                            value={selectData.source_pincode}
+                                            onChange={handleChange}
+                                            size="small"
+                                            disabled={!isFormEnabled}
+                                            error={!!errors.source_pincode}
+                                            helperText={errors.source_pincode}
+                                        />
+                                    </Grid>
+
+                                    <Grid item xs={12} sm={6}>
+                                        <TextField
+                                            fullWidth
+                                            label="Address *"
+                                            name="source_address"
+                                            value={selectData.source_address}
+                                            onChange={handleChange}
+                                            size="small"
+                                            disabled={!isFormEnabled}
+                                            error={!!errors.source_address}
+                                            helperText={errors.source_address}
+                                        />
+                                    </Grid>
+
+                                    <Grid item xs={12}>
+                                        <Box display="flex" justifyContent="center">
+                                            <Button
+                                                type="submit"
+                                                variant="contained"
+                                                disabled={!isFormEnabled}
+                                                sx={{
+                                                    backgroundColor: "linear-gradient(90deg, #2FB3F5 0%, #1439A4 100%)",
+                                                    color: "white",
+                                                    textTransform: "none",
+                                                    borderRadius: "8px",
+                                                    px: 4,
+                                                    py: 1,
+                                                    boxShadow: 3,
+                                                    "&:hover": {
+                                                        backgroundColor: "linear-gradient(90deg, #2FB3F5 0%, #1439A4 100%)",
+                                                        color: "white",
+                                                        boxShadow: 6,
+                                                    },
+                                                    "&:disabled": {
+                                                        backgroundColor: "#f5f5f5",
+                                                        color: "#999",
+                                                        border: "1px solid #ddd",
+                                                    },
+                                                }}
+                                            >
+                                                Submit
+                                            </Button>
+                                        </Box>
+                                    </Grid>
+                                </Grid>
+                            </Box>
+                        </Card>
+                    </Box>
+                </Grid>
+
+                <Grid item xs={12} md={6}>
+                    <Box sx={{ p: 2 }}>
+                        <Grid container spacing={2} alignItems="center" sx={{ mb: 2 }}>
+                            {canAddSource && (
+                                <Grid item xs={12} sm={4}>
+                                    <Button
+                                        variant="contained"
+                                        fullWidth
+                                        size="small"
+                                        onClick={() => {
+                                            handleClicked();
+                                            resetForm();
+                                        }}
+                                        sx={{
+                                            background: "linear-gradient(90deg, #2FB3F5 0%, #1439A4 100%)",
+                                            textTransform: "none",
+                                            borderRadius: "10px",
+                                            "&:hover": {
+                                                background: "linear-gradient(90deg, #2FB3F5 0%, #1439A4 100%)",
+                                            },
+                                        }}
+                                    >
+                                        + Add New Workshop
+                                    </Button>
+                                </Grid>
+                            )}
+
+                            <Grid item xs={12} sm={7}>
+                                <Box sx={{ position: "relative", width: "100%" }}>
+                                    <TextField
+                                        fullWidth
+                                        size="small"
+                                        placeholder="Search Workshop"
+                                        value={searchQuery}
+                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                        sx={{
+                                            "& .MuiOutlinedInput-root": {
+                                                borderRadius: "10px",
+                                                pr: 4,
+                                            },
+                                        }}
+                                    />
+                                    <IconButton
+                                        sx={{
+                                            position: "absolute",
+                                            right: 4,
+                                            top: "50%",
+                                            transform: "translateY(-50%)",
+                                            color: "#1439A4",
+                                        }}
+                                    >
+                                        <SearchOutlinedIcon />
+                                    </IconButton>
+                                </Box>
+                            </Grid>
+                        </Grid>
+
+                        <Box>
+                            {loading ? (
+                                <Box display="flex" justifyContent="center" alignItems="center" height="200px">
+                                    <CircularProgress sx={{ color: "#1439A4" }} />
+                                </Box>
+                            ) : displayedData.length === 0 ? (
+                                <TableRow>
+                                    <TableCell colSpan={3} align="center">
+                                        No results found
+                                    </TableCell>
+                                </TableRow>
+                            ) : (
+                                <Box>
+                                    <Box
+                                        sx={{
+                                            display: "flex",
+                                            justifyContent: "space-between",
+                                            background: "linear-gradient(90deg, #2FB3F5 0%, #1439A4 100%)",
+                                            color: "white",
+                                            borderRadius: "20px",
+                                            px: 2,
+                                            py: 1,
+                                            mb: 2,
+                                            fontFamily: "Roboto",
+                                        }}
+                                    >
+                                        <Box sx={{ flex: 0.8 }}>Sr No</Box>
+                                        <Box sx={{ flex: 2 }}>Workshop Name</Box>
+                                        <Box sx={{ flex: 1 }}>Registration Number</Box>
+                                    </Box>
+
+                                    <Box>
+                                        {displayedData
+                                            .slice(page * rowsPerPage, (page + 1) * rowsPerPage)
+                                            .map((info, index) => {
+                                                const serialNumber = index + 1 + page * rowsPerPage;
+                                                return (
+                                                    <Card
+                                                        key={info.source_pk_id}
+                                                        onClick={() => handleTableRowClick(info)}
+                                                        elevation={0}
+                                                        sx={{
+                                                            mb: 1,
+                                                            borderRadius: "20px",
+                                                            border: "none",
+                                                            boxShadow: "none", 
+                                                            cursor: "pointer",
+                                                            transition: "0.3s",
+                                                            backgroundColor:
+                                                                selectedRow === info.source_pk_id ? "#E3F2FD" : "white",
+                                                            "&:hover": {
+                                                                backgroundColor: "#F9FAFB",
+                                                            },
+                                                        }}
+                                                    >
+                                                        <Box
+                                                            sx={{
+                                                                display: "flex",
+                                                                justifyContent: "space-between",
+                                                                alignItems: "center",
+                                                                p: 1.5,
+                                                                fontFamily: "Roboto",
+                                                            }}
+                                                        >
+                                                            <Box sx={{ flex: 0.8 }}>{serialNumber}</Box>
+                                                            <Box sx={{ flex: 2 }}>{info.source_names}</Box>
+                                                            <Box sx={{ flex: 1 }}>{info.registration_no}</Box>
+                                                        </Box>
+                                                    </Card>
+                                                );
+                                            })}
+                                    </Box>
+                                </Box>
+                            )}
+
+                            <TablePagination
+                                component="div"
+                                count={displayedData.length}
+                                page={page}
+                                onPageChange={handleChangePage}
+                                rowsPerPage={rowsPerPage}
+                                onRowsPerPageChange={handleChangeRowsPerPage}
+                                rowsPerPageOptions={[5, 10, 20]}
+                                sx={{
+                                    "& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows": {
+                                        fontSize: "0.875rem",
+                                    },
+                                }}
+                            />
+                        </Box>
+                    </Box>
+                </Grid>
+            </Grid>
+        </div>
     )
 }
 

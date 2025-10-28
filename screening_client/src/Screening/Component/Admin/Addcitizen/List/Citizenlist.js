@@ -1,17 +1,31 @@
 import React, { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
-import './Citizenlist.css'
-import Box from '@mui/material/Box';
-import MenuItem from '@mui/material/MenuItem';
-import TextField from '@mui/material/TextField';
 import axios from 'axios'
 import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
 import SearchIcon from '@mui/icons-material/Search';
 import DriveFileRenameOutlineOutlinedIcon from '@mui/icons-material/DriveFileRenameOutlineOutlined';
 import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined';
 import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
-import TablePagination from '@mui/material/TablePagination';
-import CircularProgress from '@mui/material/CircularProgress';
+import {
+    Box,
+    Grid,
+    Card,
+    Typography,
+    Button,
+    TextField,
+    IconButton,
+    CircularProgress,
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableRow,
+    TableContainer,
+    TablePagination,
+    Paper,
+    MenuItem,
+    CardContent
+} from "@mui/material";
 
 const Citizenlist = () => {
     //permission code start
@@ -387,379 +401,464 @@ const Citizenlist = () => {
     }, [])
 
     return (
-        <div className="backgrounduser">
-            <div>
-                <div class="content-wrapper">
-                    <div class="content-header">
-                        <div class="container-fluid">
-                            <div className="card userlistcard">
-                                <div class="row">
-                                    <div class="col">
-                                        <h5 className='name'>Search Citizen</h5>
-                                    </div>
-                                </div>
+        <div>
+            <Card
+                sx={{
+                    p: 1,
+                    borderRadius: 2,
+                    boxShadow: 1,
+                    backgroundColor: "#fff",
+                    m: "0.1em 1em 0 4.5em",
+                }}
+            >
+                <Typography
+                    variant="h6"
+                    sx={{
+                        mb: 2,
+                        fontWeight: 600,
+                        color: "#1A237E",
+                    }}
+                >
+                    Search Citizen
+                </Typography>
 
-                                <div className="dropdownall mb-3">
-                                    <Box>
-                                        <div class="container text-center">
-                                            <div class="row" style={{ display: 'flex', justifyContent: 'center' }}>
-                                                <div class="col textfiledcol" style={{ color: "white" }}>
-                                                    <TextField
-                                                        select
-                                                        className="citizenlistdropdownfield"
-                                                        size="small"
-                                                        label="Age"
-                                                        id="select-small"
-                                                        variant="outlined"
-                                                        value={selectedAge}
-                                                        onChange={(e) => setSelectedAge(e.target.value)}
-                                                        InputLabelProps={{
-                                                            style: {
-                                                                fontWeight: '100',
-                                                                fontSize: '14px', // Set the desired font size for the label
-                                                            },
-                                                        }}
-                                                        SelectProps={{
-                                                            MenuProps: {
-                                                                classes: {
-                                                                    paper: 'custom-menu-paper',
-                                                                },
-                                                            },
-                                                        }}
-                                                    >
-                                                        <MenuItem value="">Select Age</MenuItem>
-                                                        {ListAgeNav.map(drop => (
-                                                            <MenuItem key={drop.age_pk_id}
-                                                                value={drop.age_pk_id}
-                                                                className={selectedAge === drop.age ? 'selected-item' : ''}
-                                                            >
-                                                                {drop.age}
-                                                            </MenuItem>
-                                                        ))}
-                                                    </TextField>
-                                                </div>
+                <Grid
+                    container
+                    spacing={2}
+                    alignItems="center"
+                    justifyContent="center"
+                >
+                    {/* Age */}
+                    <Grid item xs={12} sm={6} md="auto">
+                        <TextField
+                            select
+                            size="small"
+                            label="Age"
+                            value={selectedAge}
+                            onChange={(e) => setSelectedAge(e.target.value)}
+                            sx={{
+                                minWidth: 150,
+                                "& .MuiInputBase-input.MuiSelect-select": {
+                                    color: "#000 !important",
+                                },
+                                "& .MuiSvgIcon-root": {
+                                    color: "#000",
+                                },
+                            }}
+                        >
+                            <MenuItem value="">Select Age</MenuItem>
+                            {ListAgeNav.map((drop) => (
+                                <MenuItem key={drop.age_pk_id} value={drop.age_pk_id}>
+                                    {drop.age}
+                                </MenuItem>
+                            ))}
+                        </TextField>
+                    </Grid>
 
-                                                <div class="col textfiledcol" style={{ color: "white" }}>
-                                                    <TextField
-                                                        select
-                                                        className="citizenlistdropdownfield"
-                                                        size="small"
-                                                        label="Gender"
-                                                        id="select-small"
-                                                        variant="outlined"
-                                                        value={selectedGender}
-                                                        onChange={(e) => setSelectedGender(e.target.value)}
-                                                        InputLabelProps={{
-                                                            style: {
-                                                                fontWeight: '100',
-                                                                fontSize: '14px', // Set the desired font size for the label
-                                                            },
-                                                        }}
-                                                        SelectProps={{
-                                                            MenuProps: {
-                                                                classes: {
-                                                                    paper: 'custom-menu-paper',
-                                                                },
-                                                            },
-                                                        }}
-                                                    >
-                                                        <MenuItem value="">Select Gender</MenuItem>
-                                                        {ListGenderNav.map(drop => (
-                                                            <MenuItem key={drop.gender_pk_id} value={drop.gender_pk_id}>
-                                                                {drop.gender}
-                                                            </MenuItem>
-                                                        ))}
-                                                    </TextField>
-                                                </div>
+                    {/* Gender */}
+                    <Grid item xs={12} sm={6} md="auto">
+                        <TextField
+                            select
+                            size="small"
+                            label="Gender"
+                            value={selectedGender}
+                            onChange={(e) => setSelectedGender(e.target.value)}
+                            sx={{
+                                minWidth: 150,
+                                "& .MuiInputBase-input.MuiSelect-select": {
+                                    color: "#000 !important",
+                                },
+                                "& .MuiSvgIcon-root": {
+                                    color: "#000",
+                                },
+                            }}
+                        >
+                            <MenuItem value="">Select Gender</MenuItem>
+                            {ListGenderNav.map((drop) => (
+                                <MenuItem key={drop.gender_pk_id} value={drop.gender_pk_id}>
+                                    {drop.gender}
+                                </MenuItem>
+                            ))}
+                        </TextField>
+                    </Grid>
 
-                                                <div className="col textfiledcol" style={{ color: "white" }}>
-                                                    <TextField
-                                                        select
-                                                        className="citizenlistdropdownfield"
-                                                        size="small"
-                                                        label="Source"
-                                                        id="select-small-source"
-                                                        variant="outlined"
-                                                        value={selectedSource}
-                                                        onChange={(e) => setSelectedSource(e.target.value)}
-                                                        InputLabelProps={{
-                                                            style: {
-                                                                fontWeight: '100',
-                                                                fontSize: '14px',
-                                                            },
-                                                        }}
-                                                        SelectProps={{
-                                                            MenuProps: {
-                                                                classes: {
-                                                                    paper: 'custom-menu-paper',
-                                                                },
-                                                            },
-                                                        }}
-                                                    >
-                                                        <MenuItem value="">Select Source</MenuItem>
-                                                        {ListSourceNav.map((drop) => (
-                                                            <MenuItem key={drop.source_pk_id} value={drop.source_pk_id}>
-                                                                {drop.source}
-                                                            </MenuItem>
-                                                        ))}
-                                                    </TextField>
-                                                </div>
+                    {/* Source */}
+                    <Grid item xs={12} sm={6} md="auto">
+                        <TextField
+                            select
+                            size="small"
+                            label="Source"
+                            value={selectedSource}
+                            onChange={(e) => setSelectedSource(e.target.value)}
+                            sx={{
+                                minWidth: 150,
+                                "& .MuiInputBase-input.MuiSelect-select": {
+                                    color: "#000 !important",
+                                },
+                                "& .MuiSvgIcon-root": {
+                                    color: "#000",
+                                },
+                            }}
+                        >
+                            <MenuItem value="">Select Source</MenuItem>
+                            {ListSourceNav.map((drop) => (
+                                <MenuItem key={drop.source_pk_id} value={drop.source_pk_id}>
+                                    {drop.source}
+                                </MenuItem>
+                            ))}
+                        </TextField>
+                    </Grid>
 
-                                                <div className="col textfiledcol" style={{ color: "white" }}>
-                                                    <TextField
-                                                        select
-                                                        className="citizenlistdropdownfield"
-                                                        size="small"
-                                                        label="Type"
-                                                        id="select-small-type"
-                                                        variant="outlined"
-                                                        value={selectedScheduleType}
-                                                        onChange={(e) => setSelectedScheduleType(e.target.value)}
-                                                        InputLabelProps={{
-                                                            style: {
-                                                                fontWeight: '100',
-                                                                fontSize: '14px',
-                                                            },
-                                                        }}
-                                                        SelectProps={{
-                                                            MenuProps: {
-                                                                classes: {
-                                                                    paper: 'custom-menu-paper',
-                                                                },
-                                                            },
-                                                        }}
-                                                    >
-                                                        <MenuItem value="">Select Type</MenuItem>
-                                                        {screeningFor.map((drop) => (
-                                                            <MenuItem key={drop.type_id} value={drop.type_id}>
-                                                                {drop.type}
-                                                            </MenuItem>
-                                                        ))}
-                                                    </TextField>
-                                                </div>
+                    {/* Type */}
+                    <Grid item xs={12} sm={6} md="auto">
+                        <TextField
+                            select
+                            size="small"
+                            label="Type"
+                            value={selectedScheduleType}
+                            onChange={(e) => setSelectedScheduleType(e.target.value)}
+                            sx={{
+                                minWidth: 150,
+                                "& .MuiInputBase-input.MuiSelect-select": {
+                                    color: "#000 !important",
+                                },
+                                "& .MuiSvgIcon-root": {
+                                    color: "#000",
+                                },
+                            }}
+                        >
+                            <MenuItem value="">Select Type</MenuItem>
+                            {screeningFor.map((drop) => (
+                                <MenuItem key={drop.type_id} value={drop.type_id}>
+                                    {drop.type}
+                                </MenuItem>
+                            ))}
+                        </TextField>
+                    </Grid>
 
-                                                <div class="col textfiledcol" style={{ color: "white" }}>
-                                                    <TextField
-                                                        select
-                                                        className="citizenlistdropdownfield"
-                                                        size="small"
-                                                        label="Disease"
-                                                        id="select-small"
-                                                        variant="outlined"
-                                                        value={selectedDisease}
-                                                        onChange={(e) => setSelectedDisease(e.target.value)}
-                                                        InputLabelProps={{
-                                                            style: {
-                                                                fontWeight: '100',
-                                                                fontSize: '14px', // Set the desired font size for the label
-                                                            },
-                                                        }}
-                                                        SelectProps={{
-                                                            MenuProps: {
-                                                                classes: {
-                                                                    paper: 'custom-menu-paper',
-                                                                },
-                                                            },
-                                                        }}
-                                                    >
-                                                        <MenuItem value="">Select Disease</MenuItem>
-                                                        {ListDiseaseNav.map(drop => (
-                                                            <MenuItem key={drop.disease_pk_id} value={drop.disease_pk_id}>
-                                                                {drop.disease}
-                                                            </MenuItem>
-                                                        ))}
-                                                    </TextField>
-                                                </div>
+                    {/* Disease */}
+                    <Grid item xs={12} sm={6} md="auto">
+                        <TextField
+                            select
+                            size="small"
+                            label="Disease"
+                            value={selectedDisease}
+                            onChange={(e) => setSelectedDisease(e.target.value)}
+                            sx={{
+                                minWidth: 150,
+                                "& .MuiInputBase-input.MuiSelect-select": {
+                                    color: "#000 !important",
+                                },
+                                "& .MuiSvgIcon-root": {
+                                    color: "#000",
+                                },
+                            }}
+                        >
+                            <MenuItem value="">Select Disease</MenuItem>
+                            {ListDiseaseNav.map((drop) => (
+                                <MenuItem key={drop.disease_pk_id} value={drop.disease_pk_id}>
+                                    {drop.disease}
+                                </MenuItem>
+                            ))}
+                        </TextField>
+                    </Grid>
 
-                                                <div className='col'>
-                                                    <button
-                                                        type='button'
-                                                        className='btn btn-sm searchcitizen'
-                                                        onClick={handlesubmit}
-                                                    >
-                                                        Search
-                                                    </button>
-                                                </div>
+                    {/* Search Button */}
+                    <Grid item xs={12} sm={6} md="auto">
+                        <Button
+                            variant="contained"
+                            size="small"
+                            onClick={handlesubmit}
+                            sx={{
+                                background: "linear-gradient(90deg, #2FB3F5 0%, #1439A4 100%)",
+                                color: "white",
+                                textTransform: "none",
+                                fontWeight: 500,
+                                px: 3,
+                                "&:hover": {
+                                    background:
+                                        "linear-gradient(90deg, #2FB3F5 0%, #1439A4 100%)",
+                                },
+                            }}
+                        >
+                            Search
+                        </Button>
+                    </Grid>
 
-                                                {canAddCitizen && (<Link to='/mainscreen/Citizenheader'>
-                                                    <div>
-                                                        <button type='button' className='btn addicon'>
-                                                            <PersonAddAltIcon className='personaddicon' />
-                                                        </button>
-                                                    </div>
-                                                </Link>)}
-                                            </div>
-                                        </div>
-                                    </Box>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                    {/* Add Citizen Button */}
+                    {canAddCitizen && (
+                        <Grid item xs={12} sm={6} md="auto">
+                            <Link to="/mainscreen/Citizenheader" style={{ textDecoration: "none" }}>
+                                <IconButton
+                                    sx={{
+                                        backgroundColor: "#1976D2",
+                                        color: "white",
+                                        "&:hover": { backgroundColor: "#1565C0" },
+                                    }}
+                                >
+                                    <PersonAddAltIcon />
+                                </IconButton>
+                            </Link>
+                        </Grid>
+                    )}
+                </Grid>
+            </Card>
 
-            <div class="content-wrapper">
-                <div class="content-header">
-                    <div className="row filterrow">
-                        <div className="col-md-3">
-                            <div className="cardfilter">
-                                <div className="row">
-                                    <div
-                                        className={`col today ${active === 'today' ? 'active' : ''}`}
-                                        onClick={() => handleActive('today')}
-                                    >
-                                        Today
-                                    </div>
-                                    <div
-                                        className={`col month ${active === 'month' ? 'active' : ''}`}
-                                        onClick={() => handleActive('month')}
-                                    >
-                                        Month
-                                    </div>
-                                    <div
-                                        className={`col date ${active === 'date' ? 'active' : ''}`}
-                                        onClick={() => handleActive('date')}
-                                    >
-                                        Till Date
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+            <Box sx={{ p: 1, m: "0.1em 0em 0 4.5em", }}>
+                <Grid container spacing={2} alignItems="center" sx={{ mb: 2 }}>
+                    <Grid item xs={12} sm={6} md={3}>
+                        <Card
+                            sx={{
+                                p: 0.1,
+                                borderRadius: 2,
+                                boxShadow: 2,
+                                display: "flex",
+                                justifyContent: "space-between",
+                            }}
+                        >
+                            {["today", "month", "date"].map((key) => (
+                                <Button
+                                    key={key}
+                                    variant={active === key ? "contained" : "outlined"}
+                                    onClick={() => handleActive(key)}
+                                    sx={{
+                                        flex: 1,
+                                        mx: 0.5,
+                                        my: 0.5,
+                                        textTransform: "none",
+                                        fontWeight: active === key ? 400 : 400,
+                                        background:
+                                            active === key
+                                                ? "linear-gradient(90deg, #2FB3F5 0%, #1439A4 100%)"
+                                                : "transparent",
+                                        color: active === key ? "white" : "black",
+                                        "&:hover": {
+                                            background:
+                                                active === key
+                                                    ? "linear-gradient(90deg, #2FB3F5 0%, #1439A4 100%)"
+                                                    : "#E3F2FD",
+                                        },
+                                    }}
+                                >
+                                    {key === "today"
+                                        ? "Today"
+                                        : key === "month"
+                                            ? "Month"
+                                            : "Till Date"}
+                                </Button>
+                            ))}
+                        </Card>
+                    </Grid>
 
-                        <div className="col-md-7">
-                            {
-                                selectedScheduleType === 1 && (
-                                    <div className="row listtype">
-                                        <div className="col-md-4">
-                                            <select className="form-control form-control-sm"
-                                                value={selectedClassNav}
-                                                onChange={(e) => setSelectedClassNav(e.target.value)}>
-                                                <option>Select Class</option>
-                                                {classList.map(cls => (
-                                                    <option key={cls.class_id} value={cls.class_id}>
-                                                        {cls.class_name}
-                                                    </option>
-                                                ))}
-                                            </select>
-                                        </div>
-                                        <div className="col-md-4">
-                                            <select className="form-control form-control-sm"
-                                                value={selectedDivision}
-                                                onChange={(e) => setSelectedDivision(e.target.value)}>
-                                                <option>Select Division</option>
-                                                {divisionList.map(cls => (
-                                                    <option key={cls.division_id} value={cls.division_id}>
-                                                        {cls.division_name}
-                                                    </option>
-                                                ))}
-                                            </select>
-                                        </div>
-                                    </div>
-                                )
-                            }
-                        </div>
-
-                        <div className='col-md-2'>
-                            <input className="form-control newsearch"
-                                placeholder='Search Citizen'
+                    <Grid item xs={12} sm={6} md={3}>
+                        <Box sx={{ position: "relative", width: "100%" }}>
+                            <TextField
+                                size="small"
+                                fullWidth
+                                placeholder="Search Citizen"
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                             />
-                            <SearchIcon className="searchiconnew" />
-                        </div>
-                    </div>
-
-                    <div className="row table-container">
-                        <table className="table table-borderless ">
-                            <thead className="">
-                                <tr className="card cardheaduser">
-                                    <th className="col-md-1 haedtitle">Sr No.</th>
-                                    <th className="col-md-3 haedtitle">Citizen Name</th>
-                                    <th className="col-md-2 haedtitle">Age</th>
-                                    <th className="col-md-3 haedtitle">Source Name</th>
-                                    <th className="col-md-1 haedtitle">Added By</th>
-                                    {/* <th className="col haedtitle">Disease</th> */}
-                                    <th className="col haedtitle">Action</th>
-                                </tr>
-                            </thead>
-
-                            <tbody>
-                                <div className="cardbodycontent">
-                                    {
-                                        loading ?
-                                            (
-                                                <tr>
-                                                    <td colSpan="7" className="text-center">
-                                                        <CircularProgress className='circular-progress-containercitizenlist' style={{ margin: 'auto' }} />
-                                                    </td>
-                                                </tr>
-                                            ) : (
-                                                tableFetch.length > 0 ? (
-                                                    tableFetch
-                                                        .filter((data) =>
-                                                            Object.values(data).some((value) =>
-                                                                value !== null && value !== undefined && value.toString().toLowerCase().includes(searchQuery.toLowerCase())
-                                                            )
-                                                        )
-                                                        .slice(page * rowsPerPage, (page + 1) * rowsPerPage)
-                                                        .map((data, index) => {
-                                                            const serialNumber = index + 1 + page * rowsPerPage;
-                                                            return (
-                                                                <tr key={data.srNo} className="card cardbodyuser">
-                                                                    <td className="col-md-1">{serialNumber}</td>
-                                                                    <td className="col-md-3 headbody">{data.name ? data.name : '-'}</td>
-                                                                    <td className="col-md-2 headbody">{data.year} Year</td>
-                                                                    <td className="col-md-3 headbody">{data.source_name_name}</td>
-                                                                    <td className="col-md-1 headbody">{data.added_by ? data.added_by.clg_ref_id : '-'}</td>
-                                                                    <td className="col headbody">
-                                                                        {canEdit && (
-                                                                            <Link to={`/mainscreen/updatecitizen/${data.citizens_pk_id}/${data.source}`}>
-                                                                                <DriveFileRenameOutlineOutlinedIcon className="ml-3 iconuser" />
-                                                                            </Link>
-                                                                        )}
-                                                                        {canView && (
-                                                                            <Link to={`/mainscreen/viewcitizen/${data.citizens_pk_id}/${data.source}`}>
-                                                                                <RemoveRedEyeOutlinedIcon className="ml-1 iconuser" />
-                                                                            </Link>
-                                                                        )}
-                                                                        {canDelete && (
-                                                                            <DeleteOutlineOutlinedIcon
-                                                                                className="ml-1 iconuser Deleteiconn"
-                                                                                onClick={(e) => handleDeleteClick(data.citizens_pk_id)}
-                                                                            />
-                                                                        )}
-                                                                    </td>
-                                                                </tr>
-
-                                                            );
-                                                        })
-                                                ) : (
-                                                    <tr style={{ marginLeft: '440px' }}>
-                                                        <td colSpan="6" className="text-center" style={{ marginLeft: '440px' }}>
-                                                            <h4 style={{ marginLeft: '440px' }}>No Data Found</h4>
-                                                        </td>
-                                                    </tr>
-                                                )
-                                            )
-                                    }
-                                </div>
-                            </tbody>
-                        </table>
-
-                        <div className="paginationnew" style={{ marginTop: '0%' }}>
-                            <TablePagination
-                                component="div"
-                                count={tableFetch.length}
-                                page={page}
-                                onPageChange={handleChangePage}
-                                rowsPerPage={rowsPerPage}
-                                onRowsPerPageChange={handleChangeRowsPerPage}
-                                rowsPerPageOptions={[5, 10, 20]}
+                            <SearchIcon
+                                sx={{
+                                    position: "absolute",
+                                    right: 10,
+                                    top: "50%",
+                                    transform: "translateY(-50%)",
+                                    color: "#1565C0",
+                                }}
                             />
-                        </div>
-                    </div>
-                </div>
-            </div>
+                        </Box>
+                    </Grid>
+                </Grid>
+
+                <TableContainer>
+                    <Table>
+                        <TableHead
+                            sx={{
+                                background: "linear-gradient(90deg, #2FB3F5 0%, #1439A4 100%)",
+                                mb: 2, // ✅ margin bottom added after header
+                            }}
+                        >
+                            <TableRow
+                                sx={{
+                                    background: "linear-gradient(90deg, #2FB3F5 0%, #1439A4 100%)",
+                                    height: "40px",
+                                    marginBottom: "35px",
+                                    "& th": {
+                                        color: "white",
+                                        fontWeight: 600,
+                                        fontSize: "0.8rem",
+                                        border: "none",
+                                        py: 0.5,
+                                        px: 1,
+                                    },
+                                    "& th:first-of-type": {
+                                        borderTopLeftRadius: "40px",
+                                        borderBottomLeftRadius: "40px",
+                                    },
+                                    "& th:last-of-type": {
+                                        borderTopRightRadius: "40px",
+                                        borderBottomRightRadius: "40px",
+                                    },
+                                }}
+                            >
+                                <TableCell>Sr No.</TableCell>
+                                <TableCell>Citizen Name</TableCell>
+                                <TableCell>Age</TableCell>
+                                <TableCell>Source Name</TableCell>
+                                <TableCell>Added By</TableCell>
+                                <TableCell>Action</TableCell>
+                            </TableRow>
+                        </TableHead>
+
+                        <TableBody>
+                            {loading ? (
+                                <TableRow>
+                                    <TableCell colSpan={6} align="center">
+                                        <CircularProgress sx={{ my: 1, color: "#1439A4" }} size={30} />
+                                    </TableCell>
+                                </TableRow>
+                            ) : tableFetch.length > 0 ? (
+                                tableFetch
+                                    .filter((data) =>
+                                        Object.values(data).some(
+                                            (value) =>
+                                                value &&
+                                                value.toString().toLowerCase().includes(searchQuery.toLowerCase())
+                                        )
+                                    )
+                                    .slice(page * rowsPerPage, (page + 1) * rowsPerPage)
+                                    .map((data, index) => {
+                                        const serialNumber = index + 1 + page * rowsPerPage;
+                                        return (
+                                            <TableRow
+                                                key={data.citizens_pk_id}
+                                                sx={{
+                                                    height: "25px",
+                                                    "& td": {
+                                                        py: 0.4,
+                                                        fontSize: "15px", // ✅ increased font size
+                                                        verticalAlign: "middle", // ✅ align vertically
+                                                    },
+                                                }}
+                                            >
+                                                <TableCell colSpan={6} sx={{ border: "none", p: 0.5 }}>
+                                                    <Card
+                                                        sx={{
+                                                            borderRadius: 2,
+                                                            boxShadow: 2,
+                                                            "&:hover": { boxShadow: 4 },
+                                                            transition: "0.3s",
+                                                        }}
+                                                    >
+                                                        <CardContent
+                                                            sx={{
+                                                                p: 1,
+                                                                height: "45px",
+                                                                display: "flex", // ✅ align items in one line
+                                                                alignItems: "center",
+                                                                justifyContent: "space-between",
+                                                            }}
+                                                        >
+                                                            <Table size="small" sx={{ width: "100%" }}>
+                                                                <TableBody
+                                                                    sx={{
+                                                                        "& td, & th": {
+                                                                            borderBottom: "none",
+                                                                            fontSize: "13px", 
+                                                                            verticalAlign: "middle",
+                                                                        },
+                                                                    }}
+                                                                >
+                                                                    <TableRow>
+                                                                        <TableCell sx={{ width: "5%" }}>{serialNumber}</TableCell>
+                                                                        <TableCell sx={{ width: "25%" }}>{data.name || "-"}</TableCell>
+                                                                        <TableCell sx={{ width: "10%" }}>
+                                                                            {data.year ? `${data.year} Year` : "-"}
+                                                                        </TableCell>
+                                                                        <TableCell sx={{ width: "25%" }}>
+                                                                            {data.source_name_name || "-"}
+                                                                        </TableCell>
+                                                                        <TableCell sx={{ width: "15%" }}>
+                                                                            {data.added_by ? data.added_by.clg_ref_id : "-"}
+                                                                        </TableCell>
+                                                                        <TableCell sx={{ width: "15%" }}>
+                                                                            {canEdit && (
+                                                                                <Link
+                                                                                    to={`/mainscreen/updatecitizen/${data.citizens_pk_id}/${data.source}`}
+                                                                                >
+                                                                                    <DriveFileRenameOutlineOutlinedIcon
+                                                                                        sx={{
+                                                                                            color: "#1565C0",
+                                                                                            cursor: "pointer",
+                                                                                            mr: 1,
+                                                                                            fontSize: 18,
+                                                                                        }}
+                                                                                    />
+                                                                                </Link>
+                                                                            )}
+                                                                            {canView && (
+                                                                                <Link
+                                                                                    to={`/mainscreen/viewcitizen/${data.citizens_pk_id}/${data.source}`}
+                                                                                >
+                                                                                    <RemoveRedEyeOutlinedIcon
+                                                                                        sx={{
+                                                                                            color: "#1976D2",
+                                                                                            cursor: "pointer",
+                                                                                            mr: 1,
+                                                                                            fontSize: 18,
+                                                                                        }}
+                                                                                    />
+                                                                                </Link>
+                                                                            )}
+                                                                            {canDelete && (
+                                                                                <DeleteOutlineOutlinedIcon
+                                                                                    onClick={() =>
+                                                                                        handleDeleteClick(data.citizens_pk_id)
+                                                                                    }
+                                                                                    sx={{
+                                                                                        color: "#D32F2F",
+                                                                                        cursor: "pointer",
+                                                                                        fontSize: 18,
+                                                                                    }}
+                                                                                />
+                                                                            )}
+                                                                        </TableCell>
+                                                                    </TableRow>
+                                                                </TableBody>
+                                                            </Table>
+                                                        </CardContent>
+                                                    </Card>
+                                                </TableCell>
+                                            </TableRow>
+                                        );
+                                    })
+                            ) : (
+                                <TableRow>
+                                    <TableCell colSpan={6} align="center">
+                                        <Typography variant="subtitle2" color="text.secondary">
+                                            No Data Found
+                                        </Typography>
+                                    </TableCell>
+                                </TableRow>
+                            )}
+                        </TableBody>
+                    </Table>
+                </TableContainer>
+
+                <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 1 }}>
+                    <TablePagination
+                        component="div"
+                        count={tableFetch.length}
+                        page={page}
+                        onPageChange={handleChangePage}
+                        rowsPerPage={rowsPerPage}
+                        onRowsPerPageChange={handleChangeRowsPerPage}
+                        rowsPerPageOptions={[5, 10, 20]}
+                    />
+                </Box>
+            </Box>
         </div>
 
     )
