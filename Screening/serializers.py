@@ -2680,3 +2680,723 @@ class CitizenScheduleSerializer(serializers.ModelSerializer):
             "citizen_pk_id", "added_by", "modify_by",
             "year", "dob", "gender", "citizen_id", "source"
         ]
+
+
+
+
+
+
+
+
+
+
+#----------------------------------------------------------------------------------------------------------------------------------
+class Citizen_Post_Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = Citizen
+        fields = ['citizens_pk_id', 'citizen_id', 'prefix', 'name', 'vehicle_number', 'blood_groups', 'dob', 'year', 'months', 'days', 'gender', 'source', 'category', 'aadhar_id', 'mobile_no', 'source_name', 'state', 'district', 'tehsil', 'pincode', 'address', 'height', 'weight', 'weight_for_age', 'height_for_age', 'weight_for_height', 'bmi', 'arm_size', 'symptoms', 'emergency_prefix', 'emergency_fullname', 'emergency_gender', 'emergency_contact', 'relationship_with_employee', 'emergency_address', 'is_deleted', 'added_by', 'added_date', 'modify_by', 'modify_date']
+
+
+class Workshop_Post_Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = Workshop
+        fields = [
+                    'ws_pk_id', 'workshop_code', 'source', 'Workshop_name', 'registration_no',
+                    'mobile_no', 'email_id', 'logo', 'ws_state', 'ws_district', 'ws_taluka',
+                    'ws_pincode', 'ws_address', 'screening_vitals', 'sub_screening_vitals',
+                    'is_deleted', 'added_by', 'added_date', 'modify_by', 'modify_date'
+                ]
+        
+class Workshop_Get_Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = Workshop
+        fields = ['ws_pk_id','Workshop_name','registration_no']
+        
+class Citizen_Get_Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = Citizen
+        fields = ['citizens_pk_id','citizen_id','prefix','name','aadhar_id','mobile_no']
+        
+
+class ScreeningCitizenSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Screening_citizen
+        fields = ['pk_id', 'screening_count', 'citizen_id', 'citizen_pk_id', 'added_by', 'added_date', 'modify_by', 'modified_date']
+        
+
+class basic_info_Save_Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = basic_info
+        fields = ['basic_pk_id','citizen_id','screening_count','citizen_pk_id','screening_citizen_id','prefix','name','gender','blood_group','dob','year','months','days','aadhar_id','phone_no','added_by','modify_by','form_submit','is_deleted','added_date','modify_date'] 
+
+class emergency_info_Save_Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = emergency_info
+        fields = ['em_pk_id','citizen_id','screening_count','citizen_pk_id','screening_citizen_id','emergency_prefix','emergency_fullname','emergency_gender','emergency_contact','relationship_with_employee','emergency_address','added_by','modify_by','form_submit','is_deleted','added_date','modify_date']
+
+
+class growth_monitoring_info_Save_Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = growth_monitoring_info
+        fields = ['growth_pk_id','citizen_id','screening_count','citizen_pk_id','screening_citizen_id','gender','dob','year','months','days','height','weight','weight_for_age','height_for_age','weight_for_height','bmi','arm_size','symptoms','remark','reffered_to_specialist','form_submit','is_deleted','added_by','added_date','modify_by','modify_date']
+        
+        
+class basic_info_Put_Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = basic_info
+        fields = ['basic_pk_id','screening_count','citizen_pk_id','screening_citizen_id','prefix','name','gender','blood_group','dob','year','months','days','aadhar_id','phone_no','added_by','modify_by','form_submit','is_deleted']
+        
+
+class basic_info_Citizen_Put_Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = Citizen
+        fields = ['citizens_pk_id','name','prefix','gender','blood_groups','dob','year','months','days','aadhar_id','mobile_no','modify_by','modify_date']
+        
+
+
+class emergency_info_Put_Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = emergency_info
+        fields = ['em_pk_id','citizen_pk_id','emergency_prefix','emergency_fullname','emergency_gender','emergency_contact','relationship_with_employee','emergency_address','modify_by','is_deleted','modify_date']
+        
+
+
+class emergency_info_Citizen_Put_Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = Citizen
+        fields = ['citizens_pk_id','emergency_prefix','emergency_fullname','emergency_gender','emergency_contact','relationship_with_employee','emergency_address','modify_by','modify_date']
+        
+class growth_monitoring_info_Put_Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = growth_monitoring_info
+        fields = ['growth_pk_id','gender','dob','year','months','days','height','weight','weight_for_age','height_for_age','weight_for_height','bmi','arm_size','symptoms','remark','reffered_to_specialist','modify_by','is_deleted','modify_date']
+        
+
+class vital_info_Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = vital_info
+        fields = ['vital_info_pk_id','vital_code','citizen_id','screening_count','citizen_pk_id','screening_citizen_id','pulse','pulse_conditions','sys_mm','sys_mm_conditions','dys_mm','dys_mm_mm_conditions','oxygen_saturation','oxygen_saturation_conditions','rr','rr_conditions','temp','temp_conditions','is_deleted','form_submit','reffered_to_specialist','added_by','added_date','modify_by','modify_date']
+        
+
+
+
+class Genral_Examination_Post_Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = genral_examination
+        fields = ['genral_pk_id', 'citizen_id', 'screening_count', 'citizen_pk_id', 'screening_citizen_id', 'head', 'nose', 'neck', 'skin_color', 'skin_texture', 'skin_lesions', 'lips', 'gums', 'dention', 'oral_mucosa', 'tongue', 'hair_color', 'hair_density', 'hair_texture', 'alopecia', 'chest', 'abdomen', 'extremity', 'is_deleted', 'form_submit', 'added_date', 'added_by', 'modify_date', 'modify_by']
+
+
+
+class Genral_Examination_Get_Serializer(serializers.ModelSerializer):
+    head_name = serializers.CharField(source='head.head_scalp',allow_null=True)
+    nose_name = serializers.CharField(source='nose.nose',allow_null=True)
+    neck_name = serializers.CharField(source='neck.neck',allow_null=True)
+    skin_color_name = serializers.CharField(source='skin_color.skin_color',allow_null=True)
+    skin_texture_name = serializers.CharField(source='skin_texture.skin_texture',allow_null=True)
+    skin_lesions_name = serializers.CharField(source='skin_lesions.skin_lesions',allow_null=True)
+    lips_name = serializers.CharField(source='lips.lips',allow_null=True)
+    gums_name = serializers.CharField(source='gums.gums',allow_null=True)
+    dention_name = serializers.CharField(source='dention.dentition',allow_null=True)
+    oral_mucosa_name = serializers.CharField(source='oral_mucosa.oral_mucosa',allow_null=True)
+    tongue_name = serializers.CharField(source='tongue.tounge',allow_null=True)
+    hair_color_name = serializers.CharField(source='hair_color.hair_color',allow_null=True)
+    hair_density_name = serializers.CharField(source='hair_density.hair_density',allow_null=True)
+    hair_texture_name = serializers.CharField(source='hair_texture.hair_texture',allow_null=True)
+    alopecia_name = serializers.CharField(source='alopecia.alopecia',allow_null=True)
+    chest_name = serializers.CharField(source='chest.chest',allow_null=True)
+    abdomen_name = serializers.CharField(source='abdomen.abdomen',allow_null=True)
+    extremity_name = serializers.CharField(source='extremity.extremity',allow_null=True)
+    
+    class Meta:
+        model = genral_examination
+        fields = ['genral_pk_id', 'citizen_id', 'screening_count', 'citizen_pk_id', 'screening_citizen_id', 'head', 'nose', 'neck', 'skin_color', 'skin_texture', 'skin_lesions', 'lips', 'gums', 'dention', 'oral_mucosa', 'tongue', 'hair_color', 'hair_density', 'hair_texture', 'alopecia', 'chest', 'abdomen', 'extremity', 'is_deleted', 'form_submit', 'added_date', 'added_by', 'modify_date', 'modify_by',
+                  'head_name','nose_name', 'neck_name', 'skin_color_name', 'skin_texture_name', 'skin_lesions_name', 'lips_name', 'gums_name', 'dention_name', 'oral_mucosa_name', 'tongue_name', 'hair_color_name', 'hair_density_name', 'hair_texture_name', 'alopecia_name', 'chest_name', 'abdomen_name', 'extremity_name']
+        
+class Systemic_Exam_Post_Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = systemic_exam
+        fields = [
+            'systemic_pk_id', 'citizen_id', 'screening_count', 'citizen_pk_id', 'screening_citizen_id',
+            'rs_right', 'rs_left', 'cvs', 'varicose_veins', 'lmp', 'cns', 'reflexes', 
+            'rombergs', 'pupils', 'pa', 'tenderness', 'ascitis', 'guarding', 'joints', 
+            'swollen_joints', 'spine_posture', 'is_deleted', 'form_submit', 
+            'added_date', 'added_by', 'modify_date', 'modify_by'
+        ]
+
+
+
+class Systemic_Exam_Get_Serializer(serializers.ModelSerializer):
+    rs_right_name = serializers.CharField(source='rs_right.rs_right', allow_null=True)
+    rs_left_name = serializers.CharField(source='rs_left.rs_left', allow_null=True) 
+    cvs_name = serializers.CharField(source='cvs.cvs', allow_null=True)
+    varicose_veins_name = serializers.CharField(source='varicose_veins.varicose_veins', allow_null=True)
+    lmp_name = serializers.CharField(source='lmp.lmp', allow_null=True)
+    cns_name = serializers.CharField(source='cns.cns', allow_null=True)
+    reflexes_name = serializers.CharField(source='reflexes.reflexes', allow_null=True)
+    rombergs_name = serializers.CharField(source='rombergs.rombergs', allow_null=True)
+    pupils_name = serializers.CharField(source='pupils.pupils', allow_null=True)
+    pa_name = serializers.CharField(source='pa.pa', allow_null=True)
+    tenderness_name = serializers.CharField(source='tenderness.tenderness', allow_null=True)
+    ascitis_name = serializers.CharField(source='ascitis.ascitis', allow_null=True)
+    guarding_name = serializers.CharField(source='guarding.guarding', allow_null=True)
+    joints_name = serializers.CharField(source='joints.joints', allow_null=True)
+    swollen_joints_name = serializers.CharField(source='swollen_joints.swollen_joints', allow_null=True)
+    spine_posture_name = serializers.CharField(source='spine_posture.spine_posture', allow_null=True)
+    
+    class Meta:
+        model = systemic_exam
+        fields = [
+            'systemic_pk_id', 'citizen_id', 'screening_count', 'citizen_pk_id', 'screening_citizen_id',
+            'rs_right', 'rs_left', 'cvs', 'varicose_veins', 'lmp', 'cns', 'reflexes', 
+            'rombergs', 'pupils', 'pa', 'tenderness', 'ascitis', 'guarding', 'joints', 
+            'swollen_joints', 'spine_posture', 'is_deleted', 'form_submit', 
+            'added_date', 'added_by', 'modify_date', 'modify_by','rs_right_name', 'rs_left_name', 'cvs_name', 'varicose_veins_name', 'lmp_name', 'cns_name', 'reflexes_name', 
+            'rombergs_name', 'pupils_name', 'pa_name', 'tenderness_name', 'ascitis_name', 'guarding_name', 'joints_name','swollen_joints_name', 'spine_posture_name'
+        ]
+        
+        
+class Female_Screening_Post_Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = female_screening
+        fields = [
+            'female_pk_id', 'citizen_id', 'screening_count', 'citizen_pk_id', 'screening_citizen_id',
+            'menarche_achieved', 'date_of_menarche', 'age_of_menarche',
+            'vaginal_descharge', 'flow', 'comments',
+            'is_deleted', 'form_submit', 'added_date', 'added_by', 'modify_date', 'modify_by'
+        ]
+        
+class Female_Screening_Get_Serializer(serializers.ModelSerializer):
+    menarche_achieved = serializers.SerializerMethodField()
+    vaginal_descharge = serializers.SerializerMethodField()
+    flow = serializers.SerializerMethodField()
+    class Meta:
+        model = female_screening
+        fields = [
+            'female_pk_id', 'citizen_id', 'screening_count', 'citizen_pk_id', 'screening_citizen_id',
+            'menarche_achieved', 'date_of_menarche', 'age_of_menarche',
+            'vaginal_descharge', 'flow', 'comments',
+            'is_deleted', 'form_submit', 'added_date', 'added_by', 'modify_date', 'modify_by'
+        ]
+        
+        
+    def get_menarche_achieved(self, obj):
+        return obj.menarche_achieved.name if obj.menarche_achieved else None
+
+    def get_vaginal_descharge(self, obj):
+        return obj.vaginal_descharge.name if obj.vaginal_descharge else None
+
+    def get_flow(self, obj):
+        return obj.flow.name if obj.flow else None
+    
+    
+    
+class Disability_Screening_Post_Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = disability_screening
+        fields = ['disability_pk_id','citizen_id','screening_count','citizen_pk_id','screening_citizen_id','language_delay','behavioural_disorder','speech_screening','comment','is_deleted','form_submit','added_date','added_by','modify_date','modify_by']
+        
+
+class Disability_Screening_Get_Serializer(serializers.ModelSerializer):
+    language_delay_name = serializers.CharField(source='language_delay.language_delay',allow_null=True)
+    behavioural_disorder_name = serializers.CharField(source='behavioural_disorder.behavioural_disorder',allow_null=True)
+    speech_screening_name = serializers.CharField(source='speech_screening.speech_screening',allow_null=True)
+    
+    class Meta:
+        model = disability_screening
+        fields = ['disability_pk_id','citizen_id','screening_count','citizen_pk_id','screening_citizen_id','language_delay','behavioural_disorder','speech_screening','comment','is_deleted','form_submit','added_date','added_by','modify_date','modify_by',
+                  'language_delay_name','behavioural_disorder_name','speech_screening_name']
+        
+
+class Birth_Defect_Post_Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = birth_defect
+        fields = [
+            'birth_pk_id', 'citizen_id', 'screening_count', 'citizen_pk_id', 'screening_citizen_id',
+            'birth_defects', 'form_submit', 'is_deleted',
+            'added_by', 'added_date', 'modify_by', 'modify_date'
+        ]
+        
+class Birth_Defect_Get_Serializer(serializers.ModelSerializer):
+    birth_defects_name = serializers.SerializerMethodField()
+    class Meta:
+        model = birth_defect
+        fields = [
+            'birth_pk_id', 'citizen_id', 'screening_count', 'citizen_pk_id', 'screening_citizen_id',
+            'birth_defects','birth_defects_name', 'form_submit', 'is_deleted',
+            'added_by', 'added_date', 'modify_by', 'modify_date'
+        ]
+
+    def get_birth_defects_name(self, obj):
+        try:
+            if not obj.birth_defects:
+                return []
+            
+            if isinstance(obj.birth_defects, list):
+                defect_ids = obj.birth_defects
+            elif isinstance(obj.birth_defects, dict):
+                defect_ids = obj.birth_defects.get("defect_ids", [])
+            else:
+                return []
+
+            defects = basic_information_birth_defects.objects.filter(
+                birth_defects_id__in=defect_ids,
+                is_deleted=False
+            ).values('birth_defects_id', 'birth_defects')
+
+            return list(defects)
+
+        except Exception as e:
+            return {"error": str(e)}
+        
+        
+class Childhood_Diseases_Post_Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = childhood_diseases
+        fields = [
+            'childhood_pk_id', 'citizen_id', 'screening_count', 'citizen_pk_id', 'screening_citizen_id',
+            'childhood_diseases', 'form_submit', 'is_deleted',
+            'added_by', 'added_date', 'modify_by', 'modify_date'
+        ]
+
+
+class Childhood_Diseases_Get_Serializer(serializers.ModelSerializer):
+    childhood_diseases_name = serializers.SerializerMethodField()
+
+    class Meta:
+        model = childhood_diseases
+        fields = [
+            'childhood_pk_id', 'citizen_id', 'screening_count', 'citizen_pk_id', 'screening_citizen_id',
+            'childhood_diseases', 'childhood_diseases_name', 
+            'form_submit', 'is_deleted',
+            'added_by', 'added_date', 'modify_by', 'modify_date'
+        ]
+
+    def get_childhood_diseases_name(self, obj):
+        """
+        Map the JSON field IDs (childhood_diseases) to readable names
+        from the basic_information_childhood_disease table.
+        """
+        if not obj.childhood_diseases:
+            return []
+
+        try:
+            # Fetch all disease names where IDs are in the JSON list
+            disease_ids = obj.childhood_diseases
+            if not isinstance(disease_ids, list):
+                return []
+
+            diseases = basic_information_childhood_disease.objects.filter(
+                childhood_disease_id__in=disease_ids,
+                is_deleted=False
+            ).values_list('childhood_disease', flat=True)
+
+            return list(diseases)
+
+        except Exception as e:
+            # fallback in case of invalid JSON or lookup error
+            return []
+        
+        
+
+
+class Deficiencies_Screening_Post_Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = deficiencies
+        fields = [
+            'deficiencies_pk_id', 'citizen_id', 'screening_count', 'citizen_pk_id', 'screening_citizen_id',
+            'deficiencies', 'form_submit', 'is_deleted',
+            'added_by', 'added_date', 'modify_by', 'modify_date'
+        ]
+
+
+
+
+
+
+class Deficiencies_Get_Serializer(serializers.ModelSerializer):
+    deficiencies_name = serializers.SerializerMethodField()
+
+    class Meta:
+        model = deficiencies
+        fields = [
+            'deficiencies_pk_id', 'citizen_id', 'screening_count', 'citizen_pk_id', 'screening_citizen_id',
+            'deficiencies', 'deficiencies_name', 'form_submit', 'is_deleted',
+            'added_by', 'added_date', 'modify_by', 'modify_date'
+        ]
+
+    def get_deficiencies_name(self, obj):
+        """Return readable deficiency names from basic_information_deficiencies"""
+        if not obj.deficiencies:
+            return []
+        try:
+            ids = obj.deficiencies if isinstance(obj.deficiencies, list) else []
+            values = list(
+                basic_information_deficiencies.objects.filter(
+                    deficiencies_id__in=ids, is_deleted=False
+                ).values_list('deficiencies', flat=True)
+            )
+            return values
+        except Exception:
+            return []
+
+
+
+
+class Skin_Conditions_Post_Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = skin_conditions
+        fields = [
+            'skin_pk_id', 'citizen_id', 'screening_count', 'citizen_pk_id', 'screening_citizen_id',
+            'skin_conditions', 'form_submit', 'is_deleted',
+            'added_by', 'added_date', 'modify_by', 'modify_date'
+        ]
+
+
+
+
+class Skin_Conditions_Get_Serializer(serializers.ModelSerializer):
+    skin_conditions_name = serializers.SerializerMethodField()
+
+    class Meta:
+        model = skin_conditions
+        fields = [
+            'skin_pk_id', 'citizen_id', 'screening_count', 'citizen_pk_id', 'screening_citizen_id',
+            'skin_conditions', 'skin_conditions_name', 'form_submit', 'is_deleted',
+            'added_by', 'added_date', 'modify_by', 'modify_date'
+        ]
+
+    def get_skin_conditions_name(self, obj):
+        """
+        Convert stored skin_conditions IDs to their actual names.
+        """
+        if not obj.skin_conditions:
+            return []
+
+        # Get all matching condition names from the reference table
+        conditions = basic_information_skin_conditions.objects.filter(
+            skin_conditions_id__in=obj.skin_conditions,
+            is_deleted=False
+        ).values_list('skin_conditions', flat=True)
+        return list(conditions)
+
+
+
+
+
+class Diagnosis_Post_Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = diagnosis
+        fields = [
+            'diagnosis_pk_id', 'citizen_id', 'screening_count', 'citizen_pk_id', 'screening_citizen_id',
+            'diagnosis', 'form_submit', 'is_deleted',
+            'added_by', 'added_date', 'modify_by', 'modify_date'
+        ]
+
+
+
+
+class Diagnosis_Get_Serializer(serializers.ModelSerializer):
+    diagnosis_name = serializers.SerializerMethodField()
+
+    class Meta:
+        model = diagnosis
+        fields = [
+            'diagnosis_pk_id', 'citizen_id', 'screening_count', 'citizen_pk_id',
+            'screening_citizen_id', 'diagnosis', 'diagnosis_name', 'form_submit',
+            'is_deleted', 'added_by', 'added_date', 'modify_by', 'modify_date'
+        ]
+
+    def get_diagnosis_name(self, obj):
+        """
+        Converts diagnosis JSON (list of IDs) to actual diagnosis names
+        """
+        if not obj.diagnosis:
+            return []
+        
+        # Handle if diagnosis is a list or a single value
+        ids = obj.diagnosis if isinstance(obj.diagnosis, list) else [obj.diagnosis]
+        
+        # Fetch actual names
+        diagnosis_names = basic_information_diagnosis.objects.filter(
+            diagnosis_id__in=ids,
+            is_deleted=False
+        ).values_list('diagnosis', flat=True)
+        
+        return list(diagnosis_names)
+    
+    
+class CheckBoxIfNormal_Post_Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = check_box_if_normal
+        fields = [
+            'check_box_pk_id', 'citizen_id', 'screening_count', 'citizen_pk_id', 'screening_citizen_id',
+            'check_box_if_normal', 'form_submit', 'is_deleted',
+            'added_by', 'added_date', 'modify_by', 'modify_date'
+        ]
+        
+class CheckBoxIfNormal_Get_Serializer(serializers.ModelSerializer):
+    check_box_if_normal_name = serializers.SerializerMethodField()
+
+    class Meta:
+        model = check_box_if_normal
+        fields = [
+            'check_box_pk_id', 'citizen_id', 'screening_count', 'citizen_pk_id', 'screening_citizen_id',
+            'check_box_if_normal', 'check_box_if_normal_name',
+            'form_submit', 'is_deleted', 'added_by', 'added_date', 'modify_by', 'modify_date'
+        ]
+
+    def get_check_box_if_normal_name(self, obj):
+        """
+        Convert JSON field (IDs) to actual names from basic_information_check_box_if_normal table
+        """
+        if not obj.check_box_if_normal:
+            return []
+        
+        # Fetch all ID–Name mappings once
+        mapping = dict(
+            basic_information_check_box_if_normal.objects.values_list('check_box_if_normal_id', 'check_box_if_normal')
+        )
+
+        result = []
+        for value in obj.check_box_if_normal:
+            # Handle if it's a list of IDs
+            if isinstance(value, int):
+                result.append(mapping.get(value, f"Unknown ({value})"))
+            # Handle if it's a dict with keys
+            elif isinstance(value, dict):
+                readable_dict = {}
+                for k, v in value.items():
+                    readable_dict[k] = mapping.get(v, f"Unknown ({v})")
+                result.append(readable_dict)
+            else:
+                result.append(str(value))
+        return result
+    
+    
+class Treatment_Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = treatement
+        fields = [
+            'treatement_pk_id', 'citizen_id', 'screening_count', 'citizen_pk_id', 'screening_citizen_id',
+            'treatment_for', 'referral', 'reason_for_referral', 'place_referral',
+            'outcome', 'referred_surgery', 'hospital_name', 'basic_referred_treatment',
+            'reffered_to_specialist', 'form_submit', 'is_deleted',
+            'added_by', 'added_date', 'modify_by', 'modify_date'
+        ]
+        
+
+class Treatment_Get_Serializer(serializers.ModelSerializer):
+    referral_name = serializers.CharField(source='referral.referral', read_only=True)
+    place_referral_name = serializers.CharField(source='place_referral.place_referral', read_only=True)
+    hospital_name_text = serializers.CharField(source='hospital_name.hospital_name', read_only=True)
+
+    class Meta:
+        model = treatement
+        fields = ['treatement_pk_id', 'citizen_id', 'screening_count', 'citizen_pk_id', 'screening_citizen_id', 'treatment_for', 'referral', 'referral_name', 'reason_for_referral', 'place_referral', 'place_referral_name', 'outcome', 'referred_surgery', 'hospital_name', 'hospital_name_text', 'basic_referred_treatment', 'form_submit', 'reffered_to_specialist', 'is_deleted', 'added_by', 'added_date', 'modify_by', 'modify_date']
+
+
+class Auditory_Info_Post_Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = auditory_info
+        fields = [
+            'auditory_pk_id', 'audit_code', 'citizen_id', 'screening_count',
+            'citizen_pk_id', 'screening_citizen_id',
+            'hz_250_left', 'hz_500_left', 'hz_1000_left', 'hz_2000_left', 'hz_4000_left', 'hz_8000_left',
+            'reading_left', 'left_ear_observations_remarks',
+            'hz_250_right', 'hz_500_right', 'hz_1000_right', 'hz_2000_right', 'hz_4000_right', 'hz_8000_right',
+            'reading_right', 'right_ear_observations_remarks',
+            'reffered_to_specialist', 'form_submit', 'is_deleted',
+            'added_by', 'added_date', 'modify_by', 'modify_date'
+        ]
+        
+class Auditory_Info_Get_Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = auditory_info
+        fields = [
+            'auditory_pk_id', 'audit_code', 'citizen_id', 'screening_count',
+            'citizen_pk_id', 'screening_citizen_id',
+            'hz_250_left', 'hz_500_left', 'hz_1000_left', 'hz_2000_left', 'hz_4000_left', 'hz_8000_left',
+            'reading_left', 'left_ear_observations_remarks',
+            'hz_250_right', 'hz_500_right', 'hz_1000_right', 'hz_2000_right', 'hz_4000_right', 'hz_8000_right',
+            'reading_right', 'right_ear_observations_remarks',
+            'reffered_to_specialist', 'form_submit', 'is_deleted',
+            'added_by', 'added_date', 'modify_by', 'modify_date'
+        ]
+        
+        
+class Vision_Info_Post_Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = vision_info
+        fields = [
+            'vision_pk_id', 'vision_code', 'citizen_id', 'screening_count',
+            'citizen_pk_id', 'screening_citizen_id',
+            're_near_without_glasses', 're_far_without_glasses',
+            'le_near_without_glasses', 'le_far_without_glasses',
+            're_near_with_glasses', 're_far_with_glasses',
+            'le_near_with_glasses', 'le_far_with_glasses',
+            'comment', 'color_blindness', 'reffered_to_specialist',
+            'form_submit', 'is_deleted', 'added_by', 'added_date',
+            'modify_by', 'modify_date'
+        ]
+        
+
+class Vision_Info_Get_Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = vision_info
+        fields = [
+            'vision_pk_id', 'vision_code', 'citizen_id', 'screening_count',
+            'citizen_pk_id', 'screening_citizen_id',
+            're_near_without_glasses', 're_far_without_glasses',
+            'le_near_without_glasses', 'le_far_without_glasses',
+            're_near_with_glasses', 're_far_with_glasses',
+            'le_near_with_glasses', 'le_far_with_glasses',
+            'comment', 'color_blindness', 'reffered_to_specialist',
+            'form_submit', 'is_deleted', 'added_by', 'added_date',
+            'modify_by', 'modify_date'
+        ]
+
+class Medical_history_Post_Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = medical_history_info
+        fields = ['medical_history_pk_id','citizen_id','screening_count','citizen_pk_id','screening_citizen_id','medical_history','past_operative_history','form_submit','is_deleted','added_by','added_date','modify_by','modify_date']
+
+
+class MedicalHistoryInfo_Get_Serializer(serializers.ModelSerializer):
+    medical_history_values = serializers.SerializerMethodField()
+    past_operative_history_values = serializers.SerializerMethodField()
+
+    class Meta:
+        model = medical_history_info
+        fields = [
+            'medical_history_pk_id', 'citizen_id', 'screening_count', 'citizen_pk_id',
+            'screening_citizen_id', 'medical_history', 'past_operative_history',
+            'medical_history_values', 'past_operative_history_values',
+            'form_submit', 'is_deleted', 'added_by', 'added_date', 'modify_by', 'modify_date'
+        ]
+
+    # 🔹 Fetch medical history names from IDs
+    def get_medical_history_values(self, obj):
+        try:
+            if isinstance(obj.medical_history, list):
+                names = medical_history.objects.filter(
+                    medical_hist_id__in=obj.medical_history, is_deleted=False
+                ).values_list('medical_history', flat=True)
+                return list(names)
+        except Exception:
+            pass
+        return []
+
+    # 🔹 Fetch past operative history names from IDs
+    def get_past_operative_history_values(self, obj):
+        try:
+            if isinstance(obj.past_operative_history, list):
+                names = agg_citizen_past_operative_history.objects.filter(
+                    past_operative_hist_id__in=obj.past_operative_history, is_deleted=False
+                ).values_list('past_operative_history', flat=True)
+                return list(names)
+        except Exception:
+            pass
+        return []
+    
+    
+
+
+class PFT_Info_Post_Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = pft_info
+        fields = [
+            'pft_pk_id', 'citizen_id', 'screening_count', 'citizen_pk_id',
+            'screening_citizen_id', 'pft_reading', 'observations',
+            'form_submit', 'is_deleted', 'added_by', 'added_date',
+            'modify_by', 'modify_date'
+        ]
+        
+
+
+class PFT_Info_Get_Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = pft_info
+        fields = [
+            'pft_pk_id', 'citizen_id', 'screening_count', 'citizen_pk_id',
+            'screening_citizen_id', 'pft_reading', 'observations',
+            'form_submit', 'is_deleted', 'added_by', 'added_date',
+            'modify_by', 'modify_date'
+        ]
+        
+        
+
+class Dental_Info_Post_Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = dental_info
+        fields = [
+            'denta_pk_id', 'dental_code', 'citizen_id', 'screening_count',
+            'citizen_pk_id', 'screening_citizen_id', 'oral_hygiene',
+            'oral_hygiene_remark', 'gum_condition', 'gum_condition_remark',
+            'oral_ulcers', 'oral_ulcers_remark', 'gum_bleeding',
+            'gum_bleeding_remark', 'discoloration_of_teeth',
+            'discoloration_of_teeth_remark', 'food_impaction',
+            'food_impaction_remark', 'carious_teeth', 'carious_teeth_remark',
+            'extraction_done', 'extraction_done_remark', 'fluorosis',
+            'fluorosis_remark', 'tooth_brushing_frequency',
+            'tooth_brushing_frequency_remark', 'reffered_to_specialist',
+            'reffered_to_specialist_remark', 'sensitive_teeth',
+            'sensitive_teeth_remark', 'malalignment', 'malalignment_remark',
+            'orthodontic_treatment', 'orthodontic_treatment_remark', 'comment',
+            'treatment_given', 'referred_to_surgery', 'dental_conditions',
+            'dental_refer_hospital', 'image', 'english', 'marathi',
+            'form_submit', 'is_deleted', 'added_by', 'added_date',
+            'modify_by', 'modify_date'
+        ]
+        
+
+
+class Dental_Info_Get_Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = dental_info
+        fields = [
+            'denta_pk_id', 'dental_code', 'citizen_id', 'screening_count',
+            'citizen_pk_id', 'screening_citizen_id', 'oral_hygiene',
+            'oral_hygiene_remark', 'gum_condition', 'gum_condition_remark',
+            'oral_ulcers', 'oral_ulcers_remark', 'gum_bleeding',
+            'gum_bleeding_remark', 'discoloration_of_teeth',
+            'discoloration_of_teeth_remark', 'food_impaction',
+            'food_impaction_remark', 'carious_teeth', 'carious_teeth_remark',
+            'extraction_done', 'extraction_done_remark', 'fluorosis',
+            'fluorosis_remark', 'tooth_brushing_frequency',
+            'tooth_brushing_frequency_remark', 'reffered_to_specialist',
+            'reffered_to_specialist_remark', 'sensitive_teeth',
+            'sensitive_teeth_remark', 'malalignment', 'malalignment_remark',
+            'orthodontic_treatment', 'orthodontic_treatment_remark', 'comment',
+            'treatment_given', 'referred_to_surgery', 'dental_conditions',
+            'dental_refer_hospital', 'image', 'english', 'marathi',
+            'form_submit', 'is_deleted', 'added_by', 'added_date',
+            'modify_by', 'modify_date'
+        ]
+        
+        
+class Immunisation_Info_Post_Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = immunisation_info
+        fields = ['immunization_pk_id','immunization_code','citizen_id','screening_count','citizen_pk_id','screening_citizen_id','name_of_vaccine','form_submit','is_deleted','added_by','added_date','modify_by','modify_date']
+        
+        
+class Immunisation_Info_Get_Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = immunisation_info
+        fields = ['immunization_pk_id','immunization_code','citizen_id','screening_count','citizen_pk_id','screening_citizen_id','name_of_vaccine','form_submit','is_deleted','added_by','added_date','modify_by','modify_date']
+        
+        
+class Investigation_Info_Post_Serializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = investigation_info
+        fields = ['investigation_pk_id', 'citizen_id', 'screening_count', 'citizen_pk_id', 'screening_citizen_id','investigation_report', 'urine_report', 'ecg_report', 'x_ray_report',
+        'form_submit', 'is_deleted', 'added_by', 'added_date', 'modify_by', 'modify_date']
+        
+        
+class Investigation_Info_Get_Serializer(serializers.ModelSerializer):
+    
+    class Meta:
+        model = investigation_info
+        fields = ['investigation_pk_id', 'citizen_id', 'screening_count', 'citizen_pk_id', 'screening_citizen_id','investigation_report', 'urine_report', 'ecg_report', 'x_ray_report',
+        'form_submit', 'is_deleted', 'added_by', 'added_date', 'modify_by', 'modify_date']

@@ -248,3 +248,7 @@ admin.site.register(agg_sc_route)
 admin.site.register(agg_sc_ambulance)
 admin.site.register(agg_sc_doctor)
 admin.site.register(agg_sc_pilot)
+
+
+#------------------------------------------------------------------------------------------------------------
+admin.site.register(Screening_citizen)

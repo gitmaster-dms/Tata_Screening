@@ -1,5 +1,5 @@
 """
-WSGI config for Ambulance_Aggregation project.
+WSGI config for Tata_Screening project.
 
 It exposes the WSGI callable as a module-level variable named ``application``.
 
@@ -11,6 +11,6 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Ambulance_Aggregation.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Tata_Screening.settings')
 
 application = get_wsgi_application()

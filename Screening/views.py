@@ -15,7 +15,7 @@ from rest_framework.decorators import api_view, renderer_classes, permission_cla
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework.permissions import IsAuthenticated
 import requests,random,pytz,io
-from Ambulance_Aggregation.settings import AUTH_KEY
+from Tata_Screening.settings import AUTH_KEY
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.hashers import make_password
 from django.core.exceptions import ValidationError
@@ -3892,10 +3892,6 @@ class CitizenVitalInfoPost(APIView):
             }
 
             return Response(response_data, status=status.HTTP_201_CREATED)
-
-
-
-
 
 
 
@@ -8434,227 +8430,7 @@ class CitizenOtherInfoPost(APIView):
 #             return Response({'message':'high'})
 
 
-from rest_framework.views import APIView
-from rest_framework.response import Response
 
-class pulse_get_api(APIView):
-    renderer_classes = [UserRenderer]
-    permission_classes = [IsAuthenticated]
-    def get(self, request, pulse, year):
-        if year <= 18:  #for Child
-            if(pulse>=80 and pulse<=120):
-                return Response({'message': 'Normal'})
-            elif(pulse<80):
-                return Response({'message': 'Low'})
-            else:
-                return Response({'message': 'High'})
-        elif year >=18:  # For adults
-            if(pulse>=60 and pulse<=100):
-                return Response({'message': 'Normal'})
-            elif(pulse<80):
-                return Response({'message': 'Low'})
-            else:
-                return Response({'message': 'High'})
-        else:
-            year >=60  
-            if(pulse>=60 and pulse<=100):
-                return Response({'message': 'Normal'})
-            elif(pulse<80):
-                return Response({'message': 'Low'})
-            else:
-                return Response({'message': 'High'})
-            
-class rr_get_api(APIView):
-    renderer_classes = [UserRenderer]
-    permission_classes = [IsAuthenticated]
-    def get(self, request, rr, year):
-
-        if year <= 18: 
-            if(rr>=16 and rr<=30):
-                return Response({'message': 'Normal'})
-            elif(rr<16):
-                return Response({'message': 'Low'})
-            else:
-                return Response({'message': 'High'})
-        elif year>=18:
-            if(rr>=12 and rr<=20):
-                return Response({'message': 'Normal'})
-            elif(rr<12):
-                return Response({'message': 'Low'})
-            else:
-                return Response({'message': 'High'})    
-        else:  
-            if(rr>=12 and rr<=25):
-                return Response({'message': 'Normal'})
-            elif(rr<12):
-                return Response({'message': 'Low'})
-            else:
-                return Response({'message': 'High'})
-            
-class temp_get_api(APIView):
-    renderer_classes = [UserRenderer]
-    permission_classes = [IsAuthenticated]
-    def get(self, request, temp, year):
-
-        if year <= 18: 
-            if(temp>=97 and temp<=99):
-                return Response({'message': 'Normal'})
-            elif(temp<97):
-                return Response({'message': 'Low'})
-            else:
-                return Response({'message': 'High'})
-        elif year>=18:
-            if(temp>=97 and temp<=99):
-                return Response({'message': 'Normal'})
-            elif(temp<97):
-                return Response({'message': 'Low'})
-            else:
-                return Response({'message': 'High'})    
-        else:  
-            if(temp>=97 and temp<=99):
-                return Response({'message': 'Normal'})
-            elif(temp<97):
-                return Response({'message': 'Low'})
-            else:
-                return Response({'message': 'High'})
-
-
-
-# class hb_get_api(APIView):
-#     renderer_classes = [UserRenderer]
-#     permission_classes = [IsAuthenticated]
-#     def get(self, request, hb, year,gender):
-#         hb = float(hb)
-#         if gender == 1: 
-#             if year <= 18: 
-#                 if(hb>=11 and hb<=13):
-#                     return Response({'message': 'normal'})
-#                 elif(hb<11):
-#                     return Response({'message': 'low'})
-#                 else:
-#                     return Response({'message': 'high'})
-#             elif year>=18:
-#                 if(hb>=14 and hb<=18):
-#                     return Response({'message': 'normal'})
-#                 elif(hb<14):
-#                     return Response({'message': 'low'})
-#                 else:
-#                     return Response({'message': 'high'})    
-#             else:  
-#                 if(hb>=12.4 and hb<=14.9):
-#                     return Response({'message': 'normal'})
-#                 elif(hb<12.4):
-#                     return Response({'message': 'low'})
-#                 else:
-#                     return Response({'message': 'high'})
-
-#         elif gender == 2: 
-#             if year <= 18: 
-#                 if(hb>=11 and hb<=13):
-#                     return Response({'message': 'normal'})
-#                 elif(hb<11):
-#                     return Response({'message': 'low'})
-#                 else:
-#                     return Response({'message': 'high'})
-#             elif year>=18:
-#                 if(hb>=12 and hb<=16):
-#                     return Response({'message': 'normal'})
-#                 elif(hb<12):
-#                     return Response({'message': 'low'})
-#                 else:
-#                     return Response({'message': 'high'})    
-#             else:  
-#                 if(hb>=11.7 and hb<=13.8):
-#                     return Response({'message': 'normal'})
-#                 elif(hb<11.7):
-#                     return Response({'message': 'low'})
-#                 else:
-#                     return Response({'message': 'high'})
-#         else:
-#             return Response({'message': 'Invalid Choice'})
-
-
-class sys_get_api(APIView):
-    renderer_classes = [UserRenderer]
-    permission_classes = [IsAuthenticated]
-    def get(self, request, sys, year):
-        if year <= 18:  #for Child
-            if(sys>=97 and sys<=112):
-                return Response({'message': 'Normal'})
-            elif(sys<97):
-                return Response({'message': 'Low'})
-            else:
-                return Response({'message': 'High'})
-        elif year >=18:  # For adults
-            if(sys>=100 and sys<=120):
-                return Response({'message': 'Normal'})
-            elif(sys<100):
-                return Response({'message': 'Low'})
-            else:
-                return Response({'message': 'High'})
-        else:
-            year >=60  
-            if(sys>=90 and sys<=100):
-                return Response({'message': 'Normal'})
-            elif(sys<90):
-                return Response({'message': 'Low'})
-            else:
-                return Response({'message': 'High'})
-            
-            
-class dys_get_api(APIView):
-    renderer_classes = [UserRenderer]
-    permission_classes = [IsAuthenticated]
-    def get(self, request, dys, year):
-        if year <= 18:  #for Child
-            if(dys>=57 and dys<=71):
-                return Response({'message': 'Normal'})
-            elif(dys<57):
-                return Response({'message': 'Low'})
-            else:
-                return Response({'message': 'High'})
-        elif year >=18:  # For adults
-            if(dys>=80 and dys<=90):
-                return Response({'message': 'Normal'})
-            elif(dys<80):
-                return Response({'message': 'Low'})
-            else:
-                return Response({'message': 'High'})
-        else:
-            year >=60  
-            if(dys>=80 and dys<=90):
-                return Response({'message': 'Normal'})
-            elif(dys<80):
-                return Response({'message': 'Low'})
-            else:
-                return Response({'message': 'High'})
-            
-class o2sat_get_api(APIView):
-    renderer_classes = [UserRenderer]
-    permission_classes = [IsAuthenticated]
-    def get(self, request, o2sat, year):
-        if year <= 18:  #for Child
-            if(o2sat>=95 and o2sat<=100):
-                return Response({'message': 'Normal'})
-            elif(o2sat<95):
-                return Response({'message': 'Low'})
-            else:
-                return Response({'message': 'High'})
-        elif year >=18:  # For adults
-            if(o2sat>=95 and o2sat<=100):
-                return Response({'message': 'Normal'})
-            elif(o2sat<95):
-                return Response({'message': 'Low'})
-            else:
-                return Response({'message': 'High'})
-        else:
-            year >=60  
-            if(o2sat>=90 and o2sat<=100):
-                return Response({'message': 'Normal'})
-            elif(o2sat<90):
-                return Response({'message': 'Low'})
-            else:
-                return Response({'message': 'High'})
             
             
             
@@ -11339,20 +11115,6 @@ class agg_sc_get_pft_info_ViewSet1(APIView):
         serializer = citizen_pft_InfoSerializer(pft_info, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
-    
-class pft_get_api(APIView):
-    renderer_classes = [UserRenderer]
-    permission_classes = [IsAuthenticated]
-    def get(self, request,reading):
-            if(reading>=60 and reading<=249):
-                return Response({'message': 'Danger'})
-            elif(reading>=250 and reading<=449):
-                return Response({'message': 'Caution'})
-            elif(reading>=450 and reading<=800):
-                return Response({'message': 'Stable'})
-            else:
-                return Response({'message': 'Out Of Range'})
-            
 
 class audio_reading_get_api(APIView):
     renderer_classes = [UserRenderer]
@@ -14538,59 +14300,7 @@ class img_analyse_data_save_api(APIView):
 
 
 
-import requests
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
 
-class DeviceDataView(APIView):
-    ALLOWED_TYPES = {"ECG", "SPO2", "BG", "BP", "TEMPERATURE"}
-
-    def get(self, request):
-        external_api_url = "http://vision.mintti.cn/vision/open/v1/measure/query/info/1/20/9741805533"
-
-        headers = {
-            "appId": "91YD10001",
-            "appKey": "f65fb60bf131b5c85ded5623b613719e",
-            "t": "1740997050",
-            "sign": "e1f3299b0526559e09d403fa198d8c1b"
-        }
-
-        type_value = request.query_params.get("type", "SPO2").upper()
-
-        if type_value not in self.ALLOWED_TYPES:
-            return Response(
-                {"error": "Invalid type. Allowed values: ECG, SPO2, BG, BP, TEMPERATURE"},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        params = {"type": type_value}
-
-        try:
-            response = requests.get(external_api_url, headers=headers, params=params)
-            response.raise_for_status()
-            response_data = response.json()
-
-            print("External API Response:", response_data)
-
-            # Extract "rows" list inside "data"
-            data_list = response_data.get("data", {}).get("rows", [])
-
-            # Validate data_list is a list and not empty
-            if isinstance(data_list, list) and data_list:
-                latest_entry = max(
-                    data_list,
-                    key=lambda x: x.get("createTime", 0)  # Sorting based on createTime (Unix timestamp in ms)
-                )
-                return Response(latest_entry, status=status.HTTP_200_OK)
-
-            return Response({"error": "No valid data found in API response"}, status=status.HTTP_404_NOT_FOUND)
-
-        except requests.exceptions.RequestException as e:
-            return Response(
-                {"error": f"Failed to fetch data from external API: {str(e)}"},
-                status=status.HTTP_500_INTERNAL_SERVER_ERROR
-            )
 
 
 
@@ -14791,10 +14501,1968 @@ class CitizenScheduleCreateAPIView(APIView):
 
 
 
+class Citizen_Post_Api(APIView):
+    def post(self, request):
+        Serializer = Citizen_Post_Serializer(data=request.data)
+        if Serializer.is_valid():
+            Serializer.save()
+            return Response(Serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(Serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class Workshop_Post_Api(APIView):
+    def post(self, request):
+        Serializer = Workshop_Post_Serializer(data=request.data)
+        if Serializer.is_valid():
+            Serializer.save()
+            return Response(Serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(Serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class Workshop_Get_Api(APIView):
+    def get(self, request):
+        snippet = Workshop.objects.all()
+        serializers = Workshop_Get_Serializer(snippet, many=True)
+        return Response(serializers.data, status=status.HTTP_200_OK)
+    
+class Citizen_Get_Api(APIView):
+    def get(self, request):
+        snippet = Citizen.objects.all()
+        serializers = Citizen_Get_Serializer(snippet, many=True)
+        return Response(serializers.data, status=status.HTTP_200_OK)
 
 
 
 
 
+class CheckCitizenScreening(APIView):
+    # ------------------------
+    # GET → Check existing screening
+    # ------------------------
+    def get(self, request, citizen_pk_id):
+        try:
+            latest_screening = Screening_citizen.objects.filter(
+                citizen_pk_id=citizen_pk_id
+            ).order_by('-added_date').first()
+
+            if latest_screening:
+                serializer = ScreeningCitizenSerializer(latest_screening)
+                return Response({
+                    "citizen_exists": True,
+                    "message": "Previous screening found.",
+                    "latest_screening": serializer.data
+                }, status=status.HTTP_200_OK)
+            else:
+                return Response({
+                    "citizen_exists": False,
+                    "message": "No previous screenings found for this citizen."
+                }, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+    # ------------------------
+    # POST → Create new screening
+    # ------------------------
+    def post(self, request, citizen_pk_id):
+        try:
+            # Find latest screening to increment count
+            latest_screening = Screening_citizen.objects.filter(
+                citizen_pk_id=citizen_pk_id
+            ).order_by('-added_date').first()
+
+            if latest_screening:
+                next_count = (latest_screening.screening_count or 0) + 1
+            else:
+                next_count = 1  # First screening
+                
+            citizen_obj = Citizen.objects.get(citizens_pk_id=citizen_pk_id)
+
+            # Create new record
+            new_screening = Screening_citizen.objects.create(
+                citizen_pk_id_id=citizen_pk_id,
+                screening_count=next_count,
+                citizen_id=citizen_obj.citizen_id,
+                added_by=request.data.get('added_by', 'Mohin'),
+                modify_by=request.data.get('modify_by', 'Mohin')
+            )
+
+            serializer = ScreeningCitizenSerializer(new_screening)
+            return Response({
+                "message": "New screening created successfully.",
+                "is_created": True,
+                "new_screening": serializer.data
+            }, status=status.HTTP_201_CREATED)
+
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        
+        
 
 
+class BasicInfoSaveAPI(APIView):
+    def post(self, request, pk_id):
+        try:
+            # 1️⃣ Fetch Screening record
+            screening = Screening_citizen.objects.filter(pk_id=pk_id).first()
+            if not screening:
+                return Response({
+                    "success": False,
+                    "message": "No screening record found for the given ID."
+                }, status=status.HTTP_404_NOT_FOUND)
+
+            # 2️⃣ Fetch linked Citizen record
+            citizen = screening.citizen_pk_id
+            if not citizen:
+                return Response({
+                    "success": False,
+                    "message": "No citizen linked to this screening."
+                }, status=status.HTTP_404_NOT_FOUND)
+
+            # ✅ 3️⃣ Check if BasicInfo already exists for this screening
+            existing_basic_info = basic_info.objects.filter(screening_citizen_id=screening.pk_id).order_by('-basic_pk_id').first()
+            if existing_basic_info:
+                serializer = basic_info_Save_Serializer(existing_basic_info)
+                return Response({
+                    "success": True,
+                    "message": "Basic info already exists.",
+                    "data": serializer.data
+                }, status=status.HTTP_200_OK)
+
+            # 4️⃣ Prepare data for saving in basic_info
+            data = {
+                "screening_citizen_id": screening.pk_id,
+                "citizen_pk_id": citizen.citizens_pk_id,
+                "citizen_id": citizen.citizen_id,
+                "screening_count": screening.screening_count,
+                "prefix": citizen.prefix,
+                "name": citizen.name,
+                "gender": citizen.gender.pk if citizen.gender else None,
+                "blood_group": citizen.blood_groups,
+                "dob": citizen.dob,
+                "year": citizen.year,
+                "months": citizen.months,
+                "days": citizen.days,
+                "aadhar_id": citizen.aadhar_id,
+                "phone_no": citizen.mobile_no,
+                "added_by": request.data.get("added_by", "Mohin"),
+                "modify_by": request.data.get("modify_by", "Mohin"),
+            }
+
+            # 5️⃣ Serialize and save new record
+            serializer = basic_info_Save_Serializer(data=data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response({
+                    "success": True,
+                    "message": "Basic info saved successfully.",
+                    "data": serializer.data
+                }, status=status.HTTP_201_CREATED)
+            else:
+                return Response({
+                    "success": False,
+                    "message": "Validation failed.",
+                    "errors": serializer.errors
+                }, status=status.HTTP_400_BAD_REQUEST)
+
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+        
+
+
+class EmergencyInfoSaveAPI(APIView):
+    def post(self, request, pk_id):
+        try:
+            # 1️⃣ Fetch Screening record
+            screening = Screening_citizen.objects.filter(pk_id=pk_id).first()
+            if not screening:
+                return Response({
+                    "success": False,
+                    "message": "No screening record found for the given ID."
+                }, status=status.HTTP_404_NOT_FOUND)
+
+            # 2️⃣ Fetch linked Citizen record
+            citizen = screening.citizen_pk_id
+            if not citizen:
+                return Response({
+                    "success": False,
+                    "message": "No citizen linked to this screening."
+                }, status=status.HTTP_404_NOT_FOUND)
+
+            # 3️⃣ Check if emergency_info already exists for this screening
+            existing_emergency_info = emergency_info.objects.filter(
+                screening_citizen_id=screening.pk_id
+            ).order_by('-em_pk_id').first()
+
+            if existing_emergency_info:
+                serializer = emergency_info_Save_Serializer(existing_emergency_info)
+                return Response({
+                    "success": True,
+                    "message": "Emergency info already exists.",
+                    "data": serializer.data
+                }, status=status.HTTP_200_OK)
+
+            # 4️⃣ Prepare data for saving new emergency_info record
+            data = {
+                "screening_citizen_id": screening.pk_id,
+                "citizen_pk_id": citizen.citizens_pk_id,
+                "citizen_id": citizen.citizen_id,
+                "screening_count": screening.screening_count,
+                "emergency_prefix": citizen.emergency_prefix,
+                "emergency_fullname": citizen.emergency_fullname,
+                "emergency_gender": citizen.emergency_gender,
+                "emergency_contact": citizen.emergency_contact,
+                "relationship_with_employee": citizen.relationship_with_employee,
+                "emergency_address": citizen.emergency_address,
+                "added_by": request.data.get("added_by", "Mohin"),
+                "modify_by": request.data.get("modify_by", "Mohin"),
+            }
+
+            # 5️⃣ Validate & save
+            serializer = emergency_info_Save_Serializer(data=data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response({
+                    "success": True,
+                    "message": "Emergency info saved successfully.",
+                    "data": serializer.data
+                }, status=status.HTTP_201_CREATED)
+            else:
+                return Response({
+                    "success": False,
+                    "message": "Validation failed.",
+                    "errors": serializer.errors
+                }, status=status.HTTP_400_BAD_REQUEST)
+
+        except Exception as e:
+            return Response({
+                "error": str(e)
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+
+
+
+class GrowthMonitoringInfoSaveAPI(APIView):
+    def post(self, request, pk_id):
+        try:
+            # 1️⃣ Fetch Screening record
+            screening = Screening_citizen.objects.filter(pk_id=pk_id).first()
+            if not screening:
+                return Response({
+                    "success": False,
+                    "message": "No screening record found for the given ID."
+                }, status=status.HTTP_404_NOT_FOUND)
+
+            # 2️⃣ Fetch linked Citizen record
+            citizen = screening.citizen_pk_id
+            if not citizen:
+                return Response({
+                    "success": False,
+                    "message": "No citizen linked to this screening."
+                }, status=status.HTTP_404_NOT_FOUND)
+
+            # 3️⃣ Check if growth_monitoring_info already exists for this screening
+            existing_growth_info = growth_monitoring_info.objects.filter(
+                screening_citizen_id=screening.pk_id
+            ).order_by('-growth_pk_id').first()
+
+            if existing_growth_info:
+                serializer = growth_monitoring_info_Save_Serializer(existing_growth_info)
+                return Response({
+                    "success": True,
+                    "message": "Growth monitoring info already exists.",
+                    "data": serializer.data
+                }, status=status.HTTP_200_OK)
+
+            # 4️⃣ Prepare data for saving new record
+            data = {
+                "screening_citizen_id": screening.pk_id,
+                "citizen_pk_id": citizen.citizens_pk_id,
+                "citizen_id": citizen.citizen_id,
+                "screening_count": screening.screening_count,
+                "gender": citizen.gender.pk if citizen.gender else None,
+                "dob": citizen.dob,
+                "year": citizen.year,
+                "months": citizen.months,
+                "days": citizen.days,
+                "height": citizen.height,
+                "weight": citizen.weight,
+                "weight_for_age": citizen.weight_for_age,
+                "height_for_age": citizen.height_for_age,
+                "weight_for_height": citizen.weight_for_height,
+                "bmi": citizen.bmi,
+                "arm_size": citizen.arm_size,
+                "symptoms": citizen.symptoms,
+                "added_by": request.data.get("added_by", "Mohin"),
+                "modify_by": request.data.get("modify_by", "Mohin"),
+            }
+
+            # 5️⃣ Serialize and save
+            serializer = growth_monitoring_info_Save_Serializer(data=data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response({
+                    "success": True,
+                    "message": "Growth monitoring info saved successfully.",
+                    "data": serializer.data
+                }, status=status.HTTP_201_CREATED)
+            else:
+                return Response({
+                    "success": False,
+                    "message": "Validation failed.",
+                    "errors": serializer.errors
+                }, status=status.HTTP_400_BAD_REQUEST)
+
+        except Exception as e:
+            return Response({
+                "error": str(e)
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+
+class Citizen_BasicInfo_Update_API(APIView):
+    def put(self, request, citizen_pk_id):
+        try:
+            # ✅ Step 1: Update Citizen table
+            try:
+                citizen = Citizen.objects.get(citizens_pk_id=citizen_pk_id)
+            except Citizen.DoesNotExist:
+                return Response(
+                    {"success": False, "message": "Citizen not found."},
+                    status=status.HTTP_404_NOT_FOUND
+                )
+
+            citizen_serializer = basic_info_Citizen_Put_Serializer(
+                citizen, data=request.data, partial=True
+            )
+            if not citizen_serializer.is_valid():
+                return Response(
+                    {
+                        "success": False,
+                        "message": "Citizen validation failed.",
+                        "errors": citizen_serializer.errors,
+                    },
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+            citizen_serializer.save()
+
+            # ✅ Step 2: Get all related basic_info records
+            basic_info_records = basic_info.objects.filter(citizen_pk_id=citizen_pk_id)
+            if not basic_info_records.exists():
+                return Response(
+                    {"success": False, "message": "No basic_info records found for this citizen."},
+                    status=status.HTTP_404_NOT_FOUND
+                )
+
+            # ✅ Step 3: Update all basic_info records
+            updated_records = []
+            for record in basic_info_records:
+                basic_serializer = basic_info_Put_Serializer(
+                    record, data=request.data, partial=True
+                )
+                if basic_serializer.is_valid():
+                    basic_serializer.save()
+                    updated_records.append(basic_serializer.data)
+                else:
+                    return Response(
+                        {
+                            "success": False,
+                            "message": "Validation failed for one or more basic_info records.",
+                            "errors": basic_serializer.errors,
+                        },
+                        status=status.HTTP_400_BAD_REQUEST,
+                    )
+
+            # ✅ Step 4: Return success
+            return Response(
+                {
+                    "success": True,
+                    "message": "Citizen and all linked basic_info records updated successfully.",
+                    "Citizen_Data": citizen_serializer.data,
+                    "Updated_Basic_Info_Records": updated_records,
+                },
+                status=status.HTTP_200_OK,
+            )
+
+        except Exception as e:
+            return Response({"success": False, "error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        
+        
+        
+
+class Emergency_Info_Update_API(APIView):
+    def put(self, request, citizen_pk_id):
+        try:
+            # ✅ Step 1: Update Citizen table
+            try:
+                citizen = Citizen.objects.get(citizens_pk_id=citizen_pk_id)
+            except Citizen.DoesNotExist:
+                return Response(
+                    {"success": False, "message": "Citizen not found."},
+                    status=status.HTTP_404_NOT_FOUND
+                )
+
+            citizen_serializer = emergency_info_Citizen_Put_Serializer(
+                citizen, data=request.data, partial=True
+            )
+            if not citizen_serializer.is_valid():
+                return Response(
+                    {
+                        "success": False,
+                        "message": "Citizen validation failed.",
+                        "errors": citizen_serializer.errors,
+                    },
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+            citizen_serializer.save()
+
+            # ✅ Step 2: Get all related emergency_info records
+            emergency_records = emergency_info.objects.filter(citizen_pk_id=citizen_pk_id)
+            if not emergency_records.exists():
+                return Response(
+                    {"success": False, "message": "No emergency_info records found for this citizen."},
+                    status=status.HTTP_404_NOT_FOUND
+                )
+
+            # ✅ Step 3: Update all emergency_info records
+            updated_records = []
+            for record in emergency_records:
+                emergency_serializer = emergency_info_Put_Serializer(
+                    record, data=request.data, partial=True
+                )
+                if emergency_serializer.is_valid():
+                    emergency_serializer.save()
+                    updated_records.append(emergency_serializer.data)
+                else:
+                    return Response(
+                        {
+                            "success": False,
+                            "message": "Validation failed for one or more emergency_info records.",
+                            "errors": emergency_serializer.errors,
+                        },
+                        status=status.HTTP_400_BAD_REQUEST,
+                    )
+
+            # ✅ Step 4: Return success response
+            return Response(
+                {
+                    "success": True,
+                    "message": "Citizen and all linked emergency_info records updated successfully.",
+                    "Citizen_Data": citizen_serializer.data,
+                    "Updated_Emergency_Info_Records": updated_records,
+                    "updated_records_count": len(updated_records)
+                },
+                status=status.HTTP_200_OK,
+            )
+
+        except Exception as e:
+            return Response(
+                {"success": False, "error": str(e)},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+            
+
+class GrowthMonitoringInfoUpdateAPI(APIView):
+    def get(self, request, growth_pk_id):
+        """Retrieve record by growth_pk_id"""
+        try:
+            record = growth_monitoring_info.objects.get(growth_pk_id=growth_pk_id)
+            serializer = growth_monitoring_info_Put_Serializer(record)
+            return Response(
+                {"success": True, "data": serializer.data},
+                status=status.HTTP_200_OK
+            )
+        except growth_monitoring_info.DoesNotExist:
+            return Response(
+                {"success": False, "message": "Record not found."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+    def put(self, request, growth_pk_id):
+        """Update record by growth_pk_id"""
+        try:
+            record = growth_monitoring_info.objects.get(growth_pk_id=growth_pk_id)
+        except growth_monitoring_info.DoesNotExist:
+            return Response(
+                {"success": False, "message": "Record not found."},
+                status=status.HTTP_404_NOT_FOUND
+            )
+
+        serializer = growth_monitoring_info_Put_Serializer(record, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(
+                {
+                    "message": "Growth monitoring info updated successfully.",
+                    "data": serializer.data
+                },
+                status=status.HTTP_200_OK
+            )
+        else:
+            return Response(
+                {"success": False, "errors": serializer.errors},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+
+
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+
+class pulse_get_api(APIView):
+    renderer_classes = [UserRenderer]
+    permission_classes = [IsAuthenticated]
+    def get(self, request, pulse, year):
+        if year <= 18:  #for Child
+            if(pulse>=80 and pulse<=120):
+                return Response({'message': 'Normal'})
+            elif(pulse<80):
+                return Response({'message': 'Low'})
+            else:
+                return Response({'message': 'High'})
+        elif year >=18:  # For adults
+            if(pulse>=60 and pulse<=100):
+                return Response({'message': 'Normal'})
+            elif(pulse<80):
+                return Response({'message': 'Low'})
+            else:
+                return Response({'message': 'High'})
+        else:
+            year >=60  
+            if(pulse>=60 and pulse<=100):
+                return Response({'message': 'Normal'})
+            elif(pulse<80):
+                return Response({'message': 'Low'})
+            else:
+                return Response({'message': 'High'})
+            
+class rr_get_api(APIView):
+    renderer_classes = [UserRenderer]
+    permission_classes = [IsAuthenticated]
+    def get(self, request, rr, year):
+
+        if year <= 18: 
+            if(rr>=16 and rr<=30):
+                return Response({'message': 'Normal'})
+            elif(rr<16):
+                return Response({'message': 'Low'})
+            else:
+                return Response({'message': 'High'})
+        elif year>=18:
+            if(rr>=12 and rr<=20):
+                return Response({'message': 'Normal'})
+            elif(rr<12):
+                return Response({'message': 'Low'})
+            else:
+                return Response({'message': 'High'})    
+        else:  
+            if(rr>=12 and rr<=25):
+                return Response({'message': 'Normal'})
+            elif(rr<12):
+                return Response({'message': 'Low'})
+            else:
+                return Response({'message': 'High'})
+            
+class temp_get_api(APIView):
+    renderer_classes = [UserRenderer]
+    permission_classes = [IsAuthenticated]
+    def get(self, request, temp, year):
+
+        if year <= 18: 
+            if(temp>=97 and temp<=99):
+                return Response({'message': 'Normal'})
+            elif(temp<97):
+                return Response({'message': 'Low'})
+            else:
+                return Response({'message': 'High'})
+        elif year>=18:
+            if(temp>=97 and temp<=99):
+                return Response({'message': 'Normal'})
+            elif(temp<97):
+                return Response({'message': 'Low'})
+            else:
+                return Response({'message': 'High'})    
+        else:  
+            if(temp>=97 and temp<=99):
+                return Response({'message': 'Normal'})
+            elif(temp<97):
+                return Response({'message': 'Low'})
+            else:
+                return Response({'message': 'High'})
+
+
+
+# class hb_get_api(APIView):
+#     renderer_classes = [UserRenderer]
+#     permission_classes = [IsAuthenticated]
+#     def get(self, request, hb, year,gender):
+#         hb = float(hb)
+#         if gender == 1: 
+#             if year <= 18: 
+#                 if(hb>=11 and hb<=13):
+#                     return Response({'message': 'normal'})
+#                 elif(hb<11):
+#                     return Response({'message': 'low'})
+#                 else:
+#                     return Response({'message': 'high'})
+#             elif year>=18:
+#                 if(hb>=14 and hb<=18):
+#                     return Response({'message': 'normal'})
+#                 elif(hb<14):
+#                     return Response({'message': 'low'})
+#                 else:
+#                     return Response({'message': 'high'})    
+#             else:  
+#                 if(hb>=12.4 and hb<=14.9):
+#                     return Response({'message': 'normal'})
+#                 elif(hb<12.4):
+#                     return Response({'message': 'low'})
+#                 else:
+#                     return Response({'message': 'high'})
+
+#         elif gender == 2: 
+#             if year <= 18: 
+#                 if(hb>=11 and hb<=13):
+#                     return Response({'message': 'normal'})
+#                 elif(hb<11):
+#                     return Response({'message': 'low'})
+#                 else:
+#                     return Response({'message': 'high'})
+#             elif year>=18:
+#                 if(hb>=12 and hb<=16):
+#                     return Response({'message': 'normal'})
+#                 elif(hb<12):
+#                     return Response({'message': 'low'})
+#                 else:
+#                     return Response({'message': 'high'})    
+#             else:  
+#                 if(hb>=11.7 and hb<=13.8):
+#                     return Response({'message': 'normal'})
+#                 elif(hb<11.7):
+#                     return Response({'message': 'low'})
+#                 else:
+#                     return Response({'message': 'high'})
+#         else:
+#             return Response({'message': 'Invalid Choice'})
+
+
+class sys_get_api(APIView):
+    renderer_classes = [UserRenderer]
+    permission_classes = [IsAuthenticated]
+    def get(self, request, sys, year):
+        if year <= 18:  #for Child
+            if(sys>=97 and sys<=112):
+                return Response({'message': 'Normal'})
+            elif(sys<97):
+                return Response({'message': 'Low'})
+            else:
+                return Response({'message': 'High'})
+        elif year >=18:  # For adults
+            if(sys>=100 and sys<=120):
+                return Response({'message': 'Normal'})
+            elif(sys<100):
+                return Response({'message': 'Low'})
+            else:
+                return Response({'message': 'High'})
+        else:
+            year >=60  
+            if(sys>=90 and sys<=100):
+                return Response({'message': 'Normal'})
+            elif(sys<90):
+                return Response({'message': 'Low'})
+            else:
+                return Response({'message': 'High'})
+            
+            
+class dys_get_api(APIView):
+    renderer_classes = [UserRenderer]
+    permission_classes = [IsAuthenticated]
+    def get(self, request, dys, year):
+        if year <= 18:  #for Child
+            if(dys>=57 and dys<=71):
+                return Response({'message': 'Normal'})
+            elif(dys<57):
+                return Response({'message': 'Low'})
+            else:
+                return Response({'message': 'High'})
+        elif year >=18:  # For adults
+            if(dys>=80 and dys<=90):
+                return Response({'message': 'Normal'})
+            elif(dys<80):
+                return Response({'message': 'Low'})
+            else:
+                return Response({'message': 'High'})
+        else:
+            year >=60  
+            if(dys>=80 and dys<=90):
+                return Response({'message': 'Normal'})
+            elif(dys<80):
+                return Response({'message': 'Low'})
+            else:
+                return Response({'message': 'High'})
+            
+class o2sat_get_api(APIView):
+    renderer_classes = [UserRenderer]
+    permission_classes = [IsAuthenticated]
+    def get(self, request, o2sat, year):
+        if year <= 18:  #for Child
+            if(o2sat>=95 and o2sat<=100):
+                return Response({'message': 'Normal'})
+            elif(o2sat<95):
+                return Response({'message': 'Low'})
+            else:
+                return Response({'message': 'High'})
+        elif year >=18:  # For adults
+            if(o2sat>=95 and o2sat<=100):
+                return Response({'message': 'Normal'})
+            elif(o2sat<95):
+                return Response({'message': 'Low'})
+            else:
+                return Response({'message': 'High'})
+        else:
+            year >=60  
+            if(o2sat>=90 and o2sat<=100):
+                return Response({'message': 'Normal'})
+            elif(o2sat<90):
+                return Response({'message': 'Low'})
+            else:
+                return Response({'message': 'High'})
+
+
+
+
+import requests
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+
+class DeviceDataView(APIView):
+    ALLOWED_TYPES = {"ECG", "SPO2", "BG", "BP", "TEMPERATURE"}
+
+    def get(self, request):
+        external_api_url = "http://vision.mintti.cn/vision/open/v1/measure/query/info/1/20/9741805533"
+
+        headers = {
+            "appId": "91YD10001",
+            "appKey": "f65fb60bf131b5c85ded5623b613719e",
+            "t": "1740997050",
+            "sign": "e1f3299b0526559e09d403fa198d8c1b"
+        }
+
+        type_value = request.query_params.get("type", "SPO2").upper()
+
+        if type_value not in self.ALLOWED_TYPES:
+            return Response(
+                {"error": "Invalid type. Allowed values: ECG, SPO2, BG, BP, TEMPERATURE"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        params = {"type": type_value}
+
+        try:
+            response = requests.get(external_api_url, headers=headers, params=params)
+            response.raise_for_status()
+            response_data = response.json()
+
+            print("External API Response:", response_data)
+
+            # Extract "rows" list inside "data"
+            data_list = response_data.get("data", {}).get("rows", [])
+
+            # Validate data_list is a list and not empty
+            if isinstance(data_list, list) and data_list:
+                latest_entry = max(
+                    data_list,
+                    key=lambda x: x.get("createTime", 0)  # Sorting based on createTime (Unix timestamp in ms)
+                )
+                return Response(latest_entry, status=status.HTTP_200_OK)
+
+            return Response({"error": "No valid data found in API response"}, status=status.HTTP_404_NOT_FOUND)
+
+        except requests.exceptions.RequestException as e:
+            return Response(
+                {"error": f"Failed to fetch data from external API: {str(e)}"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
+
+           
+
+class Vital_Post_Api(APIView):
+    def post(self, request, pk_id):
+        try:
+            # Get Screening record
+            screening_obj = Screening_citizen.objects.get(pk_id=pk_id)
+
+            # Prepare base data
+            vital_data = {
+                'citizen_id': screening_obj.citizen_id,
+                'screening_count': screening_obj.screening_count,
+                'citizen_pk_id': screening_obj.citizen_pk_id.pk if screening_obj.citizen_pk_id else None,
+                'screening_citizen_id': screening_obj.pk_id,
+            }
+
+            # Check if vital_info already exists
+            vital_obj = vital_info.objects.filter(screening_citizen_id=screening_obj).first()
+
+            if vital_obj:
+                # Update existing record
+                serializer = vital_info_Serializer(vital_obj, data={**request.data, **vital_data}, partial=True)
+                if serializer.is_valid():
+                    updated_obj = serializer.save(modify_by=request.data.get('modify_by'))
+                    self.handle_follow_up_logic(updated_obj, request, screening_obj)
+                    return Response({
+                        "message": "Vital info updated successfully",
+                        "data": serializer.data,
+                        "is_updated": True,
+                        "is_created": False
+                    }, status=status.HTTP_200_OK)
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                # Create new record
+                serializer = vital_info_Serializer(data={**request.data, **vital_data})
+                if serializer.is_valid():
+                    created_obj = serializer.save(added_by=request.data.get('added_by'))
+                    self.handle_follow_up_logic(created_obj, request, screening_obj)
+                    return Response({
+                        "message": "Vital info created successfully",
+                        "data": serializer.data,
+                        "is_updated": False,
+                        "is_created": True
+                    }, status=status.HTTP_201_CREATED)
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        except Screening_citizen.DoesNotExist:
+            return Response({"error": "Invalid pk_id — screening record not found"}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    # -------------------------------------------------------
+    # 🧩 Helper method: handle follow-up logic automatically
+    # -------------------------------------------------------
+    def handle_follow_up_logic(self, vital_obj, request, screening_obj):
+        """Handles auto creation or soft delete in follow_up based on reffered_to_specialist value."""
+        try:
+            reffer_value = request.data.get('reffered_to_specialist')
+            modify_by = request.data.get('modify_by')
+            added_by = request.data.get('added_by')
+
+            # Only handle if reffered_to_specialist is passed
+            if reffer_value is not None:
+                reffer_value = int(reffer_value)
+
+                # Try to get existing follow-up record for this screening
+                follow_obj = follow_up.objects.filter(
+                    screening_citizen_id=screening_obj,
+                    vital_refer__isnull=False
+                ).first()
+
+                # Case 1: referred_to_specialist == 1 → create/update follow_up
+                if reffer_value == 1:
+                    if follow_obj:
+                        follow_obj.vital_refer = 1
+                        follow_obj.is_deleted = False
+                        follow_obj.modify_by = modify_by
+                        follow_obj.save()
+                    else:
+                        follow_up.objects.create(
+                            citizen_id=screening_obj.citizen_id,
+                            screening_count=screening_obj.screening_count,
+                            citizen_pk_id=screening_obj.citizen_pk_id,
+                            screening_citizen_id=screening_obj,
+                            vital_refer=1,
+                            is_deleted=False,
+                            added_by=added_by,
+                            modify_by=modify_by
+                        )
+
+                # Case 2: referred_to_specialist == 0 → mark as deleted in follow_up
+                elif reffer_value == 0 and follow_obj:
+                    follow_obj.is_deleted = True
+                    follow_obj.vital_refer = 0
+                    follow_obj.modify_by = modify_by
+                    follow_obj.save()
+
+        except Exception as e:
+            print("Follow-up logic error:", str(e))
+
+
+
+class Vital_info_Get_api(APIView):
+    def get(self, request, pk_id):
+        snippet = vital_info.objects.filter(screening_citizen_id=pk_id)
+        serializers = vital_info_Serializer(snippet, many=True)
+        return Response(serializers.data, status=status.HTTP_200_OK)
+    
+
+
+class Genral_Examination_Post_API(APIView):
+    def post(self, request, pk_id):
+        try:
+            # Get Screening record
+            screening_obj = Screening_citizen.objects.get(pk_id=pk_id)
+
+            # Prepare backend auto-filled data
+            auto_data = {
+                'citizen_id': screening_obj.citizen_id,
+                'screening_count': screening_obj.screening_count,
+                'citizen_pk_id': screening_obj.citizen_pk_id.pk if screening_obj.citizen_pk_id else None,
+                'screening_citizen_id': screening_obj.pk_id,
+            }
+
+            # Combine backend + frontend data
+            combined_data = {**request.data, **auto_data}
+
+            # Check if record exists (update instead of creating new)
+            existing_obj = genral_examination.objects.filter(screening_citizen_id=screening_obj.pk_id).first()
+            if existing_obj:
+                serializer = Genral_Examination_Post_Serializer(existing_obj, data=combined_data, partial=True)
+            else:
+                serializer = Genral_Examination_Post_Serializer(data=combined_data)
+
+            # Validate & save
+            if serializer.is_valid():
+                serializer.save()
+                message = "General Examination record updated successfully" if existing_obj else "General Examination record created successfully"
+                return Response({"success": True, "message": message, "data": serializer.data}, status=status.HTTP_200_OK)
+            else:
+                return Response({"success": False, "errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+        except Screening_citizen.DoesNotExist:
+            return Response({"success": False, "error": "Invalid pk_id — Screening record not found"}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"success": False, "error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class Genral_Examination_Get_Api(APIView):
+    def get(self, request, pk_id):
+        snippet = genral_examination.objects.filter(screening_citizen_id=pk_id)
+        serializers = Genral_Examination_Get_Serializer(snippet, many=True)
+        return Response(serializers.data, status=status.HTTP_200_OK)
+    
+
+
+
+        
+        
+        
+class Systemic_Examination_Post_API(APIView):
+    def post(self, request, pk_id):
+        try:
+            # Get Screening record
+            screening_obj = Screening_citizen.objects.get(pk_id=pk_id)
+
+            # Prepare backend auto-filled data
+            auto_data = {
+                'citizen_id': screening_obj.citizen_id,
+                'screening_count': screening_obj.screening_count,
+                'citizen_pk_id': screening_obj.citizen_pk_id.pk if screening_obj.citizen_pk_id else None,
+                'screening_citizen_id': screening_obj.pk_id,
+            }
+
+            # Combine backend + frontend data
+            combined_data = {**request.data, **auto_data}
+
+            # Check if record exists (update instead of creating new)
+            existing_obj = systemic_exam.objects.filter(screening_citizen_id=screening_obj.pk_id).first()
+            if existing_obj:
+                serializer = Systemic_Exam_Post_Serializer(existing_obj, data=combined_data, partial=True)
+            else:
+                serializer = Systemic_Exam_Post_Serializer(data=combined_data)
+
+            # Validate & save
+            if serializer.is_valid():
+                serializer.save()
+                message = "General Examination record updated successfully" if existing_obj else "General Examination record created successfully"
+                return Response({"success": True, "message": message, "data": serializer.data}, status=status.HTTP_200_OK)
+            else:
+                return Response({"success": False, "errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+        except Screening_citizen.DoesNotExist:
+            return Response({"success": False, "error": "Invalid pk_id — Screening record not found"}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"success": False, "error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class Systemic_Examination_Get_API(APIView):
+    def get(self, request, pk_id):
+        snippet = systemic_exam.objects.filter(screening_citizen_id=pk_id)
+        serializers = Systemic_Exam_Get_Serializer(snippet, many=True)
+        return Response(serializers.data, status=status.HTTP_200_OK)      
+    
+    
+    
+
+
+class Female_Screening_Post_API(APIView):
+    def post(self, request, pk_id):
+        try:
+            # Get Screening record
+            screening_obj = Screening_citizen.objects.get(pk_id=pk_id)
+
+            # Prepare backend auto-filled data
+            auto_data = {
+                'citizen_id': screening_obj.citizen_id,
+                'screening_count': screening_obj.screening_count,
+                'citizen_pk_id': screening_obj.citizen_pk_id.pk if screening_obj.citizen_pk_id else None,
+                'screening_citizen_id': screening_obj.pk_id,
+            }
+
+            # Combine backend + frontend data
+            combined_data = {**request.data, **auto_data}
+
+            # Check if record exists (update instead of creating new)
+            existing_obj = female_screening.objects.filter(screening_citizen_id=screening_obj.pk_id).first()
+            if existing_obj:
+                serializer = Female_Screening_Post_Serializer(existing_obj, data=combined_data, partial=True)
+            else:
+                serializer = Female_Screening_Post_Serializer(data=combined_data)
+
+            # Validate & save
+            if serializer.is_valid():
+                serializer.save()
+                message = "General Examination record updated successfully" if existing_obj else "General Examination record created successfully"
+                return Response({"message": message, "data": serializer.data}, status=status.HTTP_200_OK)
+            else:
+                return Response({"errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+        except Screening_citizen.DoesNotExist:
+            return Response({"success": False, "error": "Invalid pk_id — Screening record not found"}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"success": False, "error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class Female_Screening_Get_API(APIView):
+    def get(self, request, pk_id):
+        snippet = female_screening.objects.filter(screening_citizen_id=pk_id)
+        serializers = Female_Screening_Get_Serializer(snippet, many=True)
+        return Response(serializers.data, status=status.HTTP_200_OK)
+    
+
+class Disability_Screening_Post_API(APIView):
+    def post(self, request, pk_id):
+        try:
+            # Get Screening record
+            screening_obj = Screening_citizen.objects.get(pk_id=pk_id)
+
+            # Prepare backend auto-filled data
+            auto_data = {
+                'citizen_id': screening_obj.citizen_id,
+                'screening_count': screening_obj.screening_count,
+                'citizen_pk_id': screening_obj.citizen_pk_id.pk if screening_obj.citizen_pk_id else None,
+                'screening_citizen_id': screening_obj.pk_id,
+            }
+
+            # Combine backend + frontend data
+            combined_data = {**request.data, **auto_data}
+
+            # Check if record exists (update instead of creating new)
+            existing_obj = disability_screening.objects.filter(screening_citizen_id=screening_obj.pk_id).first()
+            if existing_obj:
+                serializer = Disability_Screening_Post_Serializer(existing_obj, data=combined_data, partial=True)
+            else:
+                serializer = Disability_Screening_Post_Serializer(data=combined_data)
+
+            # Validate & save
+            if serializer.is_valid():
+                serializer.save()
+                message = "General Examination record updated successfully" if existing_obj else "General Examination record created successfully"
+                return Response({"message": message, "data": serializer.data}, status=status.HTTP_200_OK)
+            else:
+                return Response({"errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+        except Screening_citizen.DoesNotExist:
+            return Response({"success": False, "error": "Invalid pk_id — Screening record not found"}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"success": False, "error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+
+class Disability_Screening_Get_API(APIView):
+    def get(self, request, pk_id):
+        snippet = disability_screening.objects.filter(screening_citizen_id=pk_id)
+        serializers = Disability_Screening_Get_Serializer(snippet, many=True)
+        return Response(serializers.data, status=status.HTTP_200_OK)
+    
+
+class Birth_Defect_Post_API(APIView):
+    def post(self, request, pk_id):
+        try:
+            # Get Screening record
+            screening_obj = Screening_citizen.objects.get(pk_id=pk_id)
+
+            # Prepare backend auto-filled data
+            auto_data = {
+                'citizen_id': screening_obj.citizen_id,
+                'screening_count': screening_obj.screening_count,
+                'citizen_pk_id': screening_obj.citizen_pk_id.pk if screening_obj.citizen_pk_id else None,
+                'screening_citizen_id': screening_obj.pk_id,
+            }
+
+            # Combine backend + frontend data
+            combined_data = {**request.data, **auto_data}
+
+            # Check if record exists (update instead of creating new)
+            existing_obj = birth_defect.objects.filter(screening_citizen_id=screening_obj.pk_id).first()
+            if existing_obj:
+                serializer = Birth_Defect_Post_Serializer(existing_obj, data=combined_data, partial=True)
+            else:
+                serializer = Birth_Defect_Post_Serializer(data=combined_data)
+
+            # Validate & save
+            if serializer.is_valid():
+                serializer.save()
+                message = "General Examination record updated successfully" if existing_obj else "General Examination record created successfully"
+                return Response({"message": message, "data": serializer.data}, status=status.HTTP_200_OK)
+            else:
+                return Response({"errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+        except Screening_citizen.DoesNotExist:
+            return Response({"success": False, "error": "Invalid pk_id — Screening record not found"}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"success": False, "error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+class Birth_Defect_Get_API(APIView):
+    def get(self, request, pk_id):
+        snippet = birth_defect.objects.filter(screening_citizen_id=pk_id)
+        serializers = Birth_Defect_Get_Serializer(snippet, many=True)
+        return Response(serializers.data, status=status.HTTP_200_OK)
+
+
+
+class Childhood_Diseases_Post_API(APIView):
+    def post(self, request, pk_id):
+        try:
+            # Get Screening record
+            screening_obj = Screening_citizen.objects.get(pk_id=pk_id)
+
+            # Prepare backend auto-filled data
+            auto_data = {
+                'citizen_id': screening_obj.citizen_id,
+                'screening_count': screening_obj.screening_count,
+                'citizen_pk_id': screening_obj.citizen_pk_id.pk if screening_obj.citizen_pk_id else None,
+                'screening_citizen_id': screening_obj.pk_id,
+            }
+
+            # Combine backend + frontend data
+            combined_data = {**request.data, **auto_data}
+
+            # Check if record exists (update instead of creating new)
+            existing_obj = childhood_diseases.objects.filter(screening_citizen_id=screening_obj.pk_id).first()
+            if existing_obj:
+                serializer = Childhood_Diseases_Post_Serializer(existing_obj, data=combined_data, partial=True)
+            else:
+                serializer = Childhood_Diseases_Post_Serializer(data=combined_data)
+
+            # Validate & save
+            if serializer.is_valid():
+                serializer.save()
+                message = "General Examination record updated successfully" if existing_obj else "General Examination record created successfully"
+                return Response({"message": message, "data": serializer.data}, status=status.HTTP_200_OK)
+            else:
+                return Response({"errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+        except Screening_citizen.DoesNotExist:
+            return Response({"success": False, "error": "Invalid pk_id — Screening record not found"}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"success": False, "error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class Childhood_Disease_Get_API(APIView):
+    def get(self, request, pk_id):
+        snippet = childhood_diseases.objects.filter(screening_citizen_id=pk_id)
+        serializers = Childhood_Diseases_Get_Serializer(snippet, many=True)
+        return Response(serializers.data, status=status.HTTP_200_OK)
+    
+
+class Deficiencies_Post_API(APIView):
+    def post(self, request, pk_id):
+        try:
+            # Get Screening record
+            screening_obj = Screening_citizen.objects.get(pk_id=pk_id)
+
+            # Prepare backend auto-filled data
+            auto_data = {
+                'citizen_id': screening_obj.citizen_id,
+                'screening_count': screening_obj.screening_count,
+                'citizen_pk_id': screening_obj.citizen_pk_id.pk if screening_obj.citizen_pk_id else None,
+                'screening_citizen_id': screening_obj.pk_id,
+            }
+
+            # Combine backend + frontend data
+            combined_data = {**request.data, **auto_data}
+
+            # Check if record exists (update instead of creating new)
+            existing_obj = deficiencies.objects.filter(screening_citizen_id=screening_obj.pk_id).first()
+            if existing_obj:
+                serializer = Deficiencies_Screening_Post_Serializer(existing_obj, data=combined_data, partial=True)
+            else:
+                serializer = Deficiencies_Screening_Post_Serializer(data=combined_data)
+
+            # Validate & save
+            if serializer.is_valid():
+                serializer.save()
+                message = "General Examination record updated successfully" if existing_obj else "General Examination record created successfully"
+                return Response({"message": message, "data": serializer.data}, status=status.HTTP_200_OK)
+            else:
+                return Response({"errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+        except Screening_citizen.DoesNotExist:
+            return Response({"success": False, "error": "Invalid pk_id — Screening record not found"}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"success": False, "error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class Deficiencies_Get_API(APIView):
+    def get(self, request, pk_id):
+        snippet = deficiencies.objects.filter(screening_citizen_id=pk_id)
+        serializers = Deficiencies_Get_Serializer(snippet, many=True)
+        return Response(serializers.data, status=status.HTTP_200_OK)
+    
+
+
+class SkinCondition_Post_API(APIView):
+    def post(self, request, pk_id):
+        try:
+            # Get Screening record
+            screening_obj = Screening_citizen.objects.get(pk_id=pk_id)
+
+            # Prepare backend auto-filled data
+            auto_data = {
+                'citizen_id': screening_obj.citizen_id,
+                'screening_count': screening_obj.screening_count,
+                'citizen_pk_id': screening_obj.citizen_pk_id.pk if screening_obj.citizen_pk_id else None,
+                'screening_citizen_id': screening_obj.pk_id,
+            }
+
+            # Combine backend + frontend data
+            combined_data = {**request.data, **auto_data}
+
+            # Check if record exists (update instead of creating new)
+            existing_obj = skin_conditions.objects.filter(screening_citizen_id=screening_obj.pk_id).first()
+            if existing_obj:
+                serializer = Skin_Conditions_Post_Serializer(existing_obj, data=combined_data, partial=True)
+            else:
+                serializer = Skin_Conditions_Post_Serializer(data=combined_data)
+
+            # Validate & save
+            if serializer.is_valid():
+                serializer.save()
+                message = "General Examination record updated successfully" if existing_obj else "General Examination record created successfully"
+                return Response({"message": message, "data": serializer.data}, status=status.HTTP_200_OK)
+            else:
+                return Response({"errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+        except Screening_citizen.DoesNotExist:
+            return Response({"success": False, "error": "Invalid pk_id — Screening record not found"}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"success": False, "error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class SkinCondition_Get_API(APIView):
+    def get(self, request, pk_id):
+        snippet = skin_conditions.objects.filter(screening_citizen_id=pk_id)
+        serializers = Skin_Conditions_Get_Serializer(snippet, many=True)
+        return Response(serializers.data, status=status.HTTP_200_OK)
+    
+
+
+class Diagnosis_Post_API(APIView):
+    def post(self, request, pk_id):
+        try:
+            # Get Screening record
+            screening_obj = Screening_citizen.objects.get(pk_id=pk_id)
+
+            # Prepare backend auto-filled data
+            auto_data = {
+                'citizen_id': screening_obj.citizen_id,
+                'screening_count': screening_obj.screening_count,
+                'citizen_pk_id': screening_obj.citizen_pk_id.pk if screening_obj.citizen_pk_id else None,
+                'screening_citizen_id': screening_obj.pk_id,
+            }
+
+            # Combine backend + frontend data
+            combined_data = {**request.data, **auto_data}
+
+            # Check if record exists (update instead of creating new)
+            existing_obj = diagnosis.objects.filter(screening_citizen_id=screening_obj.pk_id).first()
+            if existing_obj:
+                serializer = Diagnosis_Post_Serializer(existing_obj, data=combined_data, partial=True)
+            else:
+                serializer = Diagnosis_Post_Serializer(data=combined_data)
+
+            # Validate & save
+            if serializer.is_valid():
+                serializer.save()
+                message = "General Examination record updated successfully" if existing_obj else "General Examination record created successfully"
+                return Response({"message": message, "data": serializer.data}, status=status.HTTP_200_OK)
+            else:
+                return Response({"errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+        except Screening_citizen.DoesNotExist:
+            return Response({"success": False, "error": "Invalid pk_id — Screening record not found"}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"success": False, "error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class Diagnosis_Get_API(APIView):
+    def get(self, request, pk_id):
+        snippet = diagnosis.objects.filter(screening_citizen_id=pk_id)
+        serializers = Diagnosis_Get_Serializer(snippet, many=True)
+        return Response(serializers.data, status=status.HTTP_200_OK)
+    
+    
+
+class CheckBoxIfNormal_Post_API(APIView):
+    def post(self, request, pk_id):
+        try:
+            # Get Screening record
+            screening_obj = Screening_citizen.objects.get(pk_id=pk_id)
+
+            # Prepare backend auto-filled data
+            auto_data = {
+                'citizen_id': screening_obj.citizen_id,
+                'screening_count': screening_obj.screening_count,
+                'citizen_pk_id': screening_obj.citizen_pk_id.pk if screening_obj.citizen_pk_id else None,
+                'screening_citizen_id': screening_obj.pk_id,
+            }
+
+            # Combine backend + frontend data
+            combined_data = {**request.data, **auto_data}
+
+            # Check if record exists (update instead of creating new)
+            existing_obj = check_box_if_normal.objects.filter(screening_citizen_id=screening_obj.pk_id).first()
+            if existing_obj:
+                serializer = CheckBoxIfNormal_Post_Serializer(existing_obj, data=combined_data, partial=True)
+            else:
+                serializer = CheckBoxIfNormal_Post_Serializer(data=combined_data)
+
+            # Validate & save
+            if serializer.is_valid():
+                serializer.save()
+                message = "General Examination record updated successfully" if existing_obj else "General Examination record created successfully"
+                return Response({"message": message, "data": serializer.data}, status=status.HTTP_200_OK)
+            else:
+                return Response({"errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+        except Screening_citizen.DoesNotExist:
+            return Response({"success": False, "error": "Invalid pk_id — Screening record not found"}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"success": False, "error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class CheckBoxIfNormal_Get_API(APIView):
+    def get(self, request, pk_id):
+        snippet = check_box_if_normal.objects.filter(screening_citizen_id=pk_id)
+        serializers = CheckBoxIfNormal_Get_Serializer(snippet, many=True)
+        return Response(serializers.data, status=status.HTTP_200_OK)
+    
+
+
+class Treatment_Post_API(APIView):
+    def post(self, request, pk_id):
+        try:
+            # ✅ Get screening record
+            screening_obj = Screening_citizen.objects.get(pk_id=pk_id)
+
+            # ✅ Prepare base data
+            treatment_data = {
+                'citizen_id': screening_obj.citizen_id,
+                'screening_count': screening_obj.screening_count,
+                'citizen_pk_id': screening_obj.citizen_pk_id.pk if screening_obj.citizen_pk_id else None,
+                'screening_citizen_id': screening_obj.pk_id,
+            }
+
+            # ✅ Check if record exists
+            treatment_obj = treatement.objects.filter(screening_citizen_id=screening_obj).first()
+
+            if treatment_obj:
+                # -------- Update Existing --------
+                serializer = Treatment_Serializer(treatment_obj, data={**request.data, **treatment_data}, partial=True)
+                if serializer.is_valid():
+                    updated_obj = serializer.save(modify_by=request.data.get('modify_by'))
+                    self.handle_follow_up_logic(updated_obj, request, screening_obj)
+                    return Response({
+                        "message": "Treatment updated successfully",
+                        "data": serializer.data,
+                    }, status=status.HTTP_200_OK)
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+            else:
+                # -------- Create New --------
+                serializer = Treatment_Serializer(data={**request.data, **treatment_data})
+                if serializer.is_valid():
+                    created_obj = serializer.save(added_by=request.data.get('added_by'))
+                    self.handle_follow_up_logic(created_obj, request, screening_obj)
+                    return Response({
+                        "message": "Treatment created successfully",
+                        "data": serializer.data,
+                    }, status=status.HTTP_201_CREATED)
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        except Screening_citizen.DoesNotExist:
+            return Response({"error": "Invalid pk_id — screening record not found"}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+    # ---------------------------------------------
+    # 🧩 Follow-up logic for referred_to_specialist
+    # ---------------------------------------------
+    def handle_follow_up_logic(self, treatment_obj, request, screening_obj):
+        try:
+            reffer_value = request.data.get('reffered_to_specialist')
+            modify_by = request.data.get('modify_by')
+            added_by = request.data.get('added_by')
+
+            if reffer_value is not None:
+                reffer_value = int(reffer_value)
+
+                # Find existing follow-up entry for this screening
+                follow_obj = follow_up.objects.filter(
+                    screening_citizen_id=screening_obj,
+                    basic_screening_refer__isnull=False
+                ).first()
+
+                # Case 1️⃣: referred_to_specialist == 1 → create/update basic_screening_refer = 1
+                if reffer_value == 1:
+                    if follow_obj:
+                        follow_obj.basic_screening_refer = 1
+                        follow_obj.is_deleted = False
+                        follow_obj.modify_by = modify_by
+                        follow_obj.save()
+                    else:
+                        follow_up.objects.create(
+                            citizen_id=screening_obj.citizen_id,
+                            screening_count=screening_obj.screening_count,
+                            citizen_pk_id=screening_obj.citizen_pk_id,
+                            screening_citizen_id=screening_obj,
+                            basic_screening_refer=1,
+                            is_deleted=False,
+                            added_by=added_by,
+                            modify_by=modify_by
+                        )
+
+                # Case 2️⃣: referred_to_specialist == 0 → mark deleted
+                elif reffer_value == 0 and follow_obj:
+                    follow_obj.is_deleted = True
+                    follow_obj.basic_screening_refer = 0
+                    follow_obj.modify_by = modify_by
+                    follow_obj.save()
+
+        except Exception as e:
+            print("Follow-up logic error:", str(e))
+
+
+class Treatment_Get_API(APIView):
+    def get(self, request, pk_id):
+        snippet = treatement.objects.filter(screening_citizen_id=pk_id)
+        serializers = Treatment_Get_Serializer(snippet, many=True)
+        return Response(serializers.data, status=status.HTTP_200_OK)
+    
+
+
+class Auditory_Post_API(APIView):
+    def post(self, request, pk_id):
+        try:
+            # ✅ Get screening record
+            screening_obj = Screening_citizen.objects.get(pk_id=pk_id)
+
+            # ✅ Prepare base data
+            auditory_data = {
+                'citizen_id': screening_obj.citizen_id,
+                'screening_count': screening_obj.screening_count,
+                'citizen_pk_id': screening_obj.citizen_pk_id.pk if screening_obj.citizen_pk_id else None,
+                'screening_citizen_id': screening_obj.pk_id,
+            }
+
+            # ✅ Check if record already exists
+            auditory_obj = auditory_info.objects.filter(screening_citizen_id=screening_obj).first()
+
+            if auditory_obj:
+                # -------- Update existing record --------
+                serializer = Auditory_Info_Post_Serializer(auditory_obj, data={**request.data, **auditory_data}, partial=True)
+                if serializer.is_valid():
+                    updated_obj = serializer.save(modify_by=request.data.get('modify_by'))
+                    self.handle_follow_up_logic(updated_obj, request, screening_obj)
+                    return Response({
+                        "message": "Auditory info updated successfully",
+                        "data": serializer.data,
+                    }, status=status.HTTP_200_OK)
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                # -------- Create new record --------
+                serializer = Auditory_Info_Post_Serializer(data={**request.data, **auditory_data})
+                if serializer.is_valid():
+                    created_obj = serializer.save(added_by=request.data.get('added_by'))
+                    self.handle_follow_up_logic(created_obj, request, screening_obj)
+                    return Response({
+                        "message": "Auditory info created successfully",
+                        "data": serializer.data,
+                    }, status=status.HTTP_201_CREATED)
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        except Screening_citizen.DoesNotExist:
+            return Response({"error": "Invalid pk_id — screening record not found"}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    # -------------------------------------------------------------
+    # 🧩 Handle follow-up logic for referred_to_specialist
+    # -------------------------------------------------------------
+    def handle_follow_up_logic(self, auditory_obj, request, screening_obj):
+        try:
+            reffer_value = request.data.get('reffered_to_specialist')
+            modify_by = request.data.get('modify_by')
+            added_by = request.data.get('added_by')
+
+            if reffer_value is not None:
+                reffer_value = int(reffer_value)
+
+                # Find existing follow-up entry for this screening
+                follow_obj = follow_up.objects.filter(
+                    screening_citizen_id=screening_obj,
+                    auditory_refer__isnull=False
+                ).first()
+
+                # Case 1️⃣: referred_to_specialist == 1 → create/update auditory_refer = 1
+                if reffer_value == 1:
+                    if follow_obj:
+                        follow_obj.auditory_refer = 1
+                        follow_obj.is_deleted = False
+                        follow_obj.modify_by = modify_by
+                        follow_obj.save()
+                    else:
+                        follow_up.objects.create(
+                            citizen_id=screening_obj.citizen_id,
+                            screening_count=screening_obj.screening_count,
+                            citizen_pk_id=screening_obj.citizen_pk_id,
+                            screening_citizen_id=screening_obj,
+                            auditory_refer=1,
+                            is_deleted=False,
+                            added_by=added_by,
+                            modify_by=modify_by
+                        )
+
+                # Case 2️⃣: referred_to_specialist == 0 → mark deleted
+                elif reffer_value == 0 and follow_obj:
+                    follow_obj.is_deleted = True
+                    follow_obj.auditory_refer = 0
+                    follow_obj.modify_by = modify_by
+                    follow_obj.save()
+
+        except Exception as e:
+            print("Follow-up logic error:", str(e))
+
+class Auditory_Get_API(APIView):
+    def get(self, request, pk_id):
+        snippet = auditory_info.objects.filter(screening_citizen_id=pk_id)
+        serializers = Auditory_Info_Get_Serializer(snippet, many=True)
+        return Response(serializers.data, status=status.HTTP_200_OK)
+
+
+
+class Vision_Info_Post_Api(APIView):
+    def post(self, request, pk_id):
+        try:
+            screening_obj = Screening_citizen.objects.get(pk_id=pk_id)
+
+            vision_data = {
+                'citizen_id': screening_obj.citizen_id,
+                'screening_count': screening_obj.screening_count,
+                'citizen_pk_id': screening_obj.citizen_pk_id.pk if screening_obj.citizen_pk_id else None,
+                'screening_citizen_id': screening_obj.pk_id,
+            }
+
+            vision_obj = vision_info.objects.filter(screening_citizen_id=screening_obj).first()
+
+            if vision_obj:
+                # -------- Update existing record --------
+                serializer = Vision_Info_Post_Serializer(vision_obj, data={**request.data, **vision_data}, partial=True)
+                if serializer.is_valid():
+                    updated_obj = serializer.save(modify_by=request.data.get('modify_by'))
+                    self.handle_follow_up_logic(updated_obj, request, screening_obj)
+                    return Response({
+                        "message": "Vision info updated successfully",
+                        "data": serializer.data,
+                    }, status=status.HTTP_200_OK)
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                # -------- Create new record --------
+                serializer = Vision_Info_Post_Serializer(data={**request.data, **vision_data})
+                if serializer.is_valid():
+                    created_obj = serializer.save(added_by=request.data.get('added_by'))
+                    self.handle_follow_up_logic(created_obj, request, screening_obj)
+                    return Response({
+                        "message": "Vision info created successfully",
+                        "data": serializer.data,
+                    }, status=status.HTTP_201_CREATED)
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        except Screening_citizen.DoesNotExist:
+            return Response({"error": "Invalid pk_id — screening record not found"}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    # -------------------------------------------------------------
+    # 🧩 Handle follow-up logic for referred_to_specialist
+    # -------------------------------------------------------------
+    def handle_follow_up_logic(self, vision_obj, request, screening_obj):
+        try:
+            reffer_value = request.data.get('reffered_to_specialist')
+            modify_by = request.data.get('modify_by')
+            added_by = request.data.get('added_by')
+
+            if reffer_value is not None:
+                reffer_value = int(reffer_value)
+
+                # Find existing follow-up entry for this screening
+                follow_obj = follow_up.objects.filter(
+                    screening_citizen_id=screening_obj,
+                    vision_refer__isnull=False
+                ).first()
+
+                # Case 1️⃣: referred_to_specialist == 1 → create/update vision_refer = 1
+                if reffer_value == 1:
+                    if follow_obj:
+                        follow_obj.vision_refer = 1
+                        follow_obj.is_deleted = False
+                        follow_obj.modify_by = modify_by
+                        follow_obj.save()
+                    else:
+                        follow_up.objects.create(
+                            citizen_id=screening_obj.citizen_id,
+                            screening_count=screening_obj.screening_count,
+                            citizen_pk_id=screening_obj.citizen_pk_id,
+                            screening_citizen_id=screening_obj,
+                            vision_refer=1,
+                            is_deleted=False,
+                            added_by=added_by,
+                            modify_by=modify_by
+                        )
+
+                # Case 2️⃣: referred_to_specialist == 0 → mark deleted
+                elif reffer_value == 0 and follow_obj:
+                    follow_obj.is_deleted = True
+                    follow_obj.vision_refer = 0
+                    follow_obj.modify_by = modify_by
+                    follow_obj.save()
+
+        except Exception as e:
+            print("Follow-up logic error:", str(e))
+            
+class Vision_Info_Get_API(APIView):
+    def get(self, request, pk_id):
+        snippet = vision_info.objects.filter(screening_citizen_id=pk_id)
+        serializers = Vision_Info_Get_Serializer(snippet, many=True)
+        return Response(serializers.data, status=status.HTTP_200_OK)
+    
+
+
+class Medical_history_info_Post_API(APIView):
+    def post(self, request, pk_id):
+        try:
+            # Get Screening record
+            screening_obj = Screening_citizen.objects.get(pk_id=pk_id)
+
+            # Prepare backend auto-filled data
+            auto_data = {
+                'citizen_id': screening_obj.citizen_id,
+                'screening_count': screening_obj.screening_count,
+                'citizen_pk_id': screening_obj.citizen_pk_id.pk if screening_obj.citizen_pk_id else None,
+                'screening_citizen_id': screening_obj.pk_id,
+            }
+
+            # Combine backend + frontend data
+            combined_data = {**request.data, **auto_data}
+
+            # Check if record exists (update instead of creating new)
+            existing_obj = medical_history_info.objects.filter(screening_citizen_id=screening_obj.pk_id).first()
+            if existing_obj:
+                serializer = Medical_history_Post_Serializer(existing_obj, data=combined_data, partial=True)
+            else:
+                serializer = Medical_history_Post_Serializer(data=combined_data)
+
+            # Validate & save
+            if serializer.is_valid():
+                serializer.save()
+                message = "General Examination record updated successfully" if existing_obj else "General Examination record created successfully"
+                return Response({"message": message, "data": serializer.data}, status=status.HTTP_200_OK)
+            else:
+                return Response({"errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+        except Screening_citizen.DoesNotExist:
+            return Response({"success": False, "error": "Invalid pk_id — Screening record not found"}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"success": False, "error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class Medical_history_info_Get_API(APIView):
+    def get(self, request, pk_id):
+        snippet = medical_history_info.objects.filter(screening_citizen_id=pk_id)
+        serializers = MedicalHistoryInfo_Get_Serializer(snippet, many=True)
+        return Response(serializers.data, status=status.HTTP_200_OK)
+
+
+class pft_get_api(APIView):
+    renderer_classes = [UserRenderer]
+    permission_classes = [IsAuthenticated]
+    def get(self, request,reading):
+            if(reading>=60 and reading<=249):
+                return Response({'message': 'Danger'})
+            elif(reading>=250 and reading<=449):
+                return Response({'message': 'Caution'})
+            elif(reading>=450 and reading<=800):
+                return Response({'message': 'Stable'})
+            else:
+                return Response({'message': 'Out Of Range'})
+
+
+
+class PFT_Post_info_Post_API(APIView):
+    def post(self, request, pk_id):
+        try:
+            # Get Screening record
+            screening_obj = Screening_citizen.objects.get(pk_id=pk_id)
+
+            # Prepare backend auto-filled data
+            auto_data = {
+                'citizen_id': screening_obj.citizen_id,
+                'screening_count': screening_obj.screening_count,
+                'citizen_pk_id': screening_obj.citizen_pk_id.pk if screening_obj.citizen_pk_id else None,
+                'screening_citizen_id': screening_obj.pk_id,
+            }
+
+            # Combine backend + frontend data
+            combined_data = {**request.data, **auto_data}
+
+            # Check if record exists (update instead of creating new)
+            existing_obj = pft_info.objects.filter(screening_citizen_id=screening_obj.pk_id).first()
+            if existing_obj:
+                serializer = PFT_Info_Post_Serializer(existing_obj, data=combined_data, partial=True)
+            else:
+                serializer = PFT_Info_Post_Serializer(data=combined_data)
+
+            # Validate & save
+            if serializer.is_valid():
+                serializer.save()
+                message = "General Examination record updated successfully" if existing_obj else "General Examination record created successfully"
+                return Response({"message": message, "data": serializer.data}, status=status.HTTP_200_OK)
+            else:
+                return Response({"errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+        except Screening_citizen.DoesNotExist:
+            return Response({"success": False, "error": "Invalid pk_id — Screening record not found"}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"success": False, "error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+class PFT_Info_Get_API(APIView):
+    def get(self, request, pk_id):
+        snippet = pft_info.objects.filter(screening_citizen_id=pk_id)
+        serializers = PFT_Info_Get_Serializer(snippet, many=True)
+        return Response(serializers.data, status=status.HTTP_200_OK)
+
+
+
+class Dental_Info_Post_Api(APIView):
+    def post(self, request, pk_id):
+        try:
+            # ✅ Get Screening record
+            screening_obj = Screening_citizen.objects.get(pk_id=pk_id)
+
+            # ✅ Auto-fill backend data
+            dental_data = {
+                'citizen_id': screening_obj.citizen_id,
+                'screening_count': screening_obj.screening_count,
+                'citizen_pk_id': screening_obj.citizen_pk_id.pk if screening_obj.citizen_pk_id else None,
+                'screening_citizen_id': screening_obj.pk_id,
+            }
+
+            # ✅ Check existing record
+            dental_obj = dental_info.objects.filter(screening_citizen_id=screening_obj).first()
+
+            if dental_obj:
+                # -------- Update existing record --------
+                serializer = Dental_Info_Post_Serializer(dental_obj, data={**request.data, **dental_data}, partial=True)
+                if serializer.is_valid():
+                    updated_obj = serializer.save(modify_by=request.data.get('modify_by'))
+                    self.handle_follow_up_logic(updated_obj, request, screening_obj)
+                    return Response({
+                        "message": "Dental info updated successfully",
+                        "data": serializer.data,
+                    }, status=status.HTTP_200_OK)
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+            else:
+                # -------- Create new record --------
+                serializer = Dental_Info_Post_Serializer(data={**request.data, **dental_data})
+                if serializer.is_valid():
+                    created_obj = serializer.save(added_by=request.data.get('added_by'))
+                    self.handle_follow_up_logic(created_obj, request, screening_obj)
+                    return Response({
+                        "message": "Dental info created successfully",
+                        "data": serializer.data,
+                    }, status=status.HTTP_201_CREATED)
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        except Screening_citizen.DoesNotExist:
+            return Response({"error": "Invalid pk_id — screening record not found"}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    # -------------------------------------------------------------
+    # 🦷 Handle follow-up logic for reffered_to_specialist
+    # -------------------------------------------------------------
+    def handle_follow_up_logic(self, dental_obj, request, screening_obj):
+        try:
+            reffer_value = request.data.get('reffered_to_specialist')
+            modify_by = request.data.get('modify_by')
+            added_by = request.data.get('added_by')
+
+            if reffer_value is not None:
+                reffer_value = int(reffer_value)
+
+                # Find existing follow-up entry for this screening
+                follow_obj = follow_up.objects.filter(
+                    screening_citizen_id=screening_obj,
+                    dental_refer__isnull=False
+                ).first()
+
+                # Case 1️⃣: referred_to_specialist == 1 → create/update dental_refer = 1
+                if reffer_value == 1:
+                    if follow_obj:
+                        follow_obj.dental_refer = 1
+                        follow_obj.is_deleted = False
+                        follow_obj.modify_by = modify_by
+                        follow_obj.save()
+                    else:
+                        follow_up.objects.create(
+                            citizen_id=screening_obj.citizen_id,
+                            screening_count=screening_obj.screening_count,
+                            citizen_pk_id=screening_obj.citizen_pk_id,
+                            screening_citizen_id=screening_obj,
+                            dental_refer=1,
+                            is_deleted=False,
+                            added_by=added_by,
+                            modify_by=modify_by
+                        )
+
+                # Case 2️⃣: referred_to_specialist == 0 → mark deleted
+                elif reffer_value == 0 and follow_obj:
+                    follow_obj.is_deleted = True
+                    follow_obj.dental_refer = 0
+                    follow_obj.modify_by = modify_by
+                    follow_obj.save()
+
+        except Exception as e:
+            print("Follow-up logic error:", str(e))
+            
+            
+class Dental_Info_Get_API(APIView):
+    def get(self, request, pk_id):
+        snippet = dental_info.objects.filter(screening_citizen_id=pk_id)
+        serializers = Dental_Info_Get_Serializer(snippet, many=True)
+        return Response(serializers.data, status=status.HTTP_200_OK)
+    
+
+
+
+class Immunisation_Info_Post_Api(APIView):
+    def post(self, request, pk_id):
+        try:
+            # Get Screening record
+            screening_obj = Screening_citizen.objects.get(pk_id=pk_id)
+
+            # Prepare backend auto-filled data
+            auto_data = {
+                'citizen_id': screening_obj.citizen_id,
+                'screening_count': screening_obj.screening_count,
+                'citizen_pk_id': screening_obj.citizen_pk_id.pk if screening_obj.citizen_pk_id else None,
+                'screening_citizen_id': screening_obj.pk_id,
+            }
+
+            # Combine backend + frontend data
+            combined_data = {**request.data, **auto_data}
+
+            # Check if record exists (update instead of creating new)
+            existing_obj = immunisation_info.objects.filter(screening_citizen_id=screening_obj.pk_id).first()
+            if existing_obj:
+                serializer = Immunisation_Info_Post_Serializer(existing_obj, data=combined_data, partial=True)
+            else:
+                serializer = Immunisation_Info_Post_Serializer(data=combined_data)
+
+            # Validate & save
+            if serializer.is_valid():
+                serializer.save()
+                message = "General Examination record updated successfully" if existing_obj else "General Examination record created successfully"
+                return Response({"message": message, "data": serializer.data}, status=status.HTTP_200_OK)
+            else:
+                return Response({"errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+        except Screening_citizen.DoesNotExist:
+            return Response({"success": False, "error": "Invalid pk_id — Screening record not found"}, status=status.HTTP_404_NOT_FOUND)
+        except Exception as e:
+            return Response({"success": False, "error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+class Immunisation_Info_Get_API(APIView):
+    def get(self, request, pk_id):
+        snippet = immunisation_info.objects.filter(screening_citizen_id=pk_id)
+        serializers = Immunisation_Info_Get_Serializer(snippet, many=True)
+        return Response(serializers.data, status=status.HTTP_200_OK)
+    
+
+
+from rest_framework.parsers import MultiPartParser, FormParser
+class Investigation_Info_Post_Api(APIView):
+    parser_classes = (MultiPartParser, FormParser)
+
+    def post(self, request, pk_id):
+        try:
+            # Get Screening record
+            screening_obj = Screening_citizen.objects.get(pk_id=pk_id)
+
+            # Auto data (ForeignKey fields expect instances)
+            auto_data = {
+                'citizen_id': screening_obj.citizen_id,
+                'screening_count': screening_obj.screening_count,
+                'citizen_pk_id': screening_obj.citizen_pk_id,
+                'screening_citizen_id': screening_obj,
+            }
+
+            # Check for existing record
+            existing_obj = investigation_info.objects.filter(
+                screening_citizen_id=screening_obj.pk_id
+            ).first()
+
+            if existing_obj:
+                serializer = Investigation_Info_Post_Serializer(
+                    existing_obj, data=request.data, partial=True
+                )
+            else:
+                serializer = Investigation_Info_Post_Serializer(data=request.data)
+
+            if serializer.is_valid():
+                instance = serializer.save(**auto_data)
+                msg = "Investigation record updated successfully" if existing_obj else "Investigation record created successfully"
+                return Response(
+                    {"message": msg, "data": Investigation_Info_Post_Serializer(instance).data},
+                    status=status.HTTP_200_OK
+                )
+
+            return Response({"errors": serializer.errors}, status=status.HTTP_400_BAD_REQUEST)
+
+        except Screening_citizen.DoesNotExist:
+            return Response(
+                {"error": "Invalid pk_id — Screening record not found"},
+                status=status.HTTP_404_NOT_FOUND
+            )
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+class Investigation_Info_Get_API(APIView):
+    def get(self, request, pk_id):
+        snippet = investigation_info.objects.filter(screening_citizen_id=pk_id)
+        serializers = Investigation_Info_Get_Serializer(snippet, many=True)
+        return Response(serializers.data, status=status.HTTP_200_OK)

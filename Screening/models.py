@@ -2832,3 +2832,866 @@ class agg_sc_citizen_other_info(models.Model):
 # spero_it
 # Spero@108
 # 2121
+
+
+#----------------------------------------------NEW Tables----------------------------------------------------------------------------------
+
+
+
+
+class Category(enum.Enum):
+	Driver = 1
+	Cleaner = 2
+
+class Citizen(models.Model):
+    citizens_pk_id = models.AutoField(primary_key=True)
+    citizen_id = models.CharField(max_length=50, editable=False,unique=True)
+    prefix = models.CharField(max_length=255,null=True,blank=True)
+    name = models.CharField(max_length=255,null=True,blank=True)
+    vehicle_number = models.CharField(max_length=255,null=True,blank=True)
+    blood_groups = models.CharField(max_length=255,null=True,blank=True)
+    dob = models.DateField(null=True,blank=True)
+    year = models.CharField(max_length=12)
+    months = models.CharField(max_length=12) 
+    days = models.CharField(max_length=12)
+    gender = models.ForeignKey('agg_gender', on_delete=models.CASCADE,null=True, blank=True)
+    source = models.ForeignKey('agg_source', on_delete=models.CASCADE,null=True, blank=True)
+    category = enum.EnumField(Category, null=True,blank=True)
+    aadhar_id = models.CharField(max_length=12,null=True,blank=True)
+    mobile_no = models.BigIntegerField(null=True,blank=True)
+    
+#___________ADDRESS_____________________________
+    source_name = models.ForeignKey('agg_sc_add_new_source', on_delete=models.CASCADE)
+    state = models.ForeignKey('agg_sc_state', on_delete=models.CASCADE, blank=True, null=True)
+    district = models.ForeignKey('agg_sc_district', on_delete=models.CASCADE,blank=True, null=True)
+    tehsil =  models.ForeignKey('agg_sc_tahsil', on_delete=models.CASCADE,blank=True, null=True)
+    pincode = models.CharField(max_length=255)
+    address = models.CharField(max_length=255,null=True,blank=True)
+#___________GROWTH MONITORING________________
+    height = models.FloatField(blank=True,null=True)
+    weight = models.FloatField(blank=True,null=True)
+    weight_for_age = models.CharField(max_length=255, null=True,blank=True)
+    height_for_age = models.CharField(max_length=255, null=True,blank=True)
+    weight_for_height =models.CharField(max_length=50, blank=True,null=True)
+    bmi = models.FloatField(blank=True, null=True)
+    arm_size = models.IntegerField(blank=True, null=True)
+    symptoms = models.CharField(max_length=255,blank=True, null=True)
+    
+    #------------------------------Emergency Contact -----------------------------------
+    emergency_prefix = models.CharField(max_length=255,null=True,blank=True)
+    emergency_fullname = models.CharField(max_length=255,null=True,blank=True)
+    emergency_gender = models.CharField(max_length=255,null=True,blank=True)
+    emergency_contact = models.CharField(max_length=10, null=True,blank=True) 
+    relationship_with_employee = models.CharField(max_length=255,null=True,blank=True)
+    emergency_address = models.CharField(max_length=555,null=True,blank=True)
+    
+    is_deleted = models.BooleanField(default=False)
+    added_by =	models.CharField(max_length=255,null=True, blank=True)
+    added_date = models.DateTimeField(auto_now_add=True)
+    modify_by =	models.CharField(max_length=255,null=True, blank=True)
+    modify_date = models.DateTimeField(auto_now=True, null=True)
+    
+    
+    
+    def generate_citizen_id(self):
+        last_id = Citizen.objects.order_by('-citizens_pk_id').first()
+        if last_id and last_id.citizen_id and '-' in last_id.citizen_id:
+            try:
+                last_id_value = int(last_id.citizen_id.split('-')[1][-5:])
+            except ValueError:
+                last_id_value = 0
+            new_id_value = last_id_value + 1
+        else:
+            new_id_value = 1
+
+        generated_id = f"{timezone.now().strftime('%d%m%Y')}{str(new_id_value).zfill(5)}"
+        return f"CITIZEN-{generated_id}"
+
+    def save(self, *args, **kwargs):
+        for attempt in range(5):  # retry up to 5 times
+            if not self.citizen_id:  # always regenerate if missing
+                self.citizen_id = self.generate_citizen_id()
+            try:
+                with transaction.atomic():
+                    super().save(*args, **kwargs)
+                return  # ✅ success
+            except IntegrityError:
+                # regenerate ID and retry
+                self.citizen_id = None
+                if attempt == 4:
+                    raise
+                continue
+            
+            
+class Workshop(models.Model):
+    ws_pk_id = models.AutoField(primary_key=True)
+    workshop_code = models.CharField(max_length=20, editable=False,unique=True)
+    source = models.ForeignKey('agg_source',on_delete=models.CASCADE,null=True, blank=True)
+    Workshop_name = models.CharField(max_length=255,null=True,blank=True)
+    registration_no = models.CharField(max_length=255,null=True,blank=True)
+    mobile_no = models.CharField(max_length=20,null=True,blank=True)
+    email_id = models.EmailField(null=True,blank=True)
+    logo = models.FileField(upload_to='media_files/', null=True, blank=True)
+
+    ws_state = models.ForeignKey('agg_sc_state',on_delete=models.CASCADE,null=True, blank=True)
+    ws_district = models.ForeignKey('agg_sc_district',on_delete=models.CASCADE,null=True, blank=True)
+    ws_taluka = models.ForeignKey('agg_sc_tahsil',on_delete=models.CASCADE,null=True, blank=True)
+    ws_pincode = models.CharField(max_length=255,null=True, blank=True)
+    ws_address = models.CharField(max_length=255,null=True, blank=True)
+    
+    screening_vitals = models.JSONField(null=True,blank=True)
+    sub_screening_vitals = models.JSONField(null=True,blank=True)
+    
+    is_deleted = models.BooleanField(default=False)
+    added_by =	models.CharField(max_length=255,null=True, blank=True)
+    added_date = models.DateTimeField(auto_now_add=True)
+    modify_by =	models.CharField(max_length=255,null=True, blank=True)
+    modify_date = models.DateTimeField(auto_now=True, null=True)
+
+    def __str__(self):
+        return self.source_names
+       
+    def save(self, *args, **kwargs):
+        if not self.workshop_code:
+            last_id = Workshop.objects.order_by('-ws_pk_id').first()
+            if last_id:
+                last_id_value = int(last_id.workshop_code.split('-')[1])
+                new_id_value = last_id_value + 1
+                generated_id = f"WS-{str(new_id_value).zfill(5)}"
+            else:
+                generated_id = f"WS-00001"
+
+            self.workshop_code = generated_id
+
+        super(Workshop, self).save(*args, **kwargs)
+
+
+
+
+
+class Screening_citizen(models.Model):
+    pk_id = models.AutoField(primary_key=True)
+    screening_count = models.IntegerField(null=True,blank=True)
+    citizen_id = models.CharField(max_length=255,null=True,blank=True) 
+    citizen_pk_id = models.ForeignKey(Citizen, on_delete=models.CASCADE, null=True,blank=True)
+    added_by = models.CharField(max_length=255,null=True, blank=True)
+    added_date = models.DateTimeField(auto_now_add=True)
+    modify_by = models.CharField(max_length=255,null=True, blank=True)
+    modified_date = models.DateTimeField(auto_now=True)
+    
+    
+    
+    
+class basic_info(models.Model):
+    basic_pk_id = models.AutoField(primary_key=True)
+    citizen_id = models.CharField(max_length=255) 
+    screening_count = models.IntegerField(null=True,blank=True)
+    citizen_pk_id = models.ForeignKey(Citizen, on_delete=models.CASCADE, null=True,blank=True)
+    screening_citizen_id = models.ForeignKey(Screening_citizen, on_delete=models.CASCADE, null=True,blank=True)
+    
+    prefix = models.CharField(max_length=255,null=True,blank=True)
+    name = models.CharField(max_length=255,null=True, blank=True)
+    gender = models.CharField(max_length=255,null=True, blank=True)
+    blood_group = models.CharField(max_length=255,null=True, blank=True)
+    dob = models.DateField(null=True, blank=True)
+    year = models.CharField(max_length=12,null=True, blank=True)
+    months = models.CharField(max_length=12,null=True, blank=True)
+    days = models.CharField(max_length=12,null=True, blank=True)
+    aadhar_id = models.CharField(max_length=12,null=True, blank=True)
+    phone_no = models.CharField(max_length=10, null=True,blank=True)
+    form_submit = models.BooleanField(default=False)
+    is_deleted = models.BooleanField(default=False)
+    added_by =	models.CharField(null=True, blank=True,max_length=255)
+    added_date = models.DateTimeField(auto_now_add=True)
+    modify_by =	models.CharField(null=True, blank=True,max_length=255)
+    modify_date = models.DateTimeField(auto_now=True, null=True)
+    
+    
+    
+class emergency_info(models.Model):
+    em_pk_id = models.AutoField(primary_key=True)
+    citizen_id = models.CharField(max_length=255) 
+    screening_count = models.IntegerField(null=True,blank=True)
+    citizen_pk_id = models.ForeignKey(Citizen, on_delete=models.CASCADE, null=True,blank=True)
+    screening_citizen_id = models.ForeignKey(Screening_citizen, on_delete=models.CASCADE, null=True,blank=True)
+    
+    emergency_prefix = models.CharField(max_length=255,null=True,blank=True)
+    emergency_fullname = models.CharField(max_length=255,null=True,blank=True)
+    emergency_gender = models.CharField(max_length=255,null=True,blank=True)
+    emergency_contact = models.CharField(max_length=10, null=True,blank=True) 
+    relationship_with_employee = models.CharField(max_length=255,null=True,blank=True)
+    emergency_address = models.CharField(max_length=555,null=True,blank=True)
+    
+    form_submit = models.BooleanField(default=False)
+    is_deleted = models.BooleanField(default=False)
+    added_by =	models.CharField(null=True, blank=True,max_length=255)
+    added_date = models.DateTimeField(auto_now_add=True)
+    modify_by =	models.CharField(null=True, blank=True,max_length=255)
+    modify_date = models.DateTimeField(auto_now=True, null=True)
+
+
+
+
+
+
+
+class growth_monitoring_info(models.Model):
+    growth_pk_id = models.AutoField(primary_key=True)
+    citizen_id = models.CharField(max_length=255) 
+    screening_count = models.IntegerField(null=True,blank=True)
+    citizen_pk_id = models.ForeignKey(Citizen, on_delete=models.CASCADE, null=True,blank=True)
+    screening_citizen_id = models.ForeignKey(Screening_citizen, on_delete=models.CASCADE, null=True,blank=True)
+    gender = models.CharField(max_length=255,null=True, blank=True)
+    
+    dob = models.DateField(max_length=20,null=True, blank=True)
+    year = models.CharField(max_length=20,null=True, blank=True)
+    months = models.CharField(max_length=20,null=True, blank=True)
+    days = models.CharField(max_length=10,null=True, blank=True)
+    height = models.FloatField(blank=True, null=True)
+    weight = models.FloatField(blank=True, null=True)
+    weight_for_age = models.CharField(max_length=50, blank=True, null=True)
+    height_for_age = models.CharField(max_length=50, blank=True, null=True)
+    weight_for_height = models.CharField(max_length=50, blank=True, null=True)
+    bmi = models.FloatField(blank=True, null=True)
+    arm_size = models.FloatField(blank=True, null=True)
+    symptoms = models.CharField(max_length=255,null=True, blank=True)\
+        
+    remark = models.CharField(max_length=555,null=True, blank=True)
+    reffered_to_specialist = models.IntegerField(null=True, blank=True)
+    
+    form_submit = models.BooleanField(default=False)
+    is_deleted = models.BooleanField(default=False)
+    added_by =	models.CharField(null=True, blank=True,max_length=255)
+    added_date = models.DateTimeField(auto_now_add=True)
+    modify_by =	models.CharField(null=True, blank=True,max_length=255)
+    modify_date = models.DateTimeField(auto_now=True, null=True)
+    
+    
+    
+    
+    
+class vital_info(models.Model):
+    vital_info_pk_id=models.AutoField(primary_key=True)
+    vital_code = models.CharField(max_length=1110, editable=False) 
+    
+    
+    citizen_id = models.CharField(max_length=255) 
+    screening_count = models.IntegerField(null=True,blank=True)
+    citizen_pk_id = models.ForeignKey(Citizen, on_delete=models.CASCADE, null=True,blank=True)
+    screening_citizen_id = models.ForeignKey(Screening_citizen, on_delete=models.CASCADE, null=True,blank=True)
+    
+    
+    pulse = models.IntegerField(null=True, blank=True)
+    pulse_conditions = models.CharField(max_length=555,null=True, blank=True)
+    sys_mm = models.IntegerField(null=True, blank=True)
+    sys_mm_conditions = models.CharField(max_length=555,null=True, blank=True)
+    dys_mm = models.IntegerField(null=True, blank=True)
+    dys_mm_mm_conditions = models.CharField(max_length=555,null=True, blank=True)
+    oxygen_saturation = models.IntegerField(null=True, blank=True)
+    oxygen_saturation_conditions = models.CharField(max_length=555,null=True, blank=True)
+    rr = models.IntegerField(null=True, blank=True)
+    rr_conditions = models.CharField(max_length=555,null=True, blank=True)
+    temp = models.IntegerField(null=True, blank=True)
+    temp_conditions = models.CharField(max_length=555,null=True, blank=True)
+    is_deleted = models.BooleanField(default=False)
+    form_submit = models.BooleanField(default=False)
+    reffered_to_specialist = models.IntegerField(null=True, blank=True)
+    
+    added_date = models.DateTimeField(auto_now_add=True)
+    added_by =	models.CharField(null=True, blank=True,max_length=255)
+    modify_date = models.DateTimeField(auto_now=True, null=True)
+    modify_by =	models.CharField(null=True, blank=True,max_length=255)
+
+    def save(self, *args, **kwargs):
+        if not self.vital_code:
+            last_id = vital_info.objects.order_by('-vital_code').first()
+            if last_id and '-' in last_id.vital_code:
+                last_id_value = int(last_id.vital_code.split('-')[1][-4:])
+                new_id_value = last_id_value + 1
+                generated_id = int(str(timezone.now().strftime('%d%m%Y')) + str(new_id_value).zfill(5))
+            else:
+                generated_id = int(str(timezone.now().strftime('%d%m%Y')) + '00001')
+
+            self.vital_code = f"VITAL-{generated_id}"
+
+        super(vital_info, self).save(*args, **kwargs)
+        
+
+class genral_examination(models.Model):
+    genral_pk_id = models.AutoField(primary_key=True)
+    citizen_id = models.CharField(max_length=255) 
+    screening_count = models.IntegerField(null=True,blank=True)
+    citizen_pk_id = models.ForeignKey(Citizen, on_delete=models.CASCADE, null=True,blank=True)
+    screening_citizen_id = models.ForeignKey(Screening_citizen, on_delete=models.CASCADE, null=True,blank=True)
+
+    head = models.ForeignKey('basic_information_head_scalp', on_delete=models.CASCADE,null=True,blank=True)
+    nose = models.ForeignKey('basic_information_nose', on_delete=models.CASCADE,null=True,blank=True)
+    neck = models.ForeignKey('basic_information_neck', on_delete=models.CASCADE,null=True,blank=True)
+    skin_color = models.ForeignKey('basic_information_skin_color', on_delete=models.CASCADE,null=True,blank=True)
+    skin_texture = models.ForeignKey('basic_information_skin_texture', on_delete=models.CASCADE,null=True,blank=True)
+    skin_lesions = models.ForeignKey('basic_information_skin_lesions', on_delete=models.CASCADE,null=True,blank=True)
+    lips = models.ForeignKey('basic_information_lips', on_delete=models.CASCADE,null=True,blank=True)
+    gums = models.ForeignKey('basic_information_gums', on_delete=models.CASCADE,null=True,blank=True)
+    dention = models.ForeignKey('basic_information_dentition', on_delete=models.CASCADE,null=True,blank=True)
+    oral_mucosa = models.ForeignKey('basic_information_oral_mucosa', on_delete=models.CASCADE,null=True,blank=True)
+    tongue = models.ForeignKey('basic_information_tounge', on_delete=models.CASCADE,null=True,blank=True)
+    hair_color = models.ForeignKey('basic_information_hair_color', on_delete=models.CASCADE,null=True,blank=True)
+    hair_density = models.ForeignKey('basic_information_hair_density', on_delete=models.CASCADE,null=True,blank=True)
+    hair_texture = models.ForeignKey('basic_information_hair_texture', on_delete=models.CASCADE,null=True,blank=True)
+    alopecia = models.ForeignKey('basic_information_alopecia', on_delete=models.CASCADE,null=True,blank=True)
+    chest = models.ForeignKey('basic_information_chest', on_delete=models.CASCADE,null=True,blank=True)
+    abdomen = models.ForeignKey('basic_information_abdomen', on_delete=models.CASCADE,null=True,blank=True)
+    extremity = models.ForeignKey('basic_information_extremity', on_delete=models.CASCADE,null=True,blank=True)
+    
+    
+    
+    is_deleted = models.BooleanField(default=False)
+    form_submit = models.BooleanField(default=False)
+
+    added_date = models.DateTimeField(auto_now_add=True)
+    added_by =	models.CharField(null=True, blank=True,max_length=255)
+    modify_date = models.DateTimeField(auto_now=True, null=True)
+    modify_by =	models.CharField(null=True, blank=True,max_length=255)
+    
+    
+    
+    
+class systemic_exam(models.Model):
+    systemic_pk_id = models.AutoField(primary_key=True)
+    citizen_id = models.CharField(max_length=255) 
+    screening_count = models.IntegerField(null=True,blank=True)
+    citizen_pk_id = models.ForeignKey(Citizen, on_delete=models.CASCADE, null=True,blank=True)
+    screening_citizen_id = models.ForeignKey(Screening_citizen, on_delete=models.CASCADE, null=True,blank=True)
+    
+    rs_right = models.ForeignKey('basic_information_rs_right', on_delete=models.CASCADE,null=True,blank=True)
+    rs_left = models.ForeignKey('basic_information_rs_left', on_delete=models.CASCADE,null=True,blank=True)
+    cvs = models.ForeignKey('basic_information_cvs', on_delete=models.CASCADE,null=True,blank=True)
+    varicose_veins =  models.ForeignKey('basic_information_varicose_veins', on_delete=models.CASCADE,null=True,blank=True)
+    lmp =  models.ForeignKey('basic_information_lmp', on_delete=models.CASCADE,null=True,blank=True)
+    cns = models.ForeignKey('basic_information_cns', on_delete=models.CASCADE,null=True,blank=True)
+    reflexes = models.ForeignKey('basic_information_reflexes', on_delete=models.CASCADE,null=True,blank=True)
+    rombergs = models.ForeignKey('basic_information_rombergs', on_delete=models.CASCADE,null=True,blank=True)
+    pupils = models.ForeignKey('basic_information_pupils', on_delete=models.CASCADE,null=True,blank=True)
+    pa = models.ForeignKey('basic_information_pa', on_delete=models.CASCADE,null=True,blank=True)
+    tenderness = models.ForeignKey('basic_information_tenderness', on_delete=models.CASCADE,null=True,blank=True)
+    ascitis =  models.ForeignKey('basic_information_ascitis', on_delete=models.CASCADE,null=True,blank=True)
+    guarding = models.ForeignKey('basic_information_guarding', on_delete=models.CASCADE,null=True,blank=True)
+    joints =  models.ForeignKey('basic_information_joints', on_delete=models.CASCADE,null=True,blank=True)
+    swollen_joints =  models.ForeignKey('basic_information_swollen_joints', on_delete=models.CASCADE,null=True,blank=True)
+    spine_posture = models.ForeignKey('basic_information_spine_posture', on_delete=models.CASCADE,null=True,blank=True)
+    
+    is_deleted = models.BooleanField(default=False)
+    form_submit = models.BooleanField(default=False)
+
+    added_date = models.DateTimeField(auto_now_add=True)
+    added_by =	models.CharField(null=True, blank=True,max_length=255)
+    modify_date = models.DateTimeField(auto_now=True, null=True)
+    modify_by =	models.CharField(null=True, blank=True,max_length=255)
+
+
+
+
+
+class status2(enum.Enum):
+    NO = 2
+    YES = 1
+
+class flow_status2(enum.Enum):
+    NAD = 1
+    MILD = 2
+    MODERATE = 3
+    EXCESSIVE = 4
+class female_screening(models.Model):
+    female_pk_id = models.AutoField(primary_key=True)
+    citizen_id = models.CharField(max_length=255)
+    screening_count = models.IntegerField(null=True,blank=True)
+    citizen_pk_id = models.ForeignKey(Citizen, on_delete=models.CASCADE, null=True,blank=True)
+    screening_citizen_id = models.ForeignKey(Screening_citizen, on_delete=models.CASCADE, null=True,blank=True)
+    
+    menarche_achieved = enum.EnumField(status2,null=True,blank=True)
+    date_of_menarche = models.DateField(null=True,blank=True)  
+    age_of_menarche = models.IntegerField(null=True,blank=True)
+    vaginal_descharge = enum.EnumField(status2,null=True,blank=True) 
+    flow = enum.EnumField(flow_status2,null=True,blank=True)
+    comments = models.CharField(max_length = 555,null=True,blank=True)
+
+    is_deleted = models.BooleanField(default=False)
+    form_submit = models.BooleanField(default=False)
+
+    added_date = models.DateTimeField(auto_now_add=True)
+    added_by =	models.CharField(null=True, blank=True,max_length=255)
+    modify_date = models.DateTimeField(auto_now=True, null=True)
+    modify_by =	models.CharField(null=True, blank=True,max_length=255)
+
+
+class disability_screening(models.Model):
+    disability_pk_id = models.AutoField(primary_key=True)
+    citizen_id = models.CharField(max_length=255) 
+    screening_count = models.IntegerField(null=True,blank=True)
+    citizen_pk_id = models.ForeignKey(Citizen, on_delete=models.CASCADE, null=True,blank=True)
+    screening_citizen_id = models.ForeignKey(Screening_citizen, on_delete=models.CASCADE, null=True,blank=True)
+    
+    
+    language_delay = models.ForeignKey('basic_information_language_delay', on_delete=models.CASCADE,null=True,blank=True)
+    behavioural_disorder = models.ForeignKey('basic_information_behavioural_disorder', on_delete=models.CASCADE,null=True,blank=True)
+    speech_screening = models.ForeignKey('basic_information_speech_screening', on_delete=models.CASCADE,null=True,blank=True)
+    comment = models.CharField(max_length=255,null=True,blank=True)
+    
+    
+    is_deleted = models.BooleanField(default=False)
+    form_submit = models.BooleanField(default=False)
+
+    added_date = models.DateTimeField(auto_now_add=True)
+    added_by =	models.CharField(null=True, blank=True,max_length=255)
+    modify_date = models.DateTimeField(auto_now=True, null=True)
+    modify_by =	models.CharField(null=True, blank=True,max_length=255)
+
+
+class birth_defect(models.Model):
+    birth_pk_id = models.AutoField(primary_key=True)
+    citizen_id = models.CharField(max_length=255) 
+    screening_count = models.IntegerField(null=True,blank=True)
+    citizen_pk_id = models.ForeignKey(Citizen, on_delete=models.CASCADE, null=True,blank=True)
+    screening_citizen_id = models.ForeignKey(Screening_citizen, on_delete=models.CASCADE, null=True,blank=True)
+    
+    birth_defects = models.JSONField(null=True,blank=True)
+
+    form_submit = models.BooleanField(default=False)
+    is_deleted = models.BooleanField(default=False)
+    
+    added_by =	models.CharField(null=True, blank=True,max_length=255)
+    added_date = models.DateTimeField(auto_now_add=True)
+    modify_by =	models.CharField(null=True, blank=True,max_length=255)
+    modify_date = models.DateTimeField(auto_now=True, null=True)
+    
+class childhood_diseases(models.Model):
+    childhood_pk_id = models.AutoField(primary_key=True)
+    citizen_id = models.CharField(max_length=255) 
+    screening_count = models.IntegerField(null=True,blank=True)
+    citizen_pk_id = models.ForeignKey(Citizen, on_delete=models.CASCADE, null=True,blank=True)
+    screening_citizen_id = models.ForeignKey(Screening_citizen, on_delete=models.CASCADE, null=True,blank=True)
+    
+    childhood_diseases = models.JSONField(null=True,blank=True)
+
+    form_submit = models.BooleanField(default=False)
+    is_deleted = models.BooleanField(default=False)
+    
+    added_by =	models.CharField(null=True, blank=True,max_length=255)
+    added_date = models.DateTimeField(auto_now_add=True)
+    modify_by =	models.CharField(null=True, blank=True,max_length=255)
+    modify_date = models.DateTimeField(auto_now=True, null=True)
+    
+class deficiencies(models.Model):
+    deficiencies_pk_id = models.AutoField(primary_key=True)
+    citizen_id = models.CharField(max_length=255) 
+    screening_count = models.IntegerField(null=True,blank=True)
+    citizen_pk_id = models.ForeignKey(Citizen, on_delete=models.CASCADE, null=True,blank=True)
+    screening_citizen_id = models.ForeignKey(Screening_citizen, on_delete=models.CASCADE, null=True,blank=True)
+    
+    deficiencies = models.JSONField(null=True,blank=True)
+
+    form_submit = models.BooleanField(default=False)
+    is_deleted = models.BooleanField(default=False)
+    
+    added_by =	models.CharField(null=True, blank=True,max_length=255)
+    added_date = models.DateTimeField(auto_now_add=True)
+    modify_by =	models.CharField(null=True, blank=True,max_length=255)
+    modify_date = models.DateTimeField(auto_now=True, null=True)
+    
+class skin_conditions(models.Model):
+    skin_pk_id = models.AutoField(primary_key=True)
+    citizen_id = models.CharField(max_length=255) 
+    screening_count = models.IntegerField(null=True,blank=True)
+    citizen_pk_id = models.ForeignKey(Citizen, on_delete=models.CASCADE, null=True,blank=True)
+    screening_citizen_id = models.ForeignKey(Screening_citizen, on_delete=models.CASCADE, null=True,blank=True)
+    
+    skin_conditions = models.JSONField(null=True,blank=True)
+
+    form_submit = models.BooleanField(default=False)
+    is_deleted = models.BooleanField(default=False)
+    
+    added_by =	models.CharField(null=True, blank=True,max_length=255)
+    added_date = models.DateTimeField(auto_now_add=True)
+    modify_by =	models.CharField(null=True, blank=True,max_length=255)
+    modify_date = models.DateTimeField(auto_now=True, null=True)
+    
+
+    
+
+
+class diagnosis(models.Model):
+    diagnosis_pk_id = models.AutoField(primary_key=True)
+    citizen_id = models.CharField(max_length=255) 
+    screening_count = models.IntegerField(null=True,blank=True)
+    citizen_pk_id = models.ForeignKey(Citizen, on_delete=models.CASCADE, null=True,blank=True)
+    screening_citizen_id = models.ForeignKey(Screening_citizen, on_delete=models.CASCADE, null=True,blank=True)
+    
+    diagnosis = models.JSONField(null=True,blank=True)
+
+    form_submit = models.BooleanField(default=False)
+    is_deleted = models.BooleanField(default=False)
+    
+    added_by =	models.CharField(null=True, blank=True,max_length=255)
+    added_date = models.DateTimeField(auto_now_add=True)
+    modify_by =	models.CharField(null=True, blank=True,max_length=255)
+    modify_date = models.DateTimeField(auto_now=True, null=True)
+    
+
+class check_box_if_normal(models.Model):
+    check_box_pk_id = models.AutoField(primary_key=True)
+    citizen_id = models.CharField(max_length=255) 
+    screening_count = models.IntegerField(null=True,blank=True)
+    citizen_pk_id = models.ForeignKey(Citizen, on_delete=models.CASCADE, null=True,blank=True)
+    screening_citizen_id = models.ForeignKey(Screening_citizen, on_delete=models.CASCADE, null=True,blank=True)
+    
+    check_box_if_normal  = models.JSONField(null=True,blank=True)
+    
+    
+    form_submit = models.BooleanField(default=False)
+    is_deleted = models.BooleanField(default=False)
+    
+    added_by =	models.CharField(null=True, blank=True,max_length=255)
+    added_date = models.DateTimeField(auto_now_add=True)
+    modify_by =	models.CharField(null=True, blank=True,max_length=255)
+    modify_date = models.DateTimeField(auto_now=True, null=True)
+        
+
+
+class treatement(models.Model):
+    treatement_pk_id = models.AutoField(primary_key=True)
+    citizen_id = models.CharField(max_length=255) 
+    screening_count = models.IntegerField(null=True,blank=True)
+    citizen_pk_id = models.ForeignKey(Citizen, on_delete=models.CASCADE, null=True,blank=True)
+    screening_citizen_id = models.ForeignKey(Screening_citizen, on_delete=models.CASCADE, null=True,blank=True)
+    
+    treatment_for = models.CharField(max_length=255,null=True,blank=True)
+    referral = models.ForeignKey('basic_information_referral', on_delete=models.CASCADE,null=True,blank=True)
+    reason_for_referral = models.CharField(max_length=255,null=True,blank=True)
+    place_referral =models.ForeignKey('basic_information_place_referral', on_delete=models.CASCADE,null=True,blank=True)
+    outcome = models.CharField(max_length=255,null=True,blank=True)
+    referred_surgery = models.CharField(max_length=255,null=True,blank=True)
+    hospital_name = models.ForeignKey("referred_hospital_list", on_delete=models.CASCADE,null=True,blank=True)
+    basic_referred_treatment = models.CharField(max_length=255,null=True,blank=True)
+    form_submit = models.BooleanField(default=False)
+    reffered_to_specialist = models.IntegerField(null=True, blank=True)
+    
+    
+    form_submit = models.BooleanField(default=False)
+    is_deleted = models.BooleanField(default=False)
+    
+    added_by =	models.CharField(null=True, blank=True,max_length=255)
+    added_date = models.DateTimeField(auto_now_add=True)
+    modify_by =	models.CharField(null=True, blank=True,max_length=255)
+    modify_date = models.DateTimeField(auto_now=True, null=True)
+
+
+
+class auditory_info(models.Model):
+    auditory_pk_id = models.AutoField(primary_key=True)
+    audit_code = models.CharField(max_length=1110, editable=False) 
+    citizen_id = models.CharField(max_length=255) 
+    screening_count = models.IntegerField(null=True,blank=True)
+    citizen_pk_id = models.ForeignKey(Citizen, on_delete=models.CASCADE, null=True,blank=True)
+    screening_citizen_id = models.ForeignKey(Screening_citizen, on_delete=models.CASCADE, null=True,blank=True)
+    
+    
+    hz_250_left = models.IntegerField(null=True,blank=True)
+    hz_500_left = models.IntegerField(null=True,blank=True)
+    hz_1000_left = models.IntegerField(null=True,blank=True)
+    hz_2000_left = models.IntegerField(null=True,blank=True)
+    hz_4000_left = models.IntegerField(null=True,blank=True)
+    hz_8000_left = models.IntegerField(null=True,blank=True)
+    reading_left = models.CharField(max_length=255,null=True,blank=True)
+    left_ear_observations_remarks = models.CharField(max_length=255,null=True,blank=True)
+
+    
+    hz_250_right = models.IntegerField(null=True,blank=True)
+    hz_500_right = models.IntegerField(null=True,blank=True)
+    hz_1000_right = models.IntegerField(null=True,blank=True)
+    hz_2000_right = models.IntegerField(null=True,blank=True)
+    hz_4000_right = models.IntegerField(null=True,blank=True)
+    hz_8000_right = models.IntegerField(null=True,blank=True)
+    reading_right = models.CharField(max_length=255,null=True,blank=True)
+    right_ear_observations_remarks = models.CharField(max_length=255,null=True,blank=True) 
+    reffered_to_specialist = models.IntegerField(null=True, blank=True)
+    
+    
+    
+    form_submit = models.BooleanField(default=False)
+    is_deleted = models.BooleanField(default=False)
+    
+    added_by =	models.CharField(null=True, blank=True,max_length=255)
+    added_date = models.DateTimeField(auto_now_add=True)
+    modify_by =	models.CharField(null=True, blank=True,max_length=255)
+    modify_date = models.DateTimeField(auto_now=True, null=True)
+    
+    def save(self, *args, **kwargs):
+        if not self.audit_code:
+            last_id = auditory_info.objects.order_by('-audit_code').first()
+            if last_id and '-' in last_id.audit_code:
+                last_id_value = int(last_id.audit_code.split('-')[1][-4:])
+                new_id_value = last_id_value + 1
+                generated_id = int(str(timezone.now().strftime('%d%m%Y')) + str(new_id_value).zfill(5))
+            else:
+                generated_id = int(str(timezone.now().strftime('%d%m%Y')) + '00001')
+
+            self.audit_code = f"AUDIT-{generated_id}"
+
+        super(auditory_info, self).save(*args, **kwargs)
+    
+
+
+class vision_info(models.Model):
+    vision_pk_id = models.AutoField(primary_key=True)
+    vision_code = models.CharField(max_length=1110, editable=False) 
+    citizen_id = models.CharField(max_length=255)
+    screening_count = models.IntegerField(null=True,blank=True)
+    citizen_pk_id = models.ForeignKey(Citizen, on_delete=models.CASCADE, null=True,blank=True)
+    screening_citizen_id = models.ForeignKey(Screening_citizen, on_delete=models.CASCADE, null=True,blank=True)
+    
+    
+    re_near_without_glasses = models.IntegerField(null=True,blank=True)
+    re_far_without_glasses = models.IntegerField(null=True,blank=True)
+    le_near_without_glasses = models.IntegerField(null=True,blank=True)
+    le_far_without_glasses = models.IntegerField(null=True,blank=True)
+    re_near_with_glasses = models.IntegerField(null=True,blank=True)
+    re_far_with_glasses = models.IntegerField(null=True,blank=True)
+    le_near_with_glasses = models.IntegerField(null=True,blank=True)
+    le_far_with_glasses = models.IntegerField(null=True,blank=True)
+    comment = models.CharField(max_length=500,null=True,blank=True)
+    color_blindness = models.CharField(max_length=500,null=True,blank=True)
+    reffered_to_specialist = models.IntegerField(null=True,blank=True)
+    
+    form_submit = models.BooleanField(default=False)
+    is_deleted = models.BooleanField(default=False)
+    
+    added_by =	models.CharField(null=True, blank=True,max_length=255)
+    added_date = models.DateTimeField(auto_now_add=True)
+    modify_by =	models.CharField(null=True, blank=True,max_length=255)
+    modify_date = models.DateTimeField(auto_now=True, null=True)
+    
+
+    def save(self, *args, **kwargs):
+        if not self.vision_code:
+            last_id = vision_info.objects.order_by('-vision_code').first()
+            if last_id and '-' in last_id.vision_code:
+                last_id_value = int(last_id.vision_code.split('-')[1][-4:])
+                new_id_value = last_id_value + 1
+                generated_id = int(str(timezone.now().strftime('%d%m%Y')) + str(new_id_value).zfill(5))
+            else:
+                generated_id = int(str(timezone.now().strftime('%d%m%Y')) + '00001')
+
+            self.vision_code = f"VISION-{generated_id}"
+
+        super(vision_info, self).save(*args, **kwargs)
+
+
+class medical_history_info(models.Model):
+    medical_history_pk_id = models.AutoField(primary_key=True)
+    citizen_id = models.CharField(max_length=255) 
+    screening_count = models.IntegerField(null=True,blank=True)
+    citizen_pk_id = models.ForeignKey(Citizen, on_delete=models.CASCADE, null=True,blank=True)
+    screening_citizen_id = models.ForeignKey(Screening_citizen, on_delete=models.CASCADE, null=True,blank=True)
+    
+    medical_history = models.JSONField(null=True,blank=True)
+    past_operative_history = models.JSONField(null=True,blank=True)
+    
+    form_submit = models.BooleanField(default=False)
+    is_deleted = models.BooleanField(default=False)
+    added_by =	models.CharField(null=True, blank=True,max_length=255)
+    added_date = models.DateTimeField(auto_now_add=True)
+    modify_by =	models.CharField(null=True, blank=True,max_length=255)
+    modify_date = models.DateTimeField(auto_now=True, null=True)
+
+
+
+
+
+    
+    
+    
+    
+    
+    
+
+
+class follow_up(models.Model):
+    follow_up_pk_id = models.AutoField(primary_key=True)
+    vital_refer = models.IntegerField(blank=True,null=True)
+    basic_screening_refer = models.IntegerField(blank=True,null=True)
+    auditory_refer = models.IntegerField(blank=True,null=True)
+    dental_refer = models.IntegerField(blank=True,null=True)
+    dental_refer_hospital = models.CharField(max_length=255,blank=True,null=True)
+    vision_refer = models.IntegerField(blank=True,null=True)
+    pycho_refer = models.IntegerField(blank=True,null=True)
+    reffered_to_sam_mam = models.IntegerField(blank=True,null=True) 
+    weight_for_height = models.CharField(max_length=255,blank=True,null=True) 
+    
+    
+    citizen_id = models.CharField(max_length=255) 
+    screening_count = models.IntegerField(null=True,blank=True)
+    citizen_pk_id = models.ForeignKey(Citizen, on_delete=models.CASCADE, null=True,blank=True)
+    screening_citizen_id = models.ForeignKey(Screening_citizen, on_delete=models.CASCADE, null=True,blank=True)
+    
+    # follow_up = models.IntegerField(blank=True,null=True,default=2)
+    
+    is_deleted = models.BooleanField(default=False)
+    added_by =	models.CharField(null=True, blank=True,max_length=255)
+    added_date = models.DateTimeField(auto_now_add=True)
+    modify_by =	models.CharField(null=True, blank=True,max_length=255)
+    modify_date = models.DateTimeField(auto_now=True, null=True)
+
+
+
+
+class pft_info(models.Model):
+    pft_pk_id = models.AutoField(primary_key=True)
+    citizen_id = models.CharField(max_length=255) 
+    screening_count = models.IntegerField(null=True,blank=True)
+    citizen_pk_id = models.ForeignKey(Citizen, on_delete=models.CASCADE, null=True,blank=True)
+    screening_citizen_id = models.ForeignKey(Screening_citizen, on_delete=models.CASCADE, null=True,blank=True)
+    
+    pft_reading = models.IntegerField(blank=True,null=True)
+    observations = models.CharField(max_length=555,blank=True,null=True)
+    
+    form_submit = models.BooleanField(default=False)
+    is_deleted = models.BooleanField(default=False)
+    added_by =	models.CharField(null=True, blank=True,max_length=255)
+    added_date = models.DateTimeField(auto_now_add=True)
+    modify_by =	models.CharField(null=True, blank=True,max_length=255)
+    modify_date = models.DateTimeField(auto_now=True, null=True)
+    
+    
+class dental_info(models.Model):
+    denta_pk_id = models.AutoField(primary_key=True)
+    dental_code = models.CharField(max_length=1110, editable=False)
+    citizen_id = models.CharField(max_length=255) 
+    screening_count = models.IntegerField(null=True,blank=True)
+    citizen_pk_id = models.ForeignKey(Citizen, on_delete=models.CASCADE, null=True,blank=True)
+    screening_citizen_id = models.ForeignKey(Screening_citizen, on_delete=models.CASCADE, null=True,blank=True)
+    
+    oral_hygiene = models.CharField(max_length=255,null=True,blank=True)
+    oral_hygiene = models.CharField(max_length=555,null=True,blank=True)
+    oral_hygiene_remark = models.CharField(max_length=555,null=True,blank=True)
+    gum_condition = models.CharField(max_length=255,null=True,blank=True)
+    gum_condition_remark = models.CharField(max_length=555,null=True,blank=True)
+    oral_ulcers = models.CharField(max_length=255,null=True,blank=True)
+    oral_ulcers_remark = models.CharField(max_length=555,null=True,blank=True)
+    gum_bleeding = models.CharField(max_length=255,null=True,blank=True)
+    gum_bleeding_remark = models.CharField(max_length=555,null=True,blank=True)
+    discoloration_of_teeth = models.CharField(max_length=255,null=True,blank=True)
+    discoloration_of_teeth_remark = models.CharField(max_length=555,null=True,blank=True)
+    food_impaction = models.CharField(max_length=255,null=True,blank=True)
+    food_impaction_remark = models.CharField(max_length=555,null=True,blank=True)
+    carious_teeth = models.CharField(max_length=255,null=True,blank=True)
+    carious_teeth_remark = models.CharField(max_length=555,null=True,blank=True)
+    extraction_done = models.CharField(max_length=255,null=True,blank=True)
+    extraction_done_remark = models.CharField(max_length=555,null=True,blank=True)
+    fluorosis = models.CharField(max_length=255,null=True,blank=True)
+    fluorosis_remark = models.CharField(max_length=555,null=True,blank=True)
+    tooth_brushing_frequency = models.CharField(max_length=255,null=True,blank=True)
+    tooth_brushing_frequency_remark = models.CharField(max_length=555,null=True,blank=True)
+    reffered_to_specialist = models.IntegerField(null=True,blank=True)
+    reffered_to_specialist_remark =  models.CharField(max_length=555,null=True,blank=True)
+    sensitive_teeth = models.CharField(max_length=255,null=True,blank=True)
+    sensitive_teeth_remark = models.CharField(max_length=555,null=True,blank=True)
+    malalignment = models.CharField(max_length=255,null=True,blank=True)
+    malalignment_remark = models.CharField(max_length=555,null=True,blank=True)
+    orthodontic_treatment = models.CharField(max_length=255,null=True,blank=True)
+    orthodontic_treatment_remark = models.CharField(max_length=555,null=True,blank=True) 
+    comment = models.CharField(max_length=555,null=True,blank=True) 
+    treatment_given = models.CharField(max_length=555,null=True,blank=True) 
+    referred_to_surgery = models.CharField(max_length=555,null=True,blank=True) 
+    dental_conditions = models.CharField(max_length=555,null=True,blank=True)
+    dental_refer_hospital = models.CharField(max_length=255,null=True,blank=True)
+
+    image = models.FileField(upload_to='media_files/', null=True, blank=True)
+    english = models.CharField(max_length=255,null=True,blank=True)
+    marathi = models.CharField(max_length=255,null=True,blank=True)
+    
+    
+    
+    form_submit = models.BooleanField(default=False)
+    is_deleted = models.BooleanField(default=False)
+    added_by =	models.CharField(null=True, blank=True,max_length=255)
+    added_date = models.DateTimeField(auto_now_add=True)
+    modify_by =	models.CharField(null=True, blank=True,max_length=255)
+    modify_date = models.DateTimeField(auto_now=True, null=True)
+    
+
+    
+
+    def save(self, *args, **kwargs):
+        if not self.dental_code:
+            last_id = dental_info.objects.order_by('-dental_code').first()
+            if last_id and '-' in last_id.dental_code:
+                last_id_value = int(last_id.dental_code.split('-')[1][-4:])
+                new_id_value = last_id_value + 1
+                generated_id = int(str(timezone.now().strftime('%d%m%Y')) + str(new_id_value).zfill(5))
+            else:
+                generated_id = int(str(timezone.now().strftime('%d%m%Y')) + '00001')
+
+            self.dental_code = f"DENTAL-{generated_id}"
+
+        super(dental_info, self).save(*args, **kwargs)
+    
+    
+    
+
+class immunisation_info(models.Model):
+    immunization_pk_id = models.AutoField(primary_key=True)
+    immunization_code = models.CharField(max_length=1110, editable=False) 
+    citizen_id = models.CharField(max_length=255) 
+    screening_count = models.IntegerField(null=True,blank=True)
+    citizen_pk_id = models.ForeignKey(Citizen, on_delete=models.CASCADE, null=True,blank=True)
+    screening_citizen_id = models.ForeignKey(Screening_citizen, on_delete=models.CASCADE, null=True,blank=True)
+    
+    
+    name_of_vaccine = models.JSONField(null=True,blank=True)
+    given_yes_no = models.CharField(max_length=555,null=True,blank=True)
+    scheduled_date_from = models.CharField(max_length=555,null=True,blank=True)
+    scheduled_date_to = models.CharField(max_length=555,null=True,blank=True)
+    
+    form_submit = models.BooleanField(default=False)
+    is_deleted = models.BooleanField(default=False)
+    added_by =	models.CharField(null=True, blank=True,max_length=255)
+    added_date = models.DateTimeField(auto_now_add=True)
+    modify_by =	models.CharField(null=True, blank=True,max_length=255)
+    modify_date = models.DateTimeField(auto_now=True, null=True)
+
+    def save(self, *args, **kwargs):
+        if not self.immunization_code:
+            last_id = immunisation_info.objects.order_by('-immunization_code').first()
+            if last_id and '-' in last_id.immunization_code:
+                last_id_value = int(last_id.immunization_code.split('-')[1][-4:])
+                new_id_value = last_id_value + 1
+                generated_id = int(str(timezone.now().strftime('%d%m%Y')) + str(new_id_value).zfill(5))
+            else:
+                generated_id = int(str(timezone.now().strftime('%d%m%Y')) + '00001')
+
+            self.immunization_code = f"IMMUN-{generated_id}"
+
+        super(immunisation_info, self).save(*args, **kwargs)
+
+
+class investigation_info(models.Model):
+    investigation_pk_id = models.AutoField(primary_key=True)
+    citizen_id = models.CharField(max_length=255) 
+    screening_count = models.IntegerField(null=True,blank=True)
+    citizen_pk_id = models.ForeignKey(Citizen, on_delete=models.CASCADE, null=True,blank=True)
+    screening_citizen_id = models.ForeignKey(Screening_citizen, on_delete=models.CASCADE, null=True,blank=True)
+    
+    investigation_report = models.FileField(upload_to='media_files/', null=True, blank=True)
+    urine_report = models.FileField(upload_to='media_files/', null=True, blank=True)
+    ecg_report = models.FileField(upload_to='media_files/', null=True, blank=True)
+    x_ray_report = models.FileField(upload_to='media_files/', null=True, blank=True)
+
+    form_submit = models.BooleanField(default=False)
+    is_deleted = models.BooleanField(default=False)
+    
+    added_by =	models.CharField(null=True, blank=True,max_length=255)
+    added_date = models.DateTimeField(auto_now_add=True)
+    modify_by =	models.CharField(null=True, blank=True,max_length=255)
+    modify_date = models.DateTimeField(auto_now=True, null=True)
+    
+    

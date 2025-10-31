@@ -293,13 +293,7 @@ urlpatterns = [
     path('female_screening/<int:basic_screening_pk_id>/',views.Female_screening_put_info_ViewSet1),#Added Authuntication & Authorization Token  
     
     
-    path('pulse_get_api/<int:year>/<int:pulse>/',views.pulse_get_api.as_view()),#Added Authuntication & Authorization Token  
-    path('rr_get_api/<int:year>/<int:rr>/',views.rr_get_api.as_view()),#Added Authuntication & Authorization Token   
-    path('temp_get_api/<int:year>/<int:temp>/',views.temp_get_api.as_view()), #Added Authuntication & Authorization Token 
-    # path('hb_get_api/<int:gender>/<int:year>/<path:hb>/',views.hb_get_api.as_view()),#Added Authuntication & Authorization Token 
-    path('sys_get_api/<int:year>/<int:sys>/',views.sys_get_api.as_view()), #Added Authuntication & Authorization Token 
-    path('dys_get_api/<int:year>/<int:dys>/',views.dys_get_api.as_view()),#Added Authuntication & Authorization Token
-    path('o2sat_get_api/<int:year>/<int:o2sat>/',views.o2sat_get_api.as_view()),#Added Authuntication & Authorization Token
+
     
     
     path('calculate_days/<str:dob>/<int:immunisation_pk_id>/', CalculateDaysView.as_view(), name='calculate_days'),#Added Authuntication & Authorization Token
@@ -345,7 +339,7 @@ urlpatterns = [
     path('medical_history_get/<int:schedule_pk>', agg_sc_get_medical_history_info_ViewSet1.as_view(), name='medical_history_get'),#Added Authuntication & Authorization Token
     path('citizen_pft_info/<int:schedule_pk>', CitizenpftInfoPost.as_view(), name='citizen_pft_info'),#Added Authuntication & Authorization Token
     path('pft_info_get/<int:schedule_pk>', agg_sc_get_pft_info_ViewSet1.as_view(), name='pft_info_get'),#Added Authuntication & Authorization Token
-    path('pft/<int:reading>/',views.pft_get_api.as_view()),#Added Authuntication & Authorization Token  
+     
     path('form_submit_counts/<str:citizen_id>/<str:schedule_id>/', form_submit_counts, name='form_submit_counts'),
 
     path('audio_reading/<int:reading>/',views.audio_reading_get_api.as_view()),#Added Authuntication & Authorization Token  
@@ -469,7 +463,7 @@ urlpatterns = [
     path('img_analyse_data_save/', img_analyse_data_save_api.as_view(), name='img_analyse_data_save'),
     
     
-    path('device_data/', DeviceDataView.as_view(), name='device_data'),
+    
     
     
     #-----------------------Location API-----------------------
@@ -552,7 +546,109 @@ urlpatterns = [
 #    path('SAM_MAM_BMI/<int:year>/<int:month>/<str:gender>/<str:height>/<str:weight>/', SAM_MAM_BMI_Serializer_ViewSet.as_view(), name='weight-comparison'),
 
     # path('SAM_MAM_BMI/<str:sour>', views.SAM_MAM_BMI_Serializer_ViewSet.as_view()),
-        
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    #--------------------------------Tata Screening Project API's -------------------------------------#
+    path('Citizen_Post/', Citizen_Post_Api.as_view(), name='Citizen_Post'),
+    path('Citizen_Get/', Citizen_Get_Api.as_view(), name='Citizen_Get'),
+    
+    path('Workshop_Post/', Workshop_Post_Api.as_view(), name='Workshop_Post'),
+    path('Workshop_Get/', Workshop_Get_Api.as_view(), name='Workshop_Get'),
+    
+    
+    path('Start_Screening/<int:citizen_pk_id>/', CheckCitizenScreening.as_view(), name='Start_Screening'),   
+    path('SaveBasicInfo/<int:pk_id>/', BasicInfoSaveAPI.as_view(), name='save_basic_info'), 
+    path('SaveEmergencyInfo/<int:pk_id>/', EmergencyInfoSaveAPI.as_view(), name='SaveEmergencyInfo'),
+    path('SaveGrowthMonitoringInfo/<int:pk_id>/', GrowthMonitoringInfoSaveAPI.as_view(), name='SaveGrowthMonitoringInfo'),  
+    
+    path('CitizenBasicInfo/<int:citizen_pk_id>/', Citizen_BasicInfo_Update_API.as_view(), name='CitizenBasicInfo'),
+    path('Citizen_emergency_put/<int:citizen_pk_id>/', Emergency_Info_Update_API.as_view(), name='Citizen_emergency_put'),
+    path('Citizen_growth_monitoring_put/<int:growth_pk_id>/', GrowthMonitoringInfoUpdateAPI.as_view(), name='Citizen_growth_monitoring_put'),
+    
+    
+    path('pulse_get_api/<int:year>/<int:pulse>/',views.pulse_get_api.as_view()), 
+    path('rr_get_api/<int:year>/<int:rr>/',views.rr_get_api.as_view()),
+    path('temp_get_api/<int:year>/<int:temp>/',views.temp_get_api.as_view()), 
+    # path('hb_get_api/<int:gender>/<int:year>/<path:hb>/',views.hb_get_api.as_view()), 
+    path('sys_get_api/<int:year>/<int:sys>/',views.sys_get_api.as_view()), 
+    path('dys_get_api/<int:year>/<int:dys>/',views.dys_get_api.as_view()),
+    path('o2sat_get_api/<int:year>/<int:o2sat>/',views.o2sat_get_api.as_view()),
+    
+    path('Vital_Info_Post/<int:pk_id>/', Vital_Post_Api.as_view(), name='Vital_Info_Post'),
+    path('Vital_Info_Get/<int:pk_id>/', Vital_info_Get_api.as_view(), name='Vital_Info_Get'),
+    path('device_data/', DeviceDataView.as_view(), name='device_data'),
+    
+    
+    
+    path('genral_examination_post_api/<int:pk_id>/', Genral_Examination_Post_API.as_view(), name='genral_examination_post_api'),
+    path('genral_examination_get_api/<int:pk_id>/', Genral_Examination_Get_Api.as_view(), name='genral_examination_post_api'),
+    
+    
+    path('systemic_examination_post_api/<int:pk_id>/', Systemic_Examination_Post_API.as_view(), name='systemic_examination_post_api'),
+    path('systemic_examination_get_api/<int:pk_id>/', Systemic_Examination_Get_API.as_view(), name='systemic_examination_get_api'),
+
+    path('female_screening_post_api/<int:pk_id>/', Female_Screening_Post_API.as_view(), name='female_screening_post_api'),
+    path('female_screening_get_api/<int:pk_id>/', Female_Screening_Get_API.as_view(), name='female_screening_get_api'),
+    
+    path('disability_screening_post_api/<int:pk_id>/', Disability_Screening_Post_API.as_view(), name='disability_screening_post_api'),
+    path('disability_screening_get_api/<int:pk_id>/', Disability_Screening_Get_API.as_view(), name='disability_screening_get_api'),
+    
+    path('birth_defect_post_api/<int:pk_id>/', Birth_Defect_Post_API.as_view(), name='birth_defect_post_api'),
+    path('birth_defect_get_api/<int:pk_id>/', Birth_Defect_Get_API.as_view(), name='birth_defect_get_api'),
+    
+    path('childhood_disease_post_api/<int:pk_id>/', Childhood_Diseases_Post_API.as_view(), name='childhood_disease_post_api'),
+    path('childhood_disease_get_api/<int:pk_id>/', Childhood_Disease_Get_API.as_view(), name='childhood_disease_get_api'),
+    
+    path('deficiencies_post_api/<int:pk_id>/', Deficiencies_Post_API.as_view(), name='deficiencies_post_api'),
+    path('deficiencies_get_api/<int:pk_id>/', Deficiencies_Get_API.as_view(), name='deficiencies_get_api'),
+    
+    path('skincondition_post_api/<int:pk_id>/', SkinCondition_Post_API.as_view(), name='skincondition_post_api'),
+    path('skincondition_get_api/<int:pk_id>/', SkinCondition_Get_API.as_view(), name='skincondition_get_api'),
+    
+    path('checkboxifnormal_post_api/<int:pk_id>/', CheckBoxIfNormal_Post_API.as_view(), name='checkboxifnormal_post_api'),
+    path('checkboxifnormal_get_api/<int:pk_id>/', CheckBoxIfNormal_Get_API.as_view(), name='checkboxifnormal_get_api'),
+    
+    path('diagnosis_post_api/<int:pk_id>/', Diagnosis_Post_API.as_view(), name='diagnosis_post_api'),
+    path('diagnosis_get_api/<int:pk_id>/', Diagnosis_Get_API.as_view(), name='diagnosis_get_api'),
+    
+    path('treatment_post_api/<int:pk_id>/', Treatment_Post_API.as_view(), name='treatment_post_api'),
+    path('treatment_get_api/<int:pk_id>/', Treatment_Get_API.as_view(), name='treatment_get_api'),
+    
+    path('auditory_post_api/<int:pk_id>/', Auditory_Post_API.as_view(), name='auditory_post_api'),
+    path('auditory_get_api/<int:pk_id>/', Auditory_Get_API.as_view(), name='auditory_get_api'),
+    
+    path('vision_post_api/<int:pk_id>/', Vision_Info_Post_Api.as_view(), name='vision_post_api'),
+    path('vision_get_api/<int:pk_id>/', Vision_Info_Get_API.as_view(), name='vision_get_api'),
+    
+    path('medical_post_api/<int:pk_id>/', Medical_history_info_Post_API.as_view(), name='medical_post_api'),
+    path('medical_get_api/<int:pk_id>/', Medical_history_info_Get_API.as_view(), name='medical_get_api'),
+    
+    
+    path('pft/<int:reading>/',views.pft_get_api.as_view()),
+    path('pft_post_api/<int:pk_id>/', PFT_Post_info_Post_API.as_view(), name='pft_post_api'),
+    path('pft_get_api/<int:pk_id>/', PFT_Info_Get_API.as_view(), name='pft_get_api'),
+    
+    
+    path('dental_post_api/<int:pk_id>/', Dental_Info_Post_Api.as_view(), name='dental_post_api'),
+    path('dental_get_api/<int:pk_id>/', Dental_Info_Get_API.as_view(), name='dental_get_api'),
+    
+    path('immunisation_post_api/<int:pk_id>/', Immunisation_Info_Post_Api.as_view(), name='immunisation_post_api'),
+    path('immunisation_get_api/<int:pk_id>/', Immunisation_Info_Get_API.as_view(), name='immunisation_get_api'),
+    
+    path('investigation_post_api/<int:pk_id>/', Investigation_Info_Post_Api.as_view(), name='investigation_post_api'),
+    path('investigation_get_api/<int:pk_id>/', Investigation_Info_Get_API.as_view(), name='investigation_get_api'),
+
                  
 ]
     

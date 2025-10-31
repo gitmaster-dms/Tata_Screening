@@ -1,5 +1,5 @@
 """
-ASGI config for Ambulance_Aggregation project.
+ASGI config for Tata_Screening project.
 
 It exposes the ASGI callable as a module-level variable named ``application``.
 
@@ -11,6 +11,6 @@ import os
 
 from django.core.asgi import get_asgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Ambulance_Aggregation.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'Tata_Screening.settings')
 
 application = get_asgi_application()
