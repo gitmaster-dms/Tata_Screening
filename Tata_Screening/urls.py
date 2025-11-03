@@ -20,5 +20,5 @@ from .views import index
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('Screening/', include('Screening.urls')),
-    # path('', index),
+    path('', index, name='index'),
 ]
