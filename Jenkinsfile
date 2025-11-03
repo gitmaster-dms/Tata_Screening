@@ -3,8 +3,8 @@ pipeline {
 
     environment {
         PROJECT_DIR = "/var/www/html/Tata_Screening"
-        DJANGO_DIR = "${PROJECT_DIR}/backend"
-        REACT_DIR = "${PROJECT_DIR}/frontend"
+        DJANGO_DIR = "${PROJECT_DIR}/"
+        REACT_DIR = "${PROJECT_DIR}/screening_client"
         PYTHON = "/usr/bin/python3"
         PIP = "/usr/bin/pip3"
         GUNICORN_PORT = "8000"
