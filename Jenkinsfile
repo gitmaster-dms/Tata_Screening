@@ -12,14 +12,14 @@ pipeline {
 
     stages {
 
-        // 1️⃣ Checkout code into Jenkins workspace
+        // 1️⃣ Checkout latest code
         stage('Checkout Code') {
             steps {
                 git branch: 'main', url: 'https://github.com/gitmaster-dms/Tata_Screening.git'
             }
         }
 
-        // 2️⃣ Deploy files to web directory
+        // 2️⃣ Deploy code to target server directory
         stage('Deploy Code to Server Directory') {
             steps {
                 sh """
@@ -27,13 +27,28 @@ pipeline {
                 sudo rm -rf ${PROJECT_DIR}
                 sudo mkdir -p ${PROJECT_DIR}
                 sudo cp -r * ${PROJECT_DIR}/
-                sudo chown -R jenkins:www-data ${PROJECT_DIR}
+                sudo chown -R jenkins:jenkins ${PROJECT_DIR}
                 sudo chmod -R 775 ${PROJECT_DIR}
                 """
             }
         }
 
-        // 3️⃣ Python virtual environment setup
+        // 3️⃣ Ensure Node.js (v20) and npm are installed
+        stage('Ensure Node.js') {
+            steps {
+                sh '''
+                if ! command -v node >/dev/null 2>&1 || [ "$(node -v | cut -d. -f1 | tr -d v)" -lt 20 ]; then
+                    echo "⚙️ Installing Node.js 20..."
+                    curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+                    sudo apt install -y nodejs
+                fi
+                echo "Node version: $(node -v)"
+                echo "NPM version: $(npm -v)"
+                '''
+            }
+        }
+
+        // 4️⃣ Setup Python virtual environment
         stage('Setup Python Environment') {
             steps {
                 dir("${DJANGO_DIR}") {
@@ -49,26 +64,26 @@ pipeline {
             }
         }
 
-        // 4️⃣ React app build
+        // 5️⃣ Build React App
         stage('Build React App') {
             steps {
                 dir("${REACT_DIR}") {
                     sh '''
-                    # Ensure correct permissions
+                    echo "⚙️ Setting permissions..."
                     sudo chown -R $USER:$USER ${REACT_DIR}
                     sudo chmod -R 775 ${REACT_DIR}
 
-                    # Install dependencies safely
+                    echo "📦 Installing npm dependencies..."
                     npm install --legacy-peer-deps
 
-                    # Disable CI mode so warnings don't fail the build
+                    echo "🏗️ Building React app..."
                     CI=false npm run build
                     '''
                 }
             }
         }
 
-        // 5️⃣ Collect Django static files
+        // 6️⃣ Collect Django static files
         stage('Collect Static Files') {
             steps {
                 dir("${DJANGO_DIR}") {
@@ -80,7 +95,7 @@ pipeline {
             }
         }
 
-        // 6️⃣ Restart Gunicorn process
+        // 7️⃣ Restart Gunicorn process
         stage('Run Gunicorn') {
             steps {
                 dir("${DJANGO_DIR}") {
@@ -94,15 +109,19 @@ pipeline {
             }
         }
 
-        // 7️⃣ Configure and reload Nginx
+        // 8️⃣ Configure and reload Nginx
         stage('Configure Nginx') {
             steps {
                 sh """
                 echo "⚙️ Configuring Nginx..."
-                sudo cp ${DJANGO_DIR}/deploy/nginx.conf /etc/nginx/sites-available/Tata_Screening
-                sudo ln -sf /etc/nginx/sites-available/Tata_Screening /etc/nginx/sites-enabled/
-                sudo nginx -t
-                sudo systemctl reload nginx
+                if [ -f ${DJANGO_DIR}/deploy/nginx.conf ]; then
+                    sudo cp ${DJANGO_DIR}/deploy/nginx.conf /etc/nginx/sites-available/Tata_Screening
+                    sudo ln -sf /etc/nginx/sites-available/Tata_Screening /etc/nginx/sites-enabled/
+                    sudo nginx -t
+                    sudo systemctl reload nginx
+                else
+                    echo "⚠️ nginx.conf not found — skipping."
+                fi
                 """
             }
         }
