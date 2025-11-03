@@ -11,17 +11,30 @@ pipeline {
     }
 
     stages {
-        stage('Pull Latest Code') {
+        // 1️⃣ Pull latest code into Jenkins workspace
+        stage('Checkout Code') {
             steps {
-                dir("${PROJECT_DIR}") {
-                    sh """
-                    git fetch origin main
-                    git reset --hard origin/main
-                    """
-                }
+                git branch: 'main', url: 'https://github.com/gitmaster-dms/Tata_Screening.git'
             }
         }
 
+        // 2️⃣ Deploy code to /var/www/html/Tata_Screening
+        stage('Deploy Code to Server Directory') {
+            steps {
+                sh """
+                # Clean deploy directory and copy new files
+                rm -rf ${PROJECT_DIR}
+                mkdir -p ${PROJECT_DIR}
+                cp -r * ${PROJECT_DIR}/
+
+                # Fix permissions so Jenkins + Nginx can access
+                chown -R jenkins:www-data ${PROJECT_DIR}
+                chmod -R 775 ${PROJECT_DIR}
+                """
+            }
+        }
+
+        // 3️⃣ Setup Python virtual environment and install deps
         stage('Setup Python Environment') {
             steps {
                 dir("${DJANGO_DIR}") {
@@ -30,13 +43,14 @@ pipeline {
                         ${PYTHON} -m venv venv
                     fi
                     . venv/bin/activate
-                    ${PIP} install --upgrade pip
-                    ${PIP} install -r requirements.txt
+                    pip install --upgrade pip
+                    pip install -r requirements.txt
                     """
                 }
             }
         }
 
+        // 4️⃣ Build React frontend
         stage('Build React App') {
             steps {
                 dir("${REACT_DIR}") {
@@ -48,6 +62,7 @@ pipeline {
             }
         }
 
+        // 5️⃣ Collect Django static files
         stage('Collect Static Files') {
             steps {
                 dir("${DJANGO_DIR}") {
@@ -59,6 +74,7 @@ pipeline {
             }
         }
 
+        // 6️⃣ Restart Gunicorn
         stage('Run Gunicorn') {
             steps {
                 dir("${DJANGO_DIR}") {
@@ -71,6 +87,7 @@ pipeline {
             }
         }
 
+        // 7️⃣ Configure and reload Nginx
         stage('Configure Nginx') {
             steps {
                 sh """
