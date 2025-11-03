@@ -11,30 +11,29 @@ pipeline {
     }
 
     stages {
-        // 1️⃣ Pull latest code into Jenkins workspace
+
+        // 1️⃣ Checkout code into Jenkins workspace
         stage('Checkout Code') {
             steps {
                 git branch: 'main', url: 'https://github.com/gitmaster-dms/Tata_Screening.git'
             }
         }
 
-        // 2️⃣ Deploy code to /var/www/html/Tata_Screening
+        // 2️⃣ Deploy files to web directory
         stage('Deploy Code to Server Directory') {
             steps {
                 sh """
-                # Clean deploy directory and copy new files
-                rm -rf ${PROJECT_DIR}
-                mkdir -p ${PROJECT_DIR}
-                cp -r * ${PROJECT_DIR}/
-
-                # Fix permissions so Jenkins + Nginx can access
-                chown -R jenkins:www-data ${PROJECT_DIR}
-                chmod -R 775 ${PROJECT_DIR}
+                echo "🚀 Deploying latest code to ${PROJECT_DIR}"
+                sudo rm -rf ${PROJECT_DIR}
+                sudo mkdir -p ${PROJECT_DIR}
+                sudo cp -r * ${PROJECT_DIR}/
+                sudo chown -R jenkins:www-data ${PROJECT_DIR}
+                sudo chmod -R 775 ${PROJECT_DIR}
                 """
             }
         }
 
-        // 3️⃣ Setup Python virtual environment and install deps
+        // 3️⃣ Python virtual environment setup
         stage('Setup Python Environment') {
             steps {
                 dir("${DJANGO_DIR}") {
@@ -50,7 +49,7 @@ pipeline {
             }
         }
 
-        // 4️⃣ Build React frontend
+        // 4️⃣ React app build
         stage('Build React App') {
             steps {
                 dir("${REACT_DIR}") {
@@ -74,12 +73,13 @@ pipeline {
             }
         }
 
-        // 6️⃣ Restart Gunicorn
+        // 6️⃣ Restart Gunicorn process
         stage('Run Gunicorn') {
             steps {
                 dir("${DJANGO_DIR}") {
                     sh """
                     . venv/bin/activate
+                    echo "🔄 Restarting Gunicorn on port ${GUNICORN_PORT}"
                     pkill gunicorn || true
                     nohup gunicorn Tata_Screening.wsgi:application --bind 0.0.0.0:${GUNICORN_PORT} --daemon
                     """
@@ -91,6 +91,7 @@ pipeline {
         stage('Configure Nginx') {
             steps {
                 sh """
+                echo "⚙️ Configuring Nginx..."
                 sudo cp ${DJANGO_DIR}/deploy/nginx.conf /etc/nginx/sites-available/Tata_Screening
                 sudo ln -sf /etc/nginx/sites-available/Tata_Screening /etc/nginx/sites-enabled/
                 sudo nginx -t
@@ -102,7 +103,7 @@ pipeline {
 
     post {
         success {
-            echo "✅ Deployment complete! Django + React app is running from /var/www/html/Tata_Screening."
+            echo "✅ Deployment complete! Django + React app running from ${PROJECT_DIR}"
         }
         failure {
             echo "❌ Deployment failed — check Jenkins logs."
