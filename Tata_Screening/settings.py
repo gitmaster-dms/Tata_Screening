@@ -81,7 +81,9 @@ ROOT_URLCONF = 'Tata_Screening.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+                    os.path.join(BASE_DIR,'screening_client/build'),os.path.join(BASE_DIR,'media/'),
+                ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
