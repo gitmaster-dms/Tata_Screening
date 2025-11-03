@@ -53,10 +53,17 @@ pipeline {
         stage('Build React App') {
             steps {
                 dir("${REACT_DIR}") {
-                    sh """
-                    npm install
+                    sh '''
+                    # Ensure correct permissions
+                    sudo chown -R $USER:$USER ${REACT_DIR}
+                    sudo chmod -R 775 ${REACT_DIR}
+
+                    # Install dependencies safely
+                    npm install --legacy-peer-deps
+
+                    # Disable CI mode so warnings don't fail the build
                     CI=false npm run build
-                    """
+                    '''
                 }
             }
         }
