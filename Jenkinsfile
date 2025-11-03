@@ -1,38 +1,94 @@
 pipeline {
-    agent any   // Run on any available Jenkins node
+    agent any
+
+    environment {
+        PROJECT_DIR = "/var/www/html/Tata_Screening"
+        DJANGO_DIR = "${PROJECT_DIR}/backend"
+        REACT_DIR = "${PROJECT_DIR}/frontend"
+        PYTHON = "/usr/bin/python3"
+        PIP = "/usr/bin/pip3"
+        GUNICORN_PORT = "8000"
+    }
 
     stages {
-        stage('Build') {
+        stage('Pull Latest Code') {
             steps {
-                echo '🏗️  Starting the Build stage...'
-                echo '✅ Build completed successfully!'
+                dir("${PROJECT_DIR}") {
+                    sh """
+                    git fetch origin main
+                    git reset --hard origin/main
+                    """
+                }
             }
         }
 
-        stage('Test') {
+        stage('Setup Python Environment') {
             steps {
-                echo '🧪 Running some fake tests...'
-                echo '✅ All tests passed!'
+                dir("${DJANGO_DIR}") {
+                    sh """
+                    if [ ! -d "venv" ]; then
+                        ${PYTHON} -m venv venv
+                    fi
+                    . venv/bin/activate
+                    ${PIP} install --upgrade pip
+                    ${PIP} install -r requirements.txt
+                    """
+                }
             }
         }
 
-        stage('Deploy') {
+        stage('Build React App') {
             steps {
-                echo '🚀 Deploying application (demo only)...'
-                echo '✅ Deployment simulation complete!'
+                dir("${REACT_DIR}") {
+                    sh """
+                    npm install
+                    npm run build
+                    """
+                }
+            }
+        }
+
+        stage('Collect Static Files') {
+            steps {
+                dir("${DJANGO_DIR}") {
+                    sh """
+                    . venv/bin/activate
+                    python manage.py collectstatic --noinput
+                    """
+                }
+            }
+        }
+
+        stage('Run Gunicorn') {
+            steps {
+                dir("${DJANGO_DIR}") {
+                    sh """
+                    . venv/bin/activate
+                    pkill gunicorn || true
+                    nohup gunicorn Tata_Screening.wsgi:application --bind 0.0.0.0:${GUNICORN_PORT} --daemon
+                    """
+                }
+            }
+        }
+
+        stage('Configure Nginx') {
+            steps {
+                sh """
+                sudo cp ${DJANGO_DIR}/deploy/nginx.conf /etc/nginx/sites-available/Tata_Screening
+                sudo ln -sf /etc/nginx/sites-available/Tata_Screening /etc/nginx/sites-enabled/
+                sudo nginx -t
+                sudo systemctl reload nginx
+                """
             }
         }
     }
 
     post {
-        always {
-            echo '📦 Pipeline finished (success or failure).'
-        }
         success {
-            echo '🎉 Pipeline finished successfully!'
+            echo "✅ Deployment complete! Django + React app is running from /var/www/html/Tata_Screening."
         }
         failure {
-            echo '❌ Pipeline failed.'
+            echo "❌ Deployment failed — check Jenkins logs."
         }
     }
 }
