@@ -119,7 +119,8 @@ pipeline {
                     sudo cp ${DJANGO_DIR}/deploy/nginx.conf /etc/nginx/sites-available/Tata_Screening
                     sudo ln -sf /etc/nginx/sites-available/Tata_Screening /etc/nginx/sites-enabled/
                     sudo nginx -t
-                    sudo systemctl reload nginx
+                    sudo systemctl restart gunicorn_tata
+                    sudo systemctl restart nginx
                 else
                     echo "⚠️ nginx.conf not found — skipping."
                 fi
