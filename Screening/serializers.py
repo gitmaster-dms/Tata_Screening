@@ -2717,6 +2717,22 @@ class Citizen_Get_Serializer(serializers.ModelSerializer):
         model = Citizen
         fields = ['citizens_pk_id','citizen_id','prefix','name','aadhar_id','mobile_no']
         
+class Citizen_idwise_data_Get_Serializer(serializers.ModelSerializer):
+    gender_name = serializers.CharField(source='gender.gender',allow_null=True)
+    state_name = serializers.CharField(source='state.state_name',allow_null=True)
+    district_name = serializers.CharField(source='district.dist_name',allow_null=True)
+    tehsil_name = serializers.CharField(source='tehsil.tahsil_name',allow_null=True) 
+    source_name_name = serializers.CharField(source='source_name.source_names',allow_null=True)
+    source_id_name = serializers.CharField(source='source.source',allow_null=True)
+    class Meta:
+        model = Citizen
+        fields = '__all__'
+        
+class Citizen_Put_Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = Citizen
+        fields = '__all__'
+        
 
 class ScreeningCitizenSerializer(serializers.ModelSerializer):
     class Meta:
@@ -3400,3 +3416,133 @@ class Investigation_Info_Get_Serializer(serializers.ModelSerializer):
         model = investigation_info
         fields = ['investigation_pk_id', 'citizen_id', 'screening_count', 'citizen_pk_id', 'screening_citizen_id','investigation_report', 'urine_report', 'ecg_report', 'x_ray_report',
         'form_submit', 'is_deleted', 'added_by', 'added_date', 'modify_by', 'modify_date']
+        
+
+
+
+
+class Healthcard_Citizen_List_Serializer(serializers.ModelSerializer):
+    
+    name = serializers.CharField(source='citizen_pk_id.name')
+    aadhar_id = serializers.CharField(source='citizen_pk_id.aadhar_id')
+    gender = serializers.CharField(source='citizen_pk_id.gender')
+    dob = serializers.DateField(source='citizen_pk_id.dob')
+    year = serializers.CharField(source='citizen_pk_id.year')
+    prefix = serializers.CharField(source='citizen_pk_id.prefix')
+
+    class Meta:
+        model = Screening_citizen
+        fields = ['prefix','name','aadhar_id','gender','dob','year','pk_id','citizen_id','citizen_pk_id','screening_count']
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        return data
+    
+    
+
+class Citizen_Data_Get_Serializer(serializers.ModelSerializer):
+    age = serializers.CharField(source='age.age',allow_null=True)
+    source = serializers.CharField(source='source.source',allow_null=True)
+    gender = serializers.CharField(source='gender.gender',allow_null=True)
+    source_name_name = serializers.CharField(source='source_name.source_names',allow_null=True)
+
+    # Use getattr to handle nullable fields
+    state = serializers.CharField(source='state.state_name', allow_null=True)
+    district = serializers.CharField(source='district.dist_name', allow_null=True)
+    tehsil = serializers.CharField(source='tehsil.tahsil_name', allow_null=True)
+
+    class Meta:
+        model = Citizen
+        fields = "__all__"
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        return data
+
+
+
+class Dental_info_Healthcard(serializers.ModelSerializer):
+    class Meta:
+        model = dental_info
+        fields = '__all__'
+        
+class Vital_info_Healthcard(serializers.ModelSerializer):
+    class Meta:
+        model = vital_info
+        fields = '__all__'
+
+class Auditory_info_Healthcard(serializers.ModelSerializer):
+    class Meta:
+        model = auditory_info
+        fields = '__all__'
+        
+class Genral_examination_info_Healthcard(serializers.ModelSerializer):
+    class Meta:
+        model = genral_examination
+        fields = '__all__'
+        
+class Systemic_exam_info_Healthcard(serializers.ModelSerializer):
+    class Meta:
+        model = systemic_exam
+        fields = '__all__'
+
+class Disability_info_Healthcard(serializers.ModelSerializer):
+    class Meta:
+        model = disability_screening
+        fields = '__all__'
+        
+
+class Birthdefect_info_Healthcard(serializers.ModelSerializer):
+    class Meta:
+        model = birth_defect
+        fields = '__all__'
+        
+class Childhooddisease_info_Healthcard(serializers.ModelSerializer):
+    class Meta:
+        model = childhood_diseases
+        fields = '__all__'
+        
+class Defeciencies_info_Healthcard(serializers.ModelSerializer):
+    class Meta:
+        model = deficiencies
+        fields = '__all__'
+        
+class Skinconditions_info_Healthcard(serializers.ModelSerializer):
+    class Meta:
+        model = skin_conditions
+        fields = '__all__'
+        
+class Diagnosis_info_Healthcard(serializers.ModelSerializer):
+    class Meta:
+        model = diagnosis
+        fields = '__all__'
+        
+class Treatment_info_Healthcard(serializers.ModelSerializer):
+    class Meta:
+        model = treatement
+        fields = '__all__'
+        
+class Vision_info_Healthcard(serializers.ModelSerializer):
+    class Meta:
+        model = vision_info
+        fields = '__all__'
+        
+class Medicalhistory_info_Healthcard(serializers.ModelSerializer):
+    class Meta:
+        model = medical_history_info
+        fields = '__all__'
+        
+class pft_info_Healthcard(serializers.ModelSerializer):
+    class Meta:
+        model = pft_info
+        fields = '__all__'
+        
+class Immunisation_info_Healthcard(serializers.ModelSerializer):
+    class Meta:
+        model = immunisation_info
+        fields = '__all__'
+        
+class growth_monitoring_info_Healthcard(serializers.ModelSerializer):
+    class Meta:
+        model = growth_monitoring_info
+        fields = '__all__'

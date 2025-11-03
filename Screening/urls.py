@@ -320,7 +320,7 @@ urlpatterns = [
     path('follow_up_for/', views. followup_for_get_info_ViewSet1),#Added Authuntication & Authorization Token
     path('source_name_get/', views. source_name_get_info_ViewSet1),#Added Authuntication & Authorization Token
     path('refered_citizen_get/', views. follow_up_refer_citizen_info_ViewSet1),#Added Authuntication & Authorization Token
-    # path('follow_up/', views. agg_followup_ViewSet_POST),
+    path('follow_up/', views. agg_followup_ViewSet_POST),
     path('followup/<int:follow_up_ctzn_pk>/', agg_followup_ViewSet_POST, name='followup'),#Added Authuntication & Authorization Token
     path('follow_up_citizen_get/<str:citizen_id>/<str:schedule_id>/', views. follow_up_get_citizen_info_ViewSet1),
     path('follow_status/', views. follow_up_status_citizen_info_ViewSet1),#Added Authuntication & Authorization Token
@@ -562,6 +562,8 @@ urlpatterns = [
     #--------------------------------Tata Screening Project API's -------------------------------------#
     path('Citizen_Post/', Citizen_Post_Api.as_view(), name='Citizen_Post'),
     path('Citizen_Get/', Citizen_Get_Api.as_view(), name='Citizen_Get'),
+    path('Citizen_Get_Idwise/<int:citizens_pk_id>/', Citizen_idwise_data_Get_Api.as_view(), name='Citizen_Get_idwise'),
+    path('Citizen_Put_api/<int:citizens_pk_id>/', Citizen_Update_API.as_view(), name='Citizen_Put_api'),
     
     path('Workshop_Post/', Workshop_Post_Api.as_view(), name='Workshop_Post'),
     path('Workshop_Get/', Workshop_Get_Api.as_view(), name='Workshop_Get'),
@@ -648,7 +650,14 @@ urlpatterns = [
     
     path('investigation_post_api/<int:pk_id>/', Investigation_Info_Post_Api.as_view(), name='investigation_post_api'),
     path('investigation_get_api/<int:pk_id>/', Investigation_Info_Get_API.as_view(), name='investigation_get_api'),
-
+    
+    
+    
+    path('healthcard_citizen_list/', Healthcard_Citizen_List.as_view(), name='healthcard_citizen_list'),
+    path('screening_count_api/',Screening_Count_API.as_view(),name='screening_count_api'),
+    
+    path('healthcard_download/<str:citizen_id>/<int:screening_count>/', Healthcard_Download_API.as_view(), name='healthcard_download'),
+    
                  
 ]
     

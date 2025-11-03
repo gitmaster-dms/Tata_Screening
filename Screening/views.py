@@ -14531,6 +14531,39 @@ class Citizen_Get_Api(APIView):
         snippet = Citizen.objects.all()
         serializers = Citizen_Get_Serializer(snippet, many=True)
         return Response(serializers.data, status=status.HTTP_200_OK)
+    
+class Citizen_idwise_data_Get_Api(APIView):
+    def get(self,request,citizens_pk_id):
+        snippet = Citizen.objects.filter(citizens_pk_id=citizens_pk_id)
+        serializers = Citizen_idwise_data_Get_Serializer(snippet, many=True)
+        return Response(serializers.data,status=status.HTTP_200_OK)
+
+
+class Citizen_Update_API(APIView):
+
+    def get(self, request, citizens_pk_id):
+        try:
+            citizen = Citizen.objects.get(citizens_pk_id=citizens_pk_id)
+            serializer = Citizen_idwise_data_Get_Serializer(citizen)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Citizen.DoesNotExist:
+            return Response({'error': 'Citizen not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    # 🔹 PUT Update Citizen by ID
+    def put(self, request, citizens_pk_id):
+        try:
+            citizen = Citizen.objects.get(citizens_pk_id=citizens_pk_id)
+        except Citizen.DoesNotExist:
+            return Response({'error': 'Citizen not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = Citizen_Put_Serializer(citizen, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({
+                'message': 'Citizen updated successfully',
+                'data': serializer.data
+            }, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 
@@ -16466,3 +16499,167 @@ class Investigation_Info_Get_API(APIView):
         snippet = investigation_info.objects.filter(screening_citizen_id=pk_id)
         serializers = Investigation_Info_Get_Serializer(snippet, many=True)
         return Response(serializers.data, status=status.HTTP_200_OK)
+    
+
+
+
+class Healthcard_Citizen_List(APIView):
+    def get(self, request):
+        # Getting query parameters from the URL
+        source_pk_id = request.query_params.get('source_pk_id')
+        source = request.query_params.get('source')
+        state_id = request.query_params.get('state_id')
+        district = request.query_params.get('district')
+        tehsil = request.query_params.get('tehsil')
+        source_name = request.query_params.get('source_name')
+        source_id_id = request.query_params.get('source_id_id')
+        source_name_id = request.query_params.get('source_name_id')
+        location = request.query_params.get('location')
+
+        # Prepare kwargs for filtering
+        filter_params = {}
+
+        if source_pk_id:
+            filter_params['citizen_pk_id__source_pk_id'] = source_pk_id
+        if source:
+            filter_params['citizen_pk_id__source'] = source
+        if state_id:
+            filter_params['citizen_pk_id__state'] = state_id
+        if district:
+            filter_params['citizen_pk_id__district'] = district
+        if tehsil:
+            filter_params['citizen_pk_id__tehsil'] = tehsil
+        if source_name:
+            filter_params['citizen_pk_id__source_name'] = source_name
+        if source_id_id:
+            filter_params['citizen_pk_id__source'] = source_id_id
+        if source_name_id:
+            filter_params['citizen_pk_id__source_name'] = source_name_id
+        
+
+        # Filtering the queryset based on the parameters
+        healthcards = Screening_citizen.objects.filter(**filter_params)
+
+        # Serializing the filtered data
+        serializer = Healthcard_Citizen_List_Serializer(healthcards, many=True)
+        
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+
+class Screening_Count_API(APIView):
+    # renderer_classes = [UserRenderer]
+    # permission_classes = [IsAuthenticated]
+    def get(self, request, *args, **kwargs):
+        citizen_id = request.GET.get('citizen_id')
+        
+        if not citizen_id:
+            return Response({"error": "citizen_id is required"}, status=400)
+        
+        try:
+            
+            schedules = Screening_citizen.objects.filter(citizen_id=citizen_id).order_by('added_date')
+            Citizen_info = Citizen.objects.filter(citizen_id=citizen_id)
+            serializer = Citizen_Data_Get_Serializer(Citizen_info, many=True)
+            
+            
+            schedule_data = [{'pk_id': schedule.pk_id} for schedule in schedules]
+
+            
+            screening_count = schedules.count()
+            
+            
+            screening_count_sequence = list(range(1, screening_count + 1))
+            
+            return Response({"Citizen_info": serializer.data, "screening_count": screening_count, "screening_count_sequence": screening_count_sequence,"screening_id": schedule_data})
+        
+        except Screening_citizen.DoesNotExist:
+            return Response({"error": "Schedule does not exist"}, status=404)
+
+
+
+
+
+
+class Healthcard_Download_API(APIView):
+    def get(self, request, *args, **kwargs):
+        try:
+            citizen_id = self.kwargs.get('citizen_id')
+            screening_count = self.kwargs.get('screening_count')
+
+            dental_qs = dental_info.objects.filter(citizen_id=citizen_id, screening_count=screening_count)
+            dental_serializer = Dental_info_Healthcard(dental_qs, many=True) if dental_qs.exists() else None
+            
+            vital_qs = vital_info.objects.filter(citizen_id=citizen_id, screening_count=screening_count)
+            vital_serializer = Vital_info_Healthcard(vital_qs, many=True) if vital_qs.exists() else None
+            
+            audio_qs = auditory_info.objects.filter(citizen_id=citizen_id, screening_count=screening_count)
+            audio_serializer = Auditory_info_Healthcard(audio_qs, many=True) if audio_qs.exists() else None
+            
+            general_qs = genral_examination.objects.filter(citizen_id=citizen_id, screening_count=screening_count)
+            general_serializer = Genral_examination_info_Healthcard(general_qs, many=True) if general_qs.exists() else None
+            
+            systemic_qs = systemic_exam.objects.filter(citizen_id=citizen_id, screening_count=screening_count)
+            systemic_serializer = Systemic_exam_info_Healthcard(systemic_qs, many=True) if systemic_qs.exists() else None
+            
+            disability_qs = disability_screening.objects.filter(citizen_id=citizen_id, screening_count=screening_count)
+            disability_serializer = Disability_info_Healthcard(disability_qs, many=True) if disability_qs.exists() else None
+            
+            birth_defect_qs = birth_defect.objects.filter(citizen_id=citizen_id, screening_count=screening_count)
+            birth_defect_serializer = Birthdefect_info_Healthcard(birth_defect_qs, many=True) if birth_defect_qs.exists() else None
+            
+            childhood_disease_qs = childhood_diseases.objects.filter(citizen_id=citizen_id, screening_count=screening_count)
+            childhood_disease_serializer = Childhooddisease_info_Healthcard(childhood_disease_qs, many=True) if childhood_disease_qs.exists() else None
+            
+            defeciency_qs = deficiencies.objects.filter(citizen_id=citizen_id, screening_count=screening_count)
+            defeciency_serializer = Defeciencies_info_Healthcard(defeciency_qs, many=True) if defeciency_qs.exists() else None
+            
+            skin_conditions_qs = skin_conditions.objects.filter(citizen_id=citizen_id, screening_count=screening_count)
+            skin_conditions_serializer = Skinconditions_info_Healthcard(skin_conditions_qs, many=True) if skin_conditions_qs.exists() else None
+            
+            diagnosis_qs = diagnosis.objects.filter(citizen_id=citizen_id, screening_count=screening_count)
+            diagnosis_serializer = Diagnosis_info_Healthcard(diagnosis_qs, many=True) if diagnosis_qs.exists() else None
+            
+            treatment_qs = treatement.objects.filter(citizen_id=citizen_id, screening_count=screening_count)
+            treatment_serializer = Treatment_info_Healthcard(treatment_qs, many=True) if treatment_qs.exists() else None
+            
+            vision_qs = vision_info.objects.filter(citizen_id=citizen_id, screening_count=screening_count)
+            vision_serializer = Vision_Info_Get_Serializer(vision_qs, many=True) if vision_qs.exists() else None
+            
+            medical_history_qs = medical_history_info.objects.filter(citizen_id=citizen_id, screening_count=screening_count)
+            medical_history_serializer = MedicalHistoryInfo_Get_Serializer(medical_history_qs, many=True) if medical_history_qs.exists() else None
+            
+            pft_qs = pft_info.objects.filter(citizen_id=citizen_id, screening_count=screening_count)
+            pft_serializer = PFT_Info_Get_Serializer(pft_qs, many=True) if pft_qs.exists() else None
+            
+            immunisation_qs = immunisation_info.objects.filter(citizen_id=citizen_id, screening_count=screening_count)
+            immunisation_serializer = Immunisation_Info_Get_Serializer(immunisation_qs, many=True) if immunisation_qs.exists() else None
+            
+            growth_monitoring_qs = growth_monitoring_info.objects.filter(citizen_id=citizen_id, screening_count=screening_count)
+            growth_monitoring_serializer = growth_monitoring_info_Healthcard(growth_monitoring_qs, many=True) if growth_monitoring_qs.exists() else None
+
+
+            response_data = {
+                'dental_info': dental_serializer.data if dental_serializer else None,
+                'vital_info': vital_serializer.data if vital_serializer else None,
+                'auditory_info': audio_serializer.data if audio_serializer else None,
+                'general_examination_info': general_serializer.data if general_serializer else None,
+                'systemic_examination_info': systemic_serializer.data if systemic_serializer else None,
+                'disability_info': disability_serializer.data if disability_serializer else None,
+                'birth_defect_info': birth_defect_serializer.data if birth_defect_serializer else None,
+                'childhood_disease_info': childhood_disease_serializer.data if childhood_disease_serializer else None,
+                'deficiency_info': defeciency_serializer.data if defeciency_serializer else None,
+                'skin_conditions_info': skin_conditions_serializer.data if skin_conditions_serializer else None,
+                'diagnosis_info': diagnosis_serializer.data if diagnosis_serializer else None,
+                'treatment_info': treatment_serializer.data if treatment_serializer else None,
+                'vision_info': vision_serializer.data if vision_serializer else None,
+                'medical_history_info': medical_history_serializer.data if medical_history_serializer else None,
+                'pft_info': pft_serializer.data if pft_serializer else None,
+                'immunisation_info': immunisation_serializer.data if immunisation_serializer else None,
+                'growth_monitoring_info': growth_monitoring_serializer.data if growth_monitoring_serializer else None,
+            }
+
+            return Response(response_data, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
