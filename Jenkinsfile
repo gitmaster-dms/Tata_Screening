@@ -115,8 +115,8 @@ pipeline {
             steps {
                 sh """
                 echo "⚙️ Configuring Nginx..."
-                if [ -f ${DJANGO_DIR}/deploy/nginx.conf ]; then
-                    sudo cp ${DJANGO_DIR}/deploy/nginx.conf /etc/nginx/sites-available/Tata_Screening
+                if [ -f ${DJANGO_DIR}/nginx/nginx.conf ]; then
+                    sudo cp ${DJANGO_DIR}/nginx/nginx.conf /etc/nginx/sites-available/Tata_Screening
                     sudo ln -sf /etc/nginx/sites-available/Tata_Screening /etc/nginx/sites-enabled/
                     sudo nginx -t
                     sudo systemctl restart gunicorn_tata
