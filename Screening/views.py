@@ -5342,8 +5342,8 @@ def place_referral_get_info_ViewSet1(request):
 
 #-------------------------------Follow-up----------------------------------#
 @api_view(['GET'])
-@renderer_classes([UserRenderer])
-@permission_classes([IsAuthenticated])
+# @renderer_classes([UserRenderer])
+# @permission_classes([IsAuthenticated])
 def followup_dropdown_get_info_ViewSet1(request):
     """
     List all code snippets, or create a new snippet.
@@ -5353,10 +5353,86 @@ def followup_dropdown_get_info_ViewSet1(request):
     serializer = FollowupinfoSerializer(snippets, many=True)
     return Response(serializer.data)
 
+#-------kirti----
+class followup_dropdown_get(APIView):
+    def get(self, request):
+        snippets = agg_sc_followup_dropdownlist.objects.all()
+        serializer = FollowupinfoSerializer(snippets, many=True)
+        return Response(serializer.data)
+
+
+class followup_for_get(APIView):
+    def get(self, request):
+        snippets = agg_sc_followup_for.objects.all()
+        serializer = Followup_for_infoSerializer(snippets, many=True)
+        return Response(serializer.data)
+
+
+class source_name_get(APIView):
+    def get(self, request):
+        snippets = agg_sc_add_new_source.objects.all()
+        serializer = source_name_infoSerializer(snippets, many=True)
+        return Response(serializer.data)
+
+
+class follow_up_refer_citizen(APIView):
+    def get(self, request):
+        snippets = agg_sc_follow_up_citizen.objects.all()
+        serializer = followup_refer_to_specalist_citizens_infoSerializer(snippets, many=True)
+        return Response(serializer.data)
+
+# class follow_up_get_citizen(APIView):
+#     def get(self, request, follow_up=None, follow_up_id=None, source_name=None):
+        
+#         snippets = agg_sc_follow_up_citizen.objects.exclude(follow_up=None)  # All data by default
+
+#         # Validate follow_up_id allowed values
+#         if follow_up_id not in [1, 2, 4] and follow_up_id is not None:
+#             return Response([], status=status.HTTP_204_NO_CONTENT)
+
+#         # Apply filters
+#         if follow_up_id == 1:
+#             snippets = snippets.filter(reffered_to_sam_mam=1, weight_for_height='SAM')
+#         elif follow_up_id == 2:
+#             snippets = snippets.filter(reffered_to_sam_mam=1, weight_for_height='MAM')
+#         elif follow_up_id == 4:
+#             snippets = snippets.filter(is_deleted=False)
+
+#         # Filter by source_name if passed
+#         if source_name is not None:
+#             snippets = snippets.filter(citizen_pk_id__source_name=source_name)
+
+#         serializer = followupGETinfoSerializer(snippets, many=True)
+#         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class follow_up_status_citizen(APIView):
+    def get (self,request):
+        snippets = agg_sc_follow_up_status.objects.all()
+        serializer = FollowupstatusinfoSerializer(snippets, many=True)
+        return Response(serializer.data)
+
+
+class follow_up_citizen_info(APIView):
+    def get(self, request, citizen_id):
+        try:
+            snippets = agg_sc_followup.objects.filter(citizen_id=citizen_id, is_deleted=False)
+        except agg_sc_followup.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+
+        serializer = citizen_Followup_get_infoSerializer(snippets, many=True)
+        return Response(serializer.data) 
+
+
+
+    
+
+
+
 
 @api_view(['GET'])
-@renderer_classes([UserRenderer])
-@permission_classes([IsAuthenticated])
+# @renderer_classes([UserRenderer])
+# @permission_classes([IsAuthenticated])
 def followup_for_get_info_ViewSet1(request):
     """
     List all code snippets, or create a new snippet.
@@ -5367,8 +5443,8 @@ def followup_for_get_info_ViewSet1(request):
     return Response(serializer.data)
 
 @api_view(['GET'])
-@renderer_classes([UserRenderer])
-@permission_classes([IsAuthenticated])
+# @renderer_classes([UserRenderer])
+# @permission_classes([IsAuthenticated])
 def source_name_get_info_ViewSet1(request):
     """
     List all code snippets, or create a new snippet.
@@ -5379,8 +5455,8 @@ def source_name_get_info_ViewSet1(request):
     return Response(serializer.data)
 
 @api_view(['GET'])
-@renderer_classes([UserRenderer])
-@permission_classes([IsAuthenticated])
+# @renderer_classes([UserRenderer])
+# @permission_classes([IsAuthenticated])
 def follow_up_refer_citizen_info_ViewSet1(request):
     """
     List all code snippets, or create a new snippet.
@@ -5474,8 +5550,8 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
 @api_view(['GET'])
-@renderer_classes([UserRenderer])
-@permission_classes([IsAuthenticated])
+# @renderer_classes([UserRenderer])
+# @permission_classes([IsAuthenticated])
 def follow_up_get_citizen_info_ViewSet1(request, follow_up=None, follow_up_id=None, source_name=None):
     """
     List all code snippets, or create a new snippet.
@@ -5563,8 +5639,8 @@ from rest_framework import status
 
 
 @api_view(['POST'])
-@renderer_classes([UserRenderer])
-@permission_classes([IsAuthenticated])
+# @renderer_classes([UserRenderer])
+# @permission_classes([IsAuthenticated])
 def agg_followup_ViewSet_POST(request, follow_up_ctzn_pk):
     """
     Create a new followup entry and associate it with the specified follow_up_ctzn_pk.
@@ -5625,8 +5701,8 @@ def follow_up_status_citizen_info_ViewSet1(request):
 
 
 @api_view(['GET'])
-@renderer_classes([UserRenderer])
-@permission_classes([IsAuthenticated])
+# @renderer_classes([UserRenderer])
+# @permission_classes([IsAuthenticated])
 def follow_up_citizen_get_info_ViewSet1(request, citizen_id):
     try:
         snippets = agg_sc_followup.objects.filter(citizen_id=citizen_id, is_deleted=False)
@@ -16663,3 +16739,93 @@ class Healthcard_Download_API(APIView):
 
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+#-----------kirti--------
+
+class FollowupPOST(APIView):
+    # permission_classes = [IsAuthenticated]
+    # renderer_classes = [JSONRenderer]
+    def post(self, request, follow_up_pk_id):
+
+        # 1️⃣ Fetch record from follow_up table
+        follow_up_obj = get_object_or_404(follow_up, follow_up_pk_id=follow_up_pk_id)
+
+        # 2️⃣ Get follow_up status (agg_sc_follow_up_status) from request
+        follow_up_status_id = request.data.get("follow_up")
+        if follow_up_status_id is not None:
+            try:
+                follow_up_status_id = int(follow_up_status_id)
+            except:
+                return Response({"error": "Invalid follow_up value"}, status=400)
+
+            # update follow_up status in follow_up table
+            follow_up_obj.follow_up = follow_up_status_id
+            follow_up_obj.save()
+
+        # 3️⃣ Count existing followups from followup_save table
+        followup_count = followup_save.objects.filter(
+            citizen_id = follow_up_obj.citizen_id,
+            screening_citizen_id = follow_up_obj.screening_citizen_id
+        ).count()
+
+        # 4️⃣ Validate request with serializer
+        serializer = followup_save_info_Serializer(data=request.data)
+
+        if serializer.is_valid():
+
+            # Inject required fields automatically
+            serializer.validated_data["citizen_id"] = follow_up_obj.citizen_id
+            serializer.validated_data["screening_citizen_id"] = follow_up_obj.screening_citizen_id
+            serializer.validated_data["followup_count"] = followup_count + 1
+
+            # save followup entry
+            serializer.save()
+
+            return Response(
+                {"message": "Follow-up saved successfully", "data": serializer.data},
+                status=status.HTTP_201_CREATED
+            )
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    # def post(self, request, follow_up_pk_id):
+
+    #     follow_up_obj = get_object_or_404(
+    #         follow_up,
+    #         follow_up_pk_id=follow_up_pk_id
+    #     )
+
+    #     citizen_obj = get_object_or_404(
+    #         agg_sc_follow_up_citizen,
+    #         follow_up_ctzn_pk=follow_up_pk_id  
+    #     )
+
+    #     citizen_id = follow_up_obj.citizen_id
+    #     screening_citizen_id = follow_up_obj.screening_citizen_id
+
+    #     follow_up_status_id = request.data.get('follow_up')
+    #     if follow_up_status_id is not None:
+    #         try:
+    #             follow_up_status_id = int(follow_up_status_id)
+    #         except:
+    #             return Response({"error": "follow_up must be integer"}, status=400)
+
+    #     followup_count = followup_save.objects.filter(
+    #         citizen_id=citizen_id,
+    #         screening_citizen_id=screening_citizen_id
+    #     ).count()
+
+    #     serializer = followup_save_info_Serializer(data=request.data)
+
+    #     if serializer.is_valid():
+    #         serializer.validated_data['citizen_id'] = citizen_id
+    #         serializer.validated_data['screening_citizen_id'] = screening_citizen_id
+    #         serializer.validated_data['followup_count'] = followup_count + 1
+
+    #         serializer.validated_data['follow_up_citizen_pk_id'] = citizen_obj  
+
+    #         serializer.save()
+    #         return Response(serializer.data, status=201)
+
+    #     return Response(serializer.errors, status=400)

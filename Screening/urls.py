@@ -327,6 +327,25 @@ urlpatterns = [
     path('follow_up_citizen_get_idwise/<str:citizen_id>/<str:schedule_id>/', views. follow_up_citizen_get_idwise_info_ViewSet1),#Added Authuntication & Authorization Token
     path('followup_citizen_info_get/<str:citizen_id>/', views. follow_up_citizen_get_info_ViewSet1),#Added Authuntication & Authorization Token
     
+    #-------------kirti----------
+
+    path('followupdropdown_get/', views.followup_dropdown_get.as_view(), name='followup_get'),
+    path('followupfor_get/', views.followup_for_get.as_view(), name='followupfor_get'),
+    path('source_name_get/', views.source_name_get.as_view(), name='source_name_get'),
+    path('follow_up_refer_citizen/', views.follow_up_refer_citizen.as_view(), name='follow_up_refer_citizen_get'),
+    # path('follow_up_get_citizen/<str:citizen_id>/', views.follow_up_get_citizen.as_view(), name='follow_up_get_citizen'),
+    path('follow_up_status_citizen/', views.follow_up_status_citizen.as_view(), name='follow_up_status_citizen'),
+    path('follow_up_citizen_info/', views.follow_up_citizen_info.as_view(), name='follow_up_citizen_info'),
+    path('followup_save/<int:follow_up_pk_id>/', views.FollowupPOST.as_view(), name='followup_save'),
+
+
+
+
+
+
+
+
+    
     path('citizen_other_info_get/<int:schedule_pk>/', agg_sc_get_other_info_ViewSet1.as_view(), name='citizen_other_info_get'),#Added Authuntication & Authorization Token
     
     path('citizen_medical_history/', views. medical_history_get_info_ViewSet1),#Added Authuntication & Authorization Token
