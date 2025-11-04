@@ -224,18 +224,19 @@ SIMPLE_JWT = {
 
 
 DATE_INPUT_FORMATS = ['%d-%m-%Y %H:%M:%S']
-CORS_ORIGIN_ALLOW_ALL = False
-CORS_ORIGIN_WHITELIST = (
-  'http://localhost:8000',
-)
+
 
 
 CORS_ALLOWED_ORIGINS = [
-'http://192.168.1.21:8000',
+    "http://192.168.1.21:8000",
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
 ]
- 
+
 CSRF_TRUSTED_ORIGINS = [
-        "http://192.168.1.21",
-    'http://192.168.1.21:8000',
+    "http://192.168.1.21",
+    "http://192.168.1.21:8000",
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
 ]
 
