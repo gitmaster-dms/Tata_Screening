@@ -3544,6 +3544,45 @@ class follow_up(models.Model):
 
 
 
+
+class followup_save(models.Model):
+    followup_id = models.AutoField(primary_key=True)
+    followup_count = models.CharField(max_length=255,blank=True,null=True)
+    citizen_id = models.CharField(max_length=255,blank=True,null=True)
+    citizen_pk_id = models.ForeignKey(Citizen, on_delete=models.CASCADE, null=True,blank=True)
+    name = models.CharField(max_length=255,blank=True,null=True)
+    dob = models.CharField(max_length=20,blank=True,null=True)
+    parents_no = models.CharField(max_length=10,null=True,blank=True)
+    state = models.CharField(max_length=255,blank=True,null=True)
+    tehsil = models.CharField(max_length=255,blank=True,null=True)
+    district = models.CharField(max_length=255,blank=True,null=True)
+    source_name = models.CharField(max_length=255,blank=True,null=True)
+    call_status = models.CharField(max_length=555, blank=True,null=True)
+    conversational_remarks = models.CharField(max_length=555, blank=True,null=True)
+    schedule_date = models.DateTimeField(blank=True,null=True)
+    not_connected_reason = models.CharField(max_length=555, blank=True,null=True)
+    visit_status = models.CharField(max_length=555, blank=True,null=True)
+    visited_status = models.CharField(max_length=555, blank=True,null=True)
+    condition_improved = models.CharField(max_length=555, blank=True,null=True)
+    weight_gain_status = models.CharField(max_length=555, blank=True,null=True)
+    forward_to = models.CharField(max_length=555, blank=True,null=True)
+    priority = models.CharField(max_length=555, blank=True,null=True)
+    not_visited_reason = models.CharField(max_length=555, blank=True,null=True)
+    reschedule_date1 = models.DateTimeField(blank=True,null=True)
+    reschedule_date2 = models.DateTimeField(blank=True,null=True)
+    follow_up = models.ForeignKey("agg_sc_follow_up_status", on_delete=models.CASCADE,null=True,blank=True) 
+    remark = models.CharField(max_length=555,blank=True,null=True)
+    follow_up_citizen_pk_id = models.ForeignKey('agg_sc_follow_up_citizen',on_delete=models.CASCADE, blank=True,null=True)
+    
+    is_deleted = models.BooleanField(default=False)
+    added_by =	models.CharField(null=True, blank=True,max_length=255)
+    added_date = models.DateTimeField(auto_now_add=True)
+    modify_by =	models.CharField(null=True, blank=True,max_length=255)
+    modify_date = models.DateTimeField(auto_now=True, null=True)
+    
+
+
+
 class pft_info(models.Model):
     pft_pk_id = models.AutoField(primary_key=True)
     citizen_id = models.CharField(max_length=255) 
@@ -3695,3 +3734,6 @@ class investigation_info(models.Model):
     modify_date = models.DateTimeField(auto_now=True, null=True)
     
     
+
+
+
