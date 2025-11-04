@@ -61,19 +61,17 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+
+    # ✅ Must be before CommonMiddleware and CsrfViewMiddleware
+    'corsheaders.middleware.CorsMiddleware',
+
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-
-    
-    'corsheaders.middleware.CorsMiddleware',
-
-    # 'corsheaders.middleware.CorsMiddleware,
-    # 'django.middleware.common.CommonMiddleware',
-
 ]
+
 
 
 ROOT_URLCONF = 'Tata_Screening.urls'
@@ -228,15 +226,16 @@ DATE_INPUT_FORMATS = ['%d-%m-%Y %H:%M:%S']
 
 
 CORS_ALLOWED_ORIGINS = [
+    "http://192.168.1.21:3000",
     "http://192.168.1.21:8000",
+    "http://localhost:3000",
     "http://localhost:8000",
     "http://127.0.0.1:8000",
 ]
-
 CSRF_TRUSTED_ORIGINS = [
-    "http://192.168.1.21",
+    "http://192.168.1.21:3000",
     "http://192.168.1.21:8000",
+    "http://localhost:3000",
     "http://localhost:8000",
     "http://127.0.0.1:8000",
 ]
-
