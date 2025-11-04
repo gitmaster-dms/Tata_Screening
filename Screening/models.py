@@ -3550,6 +3550,7 @@ class followup_save(models.Model):
     followup_count = models.CharField(max_length=255,blank=True,null=True)
     citizen_id = models.CharField(max_length=255,blank=True,null=True)
     citizen_pk_id = models.ForeignKey(Citizen, on_delete=models.CASCADE, null=True,blank=True)
+    screening_citizen_id = models.ForeignKey(Screening_citizen, on_delete=models.CASCADE, null=True,blank=True)
     name = models.CharField(max_length=255,blank=True,null=True)
     dob = models.CharField(max_length=20,blank=True,null=True)
     parents_no = models.CharField(max_length=10,null=True,blank=True)
