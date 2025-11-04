@@ -3533,7 +3533,7 @@ class follow_up(models.Model):
     citizen_pk_id = models.ForeignKey(Citizen, on_delete=models.CASCADE, null=True,blank=True)
     screening_citizen_id = models.ForeignKey(Screening_citizen, on_delete=models.CASCADE, null=True,blank=True)
     
-    # follow_up = models.IntegerField(blank=True,null=True,default=2)
+    follow_up = models.IntegerField(blank=True,null=True,default=2)
     
     is_deleted = models.BooleanField(default=False)
     added_by =	models.CharField(null=True, blank=True,max_length=255)
