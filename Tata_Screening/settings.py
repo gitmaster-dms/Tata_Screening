@@ -119,8 +119,8 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'Tata_Screening',
         'USER': 'postgres',
-        'PASSWORD': 'postgres',
-        'HOST': '192.168.1.109',
+        'PASSWORD': 'postgress',
+        'HOST': '192.168.1.21',
         'PORT': '5432',  # Default PostgreSQL port
         'OPTIONS': {
             'options': '-c timezone=Asia/Kolkata',
