@@ -230,5 +230,11 @@ CORS_ORIGIN_WHITELIST = (
 )
 
 
-
+CORS_ALLOWED_ORIGINS = [
+"http://192.168.1.21:8000",
+]
+ 
+CSRF_TRUSTED_ORIGINS = [
+    "http://192.168.1.21:8000",
+]
 
