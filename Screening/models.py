@@ -3734,6 +3734,8 @@ class investigation_info(models.Model):
     modify_date = models.DateTimeField(auto_now=True, null=True)
     
     
+    
+    
 
 
 
