@@ -43,33 +43,28 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-
-
+    'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist',
+    
+    'import_export',
     'corsheaders',  
-
     'rest_framework',
     'Screening',
 
-    'import_export',
-    
-    # Login 
-    'rest_framework_simplejwt',
-    'rest_framework_simplejwt.token_blacklist',
 
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-
-    # ✅ Must be before CommonMiddleware and CsrfViewMiddleware
-    'corsheaders.middleware.CorsMiddleware',
-
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    
+    'corsheaders.middleware.CorsMiddleware',
+
 ]
 
 
@@ -140,7 +135,10 @@ DATABASES = {
 # }
 
 
-
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
@@ -187,6 +185,9 @@ STATICFILES_DIRS = [
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # AUTHENTICATION_BACKENDS = ['Screening.backends.CustomBackend']
 
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
+
 
 
 AUTH_USER_MODEL = 'Screening.agg_com_colleague'
@@ -195,8 +196,8 @@ AUTH_USER_MODEL = 'Screening.agg_com_colleague'
 
 SIMPLE_JWT = {
     # "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
-    "ACCESS_TOKEN_LIFETIME": timedelta(days=90),
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=90),
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
 
 
     "AUTH_HEADER_TYPES": ("Bearer",),
@@ -222,9 +223,14 @@ SIMPLE_JWT = {
 
 
 DATE_INPUT_FORMATS = ['%d-%m-%Y %H:%M:%S']
-
-
-
+CORS_ORIGIN_ALLOW_ALL = False
+CORS_ORIGIN_WHITELIST = (
+  'http://192.168.1.21:8000',
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:3002',
+  'http://localhost:3003',
+)
 CORS_ALLOWED_ORIGINS = [
     "http://192.168.1.21:3000",
     "http://192.168.1.21:8000",
