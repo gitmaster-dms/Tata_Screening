@@ -63,7 +63,7 @@ def get_tokens_for_user(user):
             'source_id': user.clg_source.source_pk_id,  
             'source': user.clg_source.source, 
             'source_name_id': user.clg_source_name.ws_pk_id, 
-            'source_name': user.clg_source_name.source_names, 
+            'source_name': user.clg_source_name.Workshop_name, 
             'clg_state_id':user.clg_state.state_id,
             'clg_state':user.clg_state.state_name,
             'clg_district_id':user.clg_district.dist_id,
