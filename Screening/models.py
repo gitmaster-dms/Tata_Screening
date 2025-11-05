@@ -1364,7 +1364,7 @@ class Workshop(models.Model):
     modify_date = models.DateTimeField(auto_now=True, null=True)
 
     def __str__(self):
-        return self.source_names
+        return self.Workshop_name
        
     def save(self, *args, **kwargs):
         if not self.workshop_code:
