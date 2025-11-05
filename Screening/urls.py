@@ -128,8 +128,14 @@ urlpatterns = [
 
     path('followupdropdown_get/', views.followup_dropdown_get.as_view(), name='followup_get'),
     path('followupfor_get/', views.followup_for_get.as_view(), name='followupfor_get'),
+    path('source_name_get/', views.source_name_get.as_view(), name='source_name_get'),
+    path('follow_up_refer_citizen/', views.follow_up_refer_citizen.as_view(), name='follow_up_refer_citizen_get'),
+    # path('follow_up_get_citizen/<str:citizen_id>/', views.follow_up_get_citizen.as_view(), name='follow_up_get_citizen'),
     path('follow_up_status_citizen/', views.follow_up_status_citizen.as_view(), name='follow_up_status_citizen'),
+    path('follow_up_citizen_info/<str:citizen_id>/', views.follow_up_citizen_info.as_view(), name='follow_up_citizen_info'),
     path('followup_save/<int:follow_up_pk_id>/', views.FollowupPOST.as_view(), name='followup_save'),
+    path('follow_up_citizen_info2/<str:citizen_id>/<int:screening_citizen_id>/', views.follow_up_citizen_info2.as_view(), name='follow_up_citizen_info'),
+    
 
 
     

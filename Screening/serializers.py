@@ -1503,3 +1503,9 @@ class Workshop_Serializer(serializers.ModelSerializer):
     class Meta:
         model = Workshop
         fields = ['logo']
+
+class followup_save_info_Serializer(serializers.ModelSerializer):
+    follow_up = serializers.PrimaryKeyRelatedField(queryset=agg_sc_follow_up_status.objects.all(),required=False) 
+    class Meta:
+        model = followup_save
+        fields = ['call_status','conversational_remarks','not_connected_reason','visit_status','visited_status','condition_improved','weight_gain_status','forward_to','priority','not_visited_reason','reschedule_date1','reschedule_date2','follow_up','remark','added_by','citizen_id','name','dob','parents_no','state','tehsil','district','source_name','follow_up_citizen_pk_id','followup_count','screening_citizen_id']
