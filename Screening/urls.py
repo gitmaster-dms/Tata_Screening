@@ -1,8 +1,6 @@
 from django.urls import path, re_path
-# from Com.views import BookViewSet,
 from . import views
 from Screening.views import *
-# from Screening.views import   agg_ind_state_List_ViewSet,agg_ind_state_List_ViewSet1
 urlpatterns = [
     
 
@@ -30,15 +28,6 @@ urlpatterns = [
     path('pro_otp_chk/',views.OTPCHECK.as_view(),name="OTPCHECK"),
     
 
-
-
-# -------------------------------------------------------------------------------------------------------------
-#--------------------------------------------------------------------------------------------------------------
-
-    path('new_citizens/', views.agg_sc_add_new_citizens_ViewSet),
-
-
-
     # _________________ State - District - Taluka GET  ____________________
     path('agg_state_info_get/',views.agg_sc_get_state_info_ViewSet1),#Added Authuntication & Authorization Token 
     path('agg_district_info_get/<str:state>',views.agg_sc_district_from_state_api.as_view()),#Added Authuntication & Authorization Token 
@@ -57,77 +46,18 @@ urlpatterns = [
     #______________________________ End DISEASE _____________________________________________
    
     # __________________ Source Name __________________
-    path('Source_Get/', views.source_name_ViewSet_GET),#Added Authuntication & Authorization Token                                                  # Get Source    [Soure]
-    path('Source_SourceName_Get/<str:SourceN>', views.Source_SourceName_ViewSet_GET.as_view()), #Added Authuntication & Authorization Token          # Get Source - Form Source Name     [Source To Source Name]
-    path('Source_state_Get/<str:sour>', views.Source_state_ViewSet_GET.as_view()),#Added Authuntication & Authorization Token                       # Get form Source - Source Name, State      [Source To state]
-    path('Source_district_Get/<str:stat>', views.Source_state_district_ViewSet_GET.as_view()),#Added Authuntication & Authorization Token           # Get Add New Source under State - Source, Source Name, State, District     [Souece State To District]
-
-    path('district_SourceName_Get/<str:sour_dis>', views.district_Source_name_and_ViewSet_GET.as_view()),#Added Authuntication & Authorization Token       # Get Add New Source under District - Source, Source Name, State, District   [District To Source Name]
-
-    path('Source_state_district_taluka_sourceName_Get/<str:sour>', views.Source_name_and_district_and_source_ViewSet_GET.as_view()),#Added Authuntication & Authorization Token     # Get Add New Source - Source, Source Name, State, District, Taluka  [Source to District]
-    path('district_taluka_SourceName_Get/<str:So>/<str:sour_dis>', views.district_taluka_Source_name_and_ViewSet_GET.as_view()),#Added Authuntication & Authorization Token     # Get Add New Source District- Source, Source Name, State, Taluka  [District to Source Name ]
-    path('taluka_SourceName_Get/<str:So>/<str:St>/<str:Di>/<str:Tal>', views.taluka_Source_name_and_ViewSet_GET.as_view()),#Added Authuntication & Authorization Token           # Get Add New Source Taluka- Source, Source Name, State, District,   [Taluka to Source Name ]
-
-
-    
-
-    path('source_and_pass_state_Get/<str:STid>', views.source_from_id_state_api.as_view()),#Added Authuntication & Authorization Token                      # Get form Source - State      [Source To state]
-    path('state_and_pass_district_Get/<str:So>/<str:DIid>/', views.state_from_id_district_api.as_view()),#Added Authuntication & Authorization Token                      # Get form state - District      [state To District]
-    path('district_and_pass_taluka_Get/<str:So>/<str:TLid>/', views.district_from_id_taluka_api.as_view()),#Added Authuntication & Authorization Token                           # Get form District - Taluka        [District To Taluka]
-    # path('taluka_and_pass_SourceName_Get/<str:So>/<str:SNid>/<str:source_pk_id>/', views.taluka_from_id_SourceName_api.as_view()),#Added Authuntication & Authorization Token                            # Get form Taluka - SourceName      [Taluka To SourceName]
-    path('district_and_SourceName_Get/<str:DSid>', views.district_from_id_SourceName_api.as_view()),#Added Authuntication & Authorization Token # Get form District - SourceName      [District To SourceName]
-    path('taluka_and_pass_SourceName_Get/', source_name_from_taluka_api.as_view(), name='taluka_and_pass_SourceName_Get'),
-    path('source_name_from_tahsil/', views.source_name_from_taluka_api.as_view(),name='source_name_from_tahasil'),#Added Authuntication
-    
-    # __________________ Source Name __________________
-
+    path('Source_Get/', views.source_name_ViewSet_GET),
 
     # _________________ source GET PUT POST DELETE ____________________
-    path('source_GET/', views.agg_source_ViewSet_GET),  #Added Authuntication & Authorization Token                                    # Get Source
-    
-    # # path('source_POST/', views.agg_source_ViewSet_POST),
-    # # path('source_PUT/<int:pk>/', views.agg_source_ViewSet_PUT),
-    # # path('source_DELETE/<int:pk>/', views.agg_source_ViewSet_DELETE),
-    # path('Source_Source_name_Get/', views.agg_sc_source_source_name_ViewSet_GET),
-    # _________________________ End source GET PUT POST DELETE _______________________________
+    path('source_GET/', views.agg_source_ViewSet_GET),  
+ 
 
-    # _________________ Add New Source GET PUT POST DELETE ____________________
-    path('add_new_source_GET/', views. agg_sc_add_new_source_ViewSet_GET),   #Added Authuntication & Authorization Token
-    # path('add_new_source_GET/', views. agg_sc_add_new_source_ViewSet_GET),                       # Add New Source View data
-    path('add_new_source_POST/', views. agg_sc_add_new_source_ViewSet_POST),                        # New Source View data    #Added Authuntication & Authorization Token
-    path('add_new_source_PUT/<int:pk>/', views. agg_sc_add_new_source_ViewSet_PUT),                 # Edit new Source View data    #Added Authuntication & Authorization Token
-    path('add_new_source_DELETE/<int:pk>/<int:user_id>/', views. agg_sc_add_new_source_ViewSet_DELETE),           # Delete New Source View data   #Added Authuntication & Authorization Token
-    path('add_new_source_GET_ID_WISE/<int:pk>/', views. agg_sc_add_new_source_ViewSet_GET_ID_WISE),  #Added Authuntication & Authorization Token
-    
-    # _________________________ End Add New Schedule GET PUT POST DELETE _______________________________
-
-    #______________________________ADD NEW CITIZENS___________________________________
-    path('add_citizen_get/',views.agg_sc_add_new_citizen_get_info_ViewSet1),#Added Authuntication & Authorization Token
-    path('add_citizen_put/<int:pk>/',views.agg_sc_add_new_citizen_put_info_ViewSet1),#Added Authuntication & Authorization Token
-    path('add_citizen_delete/<int:pk>/<int:user_id>/',views.agg_sc_add_new_citizen_delete_info_ViewSet1),#Added Authuntication & Authorization Token
-    path('add_citizen_get/<int:pk>/', views.agg_sc_add_new_citizen_get_id_info_ViewSet1),#Added Authuntication & Authorization Token
-    #______________________________END ADD NEW CITIZENS________________________________
-    
-    #______________________________ADD NEW EMPLOYEE___________________________________
-    path('add_employee_get/<int:pk>/',views.agg_sc_add_new_employee_get_info_ViewSet1),#Added Authuntication & Authorization Token
-    path('add_employee_put/<int:pk>/',views.agg_sc_add_new_employee_put_info_ViewSet1),#Added Authuntication & Authorization Token
-    path('get_department/<int:source_id>/<int:source_name_id>/',views.agg_sc_department_get_info_ViewSet1),#Added Authuntication & Authorization Token
-    path('get_designation/<int:department_id>/<int:source_id>/<int:source_name_id>/',views.agg_sc_designation_get_info_ViewSet1),#Added Authuntication & Authorization Token
-    
-    
-    path('citizen_growth_monitoring_info_get/',views.agg_sc_get_growth_monitoring_info_ViewSet1),
-
-    
-    
-    
     path('calculate/<int:height>/<int:weight>/', views.calculate_bmi, name='calculate-bmi'),
 
     
     
-    path('get_role/',views.role_get_info_ViewSet1),#Added Authuntication & Authorization Token
-    path('screening_for_type_get/<str:sourtype>',views.agg_sc_screening_for_type_ViewSet1.as_view()),#Added Authuntication & Authorization Token
-    path('get_class/',views.class_get_info_ViewSet1),#Added Authuntication & Authorization Token
-    path('get_division/',views.division_get_info_ViewSet1),#Added Authuntication & Authorization Token
+    path('get_role/',views.role_get_info_ViewSet1),
+   
     path('get_auditory/',views.auditory_get_info_ViewSet1),#Added Authuntication & Authorization Token
     path('get_eye_checkbox/',views.eye_checkbox_get_info_ViewSet1),#Added Authuntication & Authorization Token
     path('get_checkbox/',views.checkbox_get_info_ViewSet1),#Added Authuntication & Authorization Token 
@@ -192,71 +122,31 @@ urlpatterns = [
     path('referral/',views.referral_get_info_ViewSet1),#Added Authuntication & Authorization Token 
     path('place_referral/',views.place_referral_get_info_ViewSet1), #Added Authuntication & Authorization Token 
     
-    
-    path('symmetric_exam/<int:basic_screening_pk_id>/',views.Symmetric_exam_put_info_ViewSet1),#Added Authuntication & Authorization Token  
-    path('disability_screening/<int:basic_screening_pk_id>/',views.disability_screening_put_info_ViewSet1),#Added Authuntication & Authorization Token  
-    path('birth_defect/<int:basic_screening_pk_id>/',views.birth_defect_put_info_ViewSet1),#Added Authuntication & Authorization Token  
-    path('childhood_disease/<int:basic_screening_pk_id>/',views.childhood_disease_put_info_ViewSet1),#Added Authuntication & Authorization Token  
-    path('deficiencies/<int:basic_screening_pk_id>/',views.deficiencies_put_info_ViewSet1),#Added Authuntication & Authorization Token  
-    path('skincondition/<int:basic_screening_pk_id>/',views.skincondition_put_info_ViewSet1),#Added Authuntication & Authorization Token  
-    path('checkboxifnormal/<int:basic_screening_pk_id>/',views.checkboxifnormal_put_info_ViewSet1),#Added Authuntication & Authorization Token  
-    path('diagnosis/<int:basic_screening_pk_id>/',views.diagnosis_put_info_ViewSet1),#Added Authuntication & Authorization Token  
-    path('treatment/<int:basic_screening_pk_id>/',views.treatment_put_info_ViewSet1),#Added Authuntication & Authorization Token  
-    path('female_screening/<int:basic_screening_pk_id>/',views.Female_screening_put_info_ViewSet1),#Added Authuntication & Authorization Token  
-    
-    
-
-    
-    
     path('calculate_days/<str:dob>/<int:immunisation_pk_id>/', CalculateDaysView.as_view(), name='calculate_days'),#Added Authuntication & Authorization Token
-    path('citizen_basic_info_put/<str:citizen_id>/', views. agg_sc_put_citizen_basic_info_ViewSet1),#Added Authuntication & Authorization Token
-    path('citizen_family_info_put/<str:citizen_id>/', views. agg_sc_put_citizen_family_info_ViewSet1),#Added Authuntication & Authorization Token
-    path('citizen_growth_info_put/<str:citizen_id>/', views. agg_sc_put_citizen_growth_info_ViewSet1),#Added Authuntication & Authorization Token
-    # path('citizen_basic_info_put/<int:pk>/', views. agg_sc_put_citizen_basic_info_ViewSet1),
-    # path('citizen_family_info_put/<int:pk>/', views. agg_sc_put_citizen_family_info_ViewSet1),
-    # path('citizen_growth_info_put/<int:pk>/', views. agg_sc_put_citizen_growth_info_ViewSet1),
-    path('citizen_vital_info_put/<int:pk>/', views. agg_sc_put_citizen_vital_info_ViewSet1),#Added Authuntication & Authorization Token
     
     
     path('follow_up_dropdown_list/', views. followup_dropdown_get_info_ViewSet1),#Added Authuntication & Authorization Token
     path('follow_up_for/', views. followup_for_get_info_ViewSet1),#Added Authuntication & Authorization Token
-    path('source_name_get/', views. source_name_get_info_ViewSet1),#Added Authuntication & Authorization Token
-    path('refered_citizen_get/', views. follow_up_refer_citizen_info_ViewSet1),#Added Authuntication & Authorization Token
-    path('follow_up/', views. agg_followup_ViewSet_POST),
-    path('followup/<int:follow_up_ctzn_pk>/', agg_followup_ViewSet_POST, name='followup'),#Added Authuntication & Authorization Token
-    path('follow_up_citizen_get/<str:citizen_id>/<str:schedule_id>/', views. follow_up_get_citizen_info_ViewSet1),
     path('follow_status/', views. follow_up_status_citizen_info_ViewSet1),#Added Authuntication & Authorization Token
-    path('follow_up_citizen_get_idwise/<str:citizen_id>/<str:schedule_id>/', views. follow_up_citizen_get_idwise_info_ViewSet1),#Added Authuntication & Authorization Token
-    path('followup_citizen_info_get/<str:citizen_id>/', views. follow_up_citizen_get_info_ViewSet1),#Added Authuntication & Authorization Token
     
     #-------------kirti----------
 
     path('followupdropdown_get/', views.followup_dropdown_get.as_view(), name='followup_get'),
     path('followupfor_get/', views.followup_for_get.as_view(), name='followupfor_get'),
-    path('source_name_get/', views.source_name_get.as_view(), name='source_name_get'),
-    path('follow_up_refer_citizen/', views.follow_up_refer_citizen.as_view(), name='follow_up_refer_citizen_get'),
-    # path('follow_up_get_citizen/<str:citizen_id>/', views.follow_up_get_citizen.as_view(), name='follow_up_get_citizen'),
     path('follow_up_status_citizen/', views.follow_up_status_citizen.as_view(), name='follow_up_status_citizen'),
-    path('follow_up_citizen_info/', views.follow_up_citizen_info.as_view(), name='follow_up_citizen_info'),
     path('followup_save/<int:follow_up_pk_id>/', views.FollowupPOST.as_view(), name='followup_save'),
 
 
     
     path('citizen_medical_history/', views. medical_history_get_info_ViewSet1),#Added Authuntication & Authorization Token
     path('citizen_past_operative_history/', views. past_operative_history_get_info_ViewSet1),#Added Authuntication & Authorization Token
-    path('report/', views. report_get_info_ViewSet1),#Added Authuntication & Authorization Token
     path('bad_habbits/', views. bad_habbits_get_info_ViewSet1),#Added Authuntication & Authorization Token
-    path('form_submit_counts/<str:citizen_id>/<str:schedule_id>/', form_submit_counts, name='form_submit_counts'),
 
     path('audio_reading/<int:reading>/',views.audio_reading_get_api.as_view()),#Added Authuntication & Authorization Token  
     path('left_reading/<int:hz_500_left>/<int:hz_1000_left>/<int:hz_2000_left>/', views.LeftReading.as_view()),#Added Authuntication & Authorization Token  
     path('right_reading/<int:hz_500_right>/<int:hz_1000_right>/<int:hz_2000_right>/', views.RightReading.as_view()),#Added Authuntication & Authorization Token  
 
     
-    
-    path('Report_fields/', CheckAllFieldsFilled.as_view(), name='Report_fields'),
-    path('check-fields/<str:citizen_id>/<str:schedule_id>/', CheckAllFieldsFilledValues.as_view(), name='check_all_fields_filled'),
-
     path('Hospital_List/', Hospital_list_GET_API_APIView.as_view(), name='Hospital_List'),
     
     
@@ -265,7 +155,6 @@ urlpatterns = [
     #_________________________Source-Wise Role GET API_____________________________
     path('agg_role_info_get/<str:source>',views.agg_sc_role_from_source_api.as_view()),#Added Authuntication & Authorization Token
     path('permission/', views.permission_get),#Added Authuntication & Authorization Token
-    path('permission_citizen/', views.citizen_permission_get),#Added Authuntication & Authorization Token
     
 
     #----------------mayank permission model and Dashboard and Healthcard and search and filters and followup-------------------------------
@@ -275,64 +164,12 @@ urlpatterns = [
     path('permissions/<source>/<role>/', GetPermissionAPIView.as_view(), name='get_permissions'),#Added Authuntication & Authorization Token
     path('permissions/', CreatePermissionAPIView.as_view(), name='create_permission'),#Added Authuntication & Authorization Token
     path('permissions/<int:id>/', UpdatePermissionAPIView.as_view(), name='update_permission'),#Added Authuntication & Authorization Token
-    # path('Role/<int:source_pk_id>/', GroupOrRoleAPIView.as_view(), name='group-api'),
-    path('age-counts/<int:source_id>/<int:type_id>/', AgeCountAPIView.as_view(), name='age_counts'),#Added Authuntication & Authorization Token
-    path('age-counts/<int:source_id>/<int:type_id>/<int:class_id>/', AgeCountAPIView.as_view(), name='age_counts_with_class'),#Added Authuntication & Authorization Token
-    path('age-count/', AgeCountAPIView.as_view(), name='age_count_api'),#Added Authuntication & Authorization Token
-    path('gender-count/<int:source_id>/<int:type_id>/<int:class_id>/', GenderCountAPIView.as_view(), name='gender-count'),#Added Authuntication & Authorization Token
-    path('gender-count/<int:source_id>/<int:type_id>/', GenderCountAPIView.as_view(), name='gender-count'),#Added Authuntication & Authorization Token
-    path('dental-count/<int:source_id>/<int:type_id>/<int:class_id>/', StudentConditionAPIView.as_view(), name='dental_count_api'),#Added Authuntication & Authorization Token
-    path('dental-count/<int:source_id>/<int:type_id>/', StudentConditionAPIView.as_view(), name='dental_count_api'),#Added Authuntication & Authorization Token
-    path('vision-count/<int:source_id>/<int:type_id>/<int:class_id>/', VisionCountAPIView.as_view(), name='dental_count_api'),#Added Authuntication & Authorization Token
-    path('vision-count/<int:source_id>/<int:type_id>/', VisionCountAPIView.as_view(), name='dental_count_api'),#Added Authuntication & Authorization Token
-    path('psyco-count/<int:source_id>/<int:type_id>/<int:class_id>/', PsycoCountAPIView.as_view(), name='dental_count_api'),#Added Authuntication & Authorization Token
-    path('psyco-count/<int:source_id>/<int:type_id>/', PsycoCountAPIView.as_view(), name='dental_count_api'),#Added Authuntication & Authorization Token
-    path('filter-citizens/', CitizenDataFilterAPIView.as_view(), name='filter_citizens_api'),#Added Authuntication & Authorization Token
-    path('filter-Source/', SourceDataFilterAPIView.as_view(), name='filter_citizens_api'),#Added Authuntication & Authorization Token
+   
     path('filter-User/', UserDataFilterAPIView.as_view(), name='filter_citizens_api'),#Added Authuntication & Authorization Token
-    path('bmi_count/<source_id>/<type_id>/', BMICategories.as_view(), name='bmi-categories'),#Added Authuntication & Authorization Token
-    path('bmi_count/<source_id>/<type_id>/<class_id>/', BMICategories.as_view(), name='bmi-categories-with-class'),#Added Authuntication & Authorization Token
-    path('birth-defects/count/<str:source_id>/<str:type_id>/', BirthDefectCountAPIView.as_view(), name='birth_defects_count_api'),#Added Authuntication & Authorization Token
-    path('birth-defects/count/<str:source_id>/<str:type_id>/<str:class_id>/', BirthDefectCountAPIView.as_view(),name='birth_defects_count_api_with_class'),#Added Authuntication & Authorization Token
-    path('healthcards/', HealthcardAPIView.as_view(), name='healthcard-list'),#Added Authuntication & Authorization Token
-    # path('healthcards_source_source_name/<int:source_id_id>/<int:source_name_id>/', HealthcardAPIView.as_view(), name='healthcard-list'),#Added Authuntication & Authorization Token
-    path('healthcards/<int:source_id>/', HealthcardAPIView.as_view(), name='healthcard-filtered'),#Added Authuntication & Authorization Token
-    path('healthcards/<int:source_id>/<int:state_id>/', HealthcardAPIView.as_view(), name='healthcard-filtered'),#Added Authuntication & Authorization Token
-    path('healthcards/<int:source_id>/<int:state_id>/<int:district_id>/', HealthcardAPIView.as_view(), name='healthcard-filtered'),#Added Authuntication & Authorization Token
-    path('healthcards/<int:source_id>/<int:state_id>/<int:district_id>/<int:tehsil_id>/', HealthcardAPIView.as_view(), name='healthcard-filtered'),#Added Authuntication & Authorization Token
-    path('healthcards/<int:source_id>/<int:state_id>/<int:district_id>/<int:tehsil_id>/<int:source_name>/', HealthcardAPIView.as_view(), name='healthcard-filtered'),#Added Authuntication & Authorization Token
-    path('citizen-vital-status/<str:citizen_id>/<int:schedule_count>/', CitizenVitalinfoCompleateStatusViewSet.as_view(), name='citizen-vital-info'),#Added Authuntication & Authorization Token
-    path('citizen-download/<str:citizen_id>/<int:schedule_count>/', Healt_card_DownloadAPIView.as_view(), name='citizen-vital-info'),#Added Authuntication & Authorization Token
-    path('follow-up/<int:follow_up>/', follow_up_get_citizen_info_ViewSet1),#Added Authuntication & Authorization Token
-    path('follow-up/', follow_up_get_citizen_info_ViewSet1),#Mohin #Added Authuntication & Authorization Token
-    path('follow-up/<int:follow_up>/<int:follow_up_id>/', follow_up_get_citizen_info_ViewSet1),#Added Authuntication & Authorization Token
-    path('follow-up/<int:follow_up>/<int:follow_up_id>/<int:source_name>/', follow_up_get_citizen_info_ViewSet1),#Added Authuntication & Authorization Token
-    path('refer-count/<int:source_id>/<int:type_id>/', refer_to_count.as_view(), name='count_api'),#Added Authuntication & Authorization Token
-    path('refer-count/<int:source_id>/<int:type_id>/<int:class_id>/', refer_to_count.as_view(), name='count_api'),#Added Authuntication & Authorization Token
-
-    #-------------Mohin-----------------
-    path('pft_counts/<source_id>/<type_id>/', PFTCountsAPIView.as_view(), name='pft_counts'),#Added Authuntication & Authorization Token
-    path('pft_counts/<source_id>/<type_id>/<class_id>/', PFTCountsAPIView.as_view(), name='pft_counts'),#Added Authuntication & Authorization Token
-    
-    path('NEW_gender_count/', NEWGenderCountAPIView.as_view(), name='gender_count'),
-    path('NEW_vision_count/', NEWVisionCountAPIView.as_view(), name='NEW_vision_count'),
-    path('NEW_dental_count/', NewStudentDentalConditionAPIView.as_view(), name='NEW_dental_count'),
-    path('NEW_pft_count/', NEWPFTCountsAPIView.as_view(), name='NEW_pft_count'),
-    path('NEW_age_count/', NEWAgeCountAPIView.as_view(), name='NEW_ageCount_count'),
-    path('NEW_bmi_count/', NEWBMICategories.as_view(), name='NEW_bmiCount_count'),
-    path('reffered_to_specialist_count/', ReferredToSpecialistCountAPIView.as_view(), name='reffered_to_specialist_count'),
-    path('NEW_PsycoCount/', NEWPsycoCountAPIView.as_view(), name='NEW_bmiCount_count'),
-    path('Birth_defect_count/', Birth_Defect_Count_APIView.as_view(), name='Birth_defect_count'),
-    path('other_count/', OtherInfoCount.as_view(), name='other_count'),
-    
-    
-    
     
     
     
     path('Screening_sub_list/', Screening_sub_list_Viewset.as_view(), name='Screening_sub_list'),
-    path('screening_vitals/', ScreeningVitalsViewset.as_view(), name='screening_vitals'),
-    path('screening_sub_vitals/', screening_sub_vitals_Viewset.as_view(), name='screening_sub_vitals'),
     
     path('video_anaysis/', VideoAnalysisLinkAPI.as_view(), name='video_anaysis'),
     path('image_to_text/', views.image_to_text, name='image_to_text'),
@@ -345,48 +182,12 @@ urlpatterns = [
     
     path('QRCode/', QRCodeGenerateAPIView.as_view(), name='QRCode'),
     path('dental_image_analyse/', DentalScreeningAPIView.as_view(), name='dental_image_analyse'),
-    
-    path('img_analyse_data_save/', img_analyse_data_save_api.as_view(), name='img_analyse_data_save'),
-    
-    
-    
-    
+       
     
     #-----------------------Location API-----------------------
     
     path('location_get_api/', location_get_APIView.as_view(), name='location_get_api'),
-    
-    # path('location_get_api/<int:source_name_id>/', location_get_api.as_view(), name='location_get_api'),
-    path('route_get_api/<int:source_name_id>/', route_get_api.as_view(), name='route_get_api'),
-    
-    path('amb_get_api/', ambulance_get_api.as_view(), name='ambulance_get_api'),
-    path('doctor_get_api/', doctor_get_api.as_view(), name='doctor_get_api'),
-    path('pilot_get_api/', pilot_get_api.as_view(), name='pilot_get_api'),
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    path('download_csv/', DownloadCSVView.as_view(), name='download_csv'),
-    # path('upload_csv/', UploadCSVView.as_view(), name='upload_csv'),
 
-    path('upload_csv/', UploadImportedDataView.as_view(), name='upload_csv'),
-    path('GET_Import_data/', GET_Imported_data_from_csv_and_excel.as_view(), name='GET_Import_data'),
-    path('GET_ID_Wise_Import_data/<int:id>/', GET_ID_Wise_Imported_data_from_csv_and_excel.as_view(), name='GET_ID_Wise_Import_data'),
     
     path('GET_Screening_List/', GET_Screening_List_View.as_view(), name='GET_Screening_List'),
 

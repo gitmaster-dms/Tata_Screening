@@ -94,9 +94,7 @@ admin.site.register(permission)
 admin.site.register(role)
 admin.site.register(Permission_module)
 
-admin.site.register(agg_sc_add_new_citizens)
-# admin.site.register(agg_sc_add_new)
-admin.site.register(agg_sc_citizen_basic_info)
+
 
 
 
@@ -104,23 +102,10 @@ admin.site.register(agg_sc_state)
 admin.site.register(agg_sc_district)
 admin.site.register(agg_sc_tahsil)
 admin.site.register(agg_sc_disease)
-admin.site.register(citizen_basic_info)
-admin.site.register(agg_sc_citizen_family_info)
-admin.site.register(agg_sc_growth_monitoring_info)
-admin.site.register(agg_sc_citizen_vital_info)
 admin.site.register(agg_audit)
 admin.site.register(agg_immunisation)
-admin.site.register(agg_sc_citizen_immunization_info)
-admin.site.register(agg_sc_citizen_audit_info)
-admin.site.register(agg_sc_citizen_pycho_info)
-admin.site.register(agg_sc_citizen_dental_info)
-admin.site.register(agg_sc_citizen_vision_info)
 admin.site.register(vision_eye_checkbox)
 admin.site.register(vision_checkbox_if_present)
-admin.site.register(agg_sc_basic_screening_info)
-admin.site.register(agg_sc_screening_for_type)
-admin.site.register(agg_sc_class)
-admin.site.register(agg_sc_division)
 admin.site.register(basic_information_head_scalp)
 admin.site.register(basic_information_hair_color)
 admin.site.register(basic_information_hair_density)
@@ -176,69 +161,25 @@ admin.site.register(basic_information_place_referral)
 
 admin.site.register(agg_sc_followup_dropdownlist)
 admin.site.register(agg_sc_followup_for)
-admin.site.register(agg_sc_follow_up_citizen)
-admin.site.register(agg_sc_followup)
 admin.site.register(agg_sc_follow_up_status)
-admin.site.register(agg_sc_medical_event_info)
+
 
 admin.site.register(agg_screening_list)
 admin.site.register(agg_screening_sub_list)
 #----------------Corparate-----------------------
-admin.site.register(agg_sc_department)
-admin.site.register(agg_sc_designation)
 admin.site.register(medical_history)
 admin.site.register(agg_citizen_past_operative_history)
-admin.site.register(agg_sc_citizen_medical_history)
-admin.site.register(agg_sc_investigation)
 admin.site.register(agg_sc_bad_habbits)
 admin.site.register(agg_save_permissions)
 admin.site.register(referred_hospital_list)
-admin.site.register(agg_sc_citizen_other_info)
-# _____________ Final ________________________
-
-# admin.site.register(agg_sc_state)
-# admin.site.register(agg_mh_district)
-# admin.site.register(agg_mh_taluka)
-admin.site.register(agg_search_and_source_names)
-admin.site.register(agg_sc_add_new_source)
 admin.site.register(agg_source)
 admin.site.register(agg_age)
 admin.site.register(agg_gender)
-admin.site.register(GrowthMonitoring)
-# admin.site.register(agg_mh_taluka)
-
-# _____________ Final ________________________
-
-
 
 admin.site.register(WHO_BMI_bmi_boys_and_girl_5_19_years)
 admin.site.register(wt_for_age_0_to_10_boys_and_girl)
 admin.site.register(wt_for_ht_0_to_10_boys_and_girl)
 admin.site.register(ht_for_age_0_to_10_boys_and_girl)
-
-
-# @admin.register(wt_for_ht_0_to_10_yrs_boys_girlfriend)
-# class userdataa(ImportExportModelAdmin):
-#     pass
-
-
-
-# @admin.register(mas_weightforage_five_to_ten)
-# class userdataa(ImportExportModelAdmin):
-#     pass
-
-#
-
-
-
-admin.site.register(imported_data_from_excel_csv)
-
-
-admin.site.register(agg_sc_location)
-admin.site.register(agg_sc_route)
-admin.site.register(agg_sc_ambulance)
-admin.site.register(agg_sc_doctor)
-admin.site.register(agg_sc_pilot)
 
 
 #------------------------------------------------------------------------------------------------------------
