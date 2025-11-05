@@ -28,12 +28,7 @@ urlpatterns = [
     path('pro_otp_chk/',views.OTPCHECK.as_view(),name="OTPCHECK"),
     
 
-    # _________________ State - District - Taluka GET  ____________________
-    path('agg_state_info_get/',views.agg_sc_get_state_info_ViewSet1),#Added Authuntication & Authorization Token 
-    path('agg_district_info_get/<str:state>',views.agg_sc_district_from_state_api.as_view()),#Added Authuntication & Authorization Token 
-    path('agg_tahsil_get_api/<str:tahsil>',views.agg_sc_tahsil_get_api.as_view()),#Added Authuntication & Authorization Token 
-    # _________________ End State - District - Taluka GET  ____________________
-
+    
     # ________________ Age_GET __________________
     path('Age_GET/', views.agg_age_ViewSet_GET),#Added Authuntication & Authorization Token 
     path('Gender_GET/', views.agg_gender_ViewSet_GET),#Added Authuntication & Authorization Token 
@@ -213,6 +208,12 @@ urlpatterns = [
     
     
     #--------------------------------Tata Screening Project API's -------------------------------------#
+    
+    path('State_Get/',State_Get_Api.as_view(),name='State_Get'),
+    path('District_Get/<int:state_name>/',District_Get_Api.as_view(),name='District_Get'),
+    path('Tehsil_Get/<int:dist_name>/',District_Get_Api.as_view(),name='Tehsil_Get'),
+    
+    
     path('Citizen_Post/', Citizen_Post_Api.as_view(), name='Citizen_Post'),
     path('Citizen_Get/', Citizen_Get_Api.as_view(), name='Citizen_Get'),
     path('Citizen_Get_Idwise/<int:citizens_pk_id>/', Citizen_idwise_data_Get_Api.as_view(), name='Citizen_Get_idwise'),

@@ -586,44 +586,27 @@ def source_name_ViewSet_GET(request):
 
 
 
+class State_Get_Api(APIView):
+    def get(self,request):
+        state = agg_sc_state.objects.all().order_by('state_name')
+        serializers = agg_sc_state_info_Serializer(state,many=True)
+        return Response(serializers.data,status=status.HTTP_200_OK)
 
-@api_view(['GET'])
-@renderer_classes([UserRenderer])
-@permission_classes([IsAuthenticated])
-def agg_sc_get_state_info_ViewSet1(request):
-    """
-    List all code snippets, or create a new snippet.
-    """
-    request.method == 'GET'
-    snippets = agg_sc_state.objects.all().order_by('state_name')
-    serializer = agg_sc_state_info_Serializer(snippets, many=True)
-    return Response(serializer.data)
 
-class agg_sc_district_from_state_api(APIView):
-    renderer_classes = [UserRenderer]
-    permission_classes = [IsAuthenticated]
-    def get_object(self,state,formate=None):
-        try:
-            return agg_sc_district.objects.filter(state_name=state).order_by('dist_name')
-        except agg_sc_district.DoesNotExist:
-            raise Response(status.HTTP_404_NOT_FOUND)
-    def get(self,request,state):
-        state_obj=self.get_object(state)
-        serialized=agg_sc_district_serializer(state_obj,many=True)
-        return Response(serialized.data)
+class District_Get_Api(APIView):
+    def get(self,request,state_name):
+        District = agg_sc_district.objects.filter(state_name=state_name).order_by('dist_name')
+        serializers = agg_sc_district_serializer(District,many=True)
+        return Response(serializers.data,status=status.HTTP_200_OK) 
 
-class agg_sc_tahsil_get_api(APIView):
-    renderer_classes = [UserRenderer]
-    permission_classes = [IsAuthenticated]
-    def get_objects(self,tahsil,formate=None):
-        try:
-            return agg_sc_tahsil.objects.filter(dist_name=tahsil).order_by('tahsil_name')
-        except agg_sc_tahsil.DoesNotExist:
-            return Response(status.HTTP_404_NOT_FOUND)
-    def get(self,request,tahsil):
-        tahsil_data=self.get_objects(tahsil)
-        serialized=agg_sc_tahsil_serializer(tahsil_data,many=True)
-        return Response(serialized.data)
+class Tehsil_Get_Api(APIView):
+    def get(self,request,dist_name):
+        Tehsil = agg_sc_tahsil.objects.filter(dist_name=dist_name).order_by('tahsil_name')
+        serializers = agg_sc_tahsil_serializer(Tehsil,many=True)
+        return Response(serializers.data,status=status.HTTP_200_OK) 
+
+        
+
 
 
 from django.http import HttpResponse
