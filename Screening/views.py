@@ -62,7 +62,7 @@ def get_tokens_for_user(user):
         clg_source_data = {
             'source_id': user.clg_source.source_pk_id,  
             'source': user.clg_source.source, 
-            'source_name_id': user.clg_source_name.source_pk_id, 
+            'source_name_id': user.clg_source_name.ws_pk_id, 
             'source_name': user.clg_source_name.source_names, 
             'clg_state_id':user.clg_state.state_id,
             'clg_state':user.clg_state.state_name,
@@ -1374,18 +1374,18 @@ class followup_for_get(APIView):
         return Response(serializer.data)
 
 
-class source_name_get(APIView):
+class Workshop_get_APi(APIView):
     def get(self, request):
-        snippets = agg_sc_add_new_source.objects.all()
-        serializer = source_name_infoSerializer(snippets, many=True)
+        snippets = Workshop.objects.all()
+        serializer = Workshop_Get_Serializer(snippets, many=True)
         return Response(serializer.data)
 
 
-class follow_up_refer_citizen(APIView):
-    def get(self, request):
-        snippets = agg_sc_follow_up_citizen.objects.all()
-        serializer = followup_refer_to_specalist_citizens_infoSerializer(snippets, many=True)
-        return Response(serializer.data)
+# class follow_up_refer_citizen(APIView):
+#     def get(self, request):
+#         snippets = agg_sc_follow_up_citizen.objects.all()
+#         serializer = followup_refer_to_specalist_citizens_infoSerializer(snippets, many=True)
+#         return Response(serializer.data)
 
 # class follow_up_get_citizen(APIView):
 #     def get(self, request, follow_up=None, follow_up_id=None, source_name=None):
