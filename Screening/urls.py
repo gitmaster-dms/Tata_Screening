@@ -32,7 +32,61 @@ urlpatterns = [
     
     
 
+<<<<<<< Updated upstream
     
+=======
+# -------------------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------------------
+    # path('Citizen_Dental_Info',views.agg_sc_citizen_dental_info_ViewSet),
+    # path('Citizen_Vision_Info/', views.agg_sc_citizen_vision_info_ViewSet),
+    # path('Sick_Room_Info',views.agg_sc_sick_room_info_ViewSet),
+    path('Schedule_Screening/', views.agg_sc_schedule_screening_ViewSet),
+
+
+# -------------------------------------------------------------------------------------------------------------
+#--------------------------------------------------------------------------------------------------------------
+
+    path('new_citizens/', views.agg_sc_add_new_citizens_ViewSet),
+
+
+
+
+
+
+#  _________________ Final ___________________
+    # _________________ State GET PUT POST DELETE ____________________
+    # path('state_GET/', views.agg_ind_state_ViewSet_GET),                                    # Get state Name
+    # path('state_POST/', views.agg_ind_state_ViewSet_POST),    
+    # path('state_PUT/<int:pk>/', views.agg_ind_state_ViewSet_PUT),
+    # path('state_DELETE/<int:pk>/', views.agg_ind_state_ViewSet_DELETE),
+    # _________________ End State GET PUT POST DELETE ____________________
+
+    # _________________ District GET PUT POST DELETE ____________________
+    # path('district_GET/', views.agg_mh_district_ViewSet_GET),                                # Get ditrict Name
+    # path('ditrict_POST/', views.agg_mh_district_ViewSet_POST),
+    # path('ditrict_PUT/<int:pk>/', views.agg_mh_district_ViewSet_PUT),
+    # path('ditrict_DELETE/<int:pk>/', views.agg_mh_district_ViewSet_DELETE),
+    # _________________ End District GET PUT POST DELETE ____________________
+
+    # _________________ Taluka GET PUT POST DELETE ____________________
+    # path('taluka_GET/', views.agg_mh_taluka_ViewSet_GET),                                   # Get taluka Name
+    # path('taluka_POST/', views.agg_mh_taluka_ViewSet_POST),
+    # path('taluka_PUT/<int:pk>/', views.agg_mh_taluka_ViewSet_PUT),
+    # path('taluka_DELETE/<int:pk>/', views.agg_mh_taluka_ViewSet_DELETE),
+    # _________________________ End Taluka GET PUT POST DELETE _______________________________
+
+    # ________________ State - District - Taluka __________________
+    # path('state_district_taluka_GET/', views.agg_state_district_taluka_ViewSet_GET),
+    # ________________ End State - District - Taluka __________________
+
+    #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    # _________________ State - District - Taluka GET  ____________________
+    path('agg_state_info_get/',views.agg_sc_get_state_info_ViewSet1),#Added Authuntication & Authorization Token 
+    path('agg_district_info_get/<str:state>',views.agg_sc_district_from_state_api.as_view()),#Added Authuntication & Authorization Token 
+    path('agg_tahsil_get_api/<str:tahsil>',views.agg_sc_tahsil_get_api.as_view()),#Added Authuntication & Authorization Token 
+    # _________________ End State - District - Taluka GET  ____________________
+
+>>>>>>> Stashed changes
     # ________________ Age_GET __________________
     path('Age_GET/', views.agg_age_ViewSet_GET),#Added Authuntication & Authorization Token 
     path('Gender_GET/', views.agg_gender_ViewSet_GET),#Added Authuntication & Authorization Token 
@@ -413,6 +467,14 @@ urlpatterns = [
     
     
     
+<<<<<<< Updated upstream
+
+=======
+    path('Screening_sub_list/', Screening_sub_list_Viewset.as_view(), name='Screening_sub_list'),
+    path('screening_vitals/', ScreeningVitalsViewset.as_view(), name='screening_vitals'),
+    path('screening_sub_vitals/', screening_sub_vitals_Viewset.as_view(), name='screening_sub_vitals'),
+    path('GET_Schedule_Screening_sub_vital/', GET_Schedule_Screening_sub_vital_View.as_view(), name='GET_Schedule_Screening_sub_vital'),
+>>>>>>> Stashed changes
     
     path('video_anaysis/', VideoAnalysisLinkAPI.as_view(), name='video_anaysis'),
     path('image_to_text/', views.image_to_text, name='image_to_text'),
@@ -472,6 +534,39 @@ urlpatterns = [
     path('GET_Import_data/', GET_Imported_data_from_csv_and_excel.as_view(), name='GET_Import_data'),
     path('GET_ID_Wise_Import_data/<int:id>/', GET_ID_Wise_Imported_data_from_csv_and_excel.as_view(), name='GET_ID_Wise_Import_data'),
     
+<<<<<<< Updated upstream
+=======
+    path('GET_Screening_List/', GET_Screening_List_View.as_view(), name='GET_Screening_List'),
+    
+    path('GET_Schedule_Screening_List/', GET_Schedule_Screening_List_View.as_view(), name='GET_Schedule_Screening_List'),
+    
+    
+    
+
+    
+    
+
+
+    # Other URL patterns...
+
+
+
+
+
+
+
+
+
+
+    path('medical_event_info_post/<int:schedule_pk>', medical_event_infoPost.as_view(), name='medical_event_infoPost'),
+
+
+
+
+
+
+
+>>>>>>> Stashed changes
 
 
 
