@@ -2098,8 +2098,8 @@ class GET_Screening_List_View(APIView):
         return Response(serializers.data,status=status.HTTP_200_OK)
 
 class Screening_sub_list_Viewset(APIView):
-    renderer_classes = [UserRenderer]
-    permission_classes = [IsAuthenticated]
+    # renderer_classes = [UserRenderer]
+    # permission_classes = [IsAuthenticated]
     def get(self,request):
         screening_list = request.GET.get('screening_list')
         snippet = agg_screening_sub_list.objects.all()

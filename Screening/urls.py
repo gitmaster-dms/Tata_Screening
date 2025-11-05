@@ -164,7 +164,7 @@ urlpatterns = [
     
     
     
-    path('Screening_sub_list/', Screening_sub_list_Viewset.as_view(), name='Screening_sub_list'),
+
     
     path('video_anaysis/', VideoAnalysisLinkAPI.as_view(), name='video_anaysis'),
     path('image_to_text/', views.image_to_text, name='image_to_text'),
@@ -184,7 +184,7 @@ urlpatterns = [
     path('location_get_api/', location_get_APIView.as_view(), name='location_get_api'),
 
     
-    path('GET_Screening_List/', GET_Screening_List_View.as_view(), name='GET_Screening_List'),
+
 
 
 
@@ -213,6 +213,8 @@ urlpatterns = [
     path('District_Get/<int:state_name>/',District_Get_Api.as_view(),name='District_Get'),
     path('Tehsil_Get/<int:dist_name>/',District_Get_Api.as_view(),name='Tehsil_Get'),
     
+    path('GET_Screening_List/', GET_Screening_List_View.as_view(), name='GET_Screening_List'),
+    path('Screening_sub_list/', Screening_sub_list_Viewset.as_view(), name='Screening_sub_list'),
     
     path('Citizen_Post/', Citizen_Post_Api.as_view(), name='Citizen_Post'),
     path('Citizen_Get/', Citizen_Get_Api.as_view(), name='Citizen_Get'),
