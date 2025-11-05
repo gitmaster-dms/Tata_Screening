@@ -2941,8 +2941,8 @@ class Workshop(models.Model):
     
     screening_vitals = models.JSONField(null=True,blank=True)
     sub_screening_vitals = models.JSONField(null=True,blank=True)
-    latitude = models.DecimalField(max_digits=9, decimal_places=6)  # Latitude can range from -90 to 90
-    longitude = models.DecimalField(max_digits=9, decimal_places=6)  # Longitude can range from -180 to 180
+    latitude = models.DecimalField(max_digits=9, decimal_places=6, null=True)  # Latitude can range from -90 to 90
+    longitude = models.DecimalField(max_digits=9, decimal_places=6, null=True)  # Longitude can range from -180 to 180
 
     is_deleted = models.BooleanField(default=False)
     added_by =	models.CharField(max_length=255,null=True, blank=True)
