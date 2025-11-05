@@ -1738,7 +1738,7 @@ class followup_refer_to_specalist_citizens_infoSerializer(serializers.ModelSeria
     citizen_name = serializers.CharField(source='citizen_pk_id.name', read_only=True)
     class Meta:
         model = agg_sc_follow_up_citizen
-        fields = ['follow_up_ctzn_pk','citizen_id','schedule_id','citizen_pk_id','citizen_name','vital_refer','basic_screening_refer','auditory_refer','dental_refer','vision_refer','pycho_refer']
+        fields = ['follow_up_ctzn_pk','citizen_id','citizen_pk_id','citizen_name','vital_refer','basic_screening_refer','auditory_refer','dental_refer','vision_refer','pycho_refer']
         
 class followup_info_Serializer(serializers.ModelSerializer):
     follow_up = serializers.PrimaryKeyRelatedField(queryset=agg_sc_follow_up_status.objects.all(),required=False) 
@@ -1769,7 +1769,7 @@ class followupGETinfoSerializer(serializers.ModelSerializer):
     source_name = serializers.CharField(source='citizen_pk_id.source_name.source_names',allow_null=True)
     class Meta:
         model = agg_sc_follow_up_citizen
-        fields = ['follow_up_ctzn_pk','citizen_name','citizen_id','schedule_id','vital_refer','basic_screening_refer','auditory_refer','dental_refer','vision_refer','pycho_refer', 'parents_no','dob','state','district','tehsil','source_name','weight_for_height']
+        fields = ['follow_up_ctzn_pk','citizen_name','citizen_id','vital_refer','basic_screening_refer','auditory_refer','dental_refer','vision_refer','pycho_refer', 'parents_no','dob','state','district','tehsil','source_name','weight_for_height']
 
     # def get_citizen_name(self, instance):
     #     citizen = instance.citizen_pk_id
@@ -3546,3 +3546,10 @@ class growth_monitoring_info_Healthcard(serializers.ModelSerializer):
     class Meta:
         model = growth_monitoring_info
         fields = '__all__'
+
+
+class followup_save_info_Serializer(serializers.ModelSerializer):
+    follow_up = serializers.PrimaryKeyRelatedField(queryset=agg_sc_follow_up_status.objects.all(),required=False) 
+    class Meta:
+        model = followup_save
+        fields = ['call_status','conversational_remarks','not_connected_reason','visit_status','visited_status','condition_improved','weight_gain_status','forward_to','priority','not_visited_reason','reschedule_date1','reschedule_date2','follow_up','remark','added_by','citizen_id','name','dob','parents_no','state','tehsil','district','source_name','follow_up_citizen_pk_id','followup_count','screening_citizen_id']

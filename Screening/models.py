@@ -3535,7 +3535,7 @@ class follow_up(models.Model):
     citizen_pk_id = models.ForeignKey(Citizen, on_delete=models.CASCADE, null=True,blank=True)
     screening_citizen_id = models.ForeignKey(Screening_citizen, on_delete=models.CASCADE, null=True,blank=True)
     
-    # follow_up = models.IntegerField(blank=True,null=True,default=2)
+    follow_up = models.IntegerField(blank=True,null=True,default=2)
     
     is_deleted = models.BooleanField(default=False)
     added_by =	models.CharField(null=True, blank=True,max_length=255)
@@ -3552,6 +3552,7 @@ class followup_save(models.Model):
     followup_count = models.CharField(max_length=255,blank=True,null=True)
     citizen_id = models.CharField(max_length=255,blank=True,null=True)
     citizen_pk_id = models.ForeignKey(Citizen, on_delete=models.CASCADE, null=True,blank=True)
+    screening_citizen_id = models.ForeignKey(Screening_citizen, on_delete=models.CASCADE, null=True,blank=True)
     name = models.CharField(max_length=255,blank=True,null=True)
     dob = models.CharField(max_length=20,blank=True,null=True)
     parents_no = models.CharField(max_length=10,null=True,blank=True)
