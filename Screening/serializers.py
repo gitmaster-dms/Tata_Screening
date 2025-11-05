@@ -2704,7 +2704,7 @@ class Workshop_Post_Serializer(serializers.ModelSerializer):
                     'ws_pk_id', 'workshop_code', 'source', 'Workshop_name', 'registration_no',
                     'mobile_no', 'email_id', 'logo', 'ws_state', 'ws_district', 'ws_taluka',
                     'ws_pincode', 'ws_address', 'screening_vitals', 'sub_screening_vitals',
-                    'is_deleted', 'added_by', 'added_date', 'modify_by', 'modify_date'
+                    'is_deleted', 'added_by', 'added_date', 'modify_by', 'modify_date','longitude','latitude'
                 ]
         
 class Workshop_Get_Serializer(serializers.ModelSerializer):
