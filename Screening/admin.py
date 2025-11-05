@@ -94,13 +94,6 @@ admin.site.register(permission)
 admin.site.register(role)
 admin.site.register(Permission_module)
 
-
-
-
-admin.site.register(agg_sc_citizen_sick_room_info)
-admin.site.register(agg_sc_schedule_screening)
-
-
 admin.site.register(agg_sc_add_new_citizens)
 # admin.site.register(agg_sc_add_new)
 admin.site.register(agg_sc_citizen_basic_info)
@@ -212,7 +205,6 @@ admin.site.register(agg_sc_add_new_source)
 admin.site.register(agg_source)
 admin.site.register(agg_age)
 admin.site.register(agg_gender)
-admin.site.register(agg_sc_start_screening)
 admin.site.register(GrowthMonitoring)
 # admin.site.register(agg_mh_taluka)
 

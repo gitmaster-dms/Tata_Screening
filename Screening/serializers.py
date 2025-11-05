@@ -314,33 +314,6 @@ class taluka_to_source_name_Serializer(serializers.ModelSerializer):
 
 
 
-
-
-# Amit 
-
-class Source_sourName_Shedule_Id_Serializer(serializers.ModelSerializer):
-    source_name = source_SourceName_Serializer 
-    class Meta:
-          model = agg_sc_schedule_screening
-          fields = ('schedule_screening_pk_id', 'schedule_id', 'source', 'source_name')
-
-
-
-
-
-# class source_from_id_state_api_Serializer(serializers.ModelSerializer):
-#      class Meta:
-#         model = agg_sc_add_new_source
-#         fields = ('source_pk_id', 'source', 'source_state')
-
-#      def to_representation(self, instance):
-#         data = super().to_representation(instance)
-#         data['source_pk_id'] = instance.source.source_pk_id 
-#         data['state_name'] = instance.source_state.state_name
-#         data['source'] = instance.source.source 
-#         return data
-
-
 class source_from_id_state_api_Serializer(serializers.ModelSerializer):
     class Meta:
         model = agg_sc_add_new_source
@@ -536,78 +509,6 @@ class agg_sc_source_source_name_Serializer(serializers.ModelSerializer):
                 model = agg_source
                 fields = ( 'source_pk_id', 'source')
 # ___________ End Source _____________________________
-
-# ___________ Add New Schedule ___________________________________
-class agg_sc_schedule_screening_Serializer(serializers.ModelSerializer): #AMIT
-        class Meta:
-                model = agg_sc_schedule_screening
-                fields = ( 'schedule_screening_pk_id', 'from_date', 'to_date', 'source_name', 'source', 'Disease', 'screening_person_name', 'mobile_number','Class','type','state','district','tehsil')
-
-class agg_sc_schedule_screening_get_Serializer(serializers.ModelSerializer): # AMIT
-        source = serializers.CharField(source='source.source',allow_null=True)  
-        source_name = serializers.CharField(source='source_name.source_names',allow_null=True)  
-        state = serializers.CharField(source='state.state_name',allow_null=True)  
-        district = serializers.CharField(source='district.dist_name',allow_null=True)  
-        tehsil = serializers.CharField(source='tehsil.tahsil_name',allow_null=True)
-        
-        source_id = serializers.IntegerField(source='source.source_pk_id',allow_null=True)
-        source_name_id = serializers.IntegerField(source='source_name.source_pk_id',allow_null=True)
-        state_id = serializers.IntegerField(source='state.state_id',allow_null=True)
-        district_id = serializers.IntegerField(source='district.dist_id',allow_null=True)
-        tehsil_id = serializers.IntegerField(source='tehsil.tal_id',allow_null=True)  
-
-        added_by = agg_com_colleague_Serializer() #Amit
-        modify_by = agg_com_colleague_Serializer() #Amit                
-        class Meta:
-                model = agg_sc_schedule_screening
-                fields = ( 'schedule_screening_pk_id', 'from_date', 'to_date', 'source_name', 'source','mobile_number','state','district','tehsil','source_id','source_name_id','state_id','district_id','tehsil_id','added_by', 'modify_by','screening_vitals','sub_screening_vitals','route','ambulance_no','pilot_name','screening_person_name')
-
-
-class agg_sc_schedule_screening_POST_Serializer(serializers.ModelSerializer):
-        class Meta:
-                model = agg_sc_schedule_screening
-                fields = ( 'schedule_screening_pk_id', 'from_date', 'to_date', 'source_name', 'source', 'Disease', 'screening_person_name', 'mobile_number','state','district','tehsil','added_by','screening_vitals','sub_screening_vitals')
-
-
-
-
-class agg_sc_schedule_screening_PUT_Serializer(serializers.ModelSerializer):
-        class Meta:
-                model = agg_sc_schedule_screening
-                fields = ( 'schedule_screening_pk_id', 'from_date', 'to_date', 'source_name', 'source', 'Disease', 'screening_person_name', 'mobile_number','Class','type','state','district','tehsil','modify_by','screening_vitals','sub_screening_vitals')
-                # fields = ( 'schedule_screening_pk_id', 'from_date', 'to_date', 'screening_person_name', 'mobile_number','modify_by')
-
-class agg_sc_schedule_screening_GET_PUT_Serializer(serializers.ModelSerializer):
-        source = serializers.CharField(source='source.source',allow_null=True)  
-        source_name = serializers.CharField(source='source_name.source_names',allow_null=True)  
-        state = serializers.CharField(source='state.state_name',allow_null=True)  
-        district = serializers.CharField(source='district.dist_name',allow_null=True)  
-        tehsil = serializers.CharField(source='tehsil.tahsil_name',allow_null=True)
-        Class = serializers.CharField(source='Class.class_name',allow_null=True)
-        type = serializers.CharField(source='type.type',allow_null=True)
-        Disease = serializers.CharField(source='Disease.disease',allow_null=True)
-        
-        source_id = serializers.IntegerField(source='source.source_pk_id',allow_null=True)
-        source_name_id = serializers.IntegerField(source='source_name.source_pk_id',allow_null=True)
-        state_id = serializers.IntegerField(source='state.state_id',allow_null=True)
-        district_id = serializers.IntegerField(source='district.dist_id',allow_null=True)
-        tehsil_id = serializers.IntegerField(source='tehsil.tal_id',allow_null=True)  
-        class_id = serializers.IntegerField(source='Class.class_name',allow_null=True) 
-        disease_id = serializers.IntegerField(source='Disease.disease_pk_id',allow_null=True)
-        # type_id = serializers.IntegerField(source='type.type',allow_null=True)  
-        
-        
-        class Meta:
-                model = agg_sc_schedule_screening
-                fields = ( 'schedule_screening_pk_id', 'from_date', 'to_date', 'source_name', 'source', 'Disease', 'screening_person_name', 'mobile_number','Class','type','state','district','tehsil','state_id','district_id','tehsil_id','source_id','source_name_id','class_id','type_id','disease_id','modify_by','screening_vitals','sub_screening_vitals')
-                # fields = ( 'schedule_screening_pk_id', 'from_date', 'to_date', 'screening_person_name', 'mobile_number','modify_by')
-
-# ___________ End Add New Schedule ___________________________________
-
-
-
-# _______________________ Add New Citizen ___________________________________
-
 # _______________________ Add New Citizen Post all data ___________________________________
 class agg_sc_add_new_citizens_Serializer(serializers.ModelSerializer):
         modify_by = agg_com_colleague_Serializer() #Amit
@@ -786,25 +687,6 @@ class agg_sc_add_new_employee_PUT_Serializer(serializers.ModelSerializer):
 
 
 
-#____________________________Start Screening____________________________
-class agg_sc_start_screening_Serializer(serializers.ModelSerializer):
-   class Meta:
-      model = agg_sc_start_screening    
-      fields = ['start_screening_id','start_screening_code','citizen_id','schedule_id','source_id','citizen_mobile']
-#________________________________________________________________________________________
-
-
-#____________________________Start Screening____________________________
-class agg_sc_start_screening_Serializer(serializers.ModelSerializer):
-   class Meta:
-      model = agg_sc_start_screening
-      fields = ['pk_id','citizen_name','citizen_id','schedule_id','source_id','citizen_mobile']
-#________________________________________________________________________________________
-
-#___________________________Close Screening_________________________________
-# class agg_sc_close_screening_Serializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = a
 
 class startScreeningNewSource_serializers(serializers.ModelSerializer):
      class Meta:
@@ -816,50 +698,6 @@ class startScreeningCitizen_serializers(serializers.ModelSerializer):
     class Meta:
         model = agg_sc_add_new_citizens
         fields = ['citizens_pk_id', 'citizens_code', 'name', 'parents_mobile', 'source', 'source_name', 'state', 'district', 'tehsil']
-
-class startScreeningSchedule_screening_serializers(serializers.ModelSerializer):
-#     citizens_pk_id = StartScreeningSerializer
-#     source_pk_id = startScreeningNewSource_serializers
-    class Meta:
-        model = agg_sc_schedule_screening
-        fields = ['schedule_screening_pk_id', 'source_id', 'source', 'source_name', 'state', 'district', 'tahasil']
-
-class StartScreeningSerializer(serializers.ModelSerializer):
-    schedule_screening_pk_id = startScreeningSchedule_screening_serializers
-    citizens_pk_id = startScreeningCitizen_serializers
-    source_pk_id = startScreeningNewSource_serializers
-    class Meta:
-        model = agg_sc_start_screening
-        fields = ['start_screening_id', 'citizen_name', 'citizen_mobile', 'schedule_screening_pk_id', 'citizens_pk_id', 'source_pk_id']
-
-
-
-class StartScreeningSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = agg_sc_start_screening
-        fields = '__all__'
-        
-#     def create(self, validated_data):
-#         # Get data from agg_sc_schedule_screening
-#         schedule_screening_data = agg_sc_schedule_screening.objects.get(
-#             schedule_screening_pk_id=validated_data['schedule_id'].schedule_screening_pk_id
-#         )
-
-#         # Get data from agg_sc_add_new_citizens
-#         citizens_data = agg_sc_add_new_citizens.objects.get(
-#             citizens_pk_id=validated_data['citizen_id'].citizens_pk_id
-#         )
-
-#         # Create a new instance of agg_sc_start_screening with the combined data
-#         start_screening = agg_sc_start_screening.objects.create(
-#             start_screening_code=validated_data['start_screening_code'],
-#             citizen_id=citizens_data,
-#             citizen_name=citizens_data.name,
-#             citizen_mobile=citizens_data.parents_mobile,
-#             schedule_id=schedule_screening_data,
-#             source_id=validated_data['source_id']
-#         )
-#         return start_screening
 
 # ___________________ Final API __________________________
 class BMISerializer(serializers.ModelSerializer):
@@ -882,18 +720,6 @@ class agg_sc_citizen_basic_info_Serializer(serializers.ModelSerializer):
     class Meta:
         model = agg_sc_add_new_citizens
         fields = ['citizen_id', 'name', 'gender', 'blood_groups', 'dob', 'year', 'months', 'days', 'aadhar_id']
-
-class schedule_Serializer(serializers.ModelSerializer):
-    class Meta:
-        model = agg_sc_schedule_screening
-        fields = ['id','schedule_code']
-
-class combined_citizenand_schedule_Serializer(serializers.Serializer):
-    citizen_data = agg_sc_citizen_basic_info_Serializer(many=True)
-    schedule_data = schedule_Serializer(many=True)
-
-
-
 
 class BMISerializer(serializers.ModelSerializer):
    class Meta:
@@ -1917,16 +1743,6 @@ class CitizenDataGetSerializer(serializers.ModelSerializer):
         data = super().to_representation(instance)
         return data
 
-
-class ScheduleDataGetSerializer(serializers.ModelSerializer):
-      source_name = serializers.CharField(source='source_name.source_names')
-      class Meta:
-            model = agg_sc_schedule_screening
-            fields = "__all__"
-      def to_representation(self, instance):
-                data = super().to_representation(instance)
-                return data        
-
 class SourceDataGetSerializer(serializers.ModelSerializer):
       class Meta:
             model = agg_sc_add_new_source
@@ -2402,43 +2218,6 @@ class Screening_List_Serializer(serializers.ModelSerializer):
         fields = ['sc_list_pk_id','screening_list']
         
 
-
-
-from rest_framework import serializers
-from .models import agg_sc_schedule_screening, agg_screening_list
-
-class ScreeningListSerializer(serializers.ModelSerializer):
-    screening_list = serializers.SerializerMethodField()
-
-    def get_screening_list(self, instance):
-        # Build a mapping from sc_list_pk_id to screening_list
-        mapping = dict(agg_screening_list.objects.exclude(is_deleted=True).values_list('sc_list_pk_id', 'screening_list'))
-
-        # Get the list of screening_vitals IDs
-        if isinstance(instance.screening_vitals, list):
-            vitals_ids = instance.screening_vitals
-        else:
-            vitals_ids = instance.screening_vitals.values_list('sc_list_pk_id', flat=True)
-
-        # Sort the IDs and create the list of dictionaries
-        sorted_vitals_ids = sorted(vitals_ids)
-        result = [{'screening_vitals': vital_id, 'screening_list': mapping.get(vital_id, 'Unknown')} for vital_id in sorted_vitals_ids]
-
-        return result
-
-    class Meta:
-        model = agg_sc_schedule_screening
-        fields = ['screening_list']
-
-
-
-class Schedule_ID_Get_Serializer(serializers.ModelSerializer):
-    class Meta:
-        model = agg_sc_schedule_screening
-        fields = ['schedule_id']
-        
-
-
 class Gender_Count_Serializer(serializers.ModelSerializer):
     gender_id = serializers.SerializerMethodField()
 
@@ -2453,33 +2232,6 @@ class Gender_Count_Serializer(serializers.ModelSerializer):
         except agg_sc_add_new_citizens.DoesNotExist:
             return None
         
-        
-from rest_framework import serializers
-from datetime import datetime
-
-class Age_Count_Serializer(serializers.ModelSerializer):
-    dob = serializers.SerializerMethodField()
-    age = serializers.SerializerMethodField()
-
-    class Meta:
-        model = agg_sc_citizen_schedule
-        fields = ['citizen_pk_id', 'dob', 'age']
-
-    def get_dob(self, obj):
-        try:
-            related_record = agg_sc_add_new_citizens.objects.get(pk=obj.citizen_pk_id_id)
-            return related_record.dob 
-        except agg_sc_add_new_citizens.DoesNotExist:
-            return None
-
-    def get_age(self, obj):
-        dob = self.get_dob(obj)
-        if dob:
-            today = datetime.today().date()  
-            age = today.year - dob.year - ((today.month, today.day) < (dob.month, dob.day))
-            return age
-        return None
-
 
 
 class BMI_Count_Serializer(serializers.ModelSerializer):
@@ -2574,25 +2326,6 @@ class ScreeningSublistSerializer(serializers.ModelSerializer):
         return ordered_sub_list
 
 
-class Screening_Sub_Vital_Serializer(serializers.ModelSerializer):
-    screening_list = serializers.SerializerMethodField()
-
-    class Meta:
-        model = agg_sc_schedule_screening
-        fields = ['screening_list']
-
-    def get_screening_list(self, obj):
-        sub_vitals = obj.sub_screening_vitals  
-        sub_list_records = agg_screening_sub_list.objects.filter(sc_sub_list_pk_id__in=sub_vitals)
-
-        return [
-            {
-                "screening_vitals": record.sc_sub_list_pk_id,
-                "screening_list": record.sub_list
-            }
-            for record in sub_list_records
-        ]
-
 
 
 class image_save_Serializer(serializers.ModelSerializer):
@@ -2658,37 +2391,6 @@ class source_name_from_tahsil_Serializers(serializers.ModelSerializer):
         model = agg_sc_add_new_source
         fields = ['source_pk_id', 'source_names','source_taluka']
         
-        
-
-
-class Schedule_list_Serializer(serializers.ModelSerializer):
-    class Meta:
-        model = agg_sc_schedule_screening
-        fields = ['schedule_screening_pk_id','schedule_id']
-        
-        
-class CitizenScheduleSerializer(serializers.ModelSerializer):
-    year = serializers.CharField(source="citizen_pk_id.year", read_only=True)
-    dob = serializers.CharField(source="citizen_pk_id.dob", read_only=True)
-    gender = serializers.CharField(source="citizen_pk_id.gender.gender_pk_id", read_only=True)
-    source = serializers.CharField(source="citizen_pk_id.source.source_pk_id", read_only=True)
-
-    class Meta:
-        model = agg_sc_citizen_schedule
-        fields = [
-            "pk_id", "citizen_id", "schedule_id", "schedule_count",
-            "citizen_pk_id", "added_by", "modify_by",
-            "year", "dob", "gender", "citizen_id", "source"
-        ]
-
-
-
-
-
-
-
-
-
 
 #----------------------------------------------------------------------------------------------------------------------------------
 class Citizen_Post_Serializer(serializers.ModelSerializer):

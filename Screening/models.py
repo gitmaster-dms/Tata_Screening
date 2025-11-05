@@ -243,51 +243,6 @@ class agg_sc_citizen_vision_info(models.Model):
         super(agg_sc_citizen_vision_info, self).save(*args, **kwargs)
 
 # ----------------------------------- END_Citizen_Vision_Info -------------------------------------------------------------
-
-    
-# ----------------------------------- Citizen_Sick_Room_Info -------------------------------------------------------------
-
-class agg_sc_citizen_sick_room_info (models.Model):
-
-    sick_room_info_pk_id = models.AutoField(primary_key=True)
-    sick_room_code = models.CharField(max_length=1110, editable=False) 
-
-    citizens_pk_id = models.ForeignKey('agg_sc_add_new_citizens', on_delete=models.CASCADE)
-    schedule_screening_pk_id  = models.ForeignKey('agg_sc_schedule_screening', on_delete=models.CASCADE)
-
-    schedule_id = models.CharField(max_length=10)
-    student_id = models.CharField(max_length=10)
-    doc_note = models.CharField(max_length=500)    
-    treatment = models.CharField(max_length=500)
-    added_by = models.CharField(max_length=500)
-    added_date =  models.DateTimeField(auto_now=True)
-    modify_by = models.CharField(max_length=500)
-    modify_date = models.DateTimeField(auto_now=True)
-    is_deleted = models.CharField(max_length=10, choices=is_delete.choices)
-    modify_date_sync = models.DateTimeField(auto_now=True)
-    created_date = models.DateField(default=timezone.now, editable=False)
-
-
-    def generate_id(self):
-        last_id = agg_sc_citizen_sick_room_info.objects.filter(created_date=self.created_date).order_by('-sick_room_code').first()
-        if last_id and '-' in last_id.sick_room_code:
-            last_id_parts = last_id.sick_room_code.split('-')
-            if len(last_id_parts) >= 2:
-                last_id_value = int(last_id_parts[1][-5:])
-                new_id_value = last_id_value + 1   
-                
-                return int(str(self.created_date.strftime('%d%m%Y')) + str(new_id_value).zfill(5))
-        
-        return int(str(self.created_date.strftime('%d%m%Y')) + '00001')
-
-    def save(self, *args, **kwargs):
-        if not self.sick_room_code:
-            generated_id = self.generate_id()
-            self.sick_room_code = f"SICK-{generated_id}"
-            super(agg_sc_citizen_sick_room_info, self).save(*args, **kwargs)
-
-# ----------------------------------- END_Citizen_Sick_Room_Info -------------------------------------------------------------
-
 # --------------------- Mohin ----------------------------------------------------------------------------------
 # --------------------------------------------------------------------------------------------------------------
 
@@ -613,63 +568,6 @@ class agg_sc_citizen_pycho_info(models.Model):
         super(agg_sc_citizen_pycho_info, self).save(*args, **kwargs)
 
 # ------------------------------------------------ END_Pycho_Info ---------------------------------------------------------------
-
-# ------------------------------------------------ BMI_Info ---------------------------------------------------------------
-
-class agg_sc_citizen_bmi_info(models.Model):
-    bmi_info_pk_id = models.AutoField(primary_key=True)
-    bmi_code = models.CharField(max_length=1110, editable=False) 
-    created_date = models.DateField(default=timezone.now, editable=False)
-
-
-    citizens_pk_id = models.ForeignKey('agg_sc_add_new_citizens', on_delete=models.CASCADE)
-    schedule_screening_pk_id  = models.ForeignKey('agg_sc_schedule_screening', on_delete=models.CASCADE)
-
-
-    student_id = models.CharField(max_length=255)
-    schedule_count = models.IntegerField()
-    schedule_id_old = models.CharField(max_length=255)
-    schedule_id = models.CharField(max_length=255)
-    height = models.FloatField()
-    weight = models.FloatField()
-    bmi = models.FloatField()
-    weight_fr_ht = models.CharField(max_length=255)
-    weight_fr_age = models.CharField(max_length=255)
-    height_fr_age = models.CharField(max_length=255)    
-    arm_size = models.FloatField()
-    note = models.CharField(max_length=255)
-    general_exam = models.CharField(max_length=255)
-    chief_complaint = models.IntegerField()
-    symptoms = models.CharField(max_length=255)
-    other_sign = models.CharField(max_length=255)
-    stud_symptoms = models.CharField(max_length=255)
-    remark = models.CharField(max_length=255)
-    added_date = models.DateField()
-    bmi_clg_id = models.CharField(max_length=255)
-    is_deleted = models.BooleanField(default=False)
-    added_by =	models.CharField(null=True, blank=True,max_length=255)
-    added_date = models.DateTimeField(auto_now_add=True)
-    modify_by =	models.IntegerField(null=True)
-    modify_date = models.DateTimeField(auto_now=True, null=True)
-
-    def generate_id(self):
-        last_id = agg_sc_citizen_bmi_info.objects.filter(created_date=self.created_date).order_by('-bmi_code').first()
-        if last_id and '-' in last_id.bmi_code:
-            last_id_parts = last_id.bmi_code.split('-')
-            if len(last_id_parts) >= 2:
-                last_id_value = int(last_id_parts[1][-5:])
-                new_id_value = last_id_value + 1   
-                
-                return int(str(self.created_date.strftime('%d%m%Y')) + str(new_id_value).zfill(5))
-        
-        return int(str(self.created_date.strftime('%d%m%Y')) + '00001')
-
-    def save(self, *args, **kwargs):
-        if not self.bmi_code:
-            generated_id = self.generate_id()
-            self.bmi_code = f"SC-{generated_id}"
-            super(agg_sc_citizen_bmi_info, self).save(*args, **kwargs)
-
 # ------------------------------------------------ END_BMI_Info ---------------------------------------------------------------
 
 # ------------------------------------------------ Audit_Info ---------------------------------------------------------------
@@ -1349,97 +1247,69 @@ class agg_sc_add_new_source(models.Model):
 # _______________ End Add New Source _______________________
 
 # ----------------------------------- Schedule_Screening -------------------------------------------------------------
-class agg_sc_schedule_screening (models.Model):
-    schedule_screening_pk_id = models.AutoField(primary_key=True)
-    schedule_id = models.CharField(max_length=50, editable=False,unique=True)
-    from_date = models.DateField()
-    to_date = models.DateField()
-    source = models.ForeignKey('agg_source', on_delete=models.CASCADE)
-    source_name =  models.ForeignKey('agg_sc_add_new_source', on_delete=models.CASCADE)
-    state = models.ForeignKey('agg_sc_state', on_delete=models.CASCADE)
-    district = models.ForeignKey('agg_sc_district', on_delete=models.CASCADE)
-    tehsil = models.ForeignKey('agg_sc_tahsil', on_delete=models.CASCADE)
-    Disease = models.ForeignKey('agg_sc_disease', on_delete=models.CASCADE,blank=True,null=True)
-    # type = models.ForeignKey('agg_sc_screening_for_type', on_delete=models.CASCADE,null=True, blank=True)
-    # Class = models.ForeignKey('agg_sc_class', on_delete=models.CASCADE,blank=True, null=True)
-    # department = models.ForeignKey('agg_sc_department', on_delete=models.CASCADE,blank=True, null=True)
-    screening_person_name = models.CharField(max_length=255)
-    mobile_number = models.BigIntegerField()
-    #_______________NEW FIELDS___________________
-    # screening_vitals = models.JSONField(null=True)
-    # sub_screening_vitals = models.JSONField(null=True)
+# class agg_sc_schedule_screening (models.Model):
+#     schedule_screening_pk_id = models.AutoField(primary_key=True)
+#     schedule_id = models.CharField(max_length=50, editable=False,unique=True)
+#     from_date = models.DateField()
+#     to_date = models.DateField()
+#     source = models.ForeignKey('agg_source', on_delete=models.CASCADE)
+#     source_name =  models.ForeignKey('agg_sc_add_new_source', on_delete=models.CASCADE)
+#     state = models.ForeignKey('agg_sc_state', on_delete=models.CASCADE)
+#     district = models.ForeignKey('agg_sc_district', on_delete=models.CASCADE)
+#     tehsil = models.ForeignKey('agg_sc_tahsil', on_delete=models.CASCADE)
+#     Disease = models.ForeignKey('agg_sc_disease', on_delete=models.CASCADE,blank=True,null=True)
+#     # type = models.ForeignKey('agg_sc_screening_for_type', on_delete=models.CASCADE,null=True, blank=True)
+#     # Class = models.ForeignKey('agg_sc_class', on_delete=models.CASCADE,blank=True, null=True)
+#     # department = models.ForeignKey('agg_sc_department', on_delete=models.CASCADE,blank=True, null=True)
+#     screening_person_name = models.CharField(max_length=255)
+#     mobile_number = models.BigIntegerField()
+#     #_______________NEW FIELDS___________________
+#     # screening_vitals = models.JSONField(null=True)
+#     # sub_screening_vitals = models.JSONField(null=True)
     
-    # screening_vitals = models.JSONField(default=lambda: [1, 2, 3, 4, 5, 6, 8, 13, 14],null=True,blank=True)
-    # sub_screening_vitals = models.JSONField(default=lambda: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],null=True,blank=True)
-    
-    
-    created_at = models.DateField(default=timezone.now, editable=False)
+#     # screening_vitals = models.JSONField(default=lambda: [1, 2, 3, 4, 5, 6, 8, 13, 14],null=True,blank=True)
+#     # sub_screening_vitals = models.JSONField(default=lambda: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],null=True,blank=True)
     
     
-    is_deleted = models.BooleanField(default=False)
-    added_by =	models.ForeignKey('agg_com_colleague', related_name='screenings_added',on_delete=models.CASCADE, null=True, blank=True)
-    added_date = models.DateTimeField(auto_now_add=True)
-    modify_by =	models.ForeignKey('agg_com_colleague',related_name='screenings_modified',on_delete=models.CASCADE, null=True, blank=True)
-    modify_date = models.DateTimeField(auto_now=True, null=True)
-    location1 = models.CharField(max_length=255, null=True, blank=True)
-    location2 = models.CharField(max_length=255, null=True, blank=True)
-    location3 = models.CharField(max_length=255, null=True, blank=True)
-    location4 = models.CharField(max_length=255, null=True, blank=True)
-    # route = models.CharField(max_length=255, null=True, blank=True)
-    # ambulance_no = models.CharField(max_length=255, null=True, blank=True)
-    # pilot_name = models.CharField(max_length=255, null=True, blank=True)
+#     created_at = models.DateField(default=timezone.now, editable=False)
+    
+    
+#     is_deleted = models.BooleanField(default=False)
+#     added_by =	models.ForeignKey('agg_com_colleague', related_name='screenings_added',on_delete=models.CASCADE, null=True, blank=True)
+#     added_date = models.DateTimeField(auto_now_add=True)
+#     modify_by =	models.ForeignKey('agg_com_colleague',related_name='screenings_modified',on_delete=models.CASCADE, null=True, blank=True)
+#     modify_date = models.DateTimeField(auto_now=True, null=True)
+#     location1 = models.CharField(max_length=255, null=True, blank=True)
+#     location2 = models.CharField(max_length=255, null=True, blank=True)
+#     location3 = models.CharField(max_length=255, null=True, blank=True)
+#     location4 = models.CharField(max_length=255, null=True, blank=True)
+#     # route = models.CharField(max_length=255, null=True, blank=True)
+#     # ambulance_no = models.CharField(max_length=255, null=True, blank=True)
+#     # pilot_name = models.CharField(max_length=255, null=True, blank=True)
 
-    def save(self, *args, **kwargs):
-        if not self.schedule_id:
-            last_id = agg_sc_schedule_screening.objects.order_by('-schedule_id').first()
+#     def save(self, *args, **kwargs):
+#         if not self.schedule_id:
+#             last_id = agg_sc_schedule_screening.objects.order_by('-schedule_id').first()
     
-            if last_id and '-' in last_id.schedule_id:
-                last_id_value = int(last_id.schedule_id.split('-')[1][-4:])
-                new_id_value = last_id_value + 1
-                generated_id = int(str(timezone.now().strftime('%d%m%Y')) + str(new_id_value).zfill(5))
-            else:
-                # If last_id is None, initialize with a default value
-                last_id = agg_sc_schedule_screening(schedule_id=f"SCHID-00000")
-                generated_id = int(str(timezone.now().strftime('%d%m%Y')) + '00001')
+#             if last_id and '-' in last_id.schedule_id:
+#                 last_id_value = int(last_id.schedule_id.split('-')[1][-4:])
+#                 new_id_value = last_id_value + 1
+#                 generated_id = int(str(timezone.now().strftime('%d%m%Y')) + str(new_id_value).zfill(5))
+#             else:
+#                 # If last_id is None, initialize with a default value
+#                 last_id = agg_sc_schedule_screening(schedule_id=f"SCHID-00000")
+#                 generated_id = int(str(timezone.now().strftime('%d%m%Y')) + '00001')
     
-            # Check if the generated_id already exists
-            while agg_sc_schedule_screening.objects.filter(schedule_id=f"SCHID-{generated_id}").exists():
-                new_id_value += 1
-                generated_id = int(str(timezone.now().strftime('%d%m%Y')) + str(new_id_value).zfill(5))
+#             # Check if the generated_id already exists
+#             while agg_sc_schedule_screening.objects.filter(schedule_id=f"SCHID-{generated_id}").exists():
+#                 new_id_value += 1
+#                 generated_id = int(str(timezone.now().strftime('%d%m%Y')) + str(new_id_value).zfill(5))
     
-            self.schedule_id = f"SCHID-{generated_id}"
+#             self.schedule_id = f"SCHID-{generated_id}"
     
-        super(agg_sc_schedule_screening, self).save(*args, **kwargs)
+#         super(agg_sc_schedule_screening, self).save(*args, **kwargs)
     
     
-    
-from django.db import IntegrityError
-
-def save(self, *args, **kwargs):
-    if not self.schedule_id:
-        while True:
-            last_id = agg_sc_schedule_screening.objects.order_by('-schedule_id').first()
-            if last_id:
-                last_id_value = int(last_id.schedule_id.split('-')[1][-4:])
-                new_id_value = last_id_value + 1
-            else:
-                new_id_value = 1
-
-            generated_id = int(str(timezone.now().strftime('%d%m%Y')) + str(new_id_value).zfill(5))
-            self.schedule_id = f"SCHID-{generated_id}"
-
-            try:
-                super(agg_sc_schedule_screening, self).save(*args, **kwargs)
-                break  # Break the loop if the save is successful
-            except IntegrityError as e:
-                # Handle IntegrityError (duplicate key violation)
-                if 'duplicate key value violates unique constraint' in str(e):
-                    # Retry the loop to generate a new schedule_id
-                    continue
-                else:
-                    raise e  # Re-raise other IntegrityError types
-    else:
-        super(agg_sc_schedule_screening, self).save(*args, **kwargs)
 
 # ----------------------------------- END_Schedule_Screening -------------------------------------------------------------
 
@@ -1695,47 +1565,6 @@ class agg_sc_add_new_citizens(models.Model):
 
 
 # ----------------------------------- END_Add_New_Citizen -------------------------------------------------------------
-
-
-from django.db import models
-from django.utils import timezone
-
-class agg_sc_start_screening(models.Model):
-    pk_id = models.AutoField(primary_key=True)
-    screening_id = models.CharField(max_length=20,editable=False)
-    citizen_id = models.ForeignKey(agg_sc_add_new_citizens, on_delete=models.CASCADE, to_field='citizen_id')
-    citizen_name = models.CharField(max_length=255, blank=True)  # Add appropriate max_length
-    citizen_mobile = models.CharField(max_length=10, blank=True)  # Add appropriate max_length
-    schedule_id = models.ForeignKey(agg_sc_schedule_screening, on_delete=models.CASCADE, to_field='schedule_id')
-    source_id = models.ForeignKey(agg_sc_add_new_source, on_delete=models.CASCADE, to_field='screening_source_code')
-    created_date = models.DateTimeField(default=timezone.now, editable=False)
-    is_deleted = models.BooleanField(default=False)
-    added_by =	models.IntegerField(null=True, blank=True)
-    added_date = models.DateTimeField(auto_now_add=True, blank=True)
-    modify_by =	models.IntegerField(null=True, blank=True)
-    modify_date = models.DateTimeField(auto_now=True, null=True, blank=True)
-    
-    def generate_id(self):
-        last_id = agg_sc_start_screening.objects.filter(created_date=self.created_date).order_by('-screening_id').first()
-        if last_id:
-            last_id_value = int(last_id.screening_id.split('-')[1][-4:])
-            new_id_value = last_id_value + 1
-            return int(str(self.created_date.strftime('%d%m%Y')) + str(new_id_value).zfill(5))
-        else:
-            return int(str(self.created_date.strftime('%d%m%Y')) + '00001')
-
-    def save(self, *args, **kwargs):
-        if not self.screening_id:
-            generated_id = self.generate_id()
-            self.screening_id = f"SS-{generated_id}"
-
-            # Retrieve citizen details from the related agg_sc_add_new_citizens instance
-            if self.citizen_id:
-                self.citizen_name = self.citizen_id.name
-                self.citizen_mobile = self.citizen_id.parents_mobile
-
-            super(agg_sc_start_screening, self).save(*args, **kwargs)
-
 
 
 from django.db import models

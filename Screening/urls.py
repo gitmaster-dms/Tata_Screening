@@ -29,15 +29,7 @@ urlpatterns = [
     path('pro_login/',views.ProfessionalOTPLogin.as_view()),
     path('pro_otp_chk/',views.OTPCHECK.as_view(),name="OTPCHECK"),
     
-    
-    
 
-# -------------------------------------------------------------------------------------------------------------
-#--------------------------------------------------------------------------------------------------------------
-    # path('Citizen_Dental_Info',views.agg_sc_citizen_dental_info_ViewSet),
-    # path('Citizen_Vision_Info/', views.agg_sc_citizen_vision_info_ViewSet),
-    # path('Sick_Room_Info',views.agg_sc_sick_room_info_ViewSet),
-    path('Schedule_Screening/', views.agg_sc_schedule_screening_ViewSet),
 
 
 # -------------------------------------------------------------------------------------------------------------
@@ -47,36 +39,6 @@ urlpatterns = [
 
 
 
-
-
-
-#  _________________ Final ___________________
-    # _________________ State GET PUT POST DELETE ____________________
-    # path('state_GET/', views.agg_ind_state_ViewSet_GET),                                    # Get state Name
-    # path('state_POST/', views.agg_ind_state_ViewSet_POST),    
-    # path('state_PUT/<int:pk>/', views.agg_ind_state_ViewSet_PUT),
-    # path('state_DELETE/<int:pk>/', views.agg_ind_state_ViewSet_DELETE),
-    # _________________ End State GET PUT POST DELETE ____________________
-
-    # _________________ District GET PUT POST DELETE ____________________
-    # path('district_GET/', views.agg_mh_district_ViewSet_GET),                                # Get ditrict Name
-    # path('ditrict_POST/', views.agg_mh_district_ViewSet_POST),
-    # path('ditrict_PUT/<int:pk>/', views.agg_mh_district_ViewSet_PUT),
-    # path('ditrict_DELETE/<int:pk>/', views.agg_mh_district_ViewSet_DELETE),
-    # _________________ End District GET PUT POST DELETE ____________________
-
-    # _________________ Taluka GET PUT POST DELETE ____________________
-    # path('taluka_GET/', views.agg_mh_taluka_ViewSet_GET),                                   # Get taluka Name
-    # path('taluka_POST/', views.agg_mh_taluka_ViewSet_POST),
-    # path('taluka_PUT/<int:pk>/', views.agg_mh_taluka_ViewSet_PUT),
-    # path('taluka_DELETE/<int:pk>/', views.agg_mh_taluka_ViewSet_DELETE),
-    # _________________________ End Taluka GET PUT POST DELETE _______________________________
-
-    # ________________ State - District - Taluka __________________
-    # path('state_district_taluka_GET/', views.agg_state_district_taluka_ViewSet_GET),
-    # ________________ End State - District - Taluka __________________
-
-    #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     # _________________ State - District - Taluka GET  ____________________
     path('agg_state_info_get/',views.agg_sc_get_state_info_ViewSet1),#Added Authuntication & Authorization Token 
     path('agg_district_info_get/<str:state>',views.agg_sc_district_from_state_api.as_view()),#Added Authuntication & Authorization Token 
@@ -106,8 +68,7 @@ urlpatterns = [
     path('district_taluka_SourceName_Get/<str:So>/<str:sour_dis>', views.district_taluka_Source_name_and_ViewSet_GET.as_view()),#Added Authuntication & Authorization Token     # Get Add New Source District- Source, Source Name, State, Taluka  [District to Source Name ]
     path('taluka_SourceName_Get/<str:So>/<str:St>/<str:Di>/<str:Tal>', views.taluka_Source_name_and_ViewSet_GET.as_view()),#Added Authuntication & Authorization Token           # Get Add New Source Taluka- Source, Source Name, State, District,   [Taluka to Source Name ]
 
-    # path('taluka_SourceName_Get/<str:So>/<str:SoN>/', views.Source_SourName_Shedule_id_Views.as_view()),    # Get Add New Source , Source Name, SheduleID,   [Source -> Source Name -> SheduleID ]
-    path('Schedule_id_GET/',views.Schedule_id_get_viewset.as_view()),
+
     
 
     path('source_and_pass_state_Get/<str:STid>', views.source_from_id_state_api.as_view()),#Added Authuntication & Authorization Token                      # Get form Source - State      [Source To state]
@@ -138,29 +99,16 @@ urlpatterns = [
     path('add_new_source_DELETE/<int:pk>/<int:user_id>/', views. agg_sc_add_new_source_ViewSet_DELETE),           # Delete New Source View data   #Added Authuntication & Authorization Token
     path('add_new_source_GET_ID_WISE/<int:pk>/', views. agg_sc_add_new_source_ViewSet_GET_ID_WISE),  #Added Authuntication & Authorization Token
     
-    # _________________________ End Add New Source GET PUT POST DELETE _______________________________
-    
-    # _________________ Add New Schedule GET PUT POST DELETE ____________________
-    # path('add_schedule_screening_GET/', views.  agg_sc_schedule_screening_ViewSet_GET),
-    path('add_schedule_screening_GET/', agg_sc_schedule_screening_ViewSet_GET.as_view(), name='add_schedule_screening_GET'),# Schedule Screening View Get         #Added Authuntication & Authorization Token
-    path('add_schedule_screening_POST/', views.  agg_sc_schedule_screening_ViewSet_POST),                   # Schedule Screening Post             #Added Authuntication & Authorization Token
-    path('add_schedule_screening_PUT/<int:pk>/', views.  agg_sc_schedule_screening_ViewSet_PUT),            # Schedule Screening Edit             #Added Authuntication & Authorization Token
-    path('add_schedule_screening_DELETE/<int:pk>/', views.  agg_sc_schedule_screening_ViewSet_DELETE),      # Schedule Screening Delete
-    path('add_schedule_screening_GET_ID/<int:pk>/', views.  agg_sc_schedule_screening_ViewSet_GET_ID_WISE), # Schedule Screening View Get ID WISE #Added Authuntication & Authorization Token
-    path('close_schedule_screening/<int:pk>/<int:user_id>/', schedule_screening_close, name='close_schedule_screening'),#Added Authuntication & Authorization Token
     # _________________________ End Add New Schedule GET PUT POST DELETE _______________________________
 
     #______________________________ADD NEW CITIZENS___________________________________
     path('add_citizen_get/',views.agg_sc_add_new_citizen_get_info_ViewSet1),#Added Authuntication & Authorization Token
-    path('add_citizen_post/',views.agg_sc_add_new_citizen_post_info_ViewSet1),#Added Authuntication & Authorization Token
     path('add_citizen_put/<int:pk>/',views.agg_sc_add_new_citizen_put_info_ViewSet1),#Added Authuntication & Authorization Token
     path('add_citizen_delete/<int:pk>/<int:user_id>/',views.agg_sc_add_new_citizen_delete_info_ViewSet1),#Added Authuntication & Authorization Token
     path('add_citizen_get/<int:pk>/', views.agg_sc_add_new_citizen_get_id_info_ViewSet1),#Added Authuntication & Authorization Token
     #______________________________END ADD NEW CITIZENS________________________________
     
     #______________________________ADD NEW EMPLOYEE___________________________________
-    # path('add_citizen_get/',views.agg_sc_add_new_citizen_get_info_ViewSet1),
-    path('add_employee_post/',views.agg_sc_add_new_employee_post_info_ViewSet1),#Added Authuntication & Authorization Token
     path('add_employee_get/<int:pk>/',views.agg_sc_add_new_employee_get_info_ViewSet1),#Added Authuntication & Authorization Token
     path('add_employee_put/<int:pk>/',views.agg_sc_add_new_employee_put_info_ViewSet1),#Added Authuntication & Authorization Token
     path('get_department/<int:source_id>/<int:source_name_id>/',views.agg_sc_department_get_info_ViewSet1),#Added Authuntication & Authorization Token
@@ -180,8 +128,7 @@ urlpatterns = [
 
 
     # ________________________________ Final __________________________________________________
-    
-    path('combined_data/', CombinedDataView.as_view(), name='combined_data'),
+
     
     path('citizen_growth_monitoring_info_get/',views.agg_sc_get_growth_monitoring_info_ViewSet1),
     # path('add_citizen_id_get/<int:pk>',views.agg_sc_add_new_citizen_get_id_info_ViewSet1),
@@ -394,10 +341,6 @@ urlpatterns = [
     path('age-count/', AgeCountAPIView.as_view(), name='age_count_api'),#Added Authuntication & Authorization Token
     path('gender-count/<int:source_id>/<int:type_id>/<int:class_id>/', GenderCountAPIView.as_view(), name='gender-count'),#Added Authuntication & Authorization Token
     path('gender-count/<int:source_id>/<int:type_id>/', GenderCountAPIView.as_view(), name='gender-count'),#Added Authuntication & Authorization Token
-    path('citizens-count/<int:source_id>/<int:type_id>/', CitizensCountAPIView.as_view(), name='citizens_count_api'),#Added Authuntication & Authorization Token
-    path('citizens-count/<int:source_id>/<int:type_id>/<int:class_id>/', CitizensCountAPIView.as_view(), name='citizens_count_api'),#Added Authuntication & Authorization Token
-    path('schedule-count/<int:source_id>/<int:type_id>/', screening_scheduleAPIView.as_view(), name='citizens_count_api'),#Added Authuntication & Authorization Token
-    path('schedule-count/<int:source_id>/<int:type_id>/<int:class_id>/', screening_scheduleAPIView.as_view(), name='citizens_count_api'),#Added Authuntication & Authorization Token
     path('dental-count/<int:source_id>/<int:type_id>/<int:class_id>/', StudentConditionAPIView.as_view(), name='dental_count_api'),#Added Authuntication & Authorization Token
     path('dental-count/<int:source_id>/<int:type_id>/', StudentConditionAPIView.as_view(), name='dental_count_api'),#Added Authuntication & Authorization Token
     path('vision-count/<int:source_id>/<int:type_id>/<int:class_id>/', VisionCountAPIView.as_view(), name='dental_count_api'),#Added Authuntication & Authorization Token
@@ -405,7 +348,6 @@ urlpatterns = [
     path('psyco-count/<int:source_id>/<int:type_id>/<int:class_id>/', PsycoCountAPIView.as_view(), name='dental_count_api'),#Added Authuntication & Authorization Token
     path('psyco-count/<int:source_id>/<int:type_id>/', PsycoCountAPIView.as_view(), name='dental_count_api'),#Added Authuntication & Authorization Token
     path('filter-citizens/', CitizenDataFilterAPIView.as_view(), name='filter_citizens_api'),#Added Authuntication & Authorization Token
-    path('filter-Schedule/', ScheduleDataFilterAPIView.as_view(), name='filter_citizens_api'),#Added Authuntication & Authorization Token
     path('filter-Source/', SourceDataFilterAPIView.as_view(), name='filter_citizens_api'),#Added Authuntication & Authorization Token
     path('filter-User/', UserDataFilterAPIView.as_view(), name='filter_citizens_api'),#Added Authuntication & Authorization Token
     path('bmi_count/<source_id>/<type_id>/', BMICategories.as_view(), name='bmi-categories'),#Added Authuntication & Authorization Token
@@ -429,8 +371,6 @@ urlpatterns = [
     path('filter_card/<int:source_id>/<int:type_id>/<int:class_id>/<int:schedule_count>/', Card_filter_APIView.as_view(), name='filter'),#Added Authuntication & Authorization Token
     path('citizen-vital-status/<str:citizen_id>/<int:schedule_count>/', CitizenVitalinfoCompleateStatusViewSet.as_view(), name='citizen-vital-info'),#Added Authuntication & Authorization Token
     path('citizen-download/<str:citizen_id>/<int:schedule_count>/', Healt_card_DownloadAPIView.as_view(), name='citizen-vital-info'),#Added Authuntication & Authorization Token
-    path('combined-api-download/<int:source_id>/<int:type_id>/', CombinedAPI_Download.as_view(), name='combined_api_download'),#Added Authuntication & Authorization Token
-    path('combined-api-download/<int:source_id>/<int:type_id>/<int:class_id>/', CombinedAPI_Download.as_view(), name='combined_api_download_optional_class'),#Added Authuntication & Authorization Token
     path('follow-up/<int:follow_up>/', follow_up_get_citizen_info_ViewSet1),#Added Authuntication & Authorization Token
     path('follow-up/', follow_up_get_citizen_info_ViewSet1),#Mohin #Added Authuntication & Authorization Token
     path('follow-up/<int:follow_up>/<int:follow_up_id>/', follow_up_get_citizen_info_ViewSet1),#Added Authuntication & Authorization Token
@@ -446,13 +386,11 @@ urlpatterns = [
     path('NEW_vision_count/', NEWVisionCountAPIView.as_view(), name='NEW_vision_count'),
     path('NEW_dental_count/', NewStudentDentalConditionAPIView.as_view(), name='NEW_dental_count'),
     path('NEW_pft_count/', NEWPFTCountsAPIView.as_view(), name='NEW_pft_count'),
-    path('NEW_citizens_count/', NEWCitizensCountAPIView.as_view(), name='NEW_citizensCount_count'),
     path('NEW_age_count/', NEWAgeCountAPIView.as_view(), name='NEW_ageCount_count'),
     path('NEW_bmi_count/', NEWBMICategories.as_view(), name='NEW_bmiCount_count'),
     path('reffered_to_specialist_count/', ReferredToSpecialistCountAPIView.as_view(), name='reffered_to_specialist_count'),
     path('NEW_PsycoCount/', NEWPsycoCountAPIView.as_view(), name='NEW_bmiCount_count'),
     path('gender_count/', gender_count_viewset.as_view(), name='gender_count_viewset'),
-    path('age_count/', Age_Count_Get_viewset.as_view(), name='age_count'),
     path('Bmi_count/', BMI_Count_GET_Api_Viewset.as_view(), name='Bmi_count'),
     path('Birth_defect_count/', Birth_Defect_Count_APIView.as_view(), name='Birth_defect_count'),
     path('other_count/', OtherInfoCount.as_view(), name='other_count'),
@@ -465,7 +403,6 @@ urlpatterns = [
     path('Screening_sub_list/', Screening_sub_list_Viewset.as_view(), name='Screening_sub_list'),
     path('screening_vitals/', ScreeningVitalsViewset.as_view(), name='screening_vitals'),
     path('screening_sub_vitals/', screening_sub_vitals_Viewset.as_view(), name='screening_sub_vitals'),
-    path('GET_Schedule_Screening_sub_vital/', GET_Schedule_Screening_sub_vital_View.as_view(), name='GET_Schedule_Screening_sub_vital'),
     
     path('video_anaysis/', VideoAnalysisLinkAPI.as_view(), name='video_anaysis'),
     path('image_to_text/', views.image_to_text, name='image_to_text'),
@@ -496,10 +433,6 @@ urlpatterns = [
     path('doctor_get_api/', doctor_get_api.as_view(), name='doctor_get_api'),
     path('pilot_get_api/', pilot_get_api.as_view(), name='pilot_get_api'),
     
-    path('schedule_get_api/',Schedule_list_APIView.as_view(),name='schedule_get_api'),
-    
-    path('citizen_schedule_create/', CitizenScheduleCreateAPIView.as_view(), name='citizen_schedule_create'),
-    
     
     
     
@@ -527,18 +460,6 @@ urlpatterns = [
     
     path('GET_Screening_List/', GET_Screening_List_View.as_view(), name='GET_Screening_List'),
     
-    path('GET_Schedule_Screening_List/', GET_Schedule_Screening_List_View.as_view(), name='GET_Schedule_Screening_List'),
-    
-    
-    
-
-    
-    
-
-
-    # Other URL patterns...
-
-
 
 
 
