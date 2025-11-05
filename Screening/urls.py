@@ -115,23 +115,7 @@ urlpatterns = [
     path('get_designation/<int:department_id>/<int:source_id>/<int:source_name_id>/',views.agg_sc_designation_get_info_ViewSet1),#Added Authuntication & Authorization Token
     
     
-    
-    
-    #______________________________END ADD NEW EMPLOYEE________________________________
-    
-
-    #______________________________Start Screening____________________________________________________
-    # path('citizen_start_screening_info_get/',views.start_screening_info_ViewSet1), Mohin
-    # path('citizen_growth_monitoring_info_get/<float:height>/<float:weight>/',views.agg_sc_get_growth_monitoring_info_ViewSet1),
-
-
-
-
-    # ________________________________ Final __________________________________________________
-
-    
     path('citizen_growth_monitoring_info_get/',views.agg_sc_get_growth_monitoring_info_ViewSet1),
-    # path('add_citizen_id_get/<int:pk>',views.agg_sc_add_new_citizen_get_id_info_ViewSet1),
 
     
     
@@ -141,33 +125,14 @@ urlpatterns = [
     
     
     path('get_role/',views.role_get_info_ViewSet1),#Added Authuntication & Authorization Token
-    path('scrstart/<str:source_name>', views.startscr.as_view()),#Added Authuntication & Authorization Token
-    path('start_screening_info/',views.agg_sc_get_start_screening_info_ViewSet1),#Added Authuntication & Authorization Token 
-    path('start_screening_info/<int:source_id>/',views.agg_sc_get_start_screening_info_ViewSet1),#Added Authuntication & Authorization Token 
-    path('start_screening_info/<int:source_id>/<int:type_id>/',views.agg_sc_get_start_screening_info_ViewSet1),#Added Authuntication & Authorization Token 
-    path('start_screening_info/<int:source_id>/<int:type_id>/<int:class_id>/',views.agg_sc_get_start_screening_info_ViewSet1),#Added Authuntication & Authorization Token 
-    path('start_screening_info/<int:source_id>/<int:type_id>/<int:class_id>/<int:schedule_count>/',views.agg_sc_get_start_screening_info_ViewSet1), #Added Authuntication & Authorization Token       
-    path('citizen_basic_info_get/<int:pk>/',views.agg_sc_get_citizen_basic_info_ViewSet1),#Added Authuntication & Authorization Token
-    path('citizen_family_info_get/<int:pk>/',views.agg_sc_get_citizen_family_info_ViewSet1),#Added Authuntication & Authorization Token
-    path('citizen_growth_info_get/<int:pk>/',views.agg_sc_get_citizen_growthmonitring_info_ViewSet1),#Added Authuntication & Authorization Token
-    # path('citizen_vital_info_post/',views.agg_sc_post_citizen_vital_info_ViewSet1),
-    # path('Screening_for_type_get/<int:pk>/',views.agg_sc_screening_for_type_ViewSet1),
     path('screening_for_type_get/<str:sourtype>',views.agg_sc_screening_for_type_ViewSet1.as_view()),#Added Authuntication & Authorization Token
     path('get_class/',views.class_get_info_ViewSet1),#Added Authuntication & Authorization Token
     path('get_division/',views.division_get_info_ViewSet1),#Added Authuntication & Authorization Token
     path('get_auditory/',views.auditory_get_info_ViewSet1),#Added Authuntication & Authorization Token
-    path('citizen_audit_info_post/<int:schedule_pk>', CitizenauditInfoPost.as_view(), name='CitizenauditInfoPost'),#Added Authuntication & Authorization Token
-    path('citizen_dental_info_post/<int:schedule_pk>', CitizenDentalInfoPost.as_view(), name='CitizenDentalInfoPost'),#Added Authuntication & Authorization Token
-    path('citizen_pycho_info_post/<int:schedule_pk>', CitizenPychoInfoPost.as_view(), name='CitizenPychoInfoPost'),#Added Authuntication & Authorization Token
     path('get_eye_checkbox/',views.eye_checkbox_get_info_ViewSet1),#Added Authuntication & Authorization Token
     path('get_checkbox/',views.checkbox_get_info_ViewSet1),#Added Authuntication & Authorization Token 
-    path('citizen_vision_info_post/<int:schedule_pk>', CitizenVisionInfoPost.as_view(), name='CitizenVisionInfoPost'),#Added Authuntication & Authorization Token 
-    path('citizen_vital_info_post/<int:schedule_pk>', CitizenVitalInfoPost.as_view(), name='citizen_vital_info_post'),#Added Authuntication & Authorization Token 
-    path('citizen_basic_screening_info_post/<int:schedule_pk>', CitizenBasicScreeningInfoPost.as_view(), name='CitizenBasicScreeningInfoPost'),
     path('get_immunisation/',views.immunisation_get_info_ViewSet1),#Added Authuntication & Authorization Token 
-    path('citizen_immunisation_info_post/<int:schedule_pk>', CitizenImmunisationInfoPost.as_view(), name='CitizenImmunisationInfoPost'),#Added Authuntication & Authorization Token 
-    path('citizen_other_info_post/<int:schedule_pk>', CitizenOtherInfoPost.as_view(), name='CitizenOtherInfoPost'),#Added Authuntication & Authorization Token 
-    
+
     
 
 
@@ -253,16 +218,6 @@ urlpatterns = [
     path('citizen_vital_info_put/<int:pk>/', views. agg_sc_put_citizen_vital_info_ViewSet1),#Added Authuntication & Authorization Token
     
     
-    # path('citizen_vital_info_get/<int:schedule_pk>',views.agg_sc_get_vital_info_ViewSet1),
-    path('citizen_vital_info_get/<int:schedule_pk>/', agg_sc_get_vital_info_ViewSet1.as_view(), name='citizen_vital_info_get'),#Added Authuntication & Authorization Token
-    path('citizen_basic_screening_info_get/<int:schedule_pk>/', CitizenBasicScreeninginfoViewSet.as_view(), name='citizen_basic_screening_info_get'),#Added Authuntication & Authorization Token
-    path('citizen_immunisation_info_get/<int:schedule_pk>/', CitizenImmunizationInfoViewSet.as_view(), name='citizen_immunisation_info_get'),#Added Authuntication & Authorization Token
-    path('citizen_auditory_info_get/<int:schedule_pk>/', AuditoryInfoViewSet.as_view(), name='citizen_auditory_info_get'),#Added Authuntication & Authorization Token
-    path('citizen_dental_info_get/<int:schedule_pk>/', CitizenDentalInfoViewSet.as_view(), name='citizen_dental_info_get'),#Added Authuntication & Authorization Token
-    path('citizen_vision_info_get/<int:schedule_pk>/', CitizenVisionInfoViewSet.as_view(), name='citizen_vision_info_get'),#Added Authuntication & Authorization Token
-    path('citizen_pycho_info_get/<int:schedule_pk>/', CitizenPychoInfoViewSet.as_view(), name='citizen_pycho_info_get'),#Added Authuntication & Authorization Token
-    path('citizen_medical_event_info_get/<int:schedule_pk>/', CitizenmedicalevenInfoViewSet.as_view(), name='citizen_medical_event_info_get'),#Added Authuntication & Authorization Token
-    
     path('follow_up_dropdown_list/', views. followup_dropdown_get_info_ViewSet1),#Added Authuntication & Authorization Token
     path('follow_up_for/', views. followup_for_get_info_ViewSet1),#Added Authuntication & Authorization Token
     path('source_name_get/', views. source_name_get_info_ViewSet1),#Added Authuntication & Authorization Token
@@ -286,26 +241,11 @@ urlpatterns = [
     path('followup_save/<int:follow_up_pk_id>/', views.FollowupPOST.as_view(), name='followup_save'),
 
 
-
-
-
-
-
-
-    
-    path('citizen_other_info_get/<int:schedule_pk>/', agg_sc_get_other_info_ViewSet1.as_view(), name='citizen_other_info_get'),#Added Authuntication & Authorization Token
     
     path('citizen_medical_history/', views. medical_history_get_info_ViewSet1),#Added Authuntication & Authorization Token
     path('citizen_past_operative_history/', views. past_operative_history_get_info_ViewSet1),#Added Authuntication & Authorization Token
-    path('citizen_investigation/<int:schedule_pk>', CitizeninvestigationInfoPost.as_view(), name='citizen_investigation'),#Added Authuntication & Authorization Token
     path('report/', views. report_get_info_ViewSet1),#Added Authuntication & Authorization Token
     path('bad_habbits/', views. bad_habbits_get_info_ViewSet1),#Added Authuntication & Authorization Token
-    path('citizen_investigation_info_get/<int:schedule_pk>/', agg_sc_get_investigation_info_ViewSet1.as_view(), name='citizen_investigation_info_get'),#Added Authuntication & Authorization Token
-    path('medical_history/<int:schedule_pk>', CitizenmedicalhistoryInfoPost.as_view(), name='citizen_medical_history'),#Added Authuntication & Authorization Token
-    path('medical_history_get/<int:schedule_pk>', agg_sc_get_medical_history_info_ViewSet1.as_view(), name='medical_history_get'),#Added Authuntication & Authorization Token
-    path('citizen_pft_info/<int:schedule_pk>', CitizenpftInfoPost.as_view(), name='citizen_pft_info'),#Added Authuntication & Authorization Token
-    path('pft_info_get/<int:schedule_pk>', agg_sc_get_pft_info_ViewSet1.as_view(), name='pft_info_get'),#Added Authuntication & Authorization Token
-     
     path('form_submit_counts/<str:citizen_id>/<str:schedule_id>/', form_submit_counts, name='form_submit_counts'),
 
     path('audio_reading/<int:reading>/',views.audio_reading_get_api.as_view()),#Added Authuntication & Authorization Token  
@@ -361,14 +301,6 @@ urlpatterns = [
     path('healthcards/<int:source_id>/<int:state_id>/<int:district_id>/', HealthcardAPIView.as_view(), name='healthcard-filtered'),#Added Authuntication & Authorization Token
     path('healthcards/<int:source_id>/<int:state_id>/<int:district_id>/<int:tehsil_id>/', HealthcardAPIView.as_view(), name='healthcard-filtered'),#Added Authuntication & Authorization Token
     path('healthcards/<int:source_id>/<int:state_id>/<int:district_id>/<int:tehsil_id>/<int:source_name>/', HealthcardAPIView.as_view(), name='healthcard-filtered'),#Added Authuntication & Authorization Token
-    path('schedule-count/', ScheduleCountAPIView.as_view(), name='schedule-count'),#Added Authuntication & Authorization Token
-    path('citizen-info/<str:citizen_id>/<int:schedule_count>/', CitizenInfoAPIView.as_view(), name='citizen-info'),#Added Authuntication & Authorization Token
-    path('filter_card/', Card_filter_APIView.as_view(), name='filter'),#Added Authuntication & Authorization Token
-    path('filter_card/<int:source_id>/', Card_filter_APIView.as_view(), name='filter'),#Added Authuntication & Authorization Token
-    path('filter_card/<int:source_id>/<int:type_id>/', Card_filter_APIView.as_view(), name='filter'),#Added Authuntication & Authorization Token
-    path('filter_card/<int:source_id>/<int:type_id>/<int:class_id>/', Card_filter_APIView.as_view(), name='filter'),#Added Authuntication & Authorization Token
-    path('filter_card/<int:source_id>/<int:type_id>/<int:schedule_count>/', Card_filter_APIView.as_view(), name='filter'),#Added Authuntication & Authorization Token
-    path('filter_card/<int:source_id>/<int:type_id>/<int:class_id>/<int:schedule_count>/', Card_filter_APIView.as_view(), name='filter'),#Added Authuntication & Authorization Token
     path('citizen-vital-status/<str:citizen_id>/<int:schedule_count>/', CitizenVitalinfoCompleateStatusViewSet.as_view(), name='citizen-vital-info'),#Added Authuntication & Authorization Token
     path('citizen-download/<str:citizen_id>/<int:schedule_count>/', Healt_card_DownloadAPIView.as_view(), name='citizen-vital-info'),#Added Authuntication & Authorization Token
     path('follow-up/<int:follow_up>/', follow_up_get_citizen_info_ViewSet1),#Added Authuntication & Authorization Token
@@ -390,8 +322,6 @@ urlpatterns = [
     path('NEW_bmi_count/', NEWBMICategories.as_view(), name='NEW_bmiCount_count'),
     path('reffered_to_specialist_count/', ReferredToSpecialistCountAPIView.as_view(), name='reffered_to_specialist_count'),
     path('NEW_PsycoCount/', NEWPsycoCountAPIView.as_view(), name='NEW_bmiCount_count'),
-    path('gender_count/', gender_count_viewset.as_view(), name='gender_count_viewset'),
-    path('Bmi_count/', BMI_Count_GET_Api_Viewset.as_view(), name='Bmi_count'),
     path('Birth_defect_count/', Birth_Defect_Count_APIView.as_view(), name='Birth_defect_count'),
     path('other_count/', OtherInfoCount.as_view(), name='other_count'),
     
@@ -459,24 +389,6 @@ urlpatterns = [
     path('GET_ID_Wise_Import_data/<int:id>/', GET_ID_Wise_Imported_data_from_csv_and_excel.as_view(), name='GET_ID_Wise_Import_data'),
     
     path('GET_Screening_List/', GET_Screening_List_View.as_view(), name='GET_Screening_List'),
-    
-
-
-
-
-
-
-
-
-    path('medical_event_info_post/<int:schedule_pk>', medical_event_infoPost.as_view(), name='medical_event_infoPost'),
-
-
-
-
-
-
-
-
 
 
 

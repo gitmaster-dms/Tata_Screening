@@ -1579,29 +1579,6 @@ class GrowthMonitoring(models.Model):
     height_for_age = models.CharField(max_length=50, blank=True, null=True)
     weight_for_height = models.CharField(max_length=50, blank=True, null=True)
     bmi = models.FloatField(blank=True, null=True)
-
-
-class agg_sc_citizen_schedule(models.Model):
-    pk_id = models.AutoField(primary_key=True)
-    schedule_count = models.IntegerField(default=0)
-    citizen_id = models.CharField(max_length=255) 
-    schedule_id = models.CharField(max_length=255)
-    citizen_pk_id = models.ForeignKey("agg_sc_add_new_citizens", on_delete=models.CASCADE)
-    added_by = models.CharField(max_length=255)
-    created_at = models.DateTimeField(auto_now_add=True)
-    modify_by = models.CharField(max_length=255)
-    modified_at = models.DateTimeField(auto_now=True)
-    closing_status = models.BooleanField(default=False)
-    schedule_is_deleted = models.BooleanField(default=False)
-    
-    class Meta:
-        indexes = [
-            models.Index(fields=['citizen_id']),
-            models.Index(fields=['schedule_count']),
-            models.Index(fields=['citizen_pk_id']),
-            models.Index(fields=['pk_id']),
-    ]
-    
     
 class citizen_basic_info(models.Model):
     citizen_id = models.CharField(max_length=255) 

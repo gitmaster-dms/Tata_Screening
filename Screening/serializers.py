@@ -1806,22 +1806,6 @@ class agg_sc_citizen_vision_info_Serializer(serializers.ModelSerializer):
         fields = '__all__'
 
 
-class Card_Filter(serializers.ModelSerializer):
-    name = serializers.CharField(source='citizen_pk_id.name')
-    parents_mobile = serializers.CharField(source='citizen_pk_id.parents_mobile')
-    class Meta:
-        model = agg_sc_citizen_schedule
-        fields = '__all__'
-    def to_representation(self, instance):
-        data = super().to_representation(instance)
-        return data
-    
-    
-    
-class AuditoryinfoHealthcard(serializers.ModelSerializer):
-        class Meta:
-                model = agg_sc_citizen_audit_info
-                fields = "__all__"
                 
 class CitizenimmunisationinfoHealthcard(serializers.ModelSerializer):
         class Meta:
@@ -2218,37 +2202,6 @@ class Screening_List_Serializer(serializers.ModelSerializer):
         fields = ['sc_list_pk_id','screening_list']
         
 
-class Gender_Count_Serializer(serializers.ModelSerializer):
-    gender_id = serializers.SerializerMethodField()
-
-    class Meta:
-        model = agg_sc_citizen_schedule
-        fields = ['citizen_pk_id', 'gender_id']
-
-    def get_gender_id(self, obj):
-        try:
-            related_record = agg_sc_add_new_citizens.objects.get(citizens_pk_id=obj.citizen_pk_id_id)
-            return related_record.gender_id 
-        except agg_sc_add_new_citizens.DoesNotExist:
-            return None
-        
-
-
-class BMI_Count_Serializer(serializers.ModelSerializer):
-    bmi = serializers.SerializerMethodField()
-
-    class Meta:
-        model = agg_sc_citizen_schedule
-        fields = ['citizen_pk_id', 'bmi']
-
-    def get_bmi(self, obj):
-        try:
-            related_record = agg_sc_add_new_citizens.objects.get(citizens_pk_id=obj.citizen_pk_id_id)
-            return related_record.bmi 
-        except agg_sc_add_new_citizens.DoesNotExist:
-            return None
-        
-        
 class Screening_sub_list_Serializer(serializers.ModelSerializer):
     class Meta:
         model = agg_screening_sub_list
