@@ -12682,7 +12682,8 @@ class screening_sub_vitals_Viewset(APIView):
 
 from dotenv import load_dotenv
 import os
-import genai
+# import genai
+import google.generativeai as genai
 from googletrans import Translator
 from PIL import Image
 from tenacity import *
@@ -16466,3 +16467,184 @@ class Investigation_Info_Get_API(APIView):
         snippet = investigation_info.objects.filter(screening_citizen_id=pk_id)
         serializers = Investigation_Info_Get_Serializer(snippet, many=True)
         return Response(serializers.data, status=status.HTTP_200_OK)
+    
+
+
+class TotalDriverReg_Dashboard_API(APIView):
+    def get(self, request):
+        try:
+            total_driver_screened = 0
+            total_driver_not_screened = 0
+
+            # total_drivers = Citizen.objects.filter(category=1, is_deleted=False).order_by('citizens_pk_id')
+            # total_others = Citizen.objects.filter(category=2, is_deleted=False).order_by('citizens_pk_id')
+
+            citizens = Citizen.objects.filter(is_deleted=False).order_by('citizens_pk_id')
+
+            total_drivers = citizens.filter(category=1)
+            total_others = citizens.filter(category=2)
+
+            referral_count = follow_up.objects.filter(citizen_pk_id__in=citizens.values_list('citizens_pk_id', flat=True),is_deleted=False).count()
+            print("Total Referral Count:", referral_count)
+            
+            for driver in total_drivers:
+                citizen_id = driver.citizens_pk_id
+
+                # List of all querysets to check
+                tables = [
+                    basic_info,
+                    emergency_info,
+                    growth_monitoring_info,
+                    vital_info,
+                    genral_examination,
+                    systemic_exam,
+                    female_screening,
+                    disability_screening,
+                    birth_defect,
+                    childhood_diseases,
+                    deficiencies,
+                    skin_conditions,
+                    diagnosis,
+                    check_box_if_normal,
+                    treatement,
+                    auditory_info,
+                    vision_info,
+                    medical_history_info,
+                    pft_info,
+                    dental_info,
+                    immunisation_info,
+                    investigation_info,
+                ]
+
+                all_have_records = True  # assume all have records initially
+
+                for model in tables:
+                    count = model.objects.filter(citizen_pk_id=citizen_id, form_submit=False).count()
+                    # print(f"{model.__name__} count:", count)
+                    if count == 0:
+                        all_have_records = False
+                        break  # no need to check further if any is missing
+
+                if all_have_records:
+                    total_driver_screened += 1
+                    # print(f"✅ Driver {citizen_id} counted as screened")
+                else:
+                    total_driver_not_screened += 1
+                #     print(f"❌ Driver {citizen_id} not screened (one or more empty tables)")
+
+            
+            driver_data = {
+                "Total_Drivers_Registered": total_drivers.count(),
+                "Total_Drivers_Added": total_drivers.count(),
+                "Total_Others_Added": total_others.count(),
+                "Total_Referrals_Made": referral_count,
+                "Total_Drivers_Screened": total_driver_screened,
+                "Drivers_Pending_Screening": total_driver_not_screened,
+            }
+            return Response(driver_data, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+
+
+
+
+
+
+
+class Health_Score_API(APIView):
+
+    def get(self, request):
+        try:
+            # Define custom order
+            ordered_categories = [
+                'Underweight',
+                'Normal',
+                'Overweight',
+                'Obese (Class I)',
+                'Obese (Class II & III)',
+            ]
+
+            # Total valid records
+            total_records = growth_monitoring_info.objects.filter(is_deleted=False).count()
+
+            # Group by category
+            health_scores = (
+                growth_monitoring_info.objects
+                .filter(is_deleted=False, weight_for_height__in=ordered_categories)
+                .values('weight_for_height')
+                .annotate(count=Count('growth_pk_id'))
+            )
+
+            # Convert to dict for quick lookup
+            category_count_map = {item['weight_for_height']: item['count'] for item in health_scores}
+
+            # Prepare ordered list
+            health_score_arr = []
+            for category in ordered_categories:
+                count = category_count_map.get(category, 0)
+                percentage = (count / total_records * 100) if total_records > 0 else 0
+
+                health_score_arr.append({
+                    "Category": category,
+                    "Count": count,
+                    "Percentage": int(round(percentage, 2))
+                })
+
+            return Response({"health_score_count": health_score_arr}, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+
+
+class BMI_Vitals_dashboard_API(APIView):
+    def get(self, request):
+        try:
+            citizens = Citizen.objects.filter(is_deleted=False).order_by('citizens_pk_id')
+            print("Total Citizens Fetched:", citizens.count())
+
+            bmi_count = growth_monitoring_info.objects.filter(citizen_pk_id__in=citizens, is_deleted=False).count()
+            print("Total BMI Records Fetched:", bmi_count)
+
+            vital_count = vital_info.objects.filter(citizen_pk_id__in=citizens, is_deleted=False).count()
+            print("Total Vitals Records Fetched:", vital_count)
+
+            auditory_count = auditory_info.objects.filter(citizen_pk_id__in=citizens, is_deleted=False).count()
+            print("Total Auditory Records Fetched:", auditory_count)
+
+            dental_count = dental_info.objects.filter(citizen_pk_id__in=citizens, is_deleted=False).count()
+            print("Total Dental Records Fetched:", dental_count)
+
+            vital_info_count = vision_info.objects.filter(citizen_pk_id__in=citizens, is_deleted=False).count()
+            print("Total Vision Records Fetched:", vital_info_count)
+
+            medical_history_count = medical_history_info.objects.filter(citizen_pk_id__in=citizens, is_deleted=False).count()
+            print("Total Medical History Records Fetched:", medical_history_count)
+
+            investigation_info_count = investigation_info.objects.filter(citizen_pk_id__in=citizens, is_deleted=False).count()
+            print("Total Investigation Records Fetched:", investigation_info_count)
+
+            pft_info_count = pft_info.objects.filter(citizen_pk_id__in=citizens, is_deleted=False).count()
+            print("Total PFT Records Fetched:", pft_info_count)
+
+            immunisation_info_count = immunisation_info.objects.filter(citizen_pk_id__in=citizens, is_deleted=False).count()
+            print("Total Immunisation Records Fetched:", immunisation_info_count)
+
+            count_obj = {
+                "total_citizen_count": citizens.count(),
+                "bmi_count": bmi_count,
+                "vital_count": vital_count,
+                "auditory_count": auditory_count,
+                "dental_count": dental_count,
+                "vision_count": vital_info_count,
+                "medical_history_count": medical_history_count,
+                "investigation_info_count": investigation_info_count,
+                "pft_info_count": pft_info_count,
+                "immunisation_info_count": immunisation_info_count,
+            }
+
+            return Response(count_obj, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
