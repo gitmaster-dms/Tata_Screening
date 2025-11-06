@@ -5847,6 +5847,14 @@ class TotalDriverReg_Dashboard_API(APIView):
 
             referral_count = follow_up.objects.filter(citizen_pk_id__in=citizens.values_list('citizens_pk_id', flat=True),is_deleted=False).count()
             print("Total Referral Count:", referral_count)
+
+            follow_up_count = followup_save.objects.filter(citizen_pk_id__in=citizens.values_list('citizens_pk_id', flat=True),is_deleted=False).distinct('citizen_pk_id').count()
+            print("Total Follow-up Count:", follow_up_count)
+
+            colleagues = agg_com_colleague.objects.filter(is_deleted=False, grp_id=10)
+
+            avail_colleague_ids = colleagues.filter(clg_is_login=False).count()
+            notavail_colleague_ids = colleagues.filter(clg_is_login=True).count()
             
             for driver in total_drivers:
                 citizen_id = driver.citizens_pk_id
@@ -5901,6 +5909,9 @@ class TotalDriverReg_Dashboard_API(APIView):
                 "Total_Referrals_Made": referral_count,
                 "Total_Drivers_Screened": total_driver_screened,
                 "Drivers_Pending_Screening": total_driver_not_screened,
+                "Total_Followups_Made": follow_up_count,
+                "Medical_staff_Available": avail_colleague_ids,
+                "Medical_staff_NotAvailable": notavail_colleague_ids,
             }
             return Response(driver_data, status=status.HTTP_200_OK)
         except Exception as e:
