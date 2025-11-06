@@ -607,15 +607,6 @@ class agg_sc_disease(models.Model):
     modify_date = models.DateTimeField(auto_now=True, null=True)
 
 
-    
-
-    
-    
-
-# ----------------------------------- END_Schedule_Screening -------------------------------------------------------------
-
-#____________________________________________________________________________________
-#____________________________________________________________________________________
 class agg_sc_state(models.Model):
 	state_id=models.AutoField(primary_key=True)
 	state_name=models.CharField(max_length=100,null=True,unique=True)
@@ -651,8 +642,6 @@ class agg_sc_tahsil(models.Model):
 	    return self.tahsil_name
 
 
-
-# ----------------------------------- Add_New_Citizen -------------------------------------------------------------
 
 
 class WHO_BMI_bmi_boys_and_girl_5_19_years(models.Model):
@@ -706,55 +695,6 @@ class ht_for_age_0_to_10_boys_and_girl(models.Model):
     two_SD = models.FloatField()
     three_SD = models.FloatField()
     gender = models.IntegerField()
-
-
-    
-    
-    
-    
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 # ___________________JWT_tables-------------------------------  
 class agg_mas_group(models.Model):
     grp_id = models.AutoField(primary_key=True, auto_created=True)
@@ -1250,11 +1190,18 @@ class anayalse_img_data_save_table(models.Model):
 #----------------------------------------------NEW Tables----------------------------------------------------------------------------------
 
 
+class Category(models.Model):
+    pk_id = models.AutoField(primary_key=True)
+    category = models.CharField(max_length=255,null=True,blank=True)
+    is_deleted = models.BooleanField(default=False)
+    added_by =	models.CharField(max_length=255,null=True, blank=True)
+    added_date = models.DateTimeField(auto_now_add=True)
+    modify_by =	models.CharField(max_length=255,null=True, blank=True)
+    modify_date = models.DateTimeField(auto_now=True, null=True) 
+
+
 from django.db import models, transaction
 
-class Category(enum.Enum):
-	Driver = 1
-	Cleaner = 2
 
 class Citizen(models.Model):
     citizens_pk_id = models.AutoField(primary_key=True)
@@ -1269,10 +1216,9 @@ class Citizen(models.Model):
     days = models.CharField(max_length=12)
     gender = models.ForeignKey('agg_gender', on_delete=models.CASCADE,null=True, blank=True)
     source = models.ForeignKey('agg_source', on_delete=models.CASCADE,null=True, blank=True)
-    category = enum.EnumField(Category, null=True,blank=True)
     aadhar_id = models.CharField(max_length=12,null=True,blank=True)
     mobile_no = models.BigIntegerField(null=True,blank=True)
-    
+    category = models.ForeignKey('Category', on_delete=models.CASCADE,null=True, blank=True)
 #___________ADDRESS_____________________________
     source_name = models.ForeignKey('Workshop', on_delete=models.CASCADE)
     state = models.ForeignKey('agg_sc_state', on_delete=models.CASCADE, blank=True, null=True)
@@ -2151,7 +2097,7 @@ class investigation_info(models.Model):
     
     
     
-    
+
 
 
 

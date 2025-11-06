@@ -180,7 +180,8 @@ admin.site.register(WHO_BMI_bmi_boys_and_girl_5_19_years)
 admin.site.register(wt_for_age_0_to_10_boys_and_girl)
 admin.site.register(wt_for_ht_0_to_10_boys_and_girl)
 admin.site.register(ht_for_age_0_to_10_boys_and_girl)
-
+admin.site.register(Category)
 
 #------------------------------------------------------------------------------------------------------------
 admin.site.register(Screening_citizen)
+

@@ -110,13 +110,12 @@ def get_tokens_for_user(user):
         group_name = None
     
     return {
-        "refresh": str(refresh),
+        "refresh": str(refresh), 
         "access": str(refresh.access_token),
         "colleague": colleague_data,
         "user_group": group_name,
         "permissions": permissions_data,
     }
-
 
 class UserRegistrationView(APIView):
     renderer_classes = [UserRenderer]
@@ -3861,6 +3860,14 @@ class Citizen_Get_Api(APIView):
         snippet = Citizen.objects.all()
         serializers = Citizen_Get_Serializer(snippet, many=True)
         return Response(serializers.data, status=status.HTTP_200_OK)
+    
+
+class Category_Get_Api(APIView):
+    def get(self, request):
+        snippet = Category.objects.all()
+        serializers = Category_Get_Serializer(snippet, many=True)
+        return Response(serializers.data, status=status.HTTP_200_OK)
+
     
 class Citizen_idwise_data_Get_Api(APIView):
     def get(self,request,citizens_pk_id):

@@ -229,6 +229,8 @@ urlpatterns = [
     
     path('Workshop_Post/', Workshop_Post_Api.as_view(), name='Workshop_Post'),
     path('Workshop_Get/', Workshop_Get_Api.as_view(), name='Workshop_Get'),
+    path('Category_Get/', Category_Get_Api.as_view(), name='Category_Get'),
+    
     
     
     path('Start_Screening/<int:citizen_pk_id>/', CheckCitizenScreening.as_view(), name='Start_Screening'),   

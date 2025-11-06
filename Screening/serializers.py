@@ -668,6 +668,7 @@ class Citizen_idwise_data_Get_Serializer(serializers.ModelSerializer):
     tehsil_name = serializers.CharField(source='tehsil.tahsil_name',allow_null=True) 
     source_name_name = serializers.CharField(source='source_name.source_names',allow_null=True)
     source_id_name = serializers.CharField(source='source.source',allow_null=True)
+    category_name = serializers.CharField(source='category.category',allow_null=True)
     class Meta:
         model = Citizen
         fields = '__all__'
@@ -1516,4 +1517,7 @@ class Workshop_Get_Serializer(serializers.ModelSerializer):
         # fields = ['ws_pk_id','Workshop_name']
         fields = '__all__'
 
-
+class Category_Get_Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = ['pk_id','category']
