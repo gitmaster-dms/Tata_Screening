@@ -1,5 +1,23 @@
 import React, { useState, useEffect } from 'react'
 import './BmiVital.css'
+import {
+    Grid,
+    Card,
+    Typography,
+    TextField,
+    Radio,
+    RadioGroup,
+    FormControlLabel,
+    FormControl,
+    FormLabel,
+    Button,
+    Box,
+    Divider,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
+} from "@mui/material";
 
 const BmiVital = ({ onAcceptClick, pkid, calculatedHeight, enteredWeight, scheduleID, fetchVital, selectedName }) => {
     //_________________________________START
@@ -176,18 +194,25 @@ const BmiVital = ({ onAcceptClick, pkid, calculatedHeight, enteredWeight, schedu
         }
     };
 
-    const handleSubmit = async () => {
-        const isConfirmed = window.confirm('Submit Growth Info Form');
-        const confirmationStatus = isConfirmed ? 'True' : 'False';
+    const [openConfirm, setOpenConfirm] = useState(false);
+
+    const handleSubmit = () => {
+        setOpenConfirm(true);
+    };
+
+    const handleConfirmSubmit = async () => {
+        setOpenConfirm(false);
+        const confirmationStatus = 'True';
 
         if (updateId) {
-            if (isConfirmed) {
-                await updateDataInDatabase(updateId, confirmationStatus);
-            } else {
-                console.log('Form submission cancelled');
-            }
+            await updateDataInDatabase(updateId, confirmationStatus);
         }
         console.log("Move to Vital button clicked");
+    };
+
+    const handleCancelSubmit = () => {
+        setOpenConfirm(false);
+        console.log('Form submission cancelled');
     };
 
     useEffect(() => {
@@ -294,31 +319,6 @@ const BmiVital = ({ onAcceptClick, pkid, calculatedHeight, enteredWeight, schedu
         calculateAge();
     }, [bmiData.citizen_info.dob]);
 
-    // useEffect(() => {
-    //     const calculateAge = () => {
-    //         const selectedDOB = new Date(bmiData.citizen_info.dob);
-    //         const currentDate = new Date();
-
-    //         const ageInMilliseconds = currentDate - selectedDOB;
-    //         const ageInYears = Math.floor(ageInMilliseconds / (365.25 * 24 * 60 * 60 * 1000));
-    //         const ageInMonths = Math.floor((ageInMilliseconds % (365.25 * 24 * 60 * 60 * 1000)) / (30.44 * 24 * 60 * 60 * 1000));
-    //         const ageInDays = Math.floor((ageInMilliseconds % (30.44 * 24 * 60 * 60 * 1000)) / (24 * 60 * 60 * 1000));
-
-    //         // Update the state with the calculated values
-    //         setBmiData((prevBmiData) => ({
-    //             ...prevBmiData,
-    //             citizen_info: {
-    //                 ...prevBmiData.citizen_info,
-    //                 year: ageInYears.toString(),
-    //                 months: ageInMonths.toString(),
-    //                 days: ageInDays.toString(),
-    //             },
-    //         }));
-    //     };
-
-    //     calculateAge();
-    // }, [bmiData.citizen_info.dob]);
-
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -355,406 +355,335 @@ const BmiVital = ({ onAcceptClick, pkid, calculatedHeight, enteredWeight, schedu
     }, []);
 
     return (
-        <div>
-            <div className="row backdesign">
-                <div className="col-md-12">
-                    <div className="card bmicard">
-                        <div className="row">
-                            <div className="col-md-4">
-                                <h6 className='mt-1'>BMI & Symptoms</h6>
-                            </div>
-                            <div className="col-md-5 ml-auto">
-                                <div class="progress-barbmi"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+        <Box>
+            <Dialog open={openConfirm} onClose={handleCancelSubmit} fullWidth maxWidth="xs">
+                <DialogTitle sx={{ fontWeight: "bold", textAlign: "center" }}>
+                    Confirm Submission
+                </DialogTitle>
+                <DialogContent sx={{ textAlign: "center", fontSize: "15px" }}>
+                    Are you sure you want to submit the Growth Info Form?
+                </DialogContent>
+                <DialogActions sx={{ justifyContent: "center", pb: 2 }}>
+                    <Button
+                        variant="contained"
+                        onClick={handleConfirmSubmit}
+                        sx={{ bgcolor: "#1439A4", textTransform: "none" }}
+                    >
+                        Yes
+                    </Button>
+                    <Button
+                        variant="outlined"
+                        onClick={handleCancelSubmit}
+                        sx={{ textTransform: "none", color: "#1439A4", borderColor: "#1439A4" }}
+                    >
+                        No
+                    </Button>
+                </DialogActions>
+            </Dialog>
 
-                <div className="col-md-12">
-                    <div className="card grothcardmonitor">
-                        <div className="row">
-                            <div className="col-md-12">
-                                <h6 className="BMITitle">GROWTH MONITORING</h6>
-                                <div className="bmielement"></div>
-                            </div>
+            <Card sx={{ borderRadius: "20px", p: 1, mb: 1, background: "linear-gradient(90deg, #039BEF 0%, #1439A4 100%)" }}>
+                <Typography sx={{ fontWeight: 600, fontFamily: "Roboto", fontSize: "16px", color: "white" }}>
+                    BMI & Symptoms
+                </Typography>
+            </Card>
 
-                            <div className="col-md-5">
-                                <div className="row cardadjust growthcard">
-                                    <div className="col-md-12">
-                                        <label className="visually-hidden bmivitalfield" id="age">
-                                            DOB
-                                        </label>
-                                        <input
+            <Box
+                sx={{
+                    maxHeight: "70vh",
+                    overflowY: "auto",
+                    pr: 2,
+                }}
+            >
+                <Card sx={{ p: 2, mb: 2, borderRadius: "20px", }}>
+                    <Grid container spacing={2}>
+                        <Grid item xs={12} sm={5}>
+                            <Card sx={{ p: 1, mb: 1 }}>
+                                <Grid container spacing={1}>
+                                    <Grid item xs={12}>
+                                        <TextField
+                                            fullWidth
+                                            size="small"
+                                            label="Date of Birth"
                                             type="date"
-                                            className="form-control inputbmivitalscreen"
-                                            id="dob"
-                                            name="dob"
-                                            placeholder="Dob"
-                                            value={bmiData.citizen_info.dob}
+                                            value={bmiData.citizen_info.dob || ""}
                                             onChange={handleDOBChange}
+                                            InputLabelProps={{ shrink: true }}
                                         />
-                                    </div>
-                                    <div className="col-md-4">
-                                        <input
-                                            className="form-control inputbmivital1"
-                                            id="year"
-                                            placeholder="Year"
-                                            name="year"
-                                            value={bmiData.citizen_info.year}
-                                            readOnly
+                                    </Grid>
+                                    <Grid item xs={4}>
+                                        <TextField
+                                            fullWidth
+                                            size="small"
+                                            label="Years"
+                                            value={bmiData.citizen_info.year || ""}
+                                            InputProps={{ readOnly: true }}
                                         />
-                                    </div>
-                                    <div className="col-md-4">
-                                        <input
-                                            className="form-control inputbmivital1"
-                                            id="months"
-                                            placeholder="Months"
-                                            name="months"
-                                            value={bmiData.citizen_info.months}
-                                            readOnly
+                                    </Grid>
+                                    <Grid item xs={4}>
+                                        <TextField
+                                            fullWidth
+                                            size="small"
+                                            label="Months"
+                                            value={bmiData.citizen_info.months || ""}
+                                            InputProps={{ readOnly: true }}
                                         />
-                                    </div>
-                                    <div className="col-md-4">
-                                        <input
-                                            className="form-control inputbmivital1"
-                                            id="days"
-                                            placeholder="Days"
-                                            name="days"
-                                            value={bmiData.citizen_info.days}
-                                            readOnly
+                                    </Grid>
+                                    <Grid item xs={4}>
+                                        <TextField
+                                            fullWidth
+                                            size="small"
+                                            label="Days"
+                                            value={bmiData.citizen_info.days || ""}
+                                            InputProps={{ readOnly: true }}
                                         />
-                                    </div>
-                                </div>
+                                    </Grid>
+                                </Grid>
+                            </Card>
 
-                                <div className="row cardadjust">
-                                    <div className="col-md-6">
-                                        <div className="form-control responseinput ml-1">
-                                            <div class="form-check">
-                                                <label class="form-check-label mgenderdefine" for="flexRadioDefault1">
-                                                    Male
-                                                </label>
-                                                <input class="form-check-input clickbtnm" type="radio" name="flexRadioDefault"
-                                                    id="flexRadioDefault1" checked={bmiData?.citizen_info?.gender === "1"} />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="col-md-6">
-                                        <div className="form-control ml-1 responseinput1">
-                                            <div class="form-check">
-                                                <label class="form-check-label fgenderdefine" for="flexRadioDefault1">
-                                                    Female
-                                                </label>
-                                                <input class="form-check-input clickbtnf" type="radio" name="flexRadioDefault"
-                                                    id="flexRadioDefault1" checked={bmiData?.citizen_info?.gender === "2"} />
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                            <FormControl component="fieldset">
+                                <RadioGroup
+                                    row
+                                    value={bmiData.citizen_info.gender}
+                                    onChange={(e) =>
+                                        setBmiData({
+                                            ...bmiData,
+                                            citizen_info: {
+                                                ...bmiData.citizen_info,
+                                                gender: e.target.value,
+                                            },
+                                        })
+                                    }
+                                >
+                                    <FormControlLabel value="1" control={<Radio size="small" />} label="Male" />
+                                    <FormControlLabel value="2" control={<Radio size="small" />} label="Female" />
+                                </RadioGroup>
+                            </FormControl>
 
-                                <div className="row cardadjust1">
-                                    <div className="col-md-12">
-                                        <div className="card heightcard">
-                                            <div className="row">
-                                                <div className="col-md-7 heightlabel">Height</div>
-                                                <div className="col-md-5 mt-2">
-                                                    <input
-                                                        type="number"
-                                                        className="form-control form-control-sm bmiformcontrol"
-                                                        id="height"
-                                                        name="height"
-                                                        value={bmiData?.citizen_info?.height || null}
-                                                        onChange={(e) => {
-                                                            const newValue = Math.min(Math.max(parseInt(e.target.value)), 221);
+                            {/* Height */}
+                            <Card sx={{ p: 1, mb: 1, background: "#F8DEBD" }}>
+                                <Grid container alignItems="center">
+                                    <Grid item xs={7}>
+                                        <Typography variant="body2">Height (cm)</Typography>
+                                    </Grid>
+                                    <Grid item xs={5}>
+                                        <TextField
+                                            fullWidth
+                                            size="small"
+                                            type="number"
+                                            value={bmiData.citizen_info.height || ""}
+                                            onChange={(e) => {
+                                                const newValue = Math.min(Math.max(parseInt(e.target.value)), 221);
 
-                                                            setBmiData({
-                                                                ...bmiData,
-                                                                citizen_info: {
-                                                                    ...bmiData.citizen_info,
-                                                                    height: newValue,
-                                                                },
-                                                            });
-                                                        }}
-                                                    />
+                                                setBmiData({
+                                                    ...bmiData,
+                                                    citizen_info: {
+                                                        ...bmiData.citizen_info,
+                                                        height: newValue,
+                                                    },
+                                                });
+                                            }} />
+                                    </Grid>
+                                </Grid>
+                            </Card>
 
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                            {/* Weight */}
+                            <Card sx={{ p: 1, background: "#D0FBFF" }}>
+                                <Grid container alignItems="center">
+                                    <Grid item xs={7}>
+                                        <Typography variant="body2">Weight (kg)</Typography>
+                                    </Grid>
+                                    <Grid item xs={5}>
+                                        <TextField
+                                            fullWidth
+                                            size="small"
+                                            type="number"
+                                            value={bmiData.citizen_info.weight || ""}
+                                            onChange={(e) => {
+                                                let newValue = parseInt(e.target.value);
 
-                                </div>
+                                                newValue = Math.min(newValue, 400);
+                                                newValue = isNaN(newValue) || newValue < 0 ? 0 : newValue;
 
-                                <div className="row cardadjust1">
-                                    <div className="col-md-12">
-                                        <div className="card weightcard">
-                                            <div className="row">
-                                                <div className="col-md-7 heightlabel">Weight</div>
-                                                <div className="col-md-5 mt-2">
-                                                    <input
-                                                        type="text"
-                                                        className="form-control form-control-sm bmiformcontrolweight"
-                                                        id="weight"
-                                                        name="weight"
-                                                        value={bmiData?.citizen_info?.weight}
-                                                        onChange={(e) => {
-                                                            let newValue = parseInt(e.target.value);
+                                                setBmiData({
+                                                    ...bmiData,
+                                                    citizen_info: {
+                                                        ...bmiData.citizen_info,
+                                                        weight: newValue,
+                                                    },
+                                                });
+                                            }}
+                                        />
+                                    </Grid>
+                                </Grid>
+                            </Card>
 
-                                                            newValue = Math.min(newValue, 400);
-                                                            newValue = isNaN(newValue) || newValue < 0 ? 0 : newValue;
+                            {/* Arm size (Conditional) */}
+                            {/* {SourceUrlId === "1" && ( */}
+                            <Card sx={{ p: 1, mt: 1, background: "#FFECF2" }}>
+                                <Grid container>
+                                    <Grid item xs={7}>
+                                        <Typography variant="body2">Arm</Typography>
+                                    </Grid>
+                                    <Grid item xs={5}>
+                                        <Typography variant="body2">
+                                            {bmiData.citizen_info.arm_size || "-"}
+                                        </Typography>
+                                    </Grid>
+                                </Grid>
+                            </Card>
+                            {/* )} */}
+                        </Grid>
 
-                                                            setBmiData({
-                                                                ...bmiData,
-                                                                citizen_info: {
-                                                                    ...bmiData.citizen_info,
-                                                                    weight: newValue,
-                                                                },
-                                                            });
-                                                        }}
-                                                    />
-                                                    {/* <input
-                                                        type="text"
-                                                        className="form-control form-control-sm bmiformcontrolweight"
-                                                        id="weight"
-                                                        name="weight"
-                                                        value={bmiData?.citizen_info?.weight}
-                                                        
-                                                        onChange={(e) =>
-                                                            setBmiData({
-                                                                ...bmiData,
-                                                                citizen_info: {
-                                                                    ...bmiData.citizen_info,
-                                                                    weight: e.target.value,
-                                                                },
-                                                            })
-                                                        }
-                                                    /> */}
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                        {/* BMI Data */}
+                        <Grid item xs={12} sm={7}>
+                            {bmiData.citizen_info.dob && (
+                                <Card sx={{ p: 2, height: "auto", background: "linear-gradient(180deg, #039BEF 0%, #1439A4 100%)", color: "white" }}>
+                                    <Typography variant="subtitle2" fontWeight="bold" mb={1}>
+                                        Body Mass Index (BMI)
+                                    </Typography>
+                                    <Typography variant="h6" color="white">
+                                        {bmiData.citizen_info.bmi || "--"}
+                                    </Typography>
 
-                                {
-                                    SourceUrlId === '1' ?
-                                        (
-                                            <div className="row cardadjust1">
-                                                <div className="col-md-12">
-                                                    <div className="card armcard">
-                                                        <div className="row">
-                                                            <div className="col-md-7 heightlabel">Arm</div>
-                                                            <div className="col-md-5 mt-2">{bmiData?.citizen_info?.arm_size}</div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        )
-                                        :
-                                        null
-                                }
-                            </div>
+                                    <Typography variant="body2" mt={1} sx={{ color: "white" }}>
+                                        {bmiData.citizen_info.bmi < 18.5
+                                            ? "You are Underweight."
+                                            : bmiData.citizen_info.bmi < 25
+                                                ? "You are Normal."
+                                                : bmiData.citizen_info.bmi < 30
+                                                    ? "You are Overweight."
+                                                    : "Obese."}
+                                    </Typography>
 
-                            <div className={`col-md-7 mt-1`}>
-                                <div className="row cardmove" style={{ height: '95%' }}>
-                                    {bmiData.citizen_info.dob && (
-                                        <div className="col-md-12">
-                                            <div className={`card bmidatadetails`}>
-                                                <div className='row bodymasstitle'>
-                                                    <h6>Body Mass Index (BMI)</h6>
-                                                </div>
-                                                <div className='row databmi'>
-                                                    <div className='col-md-4'>
-                                                        <h6>{bmiData?.citizen_info?.bmi}</h6>
-                                                    </div>
+                                    <Divider sx={{ my: 2 }} />
 
-                                                    <div className='col-md-8'>
-                                                        {'18.5' <= bmiData?.citizen_info?.bmi && bmiData?.citizen_info?.bmi < '25' && (
-                                                            <h6 className={`textdecor`} style={{ fontSize: bmiData?.citizen_info?.font_size }}>
-                                                                You are Normal.
-                                                            </h6>
-                                                        )}
+                                    <Grid container justifyContent="space-between" sx={{ color: "white" }}>
+                                        {["Underweight", "Normal", "Overweight", "Obesity"].map((label, index) => (
+                                            <Typography
+                                                key={index}
+                                                sx={{
+                                                    fontWeight:
+                                                        (label === "Underweight" && bmiData.citizen_info.bmi < 18.5) ||
+                                                            (label === "Normal" &&
+                                                                bmiData.citizen_info.bmi >= 18.5 &&
+                                                                bmiData.citizen_info.bmi < 25) ||
+                                                            (label === "Overweight" &&
+                                                                bmiData.citizen_info.bmi >= 25 &&
+                                                                bmiData.citizen_info.bmi < 30) ||
+                                                            (label === "Obesity" && bmiData.citizen_info.bmi >= 30)
+                                                            ? "bold"
+                                                            : "normal",
+                                                    color:
+                                                        (label === "Underweight" && bmiData.citizen_info.bmi < 18.5) ||
+                                                            (label === "Normal" &&
+                                                                bmiData.citizen_info.bmi >= 18.5 &&
+                                                                bmiData.citizen_info.bmi < 25) ||
+                                                            (label === "Overweight" &&
+                                                                bmiData.citizen_info.bmi >= 25 &&
+                                                                bmiData.citizen_info.bmi < 30) ||
+                                                            (label === "Obesity" && bmiData.citizen_info.bmi >= 30)
+                                                            ? "red"
+                                                            : "white",
+                                                    fontSize: 14,
+                                                }}
+                                            >
+                                                {label}
+                                            </Typography>
+                                        ))}
+                                    </Grid>
+                                </Card>
+                            )}
 
-                                                        {bmiData?.citizen_info?.bmi < '18.5' && (
-                                                            <h6 className={`textdecor`} style={{ fontSize: bmiData?.citizen_info?.font_size }}>
-                                                                You are Underweight.
-                                                            </h6>
-                                                        )}
+                            {bmiData.citizen_info.dob && (
+                                <Grid container spacing={2} mt={1}>
+                                    <Grid item xs={12} sm={4}>
+                                        <Card sx={{ p: 1.5, textAlign: "center", height: "100%", border: "1px solid #E95D5C", borderRadius: "15px" }}>
+                                            <Typography variant="body2">Weight for Age</Typography>
+                                            <Typography variant="subtitle2">
+                                                {bmiData.citizen_info.weight_for_age_label || "--"}
+                                            </Typography>
+                                        </Card>
+                                    </Grid>
+                                    <Grid item xs={12} sm={4}>
+                                        <Card sx={{ p: 1.5, textAlign: "center", height: "100%", border: "1px solid #90DF9E", borderRadius: "15px" }}>
+                                            <Typography variant="body2">Weight for Height</Typography>
+                                            <Typography variant="subtitle2">
+                                                {bmiData.citizen_info.height_for_weight_label || "--"}
+                                            </Typography>
+                                        </Card>
+                                    </Grid>
+                                    <Grid item xs={12} sm={4}>
+                                        <Card sx={{ p: 1.5, textAlign: "center", height: "100%", border: "1px solid #C4C4C4", borderRadius: "15px" }}>
+                                            <Typography variant="body2">Height for Age</Typography>
+                                            <Typography variant="subtitle2">
+                                                {bmiData.citizen_info.height_for_age_label || "--"}
+                                            </Typography>
+                                        </Card>
+                                    </Grid>
+                                </Grid>
+                            )}
+                        </Grid>
+                    </Grid>
+                </Card>
 
-                                                        {'25' <= bmiData?.citizen_info?.bmi && bmiData?.citizen_info?.bmi < '30' && (
-                                                            <h6 className={`textdecor`} style={{ fontSize: bmiData?.citizen_info?.font_size }}>
-                                                                You are Overweight.
-                                                            </h6>
-                                                        )}
+                <Card sx={{ p: 1 , borderRadius: "20px",}}>
+                    <Typography variant="subtitle1" fontWeight="bold" mb={2}>
+                        Medical Event
+                    </Typography>
 
-                                                        {bmiData?.citizen_info?.bmi >= '30' && (
-                                                            <h6 className={`textdecor`} style={{ fontSize: bmiData?.citizen_info?.font_size }}>
-                                                                Obese.
-                                                            </h6>
-                                                        )}
-                                                    </div>
-                                                </div>
+                    <Grid container spacing={2}>
+                        <Grid item xs={12} sm={6}>
+                            <TextField
+                                fullWidth
+                                size="small"
+                                label="Symptoms (if any)"
+                                name="symptoms_if_any"
+                                value={bmiData.symptoms_if_any || ""}
+                                onChange={handleChange}
+                            />
+                        </Grid>
+                        <Grid item xs={12} sm={6}>
+                            <TextField
+                                fullWidth
+                                size="small"
+                                label="Remark"
+                                name="remark"
+                                value={bmiData.remark || ""}
+                                onChange={handleChange}
+                            />
+                        </Grid>
+                    </Grid>
 
-                                                <div className='row belowheading'>
-                                                    {/* <div className="arrow"></div> */}
-                                                    <input className='widget' />
-                                                    <div className="labels">
-                                                        <span className={`label-bold ${bmiData?.citizen_info?.bmi < 18.5 ? 'label-red' : 'label-blurred'}`} style={{ fontSize: bmiData?.citizen_info?.bmi < 18.5 ? `${bmiData?.citizen_info?.font_size}px` : '15px' }}>
-                                                            Underweight
-                                                        </span>
-                                                        <span className={`label-bold ${18.5 <= bmiData?.citizen_info?.bmi && bmiData?.citizen_info?.bmi < 25 ? 'label-red' : 'label-blurred'}`} style={{ fontSize: 18.5 <= bmiData?.citizen_info?.bmi && bmiData?.citizen_info?.bmi < 25 ? `${bmiData?.citizen_info?.font_size}px` : '15px' }}>
-                                                            Normal
-                                                        </span>
-                                                        <span className={`label-bold ${25 <= bmiData?.citizen_info?.bmi && bmiData?.citizen_info?.bmi < 30 ? 'label-red' : 'label-blurred'}`} style={{ fontSize: 25 <= bmiData?.citizen_info?.bmi && bmiData?.citizen_info?.bmi < 30 ? `${bmiData?.citizen_info?.font_size}px` : '15px' }}>
-                                                            Overweight
-                                                        </span>
-                                                        <span className={`label-bold ${bmiData?.citizen_info?.bmi >= 30 ? 'label-red' : 'label-blurred'}`} style={{ fontSize: bmiData?.citizen_info?.bmi >= 30 ? `${bmiData?.citizen_info?.font_size}px` : '15px' }}>
-                                                            Obesity
-                                                        </span>
-                                                    </div>
-                                                </div>
+                    {/* Referred to Specialist */}
+                    <Grid container alignItems="center" mt={2}>
+                        <Grid item xs={12} sm={4}>
+                            <Typography variant="body1">Referred To Specialist</Typography>
+                        </Grid>
+                        <Grid item xs={12} sm={8}>
+                            <RadioGroup
+                                row
+                                value={referredToSpecialist}
+                                onChange={(e) => setReferredToSpecialist(parseInt(e.target.value))}
+                            >
+                                <FormControlLabel value={1} control={<Radio size="small" />} label="Yes" />
+                                <FormControlLabel value={2} control={<Radio size="small" />} label="No" />
+                            </RadioGroup>
+                        </Grid>
+                    </Grid>
+                </Card>
 
-                                                {/* <div className='row belowheading'>
-                                                <div className="arrow"></div>
-                                                <input className='widget' />
-                                                <div className="labels">
-                                                    <span className={bmiData?.citizen_info?.bmi < 18.5 ? 'label-bold label-red' : 'label-red'}>
-                                                        Underweight
-                                                    </span>
-                                                    <span className={18.5 <= bmiData?.citizen_info?.bmi && bmiData?.citizen_info?.bmi < 25 ? 'label-bold label-red' : 'label-red'}>
-                                                        Normal
-                                                    </span>
-                                                    <span className={25 <= bmiData?.citizen_info?.bmi && bmiData?.citizen_info?.bmi < 30 ? 'label-bold label-red' : 'label-red'}>
-                                                        Overweight
-                                                    </span>
-                                                    <span className={bmiData?.citizen_info?.bmi >= 30 ? 'label-bold label-red' : 'label-red'}>
-                                                        Obesity
-                                                    </span>
-                                                </div>
-                                            </div> */}
-
-                                                <div className='row belowheading'>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    )}
-
-                                    {bmiData.citizen_info.dob && (
-                                        <div className={`col-md-12 mt-2`}>
-                                            <div className="row">
-                                                <div className="col-md-4">
-                                                    <div className="card wtforage" style={{ height: '118%' }}>
-                                                        <div className="col textsize"> Weight for Age</div>
-                                                        <div className="col wtcount">{bmiData?.citizen_info?.weight_for_age_label}</div>
-                                                    </div>
-                                                </div>
-
-                                                <div className="col-md-4">
-                                                    <div className="card wtforht" style={{ height: '118%' }}>
-                                                        <div className="col textsize"> Weight for Height</div>
-                                                        <div className="col wtcount">{bmiData?.citizen_info?.height_for_weight_label}</div>
-                                                    </div>
-                                                </div>
-
-                                                <div className="col-md-4">
-                                                    <div className="card htforage" style={{ height: '118%' }}>
-                                                        <div className="col textsize"> Height for Age</div>
-                                                        <div className="col wtcount">{bmiData?.citizen_info?.height_for_age_label}</div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div className="col-md-12">
-                    <div className="card medicalcard">
-                        <div className="row">
-                            <div className="col-md-12">
-                                <h6 className='medicaltitle'>Medical Event</h6>
-                                <div className="elementmedical"></div>
-                            </div>
-                        </div>
-
-                        <div className="row">
-                            <div className="col-md-6">
-                                <div className="mb-3">
-                                    <label htmlFor="symptoms" className="form-label medicallabel">Symptoms If any</label>
-                                    <input
-                                        type="text"
-                                        className="form-control medicalinput"
-                                        id="symptoms"
-                                        name="symptoms_if_any"
-                                        placeholder="Enter symptoms"
-                                        value={bmiData.symptoms_if_any}
-                                        onChange={handleChange}
-                                    />
-                                </div>
-                            </div>
-
-                            <div className="col-md-6">
-                                <div className="mb-3">
-                                    <label htmlFor="remark" className="form-label medicallabel">Remark</label>
-                                    <input
-                                        type="text"
-                                        className="form-control medicalinput"
-                                        id="remark"
-                                        name="remark"
-                                        placeholder="Enter remark"
-                                        value={bmiData.remark}
-                                        onChange={handleChange}
-                                    />
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="row mb-3 mt-2">
-                            <div className="col-md-4">
-                                <h6 className="specialistedrefrresedd">Reffered To Specialist</h6>
-                            </div>
-
-                            <div className="col-md-1">
-                                <input
-                                    className="form-check-input"
-                                    type="radio"
-                                    id="yes"
-                                    name="reffered_to_specialist"
-                                    value={1}
-                                    checked={referredToSpecialist === 1}
-                                    onChange={() => setReferredToSpecialist(1)}
-                                />
-                                <label className="form-check-label" htmlFor="yes">
-                                    Yes
-                                </label>
-                            </div>
-
-                            <div className="col-md-1">
-                                <input
-                                    className="form-check-input"
-                                    type="radio"
-                                    id="no"
-                                    name="reffered_to_specialist"
-                                    value={2}
-                                    checked={referredToSpecialist === 2}
-                                    onChange={() => setReferredToSpecialist(2)}
-                                />
-                                <label className="form-check-label" htmlFor="no">
-                                    No
-                                </label>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-
-            <div className="row">
-                <div className="col-md-12">
-                    <button type="button" className="btn btn-sm btnbmivital" onClick={handleSubmit}>Accept</button>
-                </div>
-            </div>
-        </div>
+                <Box textAlign="center" mt={1} mb={2}>
+                    <Button
+                        variant="contained"
+                        size="small"
+                        sx={{ bgcolor: "#1439A4", textTransform: "none" }}
+                        onClick={handleSubmit}
+                    >
+                        Submit
+                    </Button>
+                </Box>
+            </Box>
+        </Box>
     )
 }
 

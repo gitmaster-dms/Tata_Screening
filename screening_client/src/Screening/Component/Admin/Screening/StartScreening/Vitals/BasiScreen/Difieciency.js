@@ -1,41 +1,39 @@
-import React, { useState, useEffect } from 'react'
-import axios from 'axios'
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import {
+    Box,
+    Grid,
+    Checkbox,
+    FormControlLabel,
+    Button,
+    Typography,
+} from "@mui/material";
 
 const Difieciency = ({ pkid, onAcceptClick, citizensPkId, selectedTab, subVitalList }) => {
-
-    //_________________________________START
-    console.log(selectedTab, 'Present name');
-    console.log(subVitalList, 'Overall GET API');
-    const [nextName, setNextName] = useState('');
+    // _________________________________ START
+    const [nextName, setNextName] = useState("");
 
     useEffect(() => {
         if (subVitalList && selectedTab) {
-            const currentIndex = subVitalList.findIndex(item => item.screening_list === selectedTab);
-
-            console.log('Current Index:', currentIndex);
+            const currentIndex = subVitalList.findIndex(
+                (item) => item.screening_list === selectedTab
+            );
 
             if (currentIndex !== -1 && currentIndex < subVitalList.length - 1) {
                 const nextItem = subVitalList[currentIndex + 1];
                 const nextName = nextItem.screening_list;
                 setNextName(nextName);
-                console.log('Next Name Set:', nextName);
             } else {
-                setNextName('');
-                console.log('No next item or selectedTab not found');
+                setNextName("");
             }
         }
     }, [selectedTab, subVitalList]);
-    //_________________________________END
+    // _________________________________ END
 
-    const [deficiencies, setDeficiencies] = useState([])
-    // console.log('Difieciency', basicScreeningPkId);
-    const basicScreeningPkId = localStorage.getItem('basicScreeningId');
-    console.log('Retrieved Basic Id from Local Storage:', basicScreeningPkId);
-    const accessToken = localStorage.getItem('token');
-
-    const userID = localStorage.getItem('userID');
-    console.log(userID);
-
+    const [deficiencies, setDeficiencies] = useState([]);
+    const basicScreeningPkId = localStorage.getItem("basicScreeningId");
+    const accessToken = localStorage.getItem("token");
+    const userID = localStorage.getItem("userID");
     const Port = process.env.REACT_APP_API_KEY;
 
     useEffect(() => {
@@ -44,12 +42,12 @@ const Difieciency = ({ pkid, onAcceptClick, citizensPkId, selectedTab, subVitalL
                 const response = await axios.get(`${Port}/Screening/deficiencies/`, {
                     headers: {
                         Authorization: `Bearer ${accessToken}`,
-                        'Content-Type': 'application/json',
+                        "Content-Type": "application/json",
                     },
                 });
                 setDeficiencies(response.data);
             } catch (error) {
-                console.error('Error fetching data:', error);
+                console.error("Error fetching data:", error);
             }
         };
 
@@ -60,7 +58,7 @@ const Difieciency = ({ pkid, onAcceptClick, citizensPkId, selectedTab, subVitalL
         checkboxes: new Array(deficiencies.length).fill(0),
         selectedNames: [],
         citizen_pk_id: citizensPkId,
-        modify_by: userID
+        modify_by: userID,
     });
 
     const handleCheckboxChange = (index) => {
@@ -74,29 +72,31 @@ const Difieciency = ({ pkid, onAcceptClick, citizensPkId, selectedTab, subVitalL
         setFormData({
             ...formData,
             checkboxes: updatedCheckboxes,
-            selectedNames: selectedNames, 
+            selectedNames: selectedNames,
         });
     };
 
     useEffect(() => {
         const fetchDataById = async (pkid) => {
             try {
-                const response = await fetch(`${Port}/Screening/citizen_basic_screening_info_get/${pkid}/`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Authorization: `Bearer ${accessToken}`,
-                    },
-                });
+                const response = await fetch(
+                    `${Port}/Screening/citizen_basic_screening_info_get/${pkid}/`,
+                    {
+                        method: "GET",
+                        headers: {
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${accessToken}`,
+                        },
+                    }
+                );
 
                 if (response.ok) {
                     const data = await response.json();
-
                     if (Array.isArray(data) && data.length > 0) {
                         const screeningInfo = data[0];
                         const difeciencyData = screeningInfo.deficiencies || [];
 
-                        const initialCheckboxes = deficiencies.map(item =>
+                        const initialCheckboxes = deficiencies.map((item) =>
                             difeciencyData.includes(item.deficiencies)
                         );
 
@@ -106,13 +106,13 @@ const Difieciency = ({ pkid, onAcceptClick, citizensPkId, selectedTab, subVitalL
                             selectedNames: difeciencyData,
                         }));
                     } else {
-                        console.error('Empty or invalid data array.');
+                        console.error("Empty or invalid data array.");
                     }
                 } else {
-                    console.error('Server Error:', response.status, response.statusText);
+                    console.error("Server Error:", response.status, response.statusText);
                 }
             } catch (error) {
-                console.error('Error fetching data:', error.message);
+                console.error("Error fetching data:", error.message);
             }
         };
 
@@ -126,7 +126,7 @@ const Difieciency = ({ pkid, onAcceptClick, citizensPkId, selectedTab, subVitalL
         };
 
         try {
-            const accessToken = localStorage.getItem('token');
+            const accessToken = localStorage.getItem("token");
 
             const response = await axios.put(
                 `${Port}/Screening/deficiencies/${basicScreeningPkId}/`,
@@ -134,70 +134,77 @@ const Difieciency = ({ pkid, onAcceptClick, citizensPkId, selectedTab, subVitalL
                 {
                     headers: {
                         Authorization: `Bearer ${accessToken}`,
-                        'Content-Type': 'application/json',
+                        "Content-Type": "application/json",
                     },
                 }
             );
 
-            if (window.confirm('Submit Deficiencies Form') && response.status === 200) {
+            if (window.confirm("Submit Deficiencies Form") && response.status === 200) {
                 const responseData = response.data;
                 const basicScreeningPkId = responseData.basic_screening_pk_id;
-                console.log('Deficiency Form Submitted Successfully');
-
-                console.log('Skin Condition', basicScreeningPkId);
+                console.log("Deficiency Form Submitted Successfully");
                 onAcceptClick(nextName, basicScreeningPkId);
             } else if (response.status === 400) {
-                console.error('Bad Request:', response.data);
+                console.error("Bad Request:", response.data);
             } else {
-                console.error('Unhandled Status Code:', response.status);
+                console.error("Unhandled Status Code:", response.status);
             }
         } catch (error) {
-            console.error('Error posting data:', error);
+            console.error("Error posting data:", error);
         }
     };
 
     return (
-        <div>
-            <h5 className="vitaltitlebasicscreen">Deficiencies</h5>
-            <div className="elementvital"></div>
+        <Box>
+            <Typography
+                variant="h6"
+                sx={{ fontWeight: "bold", mb: 1, color: "#333", fontSize: '17px' }}
+            >
+                Deficiencies
+            </Typography>
 
-            <form onSubmit={handleSubmit}>
-                <div className="row ml-1">
-                    {/* {deficiencies.map((item) => (
-                        <div key={item.id} className="col-md-4">
-                            <div className="form-check">
-                                <input className="form-check-input mt-2" type="checkbox" value={item.value} id={`flexCheck-${item.deficiencies_id}`} />
-                                <label className="form-check-label basicscreeenlabel" htmlFor={`flexCheck-${item.deficiencies_id}`}>
-                                    {item.deficiencies}
-                                </label>
-                            </div>
-                        </div>
-                    ))} */}
-
+            <Box component="form" onSubmit={handleSubmit}>
+                <Grid container>
                     {deficiencies.map((item, index) => (
-                        <div key={item.id} className="col-md-4">
-                            <div className="form-check">
-
-                                <input
-                                    className="form-check-input"
-                                    type="checkbox"
-                                    checked={formData.checkboxes[index]}
-                                    onChange={() => handleCheckboxChange(index)}
-                                />
-                                <label className="form-check-label basicscreeenlabel" htmlFor={`flexCheck-${item.deficiencies_id}`}>
-                                    {item.deficiencies}
-                                </label>
-                            </div>
-                        </div>
+                        <Grid item xs={12} sm={6} md={4} key={item.id}>
+                            <FormControlLabel
+                                control={
+                                    <Checkbox
+                                        checked={formData.checkboxes[index]}
+                                        onChange={() => handleCheckboxChange(index)}
+                                        color="primary"
+                                        sx={{
+                                            color: '#1976d2',
+                                            '&.Mui-checked': {
+                                                color: '#1976d2',
+                                            },
+                                        }}
+                                    />
+                                }
+                                label={item.deficiencies}
+                                sx={{
+                                    "& .MuiFormControlLabel-label": {
+                                        fontSize: "0.9rem",
+                                        color: "#000",
+                                    },
+                                }}
+                            />
+                        </Grid>
                     ))}
-                </div>
+                </Grid>
+                <Box textAlign="center" mt={1} mb={2}>
+                    <Button
+                        variant="contained"
+                        size="small"
+                        sx={{ bgcolor: "#1439A4", textTransform: "none" }}
+                        onClick={handleSubmit}
+                    >
+                        Submit
+                    </Button>
+                </Box>
+            </Box>
+        </Box>
+    );
+};
 
-                <div>
-                    <button type="submit" className="btn btn-sm generalexambutton">Submit</button>
-                </div>
-            </form>
-        </div>
-    )
-}
-
-export default Difieciency
+export default Difieciency;

@@ -23,9 +23,15 @@ import {
     TableContainer,
     TablePagination,
     Paper,
+    Menu,
     MenuItem,
-    CardContent
+    CardContent,
+    ListItemText,
+    ListItemIcon
 } from "@mui/material";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import ReplayOutlinedIcon from "@mui/icons-material/ReplayOutlined";
+import PlayArrowOutlinedIcon from "@mui/icons-material/PlayArrowOutlined";
 
 const Citizenlist = () => {
     //permission code start
@@ -400,6 +406,21 @@ const Citizenlist = () => {
         fetchDivision()
     }, [])
 
+    const [anchorEl, setAnchorEl] = useState(null);
+    const open = Boolean(anchorEl);
+
+    const handleMenuOpen = (event) => {
+        setAnchorEl(event.currentTarget);
+    };
+    const handleMenuClose = () => {
+        setAnchorEl(null);
+    };
+
+    // const handleDeleteClick = (citizenId) => {
+    //     console.log("Delete citizen:", citizenId);
+    //     handleMenuClose();
+    // };
+
     return (
         <div>
             <Card
@@ -411,25 +432,51 @@ const Citizenlist = () => {
                     m: "0.1em 1em 0 4.5em",
                 }}
             >
-                <Typography
-                    variant="h6"
+                <Box
                     sx={{
-                        mb: 2,
-                        fontWeight: 600,
-                        color: "#1A237E",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        mb: 1,
                     }}
                 >
-                    Search Citizen
-                </Typography>
+                    <Typography
+                        variant="h6"
+                        sx={{
+                            fontWeight: 500,
+                            color: "#1A237E",
+                            fontFamily: "Roboto",
+                        }}
+                    >
+                        Search Citizen
+                    </Typography>
+
+                    {canAddCitizen && (
+                        <Link
+                            to="/mainscreen/Citizenheader"
+                            style={{ textDecoration: "none" }}
+                        >
+                            <IconButton
+                                sx={{
+                                    background: "rgba(10, 112, 183, 1)",
+                                    color: "white",
+                                    mr: 1,
+                                    "&:hover": { backgroundColor: "rgba(10, 112, 183, 1)" },
+                                }}
+                            >
+                                <PersonAddAltIcon />
+                            </IconButton>
+                        </Link>
+                    )}
+                </Box>
 
                 <Grid
                     container
                     spacing={2}
-                    alignItems="center"
-                    justifyContent="center"
+                    alignItems="left"
+                    justifyContent="left"
                 >
-                    {/* Age */}
-                    <Grid item xs={12} sm={6} md="auto">
+                    {/* <Grid item xs={12} sm={6} md="auto">
                         <TextField
                             select
                             size="small"
@@ -437,7 +484,7 @@ const Citizenlist = () => {
                             value={selectedAge}
                             onChange={(e) => setSelectedAge(e.target.value)}
                             sx={{
-                                minWidth: 150,
+                                minWidth: 200,
                                 "& .MuiInputBase-input.MuiSelect-select": {
                                     color: "#000 !important",
                                 },
@@ -453,9 +500,8 @@ const Citizenlist = () => {
                                 </MenuItem>
                             ))}
                         </TextField>
-                    </Grid>
+                    </Grid> */}
 
-                    {/* Gender */}
                     <Grid item xs={12} sm={6} md="auto">
                         <TextField
                             select
@@ -464,7 +510,7 @@ const Citizenlist = () => {
                             value={selectedGender}
                             onChange={(e) => setSelectedGender(e.target.value)}
                             sx={{
-                                minWidth: 150,
+                                minWidth: 200,
                                 "& .MuiInputBase-input.MuiSelect-select": {
                                     color: "#000 !important",
                                 },
@@ -482,16 +528,15 @@ const Citizenlist = () => {
                         </TextField>
                     </Grid>
 
-                    {/* Source */}
-                    <Grid item xs={12} sm={6} md="auto">
+                    {/* <Grid item xs={12} sm={6} md="auto">
                         <TextField
                             select
                             size="small"
-                            label="Source"
+                            label="Workshop"
                             value={selectedSource}
                             onChange={(e) => setSelectedSource(e.target.value)}
                             sx={{
-                                minWidth: 150,
+                                minWidth: 200,
                                 "& .MuiInputBase-input.MuiSelect-select": {
                                     color: "#000 !important",
                                 },
@@ -507,18 +552,17 @@ const Citizenlist = () => {
                                 </MenuItem>
                             ))}
                         </TextField>
-                    </Grid>
+                    </Grid> */}
 
-                    {/* Type */}
                     <Grid item xs={12} sm={6} md="auto">
                         <TextField
                             select
                             size="small"
-                            label="Type"
+                            label="Category"
                             value={selectedScheduleType}
                             onChange={(e) => setSelectedScheduleType(e.target.value)}
                             sx={{
-                                minWidth: 150,
+                                minWidth: 200,
                                 "& .MuiInputBase-input.MuiSelect-select": {
                                     color: "#000 !important",
                                 },
@@ -527,7 +571,7 @@ const Citizenlist = () => {
                                 },
                             }}
                         >
-                            <MenuItem value="">Select Type</MenuItem>
+                            <MenuItem value="">Select Category</MenuItem>
                             {screeningFor.map((drop) => (
                                 <MenuItem key={drop.type_id} value={drop.type_id}>
                                     {drop.type}
@@ -536,8 +580,24 @@ const Citizenlist = () => {
                         </TextField>
                     </Grid>
 
-                    {/* Disease */}
                     <Grid item xs={12} sm={6} md="auto">
+                        <TextField
+                            label="Citizen ID"
+                            placeholder="Enter Citizen ID"
+                            size="small"
+                            // value={citizenId}
+                            // onChange={(e) => setCitizenId(e.target.value)}
+                            sx={{
+                                minWidth: 200,
+                                "& .MuiInputBase-input": {
+                                    color: "#000",
+                                },
+                            }}
+                        />
+                    </Grid>
+
+
+                    {/* <Grid item xs={12} sm={6} md="auto">
                         <TextField
                             select
                             size="small"
@@ -545,7 +605,7 @@ const Citizenlist = () => {
                             value={selectedDisease}
                             onChange={(e) => setSelectedDisease(e.target.value)}
                             sx={{
-                                minWidth: 150,
+                                minWidth: 200,
                                 "& .MuiInputBase-input.MuiSelect-select": {
                                     color: "#000 !important",
                                 },
@@ -561,46 +621,28 @@ const Citizenlist = () => {
                                 </MenuItem>
                             ))}
                         </TextField>
-                    </Grid>
+                    </Grid> */}
 
-                    {/* Search Button */}
                     <Grid item xs={12} sm={6} md="auto">
                         <Button
                             variant="contained"
                             size="small"
                             onClick={handlesubmit}
                             sx={{
-                                background: "linear-gradient(90deg, #2FB3F5 0%, #1439A4 100%)",
+                                background: "rgba(10, 112, 183, 1)",
                                 color: "white",
                                 textTransform: "none",
                                 fontWeight: 500,
                                 px: 3,
                                 "&:hover": {
                                     background:
-                                        "linear-gradient(90deg, #2FB3F5 0%, #1439A4 100%)",
+                                        "rgba(10, 112, 183, 1)",
                                 },
                             }}
                         >
                             Search
                         </Button>
                     </Grid>
-
-                    {/* Add Citizen Button */}
-                    {canAddCitizen && (
-                        <Grid item xs={12} sm={6} md="auto">
-                            <Link to="/mainscreen/Citizenheader" style={{ textDecoration: "none" }}>
-                                <IconButton
-                                    sx={{
-                                        backgroundColor: "#1976D2",
-                                        color: "white",
-                                        "&:hover": { backgroundColor: "#1565C0" },
-                                    }}
-                                >
-                                    <PersonAddAltIcon />
-                                </IconButton>
-                            </Link>
-                        </Grid>
-                    )}
                 </Grid>
             </Card>
 
@@ -677,21 +719,19 @@ const Citizenlist = () => {
                         <TableHead
                             sx={{
                                 background: "linear-gradient(90deg, #2FB3F5 0%, #1439A4 100%)",
-                                mb: 2, // ✅ margin bottom added after header
                             }}
                         >
                             <TableRow
                                 sx={{
                                     background: "linear-gradient(90deg, #2FB3F5 0%, #1439A4 100%)",
-                                    height: "40px",
-                                    marginBottom: "35px",
+                                    height: "45px",
                                     "& th": {
                                         color: "white",
                                         fontWeight: 600,
                                         fontSize: "0.8rem",
                                         border: "none",
                                         py: 0.5,
-                                        px: 1,
+                                        px: 5,
                                     },
                                     "& th:first-of-type": {
                                         borderTopLeftRadius: "40px",
@@ -703,12 +743,12 @@ const Citizenlist = () => {
                                     },
                                 }}
                             >
-                                <TableCell>Sr No.</TableCell>
-                                <TableCell>Citizen Name</TableCell>
-                                <TableCell>Age</TableCell>
-                                <TableCell>Source Name</TableCell>
-                                <TableCell>Added By</TableCell>
-                                <TableCell>Action</TableCell>
+                                <TableCell sx={{ flex: 0.5 }}>Sr No.</TableCell>
+                                <TableCell sx={{ flex: 2 }}>Citizen Name</TableCell>
+                                <TableCell sx={{ flex: 1 }}>Age</TableCell>
+                                <TableCell sx={{ flex: 2 }}>Workshop Name</TableCell>
+                                <TableCell sx={{ flex: 1.5 }}>Added By</TableCell>
+                                <TableCell sx={{ flex: 1 }}>Action</TableCell>
                             </TableRow>
                         </TableHead>
 
@@ -735,99 +775,124 @@ const Citizenlist = () => {
                                             <TableRow
                                                 key={data.citizens_pk_id}
                                                 sx={{
-                                                    height: "25px",
-                                                    "& td": {
-                                                        py: 0.4,
-                                                        fontSize: "15px", // ✅ increased font size
-                                                        verticalAlign: "middle", // ✅ align vertically
-                                                    },
+                                                    height: "45px",
+                                                    "& td": { border: "none", p: 0.5 },
                                                 }}
                                             >
-                                                <TableCell colSpan={6} sx={{ border: "none", p: 0.5 }}>
+                                                <TableCell colSpan={6}>
                                                     <Card
                                                         sx={{
-                                                            borderRadius: 2,
+                                                            borderRadius: "20px",
                                                             boxShadow: 2,
                                                             "&:hover": { boxShadow: 4 },
                                                             transition: "0.3s",
+                                                            mt: 1,
+                                                            height: "45px",
                                                         }}
                                                     >
                                                         <CardContent
                                                             sx={{
-                                                                p: 1,
-                                                                height: "45px",
-                                                                display: "flex", // ✅ align items in one line
+                                                                display: "flex",
                                                                 alignItems: "center",
                                                                 justifyContent: "space-between",
+                                                                textAlign: "center",
+                                                                height: "100%",
+                                                                py: 3,
                                                             }}
                                                         >
-                                                            <Table size="small" sx={{ width: "100%" }}>
-                                                                <TableBody
-                                                                    sx={{
-                                                                        "& td, & th": {
-                                                                            borderBottom: "none",
-                                                                            fontSize: "13px", 
-                                                                            verticalAlign: "middle",
+                                                            <Box sx={{ flex: 0.5 }}>{serialNumber}</Box>
+                                                            <Box sx={{ flex: 2 }}>{data.name || "-"}</Box>
+                                                            <Box sx={{ flex: 1 }}>
+                                                                {data.year ? `${data.year} Year` : "-"}
+                                                            </Box>
+                                                            <Box sx={{ flex: 2 }}>{data.source_name_name || "-"}</Box>
+                                                            <Box sx={{ flex: 1.5 }}>
+                                                                {data.added_by ? data.added_by.clg_ref_id : "-"}
+                                                            </Box>
+                                                            <Box sx={{ flex: 1, display: "flex", justifyContent: "center" }}>
+                                                                <IconButton onClick={handleMenuOpen}>
+                                                                    <MoreVertIcon sx={{ color: "#1565C0" }} />
+                                                                </IconButton>
+
+                                                                <Menu
+                                                                    anchorEl={anchorEl}
+                                                                    open={open}
+                                                                    onClose={handleMenuClose}
+                                                                    anchorOrigin={{
+                                                                        vertical: "top",
+                                                                        horizontal: "right",
+                                                                    }}
+                                                                    transformOrigin={{
+                                                                        vertical: "top",
+                                                                        horizontal: "left",
+                                                                    }}
+                                                                    PaperProps={{
+                                                                        sx: {
+                                                                            borderRadius: 2,
+                                                                            boxShadow: 3,
+                                                                            minWidth: 180,
                                                                         },
                                                                     }}
                                                                 >
-                                                                    <TableRow>
-                                                                        <TableCell sx={{ width: "5%" }}>{serialNumber}</TableCell>
-                                                                        <TableCell sx={{ width: "25%" }}>{data.name || "-"}</TableCell>
-                                                                        <TableCell sx={{ width: "10%" }}>
-                                                                            {data.year ? `${data.year} Year` : "-"}
-                                                                        </TableCell>
-                                                                        <TableCell sx={{ width: "25%" }}>
-                                                                            {data.source_name_name || "-"}
-                                                                        </TableCell>
-                                                                        <TableCell sx={{ width: "15%" }}>
-                                                                            {data.added_by ? data.added_by.clg_ref_id : "-"}
-                                                                        </TableCell>
-                                                                        <TableCell sx={{ width: "15%" }}>
-                                                                            {canEdit && (
-                                                                                <Link
-                                                                                    to={`/mainscreen/updatecitizen/${data.citizens_pk_id}/${data.source}`}
-                                                                                >
-                                                                                    <DriveFileRenameOutlineOutlinedIcon
-                                                                                        sx={{
-                                                                                            color: "#1565C0",
-                                                                                            cursor: "pointer",
-                                                                                            mr: 1,
-                                                                                            fontSize: 18,
-                                                                                        }}
-                                                                                    />
-                                                                                </Link>
-                                                                            )}
-                                                                            {canView && (
-                                                                                <Link
-                                                                                    to={`/mainscreen/viewcitizen/${data.citizens_pk_id}/${data.source}`}
-                                                                                >
-                                                                                    <RemoveRedEyeOutlinedIcon
-                                                                                        sx={{
-                                                                                            color: "#1976D2",
-                                                                                            cursor: "pointer",
-                                                                                            mr: 1,
-                                                                                            fontSize: 18,
-                                                                                        }}
-                                                                                    />
-                                                                                </Link>
-                                                                            )}
-                                                                            {canDelete && (
-                                                                                <DeleteOutlineOutlinedIcon
-                                                                                    onClick={() =>
-                                                                                        handleDeleteClick(data.citizens_pk_id)
-                                                                                    }
-                                                                                    sx={{
-                                                                                        color: "#D32F2F",
-                                                                                        cursor: "pointer",
-                                                                                        fontSize: 18,
-                                                                                    }}
-                                                                                />
-                                                                            )}
-                                                                        </TableCell>
-                                                                    </TableRow>
-                                                                </TableBody>
-                                                            </Table>
+                                                                    {canEdit && (
+                                                                        <MenuItem
+                                                                            component={Link}
+                                                                            to={`/mainscreen/updatecitizen/${data.citizens_pk_id}/${data.source}`}
+                                                                            onClick={handleMenuClose}
+                                                                        >
+                                                                            <ListItemIcon>
+                                                                                <DriveFileRenameOutlineOutlinedIcon sx={{ color: "#1565C0" }} />
+                                                                            </ListItemIcon>
+                                                                            <ListItemText primary="Edit Citizen" />
+                                                                        </MenuItem>
+                                                                    )}
+
+                                                                    {canView && (
+                                                                        <MenuItem
+                                                                            component={Link}
+                                                                            to={`/mainscreen/viewcitizen/${data.citizens_pk_id}/${data.source}`}
+                                                                            onClick={handleMenuClose}
+                                                                        >
+                                                                            <ListItemIcon>
+                                                                                <RemoveRedEyeOutlinedIcon sx={{ color: "#1976D2" }} />
+                                                                            </ListItemIcon>
+                                                                            <ListItemText primary="View Citizen" />
+                                                                        </MenuItem>
+                                                                    )}
+
+                                                                    {canDelete && (
+                                                                        <MenuItem onClick={() => handleDeleteClick(data.citizens_pk_id)}>
+                                                                            <ListItemIcon>
+                                                                                <DeleteOutlineOutlinedIcon sx={{ color: "#D32F2F" }} />
+                                                                            </ListItemIcon>
+                                                                            <ListItemText primary="Delete Citizen" />
+                                                                        </MenuItem>
+                                                                    )}
+
+                                                                    <MenuItem
+                                                                        component={Link}
+                                                                        to={`/mainscreen/previousscreening/${data.citizens_pk_id}/${data.source}`}
+                                                                        onClick={handleMenuClose}
+                                                                    >
+                                                                        <ListItemIcon>
+                                                                            <ReplayOutlinedIcon sx={{ color: "#00796B" }} />
+                                                                        </ListItemIcon>
+                                                                        <ListItemText primary="Previous Screening" />
+                                                                    </MenuItem>
+
+                                                                    <MenuItem
+                                                                        component={Link}
+                                                                        // to={`/mainscreen/body/${data.citizens_pk_id}/${data.source}`}
+                                                                        to={`/mainscreen/body`}
+                                                                        onClick={handleMenuClose}
+                                                                    >
+                                                                        <ListItemIcon>
+                                                                            <PlayArrowOutlinedIcon sx={{ color: "#2E7D32" }} />
+                                                                        </ListItemIcon>
+                                                                        <ListItemText primary="Start Screening" />
+                                                                    </MenuItem>
+                                                                </Menu>
+                                                            </Box>
                                                         </CardContent>
                                                     </Card>
                                                 </TableCell>

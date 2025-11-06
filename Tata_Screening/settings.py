@@ -30,7 +30,7 @@ SECRET_KEY = 'django-insecure-dwj!p-%7ek35&xmov#ct__719pxl16qhwnv&s$pr3_)a0(n5s5
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['192.168.1.21', 'localhost', '127.0.0.1']
 AUTH_KEY = 'c27d7fa6-292c-4534-8dc4-a0dd28e7d7e3'
 
 # Application definition
@@ -43,18 +43,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-
-
+    'rest_framework_simplejwt',
+    'rest_framework_simplejwt.token_blacklist',
+    
+    'import_export',
     'corsheaders',  
-
     'rest_framework',
     'Screening',
 
-    'import_export',
-    
-    # Login 
-    'rest_framework_simplejwt',
-    'rest_framework_simplejwt.token_blacklist',
 
 ]
 
@@ -66,14 +62,11 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-
     
     'corsheaders.middleware.CorsMiddleware',
 
-    # 'corsheaders.middleware.CorsMiddleware,
-    # 'django.middleware.common.CommonMiddleware',
-
 ]
+
 
 
 ROOT_URLCONF = 'Tata_Screening.urls'
@@ -81,7 +74,9 @@ ROOT_URLCONF = 'Tata_Screening.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+                    os.path.join(BASE_DIR,'screening_client/build')
+                ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -117,8 +112,8 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'Tata_Screening',
         'USER': 'postgres',
-        'PASSWORD': 'postgres',
-        'HOST': '192.168.1.109',
+        'PASSWORD': 'postgress',
+        'HOST': '192.168.1.21',
         'PORT': '5432',  # Default PostgreSQL port
         'OPTIONS': {
             'options': '-c timezone=Asia/Kolkata',
@@ -140,8 +135,11 @@ DATABASES = {
 # }
 
 
-
-
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    )
+}
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators
 
@@ -176,13 +174,19 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
-STATIC_URL = 'static/'
-
+STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR,'screening_client/build/static')
+]
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # AUTHENTICATION_BACKENDS = ['Screening.backends.CustomBackend']
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
 
 
@@ -192,8 +196,8 @@ AUTH_USER_MODEL = 'Screening.agg_com_colleague'
 
 SIMPLE_JWT = {
     # "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
-    "ACCESS_TOKEN_LIFETIME": timedelta(days=90),
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=90),
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=1),
 
 
     "AUTH_HEADER_TYPES": ("Bearer",),
@@ -219,11 +223,33 @@ SIMPLE_JWT = {
 
 
 DATE_INPUT_FORMATS = ['%d-%m-%Y %H:%M:%S']
-CORS_ORIGIN_ALLOW_ALL = True
+CORS_ORIGIN_ALLOW_ALL = False
 CORS_ORIGIN_WHITELIST = (
-  'http://localhost:8000',
+  'http://192.168.1.21:8000',
+  'http://localhost:3000',
+  'http://localhost:3001',
+  'http://localhost:3002',
+  'http://localhost:3003',
 )
+CORS_ALLOWED_ORIGINS = [
+    "http://192.168.1.21:3000",
+    "http://192.168.1.21:8000",
+    "http://localhost:3000",
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+]
 
+CSRF_TRUSTED_ORIGINS = [
+    "http://192.168.1.21",
+    "http://192.168.1.21:8000",
+    "http://localhost",
+    "http://localhost:8000",
+    "http://127.0.0.1",
+    "http://127.0.0.1:8000",
+]
 
+CSRF_COOKIE_SECURE = False
+SESSION_COOKIE_SECURE = False
+CORS_ALLOW_CREDENTIALS = True
 
-
+CORS_ALLOW_ALL_ORIGINS = True

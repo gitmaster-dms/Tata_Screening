@@ -1,45 +1,49 @@
-import React, { useState, useEffect } from 'react'
-import axios from 'axios'
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import {
+    Box,
+    Grid,
+    Typography,
+    Checkbox,
+    FormGroup,
+    FormControlLabel,
+    Button,
+    Paper,
+} from '@mui/material';
 
 const Childhood = ({ pkid, onAcceptClick, citizensPkId, selectedTab, subVitalList }) => {
-
-    //_________________________________START
-    console.log(selectedTab, 'Present name');
-    console.log(subVitalList, 'Overall GET API');
     const [nextName, setNextName] = useState('');
+    const [childhoodData, setChildhoodData] = useState([]);
+    const [formData, setFormData] = useState({
+        checkboxes: [],
+        selectedNames: [],
+        citizen_pk_id: citizensPkId,
+        modify_by: localStorage.getItem('userID'),
+    });
 
+    const Port = process.env.REACT_APP_API_KEY;
+    const accessToken = localStorage.getItem('token');
+    const basicScreeningPkId = localStorage.getItem('basicScreeningId');
+    const userID = localStorage.getItem('userID');
+
+    // 🔹 Handle finding next screen/tab
     useEffect(() => {
         if (subVitalList && selectedTab) {
-            const currentIndex = subVitalList.findIndex(item => item.screening_list === selectedTab);
-
-            console.log('Current Index:', currentIndex);
+            const currentIndex = subVitalList.findIndex(
+                (item) => item.screening_list === selectedTab
+            );
 
             if (currentIndex !== -1 && currentIndex < subVitalList.length - 1) {
-                const nextItem = subVitalList[currentIndex + 1];
-                const nextName = nextItem.screening_list;
-                setNextName(nextName);
-                console.log('Next Name Set:', nextName);
+                setNextName(subVitalList[currentIndex + 1].screening_list);
             } else {
                 setNextName('');
-                console.log('No next item or selectedTab not found');
             }
         }
     }, [selectedTab, subVitalList]);
-    //_________________________________END
 
-    const Port = process.env.REACT_APP_API_KEY;
-    // console.log('Child Hoodddddddddddd:', basicScreeningPkId);
-    const userID = localStorage.getItem('userID');
-    console.log(userID);
-    const accessToken = localStorage.getItem('token');
-
-    const basicScreeningPkId = localStorage.getItem('basicScreeningId');
-    console.log('Retrieved Basic Id from Local Storage:', basicScreeningPkId);
-
-    const [childhoodData, setChildhoodData] = useState([]);
-
+    // 🔹 Fetch childhood disease options
     useEffect(() => {
-        const fetchchildData = async () => {
+        const fetchChildhoodData = async () => {
             try {
                 const response = await axios.get(`${Port}/Screening/childhood_disease/`, {
                     headers: {
@@ -48,43 +52,36 @@ const Childhood = ({ pkid, onAcceptClick, citizensPkId, selectedTab, subVitalLis
                     },
                 });
                 setChildhoodData(response.data);
-                console.log(response.data, "kkkkkkkkkkkkkk");
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
         };
+        fetchChildhoodData();
+    }, [Port, accessToken]);
 
-        fetchchildData();
-    }, []);
-
-    const [formData, setFormData] = useState({
-        checkboxes: new Array(childhoodData.length).fill(0),
-        selectedNames: [],
-        citizen_pk_id: citizensPkId,
-        modify_by: userID
-    });
-
+    // 🔹 Checkbox selection logic
     const handleCheckboxChange = (index) => {
         const updatedCheckboxes = [...formData.checkboxes];
         updatedCheckboxes[index] = !updatedCheckboxes[index];
 
         const selectedNames = childhoodData
-            .filter((item, i) => updatedCheckboxes[i])
+            .filter((_, i) => updatedCheckboxes[i])
             .map((item) => item.childhood_disease);
 
         setFormData({
             ...formData,
             checkboxes: updatedCheckboxes,
-            selectedNames: selectedNames, // Add this line to store selected names in formData
+            selectedNames,
         });
     };
 
+    // 🔹 Submit form
     const handleSubmit = async (e) => {
         e.preventDefault();
         const postData = {
             childhood_disease: formData.selectedNames,
         };
-        console.log(postData, "postData");
+
         try {
             const response = await axios.put(
                 `${Port}/Screening/childhood_disease/${basicScreeningPkId}/`,
@@ -96,15 +93,13 @@ const Childhood = ({ pkid, onAcceptClick, citizensPkId, selectedTab, subVitalLis
                     },
                 }
             );
+
             if (window.confirm('Submit Childhood Disease Form') && response.status === 200) {
                 const responseData = response.data;
                 const basicScreeningPkId = responseData.basic_screening_pk_id;
-                console.log('Form Submitted Successfully');
-
-                console.log('Deficiencies:', basicScreeningPkId);
                 onAcceptClick(nextName, basicScreeningPkId);
             } else if (response.status === 400) {
-                console.error('Bad Request:');
+                console.error('Bad Request');
             } else {
                 console.error('Unhandled Status Code:', response.status);
             }
@@ -113,16 +108,20 @@ const Childhood = ({ pkid, onAcceptClick, citizensPkId, selectedTab, subVitalLis
         }
     };
 
+    // 🔹 Fetch selected values by pkid
     useEffect(() => {
         const fetchDataById = async (pkid) => {
             try {
-                const response = await fetch(`${Port}/Screening/citizen_basic_screening_info_get/${pkid}/`, {
-                    method: 'GET',
-                    headers: {
-                        Authorization: `Bearer ${accessToken}`,
-                        'Content-Type': 'application/json',
-                    },
-                });
+                const response = await fetch(
+                    `${Port}/Screening/citizen_basic_screening_info_get/${pkid}/`,
+                    {
+                        method: 'GET',
+                        headers: {
+                            Authorization: `Bearer ${accessToken}`,
+                            'Content-Type': 'application/json',
+                        },
+                    }
+                );
 
                 if (response.ok) {
                     const data = await response.json();
@@ -131,7 +130,7 @@ const Childhood = ({ pkid, onAcceptClick, citizensPkId, selectedTab, subVitalLis
                         const screeningInfo = data[0];
                         const childHoodDisease = screeningInfo.childhood_disease || [];
 
-                        const initialCheckboxes = childhoodData.map(item =>
+                        const initialCheckboxes = childhoodData.map((item) =>
                             childHoodDisease.includes(item.childhood_disease)
                         );
 
@@ -140,50 +139,87 @@ const Childhood = ({ pkid, onAcceptClick, citizensPkId, selectedTab, subVitalLis
                             checkboxes: initialCheckboxes,
                             selectedNames: childHoodDisease,
                         }));
-                    } else {
-                        console.error('Empty or invalid data array.');
                     }
                 } else {
-                    console.error('Server Error:', response.status, response.statusText);
+                    console.error('Server Error:', response.status);
                 }
             } catch (error) {
-                console.error('Error fetching data:', error.message);
+                console.error('Error fetching data:', error);
             }
         };
 
-        fetchDataById(pkid);
-    }, [pkid, childhoodData]);
+        if (pkid) fetchDataById(pkid);
+    }, [pkid, childhoodData, Port, accessToken]);
 
     return (
-        <div>
-            <h5 className="vitaltitlebasicscreen">Childhood disease</h5>
-            <div className="elementvital"></div>
+        <Box
+            sx={{
+                borderRadius: 3,
+                bgcolor: '#fff',
+            }}
+        >
+            <Typography
+                variant="h6"
+                sx={{
+                    mb: 2,
+                    fontWeight: 'bold',
+                    fontSize: '17px'
+                }}
+            >
+                Childhood Disease
+            </Typography>
 
-            <form>
-                <div className="row ml-1">
+            <Box component="form" onSubmit={handleSubmit}>
+                <Grid container>
                     {childhoodData.map((item, index) => (
-                        <div key={item.id} className="col-md-4">
-                            <div className="form-check">
-
-                                <input
-                                    className="form-check-input"
-                                    type="checkbox"
-                                    checked={formData.checkboxes[index]}
-                                    onChange={() => handleCheckboxChange(index)}
+                        <Grid item xs={12} sm={6} md={4} key={item.id}>
+                            <FormGroup>
+                                <FormControlLabel
+                                    control={
+                                        <Checkbox
+                                            checked={!!formData.checkboxes[index]}
+                                            onChange={() => handleCheckboxChange(index)}
+                                            sx={{
+                                                color: '#1976d2',
+                                                '&.Mui-checked': {
+                                                    color: '#1976d2',
+                                                },
+                                            }}
+                                        />
+                                    }
+                                    label={
+                                        <Typography variant="body2" color="textPrimary">
+                                            {item.childhood_disease}
+                                        </Typography>
+                                    }
                                 />
-                                <label className="form-check-label basicscreeenlabel" htmlFor={`flexCheck-${item.childhood_disease_id}`}>
-                                    {item.childhood_disease}
-                                </label>
-                            </div>
-                        </div>
+                            </FormGroup>
+                        </Grid>
                     ))}
-                </div>
-                <div>
-                    <button type="button" className="btn btn-sm generalexambutton" onClick={handleSubmit}>Submit</button>
-                </div>
-            </form>
-        </div>
-    )
-}
+                </Grid>
 
-export default Childhood
+                <Box textAlign="center" mt={3}>
+                    <Button
+                        type="submit"
+                        variant="contained"
+                        size="small"
+                        sx={{
+                            bgcolor: '#1976d2',
+                            color: '#fff',
+                            '&:hover': {
+                                bgcolor: '#1976d2',
+                            },
+                            textTransform: 'none',
+                            borderRadius: 2,
+                            px: 3,
+                        }}
+                    >
+                        Submit
+                    </Button>
+                </Box>
+            </Box>
+        </Box>
+    );
+};
+
+export default Childhood;

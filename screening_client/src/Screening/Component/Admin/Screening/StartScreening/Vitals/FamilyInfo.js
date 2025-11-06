@@ -1,540 +1,330 @@
-import React, { useState, useEffect } from 'react'
-import './FamilyInfo.css'
+import React, { useState, useEffect } from "react";
+import {
+    Grid,
+    Card,
+    Typography,
+    TextField,
+    Select,
+    MenuItem,
+    Button,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
+    Snackbar,
+    Alert,
+} from "@mui/material";
 
 const FamilyInfo = ({ citizensPkId, pkid, fetchVital, selectedName, onAcceptClick }) => {
+    const [nextName, setNextName] = useState("");
+    const [updateId, setUpdateId] = useState("");
+    const [familyData, setFamilyData] = useState({});
+    const [openConfirm, setOpenConfirm] = useState(false);
+    const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" });
 
-    //_________________________________START
-    console.log(selectedName, 'Present name');
-    console.log(fetchVital, 'Overall GET API');
-    const [nextName, setNextName] = useState('');
+    const userID = localStorage.getItem("userID");
+    const accessToken = localStorage.getItem("token");
+    const source = localStorage.getItem("source");
+    const Port = process.env.REACT_APP_API_KEY;
 
+    // get next name logic
     useEffect(() => {
         if (fetchVital && selectedName) {
-            const currentIndex = fetchVital.findIndex(item => item.screening_list === selectedName);
-
-            console.log('Current Indexxxx:', currentIndex);
-
+            const currentIndex = fetchVital.findIndex((item) => item.screening_list === selectedName);
             if (currentIndex !== -1 && currentIndex < fetchVital.length - 1) {
-                const nextItem = fetchVital[currentIndex + 1];
-                const nextName = nextItem.screening_list;
-                setNextName(nextName);
-                console.log('Next Name Setttt:', nextName);
+                setNextName(fetchVital[currentIndex + 1].screening_list);
             } else {
-                setNextName('');
-                console.log('No next item or selectedName not found');
+                setNextName("");
             }
         }
     }, [selectedName, fetchVital]);
-    //_________________________________END
 
-
-    const userID = localStorage.getItem('userID');
-    console.log(userID);
-    const accessToken = localStorage.getItem('token');
-
-    const source = localStorage.getItem('source');
-
-    const Port = process.env.REACT_APP_API_KEY;
-    const [familyData, setFamilyData] = useState({
-        father_name: "",
-        mother_name: "",
-        occupation_of_father: "",
-        occupation_of_mother: "",
-        parents_mobile: "",
-        sibling_count: "",
-        child_count: null,
-        spouse_name: null,
-        marital_status: "",
-
-        /// new fields
-        emergency_fullname: '',
-        emergency_gender: '',
-        emergency_contact: '',
-        emergency_email: '',
-        relationship_with_employee: '',
-        emergency_address: '',
-        emergency_prefix: '',
-    })
-
+    // fetch data
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const response = await fetch(`${Port}/Screening/citizen_family_info_get/${pkid}/`, {
-                    headers: {
-                        'Authorization': `Bearer ${accessToken}`,
-                    },
+                    headers: { Authorization: `Bearer ${accessToken}` },
                 });
-                if (!response.ok) {
-                    throw new Error(`Failed to fetch data. Status: ${response.status}`);
-                }
-
-                const familyDataFromApi = await response.json();
-                const familyData = familyDataFromApi[0];
+                if (!response.ok) throw new Error(`Failed to fetch. Status: ${response.status}`);
+                const data = await response.json();
+                const familyData = data[0];
                 setFamilyData(familyData);
-                console.log('Family Idddddd:', familyData?.citizen_id);
-                setUpdateId(familyData?.citizen_id)
+                setUpdateId(familyData?.citizen_id);
             } catch (error) {
-                console.error('Error fetching Family data', error);
+                console.error("Error fetching family data:", error);
             }
         };
         fetchData();
     }, [citizensPkId]);
 
-    const [updateId, setUpdateId] = useState("") ////// PUT Store Variable
-
-    useEffect(() => {
-        if (updateId) {
-            updateFormWithId(updateId);
-        }
-    }, [updateId]);
-
-    const updateFormWithId = (citizen_id) => {
-        console.log('Updating form with ID:', citizen_id);
-    };
-
-    const updateDataInDatabase = async (citizen_id, confirmationStatus) => {
+    // update data
+    const updateDataInDatabase = async (citizen_id) => {
         try {
             const response = await fetch(`${Port}/Screening/citizen_family_info_put/${citizen_id}/`, {
-                method: 'PUT',
+                method: "PUT",
                 headers: {
-                    'Authorization': `Bearer ${accessToken}`,
-                    'Content-Type': 'application/json', // Ensure correct content type
+                    Authorization: `Bearer ${accessToken}`,
+                    "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
+                    ...familyData.citizen_info,
                     citizen_id: familyData.citizen_id,
                     schedule_id: familyData.schedule_id,
-                    father_name: familyData.citizen_info.father_name,
-                    mother_name: familyData.citizen_info.mother_name,
-                    occupation_of_father: familyData.citizen_info.occupation_of_father,
-                    occupation_of_mother: familyData.citizen_info.occupation_of_mother,
-                    parents_mobile: familyData.citizen_info.parents_mobile,
-                    sibling_count: familyData.citizen_info.sibling_count,
-                    form_submit: confirmationStatus,
-                    child_count: familyData.citizen_info.child_count,
-                    spouse_name: familyData.citizen_info.spouse_name,
-                    marital_status: familyData.citizen_info.marital_status,
                     added_by: userID,
                     modify_by: userID,
-
-
-                    // Include emergency information here
-                    emergency_fullname: familyData.citizen_info.emergency_fullname,
-                    emergency_gender: familyData.citizen_info.emergency_gender,
-                    emergency_contact: familyData.citizen_info.emergency_contact,
-                    emergency_email: familyData.citizen_info.emergency_email,
-                    relationship_with_employee: familyData.citizen_info.relationship_with_employee,
-                    emergency_address: familyData.citizen_info.emergency_address,
-                    emergency_prefix: familyData.citizen_info.emergency_prefix,
+                    form_submit: "True",
                 }),
             });
 
-            if (response.status === 200) {
-                const updatedfamilyData = { ...familyData, };
-                setFamilyData(updatedfamilyData);
-                console.log(updatedfamilyData, 'Data updated successfully');
-                // onAcceptClick(nextName);
-                if (nextName) {
-                    onAcceptClick(nextName);
-                } else {
-                    console.log('Next Vital not found. Staying on the same page.');
-                }
-            } else if (response.status === 400) {
-                alert('Bad request. Please check your data and try again.');
-            } else if (response.status === 500) {
-                alert('Internal Server Error. Please try again later.');
+            if (response.ok) {
+                setSnackbar({ open: true, message: "Data updated successfully", severity: "success" });
+                if (nextName) onAcceptClick(nextName);
             } else {
-                alert(`Failed to update data. Status: ${response.status}`);
+                setSnackbar({ open: true, message: "Update failed. Try again.", severity: "error" });
             }
         } catch (error) {
-            console.error('Error updating data', error);
+            console.error("Error updating:", error);
+            setSnackbar({ open: true, message: "Something went wrong", severity: "error" });
         }
     };
 
-    const handleSubmit = async () => {
-        const isConfirmed = window.confirm('Submit Family Info Form');
-        const confirmationStatus = isConfirmed ? 'True' : 'False';
-
-        if (updateId) {
-            if (isConfirmed) {
-                await updateDataInDatabase(updateId, confirmationStatus);
-            } else {
-                console.log('Form submission cancelled');
-            }
-        }
-        console.log("Accept button clicked");
+    const handleSubmit = () => setOpenConfirm(true);
+    const handleConfirm = async () => {
+        setOpenConfirm(false);
+        if (updateId) await updateDataInDatabase(updateId);
     };
 
     return (
-        <div>
-            <div>
-                <div className="row backdesign">
-                    <div className="col-md-12">
-                        <div className="card bmicard">
-                            <div className="row">
-                                <div className="col-md-4">
-                                    <h6 className='mt-1 familyTital'>
-                                        {source === '5' ? 'EMERGENCY INFORMATION' : 'FAMILY INFORMATION'}
-                                    </h6>
-                                </div>
-                                <div className="col-md-5 ml-auto">
-                                    <div class="progress-barbmi"></div>
-                                </div>
-                            </div>
-                        </div>
+        <Grid container justifyContent="center" sx={{ mt: 1 }}>
+            <Grid item xs={12} md={12}>
+                <Card sx={{ borderRadius: "20px", p: 1, mb: 1, background: "linear-gradient(90deg, #039BEF 0%, #1439A4 100%)" }}>
+                    <Grid container alignItems="center" justifyContent="space-between">
+                        <Typography sx={{ fontWeight: 600, fontFamily: "Roboto", fontSize: "16px", color: "white" }}>
+                            {source === "5" ? "Emergency Information" : "Family Information"}
+                        </Typography>
+                    </Grid>
+                </Card>
 
-                        {/* <div className="card grothcardmonitor">
-                            <div className="row">
-                                <div className="col-md-12">
-                                    <h6 className="BMITitle">EMERGENCY INFORMATION</h6>
-                                    <div className="childdetailelement"></div>
-                                </div>
-                            </div>
+                <Card sx={{ p: 2, borderRadius: 3, boxShadow: 3,borderRadius: "20px",  }}>
+                    <Grid container spacing={2}>
+                        <Grid item xs={12} sm={6}>
+                            <TextField
+                                fullWidth
+                                label="Father Name"
+                                size="small"
+                                value={familyData?.citizen_info?.father_name || ""}
+                                onChange={(e) =>
+                                    setFamilyData({
+                                        ...familyData,
+                                        citizen_info: { ...familyData.citizen_info, father_name: e.target.value.replace(/[0-9]/g, "") },
+                                    })
+                                }
+                            />
+                        </Grid>
 
-                            <div className="row paddingwhole">
-                                <div className="col-md-6">
-                                    <label for="childName" class="visually-hidden childvitaldetails">Father Name</label>
-                                    <input type="text" class="form-control childvitalinput" placeholder="Enter Name"
-                                        value={familyData?.citizen_info?.father_name}
-                                        onInput={(e) => {
-                                            e.target.value = e.target.value.replace(/[0-9]/, '');
-                                        }}
-                                        onChange={(e) => setFamilyData({ ...familyData, citizen_info: { ...familyData.citizen_info, father_name: e.target.value } })}
-                                    />
-                                </div>
-                                <div className="col-md-6">
-                                    <label for="childName" class="visually-hidden childvitaldetails">Mother Name</label>
-                                    <input type="text" class="form-control childvitalinput" placeholder="Enter Name"
-                                        value={familyData?.citizen_info?.mother_name}
-                                        onInput={(e) => {
-                                            e.target.value = e.target.value.replace(/[0-9]/, '');
-                                        }}
-                                        onChange={(e) => setFamilyData({ ...familyData, citizen_info: { ...familyData.citizen_info, mother_name: e.target.value } })} />
-                                </div>
-                            </div>
+                        {/* Mother Name */}
+                        <Grid item xs={12} sm={6}>
+                            <TextField
+                                fullWidth
+                                label="Mother Name"
+                                size="small"
+                                value={familyData?.citizen_info?.mother_name || ""}
+                                onChange={(e) =>
+                                    setFamilyData({
+                                        ...familyData,
+                                        citizen_info: { ...familyData.citizen_info, mother_name: e.target.value.replace(/[0-9]/g, "") },
+                                    })
+                                }
+                            />
+                        </Grid>
 
-                            <div className="row paddingwhole">
-                                <div className="col-md-6">
-                                    <label for="childName" class="visually-hidden childvitaldetails">Occupation of Father</label>
-                                    <input type="text" class="form-control childvitalinput" placeholder="Enter Name"
-                                        value={familyData?.citizen_info?.occupation_of_father}
-                                        onChange={(e) => setFamilyData({ ...familyData, citizen_info: { ...familyData.citizen_info, occupation_of_father: e.target.value } })}
-                                    />
-                                </div>
-                                <div className="col-md-6">
-                                    <label for="childName" class="visually-hidden childvitaldetails">Occupation of Mother</label>
-                                    <input type="text" class="form-control childvitalinput" placeholder="Enter Name"
-                                        value={familyData?.citizen_info?.occupation_of_mother}
-                                        onChange={(e) => setFamilyData({ ...familyData, citizen_info: { ...familyData.citizen_info, occupation_of_mother: e.target.value } })}
-                                    />
-                                </div>
-                            </div>
+                        {/* Occupations */}
+                        <Grid item xs={12} sm={6}>
+                            <TextField
+                                fullWidth
+                                label="Occupation of Father"
+                                size="small"
+                                value={familyData?.citizen_info?.occupation_of_father || ""}
+                                onChange={(e) =>
+                                    setFamilyData({
+                                        ...familyData,
+                                        citizen_info: { ...familyData.citizen_info, occupation_of_father: e.target.value },
+                                    })
+                                }
+                            />
+                        </Grid>
 
-                            <div className="row paddingwhole mb-3">
-                                <div className="col-md-6">
-                                    <label for="childName" class="visually-hidden childvitaldetails">Parents Mobile Number</label>
-                                    <input type="text" class="form-control childvitalinput" placeholder="Enter Name"
-                                        value={familyData?.citizen_info?.parents_mobile}
-                                        onInput={(e) => {
-                                            if (e.target.value.length > 13) {
-                                                e.target.value = e.target.value.slice(0, 13);
-                                            }
-                                        }}
-                                        onChange={(e) => setFamilyData({ ...familyData, citizen_info: { ...familyData.citizen_info, parents_mobile: e.target.value } })}
-                                    />
-                                </div>
+                        <Grid item xs={12} sm={6}>
+                            <TextField
+                                fullWidth
+                                label="Occupation of Mother"
+                                size="small"
+                                value={familyData?.citizen_info?.occupation_of_mother || ""}
+                                onChange={(e) =>
+                                    setFamilyData({
+                                        ...familyData,
+                                        citizen_info: { ...familyData.citizen_info, occupation_of_mother: e.target.value },
+                                    })
+                                }
+                            />
+                        </Grid>
 
-                                <div className="col-md-6">
-                                    <label for="childName" class="visually-hidden childvitaldetails">Siblings Count</label>
-                                    <select class="form-control childvitalinput" aria-label="Default select example"
-                                        value={familyData?.citizen_info?.sibling_count}
-                                        onChange={(e) => setFamilyData({ ...familyData, citizen_info: { ...familyData.citizen_info, sibling_count: e.target.value } })}
-                                    >
-                                        <option selected>select</option>
-                                        <option value="0">0</option>
-                                        <option value="1">1</option>
-                                        <option value="2">2</option>
-                                        <option value="3">3</option>
-                                        <option value="4">4</option>
-                                    </select>
-                                </div>
+                        {/* Parents Mobile */}
+                        <Grid item xs={12} sm={6}>
+                            <TextField
+                                fullWidth
+                                label="Parents Mobile"
+                                size="small"
+                                type="tel"
+                                inputProps={{ maxLength: 13 }}
+                                value={familyData?.citizen_info?.parents_mobile || ""}
+                                onChange={(e) =>
+                                    setFamilyData({
+                                        ...familyData,
+                                        citizen_info: { ...familyData.citizen_info, parents_mobile: e.target.value },
+                                    })
+                                }
+                            />
+                        </Grid>
 
-                                <div className="col-md-6">
-                                    <label for="childName" class="visually-hidden childvitaldetails">Employee's Marital Status</label>
-                                    <select class="form-control childvitalinput" aria-label="Default select example"
-                                        value={familyData?.citizen_info?.marital_status}
-                                        onChange={(e) => setFamilyData({ ...familyData, citizen_info: { ...familyData.citizen_info, marital_status: e.target.value } })}
-                                    >
-                                        <option selected>select</option>
-                                        <option value='Married'>Married</option>
-                                        <option value='Unmarried'>Unmarried</option>
-                                        <option value='Widow'>Widow/Widower</option>
-                                    </select>
-                                </div>
+                        <Grid item xs={12} sm={6}>
+                            <Select sx={{
+                                "& .MuiInputBase-input.MuiSelect-select": {
+                                    color: "#000 !important",
+                                },
+                                "& .MuiSvgIcon-root": {
+                                    color: "#000",
+                                },
+                            }}
+                                fullWidth
+                                size="small"
+                                value={familyData?.citizen_info?.sibling_count || ""}
+                                onChange={(e) =>
+                                    setFamilyData({
+                                        ...familyData,
+                                        citizen_info: { ...familyData.citizen_info, sibling_count: e.target.value },
+                                    })
+                                }
+                            >
+                                <MenuItem value="">Select</MenuItem>
+                                {[0, 1, 2, 3, 4].map((num) => (
+                                    <MenuItem key={num} value={num}>
+                                        {num}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </Grid>
 
-                                <div className="col-md-6">
-                                    <label for="childName" class="visually-hidden childvitaldetails">Children Count</label>
-                                    <select class="form-control childvitalinput" aria-label="Default select example"
-                                        value={familyData?.citizen_info?.child_count}
-                                        onChange={(e) => setFamilyData({ ...familyData, citizen_info: { ...familyData.citizen_info, child_count: e.target.value } })}
-                                    >
-                                        <option selected>select</option>
-                                        <option value="0">0</option>
-                                        <option value="1">1</option>
-                                        <option value="2">2</option>
-                                        <option value="3">3</option>
-                                        <option value="4">4</option>
-                                    </select>
-                                </div>
+                        {/* Marital Status */}
+                        <Grid item xs={12} sm={6}>
+                            <Select sx={{
+                                "& .MuiInputBase-input.MuiSelect-select": {
+                                    color: "#000 !important",
+                                },
+                                "& .MuiSvgIcon-root": {
+                                    color: "#000",
+                                },
+                            }}
+                                fullWidth
+                                size="small"
+                                value={familyData?.citizen_info?.marital_status || ""}
+                                onChange={(e) =>
+                                    setFamilyData({
+                                        ...familyData,
+                                        citizen_info: { ...familyData.citizen_info, marital_status: e.target.value },
+                                    })
+                                }
+                            >
+                                <MenuItem value="">Select</MenuItem>
+                                <MenuItem value="Married">Married</MenuItem>
+                                <MenuItem value="Unmarried">Unmarried</MenuItem>
+                                <MenuItem value="Widow">Widow/Widower</MenuItem>
+                            </Select>
+                        </Grid>
 
-                                <div className="col-md-6">
-                                    <label for="childName" class="visually-hidden childvitaldetails">Employee's Spouse Name</label>
-                                    <input type="text" class="form-control childvitalinput" placeholder="Enter Name"
-                                        value={familyData?.citizen_info?.spouse_name}
-                                        onChange={(e) => setFamilyData({ ...familyData, citizen_info: { ...familyData.citizen_info, spouse_name: e.target.value } })}
-                                    />
-                                </div>
-                            </div>
+                        {/* Child Count */}
+                        <Grid item xs={12} sm={6}>
+                            <Select sx={{
+                                "& .MuiInputBase-input.MuiSelect-select": {
+                                    color: "#000 !important",
+                                },
+                                "& .MuiSvgIcon-root": {
+                                    color: "#000",
+                                },
+                            }}
+                                fullWidth
+                                size="small"
+                                value={familyData?.citizen_info?.child_count || ""}
+                                onChange={(e) =>
+                                    setFamilyData({
+                                        ...familyData,
+                                        citizen_info: { ...familyData.citizen_info, child_count: e.target.value },
+                                    })
+                                }
+                            >
+                                <MenuItem value="">Select</MenuItem>
+                                {[0, 1, 2, 3, 4].map((num) => (
+                                    <MenuItem key={num} value={num}>
+                                        {num}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </Grid>
 
-                        </div> */}
+                        {/* Spouse Name */}
+                        <Grid item xs={12} sm={6}>
+                            <TextField
+                                fullWidth
+                                label="Spouse Name"
+                                size="small"
+                                value={familyData?.citizen_info?.spouse_name || ""}
+                                onChange={(e) =>
+                                    setFamilyData({
+                                        ...familyData,
+                                        citizen_info: { ...familyData.citizen_info, spouse_name: e.target.value },
+                                    })
+                                }
+                            />
+                        </Grid>
 
-                        {
-                            source === '5' ?
-                                (
-                                    <div className="card grothcardmonitor">
-                                        <div className="row">
-                                            <div className="col-md-12">
-                                                <h6 className="BMITitle">EMERGENCY INFORMATION</h6>
-                                                <div className="childdetailelement"></div>
-                                            </div>
-                                        </div>
+                        {/* Accept Button */}
+                        <Grid item xs={12} sx={{ display: "flex", justifyContent: "center", mt: 2 }}>
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                sx={{ textTransform: "none", borderRadius: 2, px: 4 }}
+                                onClick={handleSubmit}
+                            >
+                                Accept
+                            </Button>
+                        </Grid>
+                    </Grid>
+                </Card>
+            </Grid>
 
-                                        <div className="row paddingwhole">
-                                            <div className="col-md-2">
-                                                <label for="childName" class="visually-hidden childvitaldetails">Prefix</label>
-                                                <select class="form-control childvitalinput" aria-label="Default select example"
-                                                    value={familyData?.citizen_info?.emergency_prefix}
-                                                    onChange={(e) => setFamilyData({ ...familyData, citizen_info: { ...familyData.citizen_info, emergency_prefix: e.target.value } })}
-                                                >
-                                                    <option selected>select</option>
-                                                    <option value="Mr">Mr.</option>
-                                                    <option value="Ms">Ms.</option>
-                                                    <option value="Mrs">Mrs.</option>
-                                                    <option value="Adv">Adv.</option>
-                                                    <option value="Col">Col.</option>
-                                                    <option value="Dr">Dr.</option>
-                                                </select>
-                                            </div>
+            <Dialog open={openConfirm} onClose={() => setOpenConfirm(false)}>
+                <DialogTitle>Confirm Submission</DialogTitle>
+                <DialogContent>Are you sure you want to submit the Family Info Form?</DialogContent>
+                <DialogActions>
+                    <Button onClick={() => setOpenConfirm(false)}>Cancel</Button>
+                    <Button onClick={handleConfirm} variant="contained" color="primary">
+                        Yes, Submit
+                    </Button>
+                </DialogActions>
+            </Dialog>
 
-                                            <div className="col-md-3">
-                                                <label for="childName" class="visually-hidden childvitaldetails">Father Name</label>
-                                                <input type="text" class="form-control childvitalinput" placeholder="Enter Name"
-                                                    value={familyData?.citizen_info?.father_name}
-                                                    onInput={(e) => {
-                                                        e.target.value = e.target.value.replace(/[0-9]/, '');
-                                                    }}
-                                                    onChange={(e) => setFamilyData({ ...familyData, citizen_info: { ...familyData.citizen_info, father_name: e.target.value } })}
-                                                />
-                                            </div>
+            {/* Snackbar */}
+            <Snackbar
+                open={snackbar.open}
+                autoHideDuration={3000}
+                onClose={() => setSnackbar({ ...snackbar, open: false })}
+                anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+            >
+                <Alert severity={snackbar.severity}>{snackbar.message}</Alert>
+            </Snackbar>
+        </Grid>
+    );
+};
 
-                                            <div className="col-md-4">
-                                                <label for="childName" class="visually-hidden childvitaldetails">Full Name</label>
-                                                <input type="text" class="form-control childvitalinput" placeholder="Enter Full Name"
-                                                    value={familyData?.citizen_info?.emergency_fullname}
-                                                    onInput={(e) => {
-                                                        e.target.value = e.target.value.replace(/[0-9]/, '');
-                                                    }}
-                                                    onChange={(e) => setFamilyData({ ...familyData, citizen_info: { ...familyData.citizen_info, emergency_fullname: e.target.value } })} />
-                                            </div>
-
-                                            <div className="col-md-3">
-                                                <label for="childName" class="visually-hidden childvitaldetails">Gender</label>
-                                                <select class="form-control childvitalinput" aria-label="Default select example"
-                                                    value={familyData?.citizen_info?.emergency_gender}
-                                                    onChange={(e) => setFamilyData({ ...familyData, citizen_info: { ...familyData.citizen_info, emergency_gender: e.target.value } })}
-                                                >
-                                                    <option selected>select</option>
-                                                    <option value="male">Male</option>
-                                                    <option value="female">Female</option>
-                                                    <option value="other">Other</option>
-                                                </select>
-                                            </div>
-                                        </div>
-
-                                        <div className="row paddingwhole">
-                                            <div className="col-md-6">
-                                                <label for="childName" class="visually-hidden childvitaldetails">Emergency Conatct</label>
-                                                <input type="text" class="form-control childvitalinput" placeholder="Enter Contact"
-                                                    value={familyData?.citizen_info?.emergency_contact}
-                                                    onChange={(e) => setFamilyData({ ...familyData, citizen_info: { ...familyData.citizen_info, emergency_contact: e.target.value } })}
-                                                />
-                                            </div>
-
-                                            <div className="col-md-6">
-                                                <label for="childName" class="visually-hidden childvitaldetails">Email ID</label>
-                                                <input type="text" class="form-control childvitalinput" placeholder="Enter Mail ID"
-                                                    value={familyData?.citizen_info?.emergency_email}
-                                                    onChange={(e) => setFamilyData({ ...familyData, citizen_info: { ...familyData.citizen_info, emergency_email: e.target.value } })}
-                                                />
-                                            </div>
-                                        </div>
-
-                                        <div className="row paddingwhole mb-3">
-                                            <div className="col-md-6">
-                                                <label for="childName" class="visually-hidden childvitaldetails">Relationship with Employee</label>
-                                                <select class="form-control childvitalinput" aria-label="Default select example"
-                                                    value={familyData?.citizen_info?.relationship_with_employee}
-                                                    onChange={(e) => setFamilyData({ ...familyData, citizen_info: { ...familyData.citizen_info, relationship_with_employee: e.target.value } })}
-                                                >
-                                                    <option>Select</option>
-                                                    <option value="father">Father</option>
-                                                    <option value="mother">Mother</option>
-                                                    <option value="brother">Brother</option>
-                                                    <option value="sister">Sister</option>
-                                                    <option value="spouse">Spouse</option>
-                                                    <option value="son">Son</option>
-                                                    <option value="daughter">Daughter</option>
-                                                </select>
-                                            </div>
-
-                                            <div className="col-md-6">
-                                                <label for="childName" class="visually-hidden childvitaldetails">Present Address</label>
-                                                <input type="text" class="form-control childvitalinput" placeholder="Enter Address"
-                                                    value={familyData?.citizen_info?.emergency_address}
-                                                    onChange={(e) => setFamilyData({ ...familyData, citizen_info: { ...familyData.citizen_info, emergency_address: e.target.value } })}
-                                                />
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                ) :
-                                ////// School data
-                                (
-
-                                    <div className="card grothcardmonitor">
-                                        <div className="row">
-                                            <div className="col-md-12">
-                                                <h6 className="BMITitle">EMERGENCY INFORMATION</h6>
-                                                <div className="childdetailelement"></div>
-                                            </div>
-                                        </div>
-
-                                        <div className="row paddingwhole">
-                                            <div className="col-md-6">
-                                                <label for="childName" class="visually-hidden childvitaldetails">Father Name</label>
-                                                <input type="text" class="form-control childvitalinput" placeholder="Enter Name"
-                                                    value={familyData?.citizen_info?.father_name}
-                                                    onInput={(e) => {
-                                                        e.target.value = e.target.value.replace(/[0-9]/, '');
-                                                    }}
-                                                    onChange={(e) => setFamilyData({ ...familyData, citizen_info: { ...familyData.citizen_info, father_name: e.target.value } })}
-                                                />
-                                            </div>
-                                            <div className="col-md-6">
-                                                <label for="childName" class="visually-hidden childvitaldetails">Mother Name</label>
-                                                <input type="text" class="form-control childvitalinput" placeholder="Enter Name"
-                                                    value={familyData?.citizen_info?.mother_name}
-                                                    onInput={(e) => {
-                                                        e.target.value = e.target.value.replace(/[0-9]/, '');
-                                                    }}
-                                                    onChange={(e) => setFamilyData({ ...familyData, citizen_info: { ...familyData.citizen_info, mother_name: e.target.value } })} />
-                                            </div>
-                                        </div>
-
-                                        <div className="row paddingwhole">
-                                            <div className="col-md-6">
-                                                <label for="childName" class="visually-hidden childvitaldetails">Occupation of Father</label>
-                                                <input type="text" class="form-control childvitalinput" placeholder="Enter Name"
-                                                    value={familyData?.citizen_info?.occupation_of_father}
-                                                    onChange={(e) => setFamilyData({ ...familyData, citizen_info: { ...familyData.citizen_info, occupation_of_father: e.target.value } })}
-                                                />
-                                            </div>
-                                            <div className="col-md-6">
-                                                <label for="childName" class="visually-hidden childvitaldetails">Occupation of Mother</label>
-                                                <input type="text" class="form-control childvitalinput" placeholder="Enter Name"
-                                                    value={familyData?.citizen_info?.occupation_of_mother}
-                                                    onChange={(e) => setFamilyData({ ...familyData, citizen_info: { ...familyData.citizen_info, occupation_of_mother: e.target.value } })}
-                                                />
-                                            </div>
-                                        </div>
-
-                                        <div className="row paddingwhole mb-3">
-                                            <div className="col-md-6">
-                                                <label for="childName" class="visually-hidden childvitaldetails">Parents Mobile Number</label>
-                                                <input type="text" class="form-control childvitalinput" placeholder="Enter Name"
-                                                    value={familyData?.citizen_info?.parents_mobile}
-                                                    onInput={(e) => {
-                                                        if (e.target.value.length > 13) {
-                                                            e.target.value = e.target.value.slice(0, 13);
-                                                        }
-                                                    }}
-                                                    onChange={(e) => setFamilyData({ ...familyData, citizen_info: { ...familyData.citizen_info, parents_mobile: e.target.value } })}
-                                                />
-                                            </div>
-
-                                            <div className="col-md-6">
-                                                <label for="childName" class="visually-hidden childvitaldetails">Siblings Count</label>
-                                                <select class="form-control childvitalinput" aria-label="Default select example"
-                                                    value={familyData?.citizen_info?.sibling_count}
-                                                    onChange={(e) => setFamilyData({ ...familyData, citizen_info: { ...familyData.citizen_info, sibling_count: e.target.value } })}
-                                                >
-                                                    <option selected>select</option>
-                                                    <option value="0">0</option>
-                                                    <option value="1">1</option>
-                                                    <option value="2">2</option>
-                                                    <option value="3">3</option>
-                                                    <option value="4">4</option>
-                                                </select>
-                                            </div>
-
-                                            <div className="col-md-6">
-                                                <label for="childName" class="visually-hidden childvitaldetails">Employee's Marital Status</label>
-                                                <select class="form-control childvitalinput" aria-label="Default select example"
-                                                    value={familyData?.citizen_info?.marital_status}
-                                                    onChange={(e) => setFamilyData({ ...familyData, citizen_info: { ...familyData.citizen_info, marital_status: e.target.value } })}
-                                                >
-                                                    <option selected>select</option>
-                                                    <option value='Married'>Married</option>
-                                                    <option value='Unmarried'>Unmarried</option>
-                                                    <option value='Widow'>Widow/Widower</option>
-                                                </select>
-                                            </div>
-
-                                            <div className="col-md-6">
-                                                <label for="childName" class="visually-hidden childvitaldetails">Children Count</label>
-                                                <select class="form-control childvitalinput" aria-label="Default select example"
-                                                    value={familyData?.citizen_info?.child_count}
-                                                    onChange={(e) => setFamilyData({ ...familyData, citizen_info: { ...familyData.citizen_info, child_count: e.target.value } })}
-                                                >
-                                                    <option selected>select</option>
-                                                    <option value="0">0</option>
-                                                    <option value="1">1</option>
-                                                    <option value="2">2</option>
-                                                    <option value="3">3</option>
-                                                    <option value="4">4</option>
-                                                </select>
-                                            </div>
-
-                                            <div className="col-md-6">
-                                                <label for="childName" class="visually-hidden childvitaldetails">Employee's Spouse Name</label>
-                                                <input type="text" class="form-control childvitalinput" placeholder="Enter Name"
-                                                    value={familyData?.citizen_info?.spouse_name}
-                                                    onChange={(e) => setFamilyData({ ...familyData, citizen_info: { ...familyData.citizen_info, spouse_name: e.target.value } })}
-                                                />
-                                            </div>
-                                        </div>
-
-                                    </div>
-                                )
-                        }
-
-                        <div className="row">
-                            <div type="button" className="btn btn-sm submitvital" onClick={handleSubmit}>Accept</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    )
-}
-
-export default FamilyInfo
+export default FamilyInfo;

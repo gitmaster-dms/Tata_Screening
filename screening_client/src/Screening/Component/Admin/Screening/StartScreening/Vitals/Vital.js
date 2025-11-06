@@ -6,11 +6,30 @@ import darkgreeneheart from '../../../../../Images/Darkgreenheart.png'
 import temperature from '../../../../../Images/temperature.png'
 import blueheartline from '../../../../../Images/blueheartline.png'
 import redheart from '../../../../../Images/RedHeart.png'
-import { Modal, Button } from 'react-bootstrap';
 import EditIcon from '@mui/icons-material/Edit';
-import { IconButton, CircularProgress } from "@mui/material";
+import {
+    Box,
+    Grid,
+    Card,
+    Typography,
+    TextField,
+    IconButton,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions,
+    Button,
+    Snackbar,
+    Alert,
+    FormControl,
+    FormLabel,
+    RadioGroup,
+    Radio,
+    FormControlLabel
+} from "@mui/material";
 import NotStartedIcon from '@mui/icons-material/NotStarted';
 const Vital = ({ year, pkid, citizensPkId, gender, selectedId, fetchVital, selectedName, onAcceptClick }) => {
+    const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
 
     //_________________________________START
     console.log(selectedName, 'Present name');
@@ -555,8 +574,8 @@ const Vital = ({ year, pkid, citizensPkId, gender, selectedId, fetchVital, selec
     const [referredToSpecialist, setReferredToSpecialist] = useState(null);
 
     const handleSubmit = () => {
-        const isConfirmed = window.confirm('Submit Vital Form');
-        const confirmationStatus = isConfirmed ? 'True' : 'False';
+        // const isConfirmed = window.confirm('Submit Vital Form');
+        const confirmationStatus = "True";
 
         const formData = {
             pulse: pulseValue !== '' ? pulseValue : null,
@@ -676,370 +695,296 @@ const Vital = ({ year, pkid, citizensPkId, gender, selectedId, fetchVital, selec
     }, [pkid]);
 
     return (
-        <div>
-            <div className="row">
-                <div className="col-md-12">
-                    <div className="card vitalcard">
-                        <h5 className="vitaltitle">Vital</h5>
-                        {/* <EditIcon onClick={handleEditClick} className="editvitalheader" /> Edit icon from Material-UI */}
-                    </div>
-                </div>
+        <Box sx={{ p: 2 }}>
+            <Card sx={{ borderRadius: "20px", p: 1, mb: 1, background: "linear-gradient(90deg, #039BEF 0%, #1439A4 100%)" }}>
+                <Typography sx={{ fontWeight: 600, fontFamily: "Roboto", fontSize: "16px", color: "white" }}>
+                    Vital
+                </Typography>
+            </Card>
 
-                <div className="col-md-12">
-                    <div className="card vitalinfocard">
-                        <h5 className="vitalinfotitle">Vital Information</h5>
-                        <div className="elementvital"></div>
+            <Box
+                sx={{
+                    maxHeight: "70vh",
+                    overflowY: "auto",
+                    pr: 2,
+                }}
+            >
+                <Card sx={{ p: 2, borderRadius: "20px",mb:2 }}>
+                    <Grid container spacing={2}>
+                        <Grid item xs={12} md={4}>
+                            <Card sx={{ p: 2 }}>
+                                <Grid container spacing={1} alignItems="center">
+                                    <Grid item xs={3}>
+                                        <Box component="img" src={redheart} sx={{ width: 40 }} />
+                                    </Grid>
+                                    <Grid item xs={9}>
+                                        <Typography variant="subtitle2">
+                                            Pulse - beats/min
+                                        </Typography>
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        <TextField
+                                            fullWidth
+                                            size="small"
+                                            value={pulseValue || ""}
+                                            onChange={handlePulseInputChange}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={6}>
+                                        <Typography variant="body2">{pulseResponse}</Typography>
+                                    </Grid>
+                                    <Grid item xs={6}>
+                                        <IconButton
+                                            onClick={() => fetchDatapulse("SPO2")}
+                                            disabled={loading}
+                                        >
+                                            <NotStartedIcon sx={{ fontSize: 30, color: "black" }} />
+                                        </IconButton>
+                                    </Grid>
+                                </Grid>
+                            </Card>
+                        </Grid>
 
-                        <div className="row vcard">
-                            <div className="col-md-4">
-                                <div className={`card vitalbodycard`}>
-                                    <div className="row">
-                                        <div className="col-md-3">
-                                            <div className="card cardvital1">
-                                                <img className='redherats' src={redheart} />
-                                            </div>
-                                        </div>
-                                        <div className="col-md-9 vitalsubheading">Pulse- beats/min</div>
-                                        <div className="col-md-12">
-                                            <input
-                                                className={`form-control fromcontrolinputfield`}
-                                                value={pulseValue || null}
-                                                onChange={handlePulseInputChange}
-                                            />
-                                        </div>
-                                        <div className="col-md-6">
-                                            <div className='card reporfromcard1'>
-                                                <h6 className='pulseResponse'>{pulseResponse}</h6>
-                                            </div>
-                                        </div>
-                                        <div className="col-md-6">
-                                            <IconButton onClick={() => fetchDatapulse("SPO2")} disabled={loading}>
-                                                <NotStartedIcon sx={{ fontSize: 32, fontWeight: "bold", color: "black" }} />
-                                            </IconButton>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                        {/* BP Sys */}
+                        <Grid item xs={12} md={4}>
+                            <Card sx={{ p: 2 }}>
+                                <Grid container spacing={1} alignItems="center">
+                                    <Grid item xs={3}>
+                                        <Box component="img" src={greenheart} sx={{ width: 40 }} />
+                                    </Grid>
+                                    <Grid item xs={9}>
+                                        <Typography variant="subtitle2">
+                                            BP - mm Hg (Sys)
+                                        </Typography>
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        <TextField
+                                            fullWidth
+                                            size="small"
+                                            value={sys || ""}
+                                            onChange={handleSysInputChange}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={6}>
+                                        <Typography variant="body2">{sysResponse}</Typography>
+                                    </Grid>
+                                    <Grid item xs={6}>
+                                        <IconButton
+                                            onClick={() => fetchDatasys("BP")}
+                                            disabled={loading}
+                                        >
+                                            <NotStartedIcon sx={{ fontSize: 30, color: "black" }} />
+                                        </IconButton>
+                                    </Grid>
+                                </Grid>
+                            </Card>
+                        </Grid>
 
-                            <div className="col-md-4">
-                                <div className="card vitalbodycard">
-                                    <div className="row">
-                                        <div className="col-md-3">
-                                            <div className="card cardvital1">
-                                                <img src={greenheart} />
-                                            </div>
-                                        </div>
-                                        <div className="col-md-9 vitalsubheading">BP-mm Hg(sys)</div>
-                                        <div className="col-md-12">
-                                            <input
-                                                className='form-control fromcontrolinputfield'
-                                                value={sys || null}
-                                                onChange={handleSysInputChange}
-                                            />
-                                        </div>
-                                        <div className="col-md-6">
-                                            <div className='card reporfromcard2'>
-                                                <h6 className='pulseResponse'>{sysResponse}</h6>
-                                            </div>
-                                        </div>
-                                        <div className="col-md-6">
-                                            <IconButton onClick={() => fetchDatasys("BP")} disabled={loading}>
-                                                <NotStartedIcon sx={{ fontSize: 32, fontWeight: "bold", color: "black" }} />
-                                            </IconButton>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                        {/* BP Dys */}
+                        <Grid item xs={12} md={4}>
+                            <Card sx={{ p: 2 }}>
+                                <Grid container spacing={1} alignItems="center">
+                                    <Grid item xs={3}>
+                                        <Box component="img" src={greenheart} sx={{ width: 40 }} />
+                                    </Grid>
+                                    <Grid item xs={9}>
+                                        <Typography variant="subtitle2">
+                                            BP - mm Hg (Dys)
+                                        </Typography>
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        <TextField
+                                            fullWidth
+                                            size="small"
+                                            value={dys || ""}
+                                            onChange={handleDysInputChange}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={6}>
+                                        <Typography variant="body2">{dysResponse}</Typography>
+                                    </Grid>
+                                    <Grid item xs={6}>
+                                        <IconButton
+                                            onClick={() => fetchDatadys("BP")}
+                                            disabled={loading}
+                                        >
+                                            <NotStartedIcon sx={{ fontSize: 30, color: "black" }} />
+                                        </IconButton>
+                                    </Grid>
+                                </Grid>
+                            </Card>
+                        </Grid>
+                    </Grid>
 
-                            <div className="col-md-4">
-                                <div className="card vitalbodycard">
-                                    <div className="row">
-                                        <div className="col-md-3">
-                                            <div className="card cardvital2">
-                                                <img src={greenheart} />
-                                            </div>
-                                        </div>
-                                        <div className="col-md-9 vitalsubheading">BP-mm Hg(dys)</div>
-                                        <div className="col-md-12">
-                                            <input className='form-control fromcontrolinputfield'
-                                                value={dys || null}
-                                                onChange={handleDysInputChange}
-                                            />
-                                        </div>
-                                        <div className="col-md-6">
-                                            <div className='card reporfromcard3'>
-                                                <h6 className='pulseResponse'>{dysResponse}</h6>
-                                            </div>
-                                        </div>
-                                        <div className="col-md-6">
-                                            <IconButton onClick={() => fetchDatadys("BP")} disabled={loading}>
-                                                <NotStartedIcon sx={{ fontSize: 32, fontWeight: "bold", color: "black" }} />
-                                            </IconButton>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    {/* RR, O2, Temp */}
+                    <Grid container spacing={2} sx={{ mt: 1 }}>
+                        {/* RR */}
+                        <Grid item xs={12} md={4}>
+                            <Card sx={{ p: 2, height: "100%" }}>
+                                <Grid container spacing={1}>
+                                    <Grid item xs={3}>
+                                        <Box component="img" src={blueheart} sx={{ width: 40 }} />
+                                    </Grid>
+                                    <Grid item xs={9}>
+                                        <Typography variant="subtitle2">RR - per min</Typography>
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        <TextField
+                                            fullWidth
+                                            size="small"
+                                            value={rr || ""}
+                                            onChange={handleRrInputChange}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        <Typography variant="body2">{rrResponse}</Typography>
+                                    </Grid>
+                                </Grid>
+                            </Card>
+                        </Grid>
 
-                        <div className="row mt-3 vcard">
-                            <div className="col-md-4">
-                                <div className="card vitalbodycard">
-                                    <div className="row">
-                                        <div className="col-md-3">
-                                            <div className="card cardvital3">
-                                                <img src={blueheart} />
-                                            </div>
-                                        </div>
-                                        <div className="col-md-9 vitalsubheading">RR- per min</div>
-                                        <div className="col-md-12">
-                                            <input className='form-control fromcontrolinputfield'
-                                                value={rr || null}
-                                                onChange={handleRrInputChange}
-                                            />
-                                        </div>
-                                        <div className="col-md-12">
-                                            <div className='card reporfromcard4'>
-                                                <h6 className='pulseResponse'>{rrResponse}</h6>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                        {/* O2 */}
+                        <Grid item xs={12} md={4}>
+                            <Card sx={{ p: 2 }}>
+                                <Grid container spacing={1}>
+                                    <Grid item xs={3}>
+                                        <Box
+                                            component="img"
+                                            src={darkgreeneheart}
+                                            sx={{ width: 40 }}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={9}>
+                                        <Typography variant="subtitle2">O2 Sats</Typography>
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        <TextField
+                                            fullWidth
+                                            size="small"
+                                            value={sats || ""}
+                                            onChange={handleSatsInputChange}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={6}>
+                                        <Typography variant="body2">{satsResponse}</Typography>
+                                    </Grid>
+                                    <Grid item xs={6}>
+                                        <IconButton
+                                            onClick={() => fetchDataspo2("SPO2")}
+                                            disabled={loading}
+                                        >
+                                            <NotStartedIcon sx={{ fontSize: 30, color: "black" }} />
+                                        </IconButton>
+                                    </Grid>
+                                </Grid>
+                            </Card>
+                        </Grid>
 
-                            <div className="col-md-4">
-                                <div className="card vitalbodycard">
-                                    <div className="row">
-                                        <div className="col-md-3">
-                                            <div className="card cardvital1">
-                                                <img src={darkgreeneheart} />
-                                            </div>
-                                        </div>
-                                        <div className="col-md-9 vitalsubheading">O2 Sats</div>
-                                        <div className="col-md-12">
-                                            <input className='form-control fromcontrolinputfield'
-                                                value={sats || null}
-                                                onChange={handleSatsInputChange}
-                                            />
-                                        </div>
-                                        <div className="col-md-6">
-                                            <div className='card reporfromcard5'>
-                                                <h6 className='pulseResponse'>{satsResponse}</h6>
-                                            </div>
-                                        </div>
-                                        <div className="col-md-6">
-                                            <IconButton onClick={() => fetchDataspo2("SPO2")} disabled={loading}>
-                                                <NotStartedIcon sx={{ fontSize: 32, fontWeight: "bold", color: "black" }} />
-                                            </IconButton>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                        {/* Temp */}
+                        <Grid item xs={12} md={4}>
+                            <Card sx={{ p: 2 }}>
+                                <Grid container spacing={1}>
+                                    <Grid item xs={3}>
+                                        <Box component="img" src={temperature} sx={{ width: 40 }} />
+                                    </Grid>
+                                    <Grid item xs={9}>
+                                        <Typography variant="subtitle2">Temperature</Typography>
+                                    </Grid>
+                                    <Grid item xs={12}>
+                                        <TextField
+                                            fullWidth
+                                            size="small"
+                                            value={temp || ""}
+                                            onChange={handleTempInputChange}
+                                        />
+                                    </Grid>
+                                    <Grid item xs={6}>
+                                        <Typography variant="body2">{tempResponse}</Typography>
+                                    </Grid>
+                                    <Grid item xs={6}>
+                                        <IconButton
+                                            onClick={() => fetchDataTemp("TEMPERATURE")}
+                                            disabled={loading}
+                                        >
+                                            <NotStartedIcon sx={{ fontSize: 30, color: "black" }} />
+                                        </IconButton>
+                                    </Grid>
+                                </Grid>
+                            </Card>
+                        </Grid>
+                    </Grid>
 
-                            <div className="col-md-4">
-                                <div className="card vitalbodycard">
-                                    <div className="row">
-                                        <div className="col-md-3">
-                                            <div className="card cardvital1">
-                                                <img src={temperature} />
-                                            </div>
-                                        </div>
-                                        <div className="col-md-9 vitalsubheading">Temperature</div>
-                                        <div className="col-md-12">
-                                            <input className='form-control fromcontrolinputfield'
-                                                value={temp || ''}
-                                                onChange={handleTempInputChange}
-                                            />
-                                        </div>
-                                        <div className="col-md-6">
-                                            <div className="card reporfromcard6">
-                                                <h6 className="pulseResponse">{tempResponse}</h6>
-                                            </div>
-                                        </div>
-                                        <div className="col-md-6">
-                                            <IconButton onClick={() => fetchDataTemp("TEMPERATURE")} disabled={loading}>
-                                                <NotStartedIcon sx={{ fontSize: 32, fontWeight: "bold", color: "black" }} />
-                                            </IconButton>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                    <Box sx={{ mt: 3 }}>
+                        <FormControl component="fieldset" sx={{ mt: 1 }}>
+                            <FormLabel component="legend">Referred To Specialist</FormLabel>
+                            <RadioGroup
+                                row
+                                value={referredToSpecialist}
+                                onChange={(e) => setReferredToSpecialist(Number(e.target.value))}
+                            >
+                                <FormControlLabel value={1} control={<Radio />} label="Yes" />
+                                <FormControlLabel value={2} control={<Radio />} label="No" />
+                            </RadioGroup>
+                        </FormControl>
+                    </Box>
 
-                        {/* <div className="row mt-3 mb-3 vcard">
-                            <div className="col-md-4">
-                                <div className="card vitalbodycard">
-                                    <div className="row">
-                                        <div className="col-md-3">
-                                            <div className="card cardvital1">
-                                                <img src={blueheartline} />
-                                            </div>
-                                        </div>
-                                        <div className="col-md-9 vitalsubheading">HB</div>
-                                        <div className="col-md-12">
-                                            <input
-                                                className='form-control fromcontrolinputfield'
-                                                value={hb || null}
-                                                onChange={handleHbInputChange}
-                                            />
-                                        </div>
-                                        <div className="col-md-12">
-                                            <div className='card reporfromcard7'>
-                                                <h6 className='pulseResponse'>{hbResponse}</h6>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div> */}
+                    <Box sx={{ textAlign: "center", mt: 1, mb: 2 }}>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={() => setOpenConfirmDialog(true)}
+                        >
+                            Submit
+                        </Button>
+                    </Box>
+                </Card>
+            </Box>
 
-                        <div className="row mb-3 mt-4 ml-1">
-                            <div className="col-md-4">
-                                <h6 className="specialistedrefrresedd">Reffered To Specialist</h6>
-                            </div>
+            <Dialog
+                open={openConfirmDialog}
+                onClose={() => setOpenConfirmDialog(false)}
+            >
+                <DialogTitle>Confirm Submission</DialogTitle>
+                <DialogContent>
+                    <Typography>Are you sure you want to submit the Vital Form?</Typography>
+                </DialogContent>
+                <DialogActions>
+                    <Button
+                        onClick={() => setOpenConfirmDialog(false)}
+                        color="error"
+                        variant="outlined"
+                    >
+                        Cancel
+                    </Button>
+                    <Button
+                        onClick={() => {
+                            handleSubmit();
+                            setOpenConfirmDialog(false);
+                        }}
+                        color="primary"
+                        variant="contained"
+                    >
+                        Submit
+                    </Button>
+                </DialogActions>
+            </Dialog>
 
-                            <div className="col-md-1">
-                                <input
-                                    className="form-check-input"
-                                    type="radio"
-                                    id="yes"
-                                    name="referred_to_specialist"
-                                    value={1}
-                                    checked={referredToSpecialist === 1} // Compare with string values
-                                    onChange={() => setReferredToSpecialist(1)}
-                                />
-                                <label className="form-check-label" htmlFor="yes">
-                                    Yes
-                                </label>
-                            </div>
-
-                            <div className="col-md-1">
-                                <input
-                                    className="form-check-input"
-                                    type="radio"
-                                    id="no"
-                                    name="referred_to_specialist"
-                                    value={2}
-                                    checked={referredToSpecialist === 2}
-                                    onChange={() => setReferredToSpecialist(2)}
-                                />
-                                <label className="form-check-label" htmlFor="no">
-                                    No
-                                </label>
-                            </div>
-                        </div>
-
-                        <div className="row mb-3">
-                            <div type="submit"
-                                className="btn btn-sm submitvital"
-                                onClick={handleSubmit}>Accept
-                            </div>
-                        </div>
-                    </div>
-
-
-                    {/* pulse */}
-                    <Modal show={showErrorModal} onHide={handleCloseErrorModal}>
-                        <Modal.Header>
-                            <Modal.Title>Error</Modal.Title>
-                        </Modal.Header>
-                        <Modal.Body>Enter the Valid Pulse Value</Modal.Body>
-                        <Modal.Footer>
-                            <Button variant="danger" onClick={handleCloseErrorModal}>
-                                Close
-                            </Button>
-                        </Modal.Footer>
-                    </Modal>
-
-                    {/* bp sys  */}
-                    <Modal show={showErrorSys} onHide={handleCloseErrorSys}>
-                        <Modal.Header>
-                            <Modal.Title></Modal.Title>
-                        </Modal.Header>
-                        <Modal.Body>Enter the Bp Value</Modal.Body>
-                        <Modal.Footer>
-                            <Button variant="danger" onClick={handleCloseErrorSys}>
-                                Close
-                            </Button>
-                        </Modal.Footer>
-                    </Modal>
-
-                    {/* bp dys  */}
-                    <Modal show={showErrorDys} onHide={handleCloseErrorDys}>
-                        <Modal.Header>
-                            <Modal.Title></Modal.Title>
-                        </Modal.Header>
-                        <Modal.Body>Enter the Bp value</Modal.Body>
-                        <Modal.Footer>
-                            <Button variant="danger" onClick={handleCloseErrorDys}>
-                                Close
-                            </Button>
-                        </Modal.Footer>
-                    </Modal>
-
-                    {/* rr  */}
-                    <Modal show={showErrorRr} onHide={handleCloseErrorRr}>
-                        <Modal.Header>
-                            <Modal.Title></Modal.Title>
-                        </Modal.Header>
-                        <Modal.Body>Enter the Valid RR Value</Modal.Body>
-                        <Modal.Footer>
-                            <Button variant="danger" onClick={handleCloseErrorRr}>
-                                Close
-                            </Button>
-                        </Modal.Footer>
-                    </Modal>
-
-                    {/* Sats  */}
-                    <Modal show={showErrorSats} onHide={handleCloseErrorSats}>
-                        <Modal.Header>
-                            <Modal.Title></Modal.Title>
-                        </Modal.Header>
-                        <Modal.Body>Enter the Valid Saturation</Modal.Body>
-                        <Modal.Footer>
-                            <Button variant="danger" onClick={handleCloseErrorSats}>
-                                Close
-                            </Button>
-                        </Modal.Footer>
-                    </Modal>
-
-                    {/* Temperature  */}
-                    <Modal show={showErrorTemp} onHide={handleCloseErrorTemp}>
-                        <Modal.Header>
-                            <Modal.Title></Modal.Title>
-                        </Modal.Header>
-                        <Modal.Body>Enter the Temp Value</Modal.Body>
-                        <Modal.Footer>
-                            <Button variant="danger" onClick={handleCloseErrorTemp}>
-                                Close
-                            </Button>
-                        </Modal.Footer>
-                    </Modal>
-
-                    {/* HB  */}
-                    <Modal show={showErrorHb} onHide={handleCloseErrorHb}>
-                        <Modal.Header>
-                            <Modal.Title></Modal.Title>
-                        </Modal.Header>
-                        <Modal.Body>Enter the Valid Hb Value</Modal.Body>
-                        <Modal.Footer>
-                            <Button variant="danger" onClick={handleCloseErrorHb}>
-                                Close
-                            </Button>
-                        </Modal.Footer>
-                    </Modal>
-
-                    {/* form submittsion */}
-                    <Modal show={showVitalForm} onHide={handleVitalForm}>
-                        <Modal.Body>Vital Form Submitted Successfully.</Modal.Body>
-                        <Modal.Footer>
-                            <Button variant="success" onClick={handleVitalForm}>
-                                Close
-                            </Button>
-                        </Modal.Footer>
-                    </Modal>
-                </div>
-            </div>
-        </div>
+            {/* Success Snackbar */}
+            <Snackbar
+                open={showVitalForm}
+                autoHideDuration={3000}
+                onClose={handleVitalForm}
+                anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+            >
+                <Alert
+                    onClose={handleVitalForm}
+                    severity="success"
+                    sx={{ width: "100%" }}
+                >
+                    Vital Form Submitted Successfully!
+                </Alert>
+            </Snackbar>
+        </Box>
     )
 }
 

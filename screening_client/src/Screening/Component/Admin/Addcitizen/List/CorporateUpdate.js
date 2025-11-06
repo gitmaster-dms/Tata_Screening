@@ -1,8 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import '../Citizenforms/Source/Corporate.css'
-import { useSourceContext } from '../../../../../contexts/SourceContext';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
+import {
+    Grid,
+    TextField,
+    MenuItem,
+    Typography,
+    Button,
+    FormControl,
+    InputLabel,
+    Select,
+    Box,
+    Card
+} from "@mui/material";
 
 const CorporateUpdate = (props) => {
 
@@ -384,650 +394,697 @@ const CorporateUpdate = (props) => {
     }, [updatedData.source, updatedData.tehsil]);
 
     return (
-        <div className="container ml-2">
-            <form onSubmit={handleUpdate}>
-                <div className="row cardsetup">
-                    <div className="col-md-6">
-                        <div className="card card1corporate">
-                            <div className="row">
-                                <h5 className='employeetitle'>Employee Details</h5>
-                                <div className="elementemployee1"></div>
-                            </div>
+        <Box component="form" onSubmit={handleUpdate} >
+            <Grid container spacing={2}>
+                <Grid item xs={12} md={6}>
+                    <Card
+                        sx={{
+                            p: 2,
+                            borderRadius: 3,
+                            height: "100%",
+                            boxShadow: 3,
+                        }}
+                    >
+                        <Typography variant="h6" gutterBottom>
+                            Employee Details
+                        </Typography>
 
-                            <div className="row formspaceemployee">
-                                <div className="col-md-3">
-                                    <label className="form-label corporatelabel">Prefix</label>
-                                    <select className="form-control corporateinput"
-                                        value={updatedData.prefix}
+                        <Grid container spacing={2}>
+                            <Grid item xs={12} sm={2}>
+                                <FormControl fullWidth size="small">
+                                    <InputLabel>Prefix</InputLabel>
+                                    <Select sx={{
+                                        "& .MuiInputBase-input.MuiSelect-select": {
+                                            color: "#000 !important",
+                                        },
+                                        "& .MuiSvgIcon-root": {
+                                            color: "#000",
+                                        },
+                                    }}
+                                        name="prefix"
+                                        value={updatedData.prefix || ""}
                                         onChange={handleInputChange}
-                                        name='prefix'
+                                        label="Prefix"
                                     >
-                                        <option>Prefix</option>
-                                        <option value="Mr">Mr.</option>
-                                        <option value="Ms">Ms.</option>
-                                        <option value="Mrs">Mrs.</option>
-                                        <option value="Adv">Adv.</option>
-                                        <option value="Col">Col.</option>
-                                        <option value="Dr">Dr.</option>
-                                    </select>
-                                </div>
+                                        <MenuItem value="">Prefix</MenuItem>
+                                        <MenuItem value="Mr">Mr.</MenuItem>
+                                        <MenuItem value="Ms">Ms.</MenuItem>
+                                        <MenuItem value="Mrs">Mrs.</MenuItem>
+                                        <MenuItem value="Adv">Adv.</MenuItem>
+                                        <MenuItem value="Col">Col.</MenuItem>
+                                        <MenuItem value="Dr">Dr.</MenuItem>
+                                    </Select>
+                                </FormControl>
+                            </Grid>
 
-                                <div className="col-md-5">
-                                    <label className="form-label corporatelabel">Employee Name</label>
-                                    <input
-                                        className="form-control corporateinput"
-                                        type="text"
-                                        value={updatedData.name}
-                                        onChange={handleInputChange}
-                                        name="name"
-                                    />
-                                </div>
+                            <Grid item xs={12} sm={7}>
+                                <TextField
+                                    fullWidth
+                                    size="small"
+                                    label="Employee Name"
+                                    name="name"
+                                    value={updatedData.name || ""}
+                                    onChange={handleInputChange}
+                                />
+                            </Grid>
 
-                                <div className="col-md-4">
-                                    <label className="form-label corporatelabel">Blood Group</label>
-                                    <select className="form-control corporateinput"
-                                        value={updatedData.blood_groups}
+                            <Grid item xs={12} sm={3}>
+                                <FormControl fullWidth size="small">
+                                    <InputLabel>Blood Group</InputLabel>
+                                    <Select sx={{
+                                        "& .MuiInputBase-input.MuiSelect-select": {
+                                            color: "#000 !important",
+                                        },
+                                        "& .MuiSvgIcon-root": {
+                                            color: "#000",
+                                        },
+                                    }}
+                                        name="blood_groups"
+                                        value={updatedData.blood_groups || ""}
                                         onChange={handleInputChange}
-                                        name='blood_groups'
+                                        label="Blood Group"
                                     >
-                                        <option>Select Group</option>
-                                        <option>A+</option>
-                                        <option>A-</option>
-                                        <option>B+</option>
-                                        <option>B-</option>
-                                        <option>AB+</option>
-                                        <option>AB-</option>
-                                        <option>O+</option>
-                                        <option>O-</option>
-                                    </select>
-                                </div>
+                                        <MenuItem value="">Select</MenuItem>
+                                        {["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"].map(
+                                            (group) => (
+                                                <MenuItem key={group} value={group}>
+                                                    {group}
+                                                </MenuItem>
+                                            )
+                                        )}
+                                    </Select>
+                                </FormControl>
+                            </Grid>
 
-                                <div className="col-md-6">
-                                    <label className="form-label corporatelabel">Date of Birth</label>
-                                    <input
-                                        type="date"
-                                        className="form-control corporateinput"
-                                        value={updatedData.dob}
-                                        onChange={handleInputChange}
-                                        name='dob'
-                                        max={(new Date()).toISOString().split('T')[0]}
-                                    />
-                                </div>
+                            <Grid item xs={12} sm={6}>
+                                <TextField
+                                    fullWidth
+                                    size="small"
+                                    label="Date of Birth"
+                                    type="date"
+                                    name="dob"
+                                    value={updatedData.dob || ""}
+                                    onChange={handleInputChange}
+                                    InputLabelProps={{ shrink: true }}
+                                    inputProps={{
+                                        max: new Date().toISOString().split("T")[0],
+                                    }}
+                                />
+                            </Grid>
 
-                                <div className="col-md-2">
-                                    <label className="form-label corporatelabel">Year</label>
-                                    <input className="form-control corporateinput" readOnly value={updatedData.year}
-                                    />
-                                </div>
+                            <Grid item xs={12} sm={2}>
+                                <TextField
+                                    fullWidth
+                                    size="small"
+                                    label="Year"
+                                    value={updatedData.year || ""}
+                                    InputProps={{ readOnly: true }}
+                                />
+                            </Grid>
+                            <Grid item xs={12} sm={2}>
+                                <TextField
+                                    fullWidth
+                                    size="small"
+                                    label="Month"
+                                    value={updatedData.months || ""}
+                                    InputProps={{ readOnly: true }}
+                                />
+                            </Grid>
+                            <Grid item xs={12} sm={2}>
+                                <TextField
+                                    fullWidth
+                                    size="small"
+                                    label="Days"
+                                    value={updatedData.days || ""}
+                                    InputProps={{ readOnly: true }}
+                                />
+                            </Grid>
 
-                                <div className="col-md-2">
-                                    <label className="form-label corporatelabel">Month</label>
-                                    <input className="form-control corporateinput" readOnly value={updatedData.months} />
-                                </div>
+                            <Grid item xs={12} sm={6}>
+                                <TextField
+                                    fullWidth
+                                    size="small"
+                                    label="Aadhar ID"
+                                    type="number"
+                                    name="aadhar_id"
+                                    value={updatedData.aadhar_id || ""}
+                                    onChange={handleInputChange}
+                                    inputProps={{ maxLength: 12 }}
+                                />
+                            </Grid>
 
-                                <div className="col-md-2">
-                                    <label className="form-label corporatelabel">days</label>
-                                    <input className="form-control corporateinput" readOnly value={updatedData.days} />
-                                </div>
+                            <Grid item xs={12} sm={6}>
+                                <TextField
+                                    fullWidth
+                                    size="small"
+                                    label="Email ID"
+                                    type="email"
+                                    name="email_id"
+                                    value={updatedData.email_id || ""}
+                                    onChange={handleInputChange}
+                                />
+                            </Grid>
 
-                                <div className="col-md-4">
-                                    <label className="form-label corporatelabel">Aadhar ID</label>
-                                    <input
-                                        type="number"
-                                        className="form-control corporateinput"
-                                        name='aadhar_id'
-                                        value={updatedData.aadhar_id}
-                                        onChange={handleInputChange}
-                                        onInput={(e) => {
-                                            if (e.target.value < 0) {
-                                                e.target.value = 0;
-                                            }
+                            <Grid item xs={12} sm={4}>
+                                <TextField
+                                    fullWidth
+                                    size="small"
+                                    label="Mobile Number"
+                                    type="number"
+                                    name="emp_mobile_no"
+                                    value={updatedData.emp_mobile_no || ""}
+                                    onChange={handleInputChange}
+                                    inputProps={{ maxLength: 10 }}
+                                />
+                            </Grid>
 
-                                            if (e.target.value.length > 12) {
-                                                e.target.value = e.target.value.slice(0, 12);
-                                            }
-                                        }}
-                                    />
-                                </div>
-
-                                <div className="col-md-4">
-                                    <label className="form-label corporatelabel">Email ID</label>
-                                    <input
-                                        type="email"
-                                        className="form-control corporateinput"
-                                        name='email_id'
-                                        value={updatedData.email_id}
-                                        onChange={handleInputChange}
-                                    />
-                                </div>
-
-                                <div className="col-md-4">
-                                    <label className="form-label corporatelabel">Employee Mobile Number</label>
-                                    <input
-                                        type="number"
-                                        className="form-control corporateinput"
-                                        name='emp_mobile_no'
-                                        value={updatedData.emp_mobile_no}
-                                        onChange={handleInputChange}
-                                        onInput={(e) => {
-                                            if (e.target.value < 0) {
-                                                e.target.value = 0;
-                                            }
-
-                                            if (e.target.value.length > 10) {
-                                                e.target.value = e.target.value.slice(0, 10);
-                                            }
-                                        }}
-                                    />
-                                </div>
-
-                                <div className="col-md-4">
-                                    <label className="form-label corporatelabel">Department</label>
-                                    <select
-                                        className="form-control corporateinput"
-                                        value={updatedData.department}
+                            {/* <Grid item xs={12} sm={6}>
+                                <FormControl fullWidth size="small">
+                                    <InputLabel>Department</InputLabel>
+                                    <Select sx={{
+                                        "& .MuiInputBase-input.MuiSelect-select": {
+                                            color: "#000 !important",
+                                        },
+                                        "& .MuiSvgIcon-root": {
+                                            color: "#000",
+                                        },
+                                    }}
+                                        value={updatedData.department || ""}
                                         onChange={handleDepartmentChange}
+                                        label="Department"
                                     >
-                                        <option value="">Select</option>
+                                        <MenuItem value="">Select</MenuItem>
                                         {departments.map((dept) => (
-                                            <option key={dept.department_id} value={dept.department_id}>
+                                            <MenuItem
+                                                key={dept.department_id}
+                                                value={dept.department_id}
+                                            >
                                                 {dept.department}
-                                            </option>
+                                            </MenuItem>
                                         ))}
-                                    </select>
-                                </div>
+                                    </Select>
+                                </FormControl>
+                            </Grid>
 
-                                <div className="col-md-4">
-                                    <label className="form-label corporatelabel">Designation</label>
-                                    <select className="form-control corporateinput"
-                                        value={updatedData.designation}
-                                        onChange={(e) => setUpdatedData({ ...updatedData, designation: e.target.value })}>
-                                        <option>Select</option>
-                                        {
-                                            designation.map((design) => (
-                                                <option key={design.designation_id} value={design.designation_id}>
-                                                    {design.designation}
-                                                </option>
-                                            ))
+                            <Grid item xs={12} sm={6}>
+                                <FormControl fullWidth size="small">
+                                    <InputLabel>Designation</InputLabel>
+                                    <Select sx={{
+                                        "& .MuiInputBase-input.MuiSelect-select": {
+                                            color: "#000 !important",
+                                        },
+                                        "& .MuiSvgIcon-root": {
+                                            color: "#000",
+                                        },
+                                    }}
+                                        value={updatedData.designation || ""}
+                                        onChange={(e) =>
+                                            handleInputChange({
+                                                target: {
+                                                    name: "designation",
+                                                    value: e.target.value,
+                                                },
+                                            })
                                         }
-                                    </select>
-                                </div>
-
-                                <div className="col-md-4">
-                                    <label className="form-label corporatelabel">Employee ID</label>
-                                    <input type="text" className="form-control corporateinput"
-                                        name='employee_id'
-                                        value={updatedData.employee_id}
-                                        onChange={handleInputChange}
-                                    />
-                                </div>
-
-                                <div className="col-md-4">
-                                    <label className="form-label corporatelabel">DOJ</label>
-                                    <input type="text" className="form-control corporateinput"
-                                        name='doj'
-                                        value={updatedData.doj}
-                                        onChange={handleInputChange}
-                                    />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="col-md-6">
-                        <div className="card card2corporate ml-3" style={{ height: '365px' }}>
-
-                            <div className="row">
-                                <h5 className='employeetitle'>Family Information</h5>
-                                <div className="elementemployee2"></div>
-                            </div>
-
-                            {/* //// previous code start*/}
-                            {/* <div className="row formspaceemployee">
-
-                                <div className="col-md-6">
-                                    <label className="form-label corporatelabel">Father Name</label>
-                                    <input className="form-control corporateinput" type="text"
-                                        onInput={(e) => {
-                                            e.target.value = e.target.value.replace(/[0-9]/, '');
-                                        }}
-                                        name='father_name'
-                                        value={updatedData.father_name}
-                                        onChange={handleInputChange}
-                                    />
-                                </div>
-
-                                <div className="col-md-6">
-                                    <label className="form-label corporatelabel">Mother Name</label>
-                                    <input className="form-control corporateinput" type="text"
-                                        onInput={(e) => {
-                                            e.target.value = e.target.value.replace(/[0-9]/, '');
-                                        }}
-                                        name='mother_name'
-                                        value={updatedData.mother_name}
-                                        onChange={handleInputChange}
-
-                                    />
-                                </div>
-
-                                <div className="col-md-6">
-                                    <label className="form-label corporatelabel">Occupation of Father</label>
-                                    <input className="form-control corporateinput"
-                                        name='occupation_of_father'
-                                        value={updatedData.occupation_of_father}
-                                        onChange={handleInputChange}
-                                    />
-                                </div>
-
-                                <div className="col-md-6">
-                                    <label className="form-label corporatelabel">Occupation of Mother</label>
-                                    <input className="form-control corporateinput"
-                                        name='occupation_of_mother'
-                                        value={updatedData.occupation_of_mother}
-                                        onChange={handleInputChange}
-                                    />
-                                </div>
-
-                                <div className="col-md-6">
-                                    <label className="form-label corporatelabel">Employee's Marital Status</label>
-                                    <select className="form-control corporateinput"
-                                        name='marital_status'
-                                        value={updatedData.marital_status}
-                                        onChange={handleInputChange}>
-                                        <option>Select</option>
-                                        <option value='Married'>Married</option>
-                                        <option value='Unmarried'>Unmarried</option>
-                                        <option value='Widow'>Widow/Widower</option>
-                                    </select>
-                                </div>
-
-                                {
-                                    updatedData.marital_status === 'Married' && (
-                                        <div className="col-md-6">
-                                            <label className="form-label corporatelabel">Employee's Spouse Name</label>
-                                            <input className="form-control corporateinput" type='text'
-                                                onInput={(e) => {
-                                                    e.target.value = e.target.value.replace(/[0-9]/, '');
-                                                }}
-                                                name='spouse_name'
-                                                value={updatedData.spouse_name}
-                                                onChange={handleInputChange}
-                                            />
-                                        </div>
-                                    )
-                                }
-
-                                {
-                                    updatedData.marital_status === 'Unmarried' && (
-                                        <div className="col-md-6">
-                                            <div className="row">
-                                                <div className="col-md-12">
-                                                    <label className="form-label corporatelabel">Siblings Count</label>
-                                                    <select className="form-control corporateinput"
-                                                        name="sibling_count"
-                                                        value={updatedData.spouse_name}
-                                                        onChange={handleInputChange}>
-                                                        <option>Select</option>
-                                                        <option value='0'>0</option>
-                                                        <option value='1'>1</option>
-                                                        <option value='2'>2</option>
-                                                        <option value='3'>3</option>
-                                                    </select>
-                                                </div>
-
-                                            </div>
-                                        </div>
-                                    )
-                                }
-
-                                {
-                                    (updatedData.marital_status === 'Widow' || updatedData.marital_status === 'Married') && (
-                                        <div className="col-md-6">
-                                            <div className="row">
-                                                <div className="col-md-12">
-                                                    <label className="form-label corporatelabel">Children Count</label>
-                                                    <select className="form-control corporateinput"
-                                                        name="child_count"
-                                                        value={updatedData.child_count}
-                                                        onChange={handleInputChange}
-                                                    >
-                                                        <option>Select</option>
-                                                        <option value='0'>0</option>
-                                                        <option value='1'>1</option>
-                                                        <option value='2'>2</option>
-                                                        <option value='3'>3</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    )
-                                }
-
-                                <div className="col-md-6">
-                                    <label className="form-label corporatelabel">Contact Number</label>
-                                    <input type="number" className="form-control corporateinput"
-                                        onInput={(e) => {
-                                            if (e.target.value < 0) {
-                                                e.target.value = 0;
-                                            }
-
-                                            if (e.target.value.length > 12) {
-                                                e.target.value = e.target.value.slice(0, 10);
-                                            }
-                                        }}
-                                        name='parents_mobile'
-                                        value={updatedData.parents_mobile}
-                                        onChange={handleInputChange}
-                                    />
-                                </div>
-                            </div> */}
-                            {/* //// previous code end*/}
-
-                            {/* ////excel sheet wise changes start*/}
-                            <div className="row formspaceemployee">
-
-                                <div className="col-md-3">
-                                    <label className="form-label corporatelabel">Prefix</label>
-                                    <select className="form-control corporateinput"
-                                        value={updatedData.emergency_prefix}
-                                        onChange={handleInputChange}
-                                        name='emergency_prefix'
+                                        label="Designation"
                                     >
-                                        <option>Prefix</option>
-                                        <option value="Mr">Mr.</option>
-                                        <option value="Ms">Ms.</option>
-                                        <option value="Mrs">Mrs.</option>
-                                        <option value="Adv">Adv.</option>
-                                        <option value="Col">Col.</option>
-                                        <option value="Dr">Dr.</option>
-                                    </select>
-                                </div>
+                                        <MenuItem value="">Select</MenuItem>
+                                        {designation.map((design) => (
+                                            <MenuItem
+                                                key={design.designation_id}
+                                                value={design.designation_id}
+                                            >
+                                                {design.designation}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
+                            </Grid> */}
 
-                                <div className="col-md-6">
-                                    <label className="form-label corporatelabel">Full Name</label>
-                                    <input className="form-control corporateinput" type="text"
-                                        onInput={(e) => {
-                                            e.target.value = e.target.value.replace(/[0-9]/, '');
-                                        }}
-                                        name='emergency_fullname'
-                                        value={updatedData.emergency_fullname}
+                            <Grid item xs={12} sm={4}>
+                                <TextField
+                                    fullWidth
+                                    size="small"
+                                    label="Employee ID"
+                                    name="employee_id"
+                                    value={updatedData.employee_id || ""}
+                                    onChange={handleInputChange}
+                                />
+                            </Grid>
+
+                            <Grid item xs={12} sm={4}>
+                                <TextField
+                                    fullWidth
+                                    size="small"
+                                    label="DOJ"
+                                    name="doj"
+                                    value={updatedData.doj || ""}
+                                    onChange={handleInputChange}
+                                />
+                            </Grid>
+                        </Grid>
+                    </Card>
+                </Grid>
+
+                <Grid item xs={12} md={6}>
+                    <Card
+                        sx={{
+                            p: 2,
+                            borderRadius: 3,
+                            height: "100%",
+                            boxShadow: 3,
+                        }}
+                    >
+                        <Typography variant="h6" gutterBottom>
+                            Family Information
+                        </Typography>
+
+                        <Grid container spacing={2}>
+                            {/* Prefix */}
+                            <Grid item xs={12} sm={4}>
+                                <FormControl fullWidth size="small">
+                                    <InputLabel>Prefix</InputLabel>
+                                    <Select sx={{
+                                        "& .MuiInputBase-input.MuiSelect-select": {
+                                            color: "#000 !important",
+                                        },
+                                        "& .MuiSvgIcon-root": {
+                                            color: "#000",
+                                        },
+                                    }}
+                                        name="emergency_prefix"
+                                        value={updatedData.emergency_prefix || ""}
                                         onChange={handleInputChange}
-
-                                    />
-                                </div>
-
-                                <div className="col-md-3">
-                                    <label className="form-label corporatelabel">Gender</label>
-                                    <select className="form-control corporateinput"
-                                        value={updatedData.emergency_gender}
-                                        onChange={handleInputChange}
-                                        name='emergency_gender'
+                                        label="Prefix"
                                     >
-                                        <option>Gender</option>
-                                        <option value="male">Male</option>
-                                        <option value="female">Female</option>
-                                        <option value="other">Other</option>
-                                    </select>
-                                </div>
+                                        <MenuItem value="">Prefix</MenuItem>
+                                        <MenuItem value="Mr">Mr.</MenuItem>
+                                        <MenuItem value="Ms">Ms.</MenuItem>
+                                        <MenuItem value="Mrs">Mrs.</MenuItem>
+                                        <MenuItem value="Dr">Dr.</MenuItem>
+                                    </Select>
+                                </FormControl>
+                            </Grid>
 
-                                <div className="col-md-6">
-                                    <label className="form-label corporatelabel">Emergency Contact Number</label>
-                                    <input type="number" className="form-control corporateinput"
-                                        onInput={(e) => {
-                                            if (e.target.value < 0) {
-                                                e.target.value = 0;
-                                            }
+                            {/* Full Name */}
+                            <Grid item xs={12} sm={8}>
+                                <TextField
+                                    fullWidth
+                                    size="small"
+                                    label="Full Name"
+                                    name="emergency_fullname"
+                                    value={updatedData.emergency_fullname || ""}
+                                    onChange={handleInputChange}
+                                />
+                            </Grid>
 
-                                            if (e.target.value.length > 12) {
-                                                e.target.value = e.target.value.slice(0, 10);
-                                            }
-                                        }}
-                                        name='emergency_contact'
-                                        value={updatedData.emergency_contact}
+                            {/* Gender */}
+                            <Grid item xs={12} sm={4}>
+                                <FormControl fullWidth size="small">
+                                    <InputLabel>Gender</InputLabel>
+                                    <Select sx={{
+                                        "& .MuiInputBase-input.MuiSelect-select": {
+                                            color: "#000 !important",
+                                        },
+                                        "& .MuiSvgIcon-root": {
+                                            color: "#000",
+                                        },
+                                    }}
+                                        name="emergency_gender"
+                                        value={updatedData.emergency_gender || ""}
                                         onChange={handleInputChange}
-                                    />
-                                </div>
-
-                                <div className="col-md-6">
-                                    <label className="form-label corporatelabel">Email ID</label>
-                                    <input type="number" className="form-control corporateinput"
-                                        onInput={(e) => {
-                                            if (e.target.value < 0) {
-                                                e.target.value = 0;
-                                            }
-
-                                            if (e.target.value.length > 12) {
-                                                e.target.value = e.target.value.slice(0, 10);
-                                            }
-                                        }}
-                                        name='emergency_email'
-                                        value={updatedData.emergency_email}
-                                        onChange={handleInputChange}
-                                    />
-                                </div>
-
-                                <div className="col-md-6">
-                                    <label className="form-label corporatelabel">Relationship With Employee</label>
-                                    <select className="form-control corporateinput"
-                                        value={updatedData.relationship_with_employee}
-                                        onChange={handleInputChange}
-                                        name='relationship_with_employee'
+                                        label="Gender"
                                     >
-                                        <option>Relationship with Employee</option>
-                                        <option value="father">Father</option>
-                                        <option value="mother">Mother</option>
-                                        <option value="brother">Brother</option>
-                                        <option value="sister">Sister</option>
-                                        <option value="spouse">Spouse</option>
-                                        <option value="son">Son</option>
-                                        <option value="daughter">Daughter</option>
-                                    </select>
-                                </div>
+                                        <MenuItem value="">Select</MenuItem>
+                                        <MenuItem value="male">Male</MenuItem>
+                                        <MenuItem value="female">Female</MenuItem>
+                                        <MenuItem value="other">Other</MenuItem>
+                                    </Select>
+                                </FormControl>
+                            </Grid>
 
-                                <div className="col-md-6">
-                                    <label className="form-label corporatelabel">Present Address</label>
-                                    <input type="text" className="form-control corporateinput"
-                                        name='emergency_address'
-                                        value={updatedData.emergency_address}
+                            {/* Emergency Contact */}
+                            <Grid item xs={12} sm={8}>
+                                <TextField
+                                    fullWidth
+                                    size="small"
+                                    label="Emergency Contact Number"
+                                    type="number"
+                                    name="emergency_contact"
+                                    value={updatedData.emergency_contact || ""}
+                                    onChange={handleInputChange}
+                                />
+                            </Grid>
+
+                            {/* Email */}
+                            <Grid item xs={12}>
+                                <TextField
+                                    fullWidth
+                                    size="small"
+                                    label="Email ID"
+                                    type="email"
+                                    name="emergency_email"
+                                    value={updatedData.emergency_email || ""}
+                                    onChange={handleInputChange}
+                                />
+                            </Grid>
+
+                            {/* Relationship */}
+                            <Grid item xs={12} sm={6}>
+                                <FormControl fullWidth size="small">
+                                    <InputLabel>Relationship With Employee</InputLabel>
+                                    <Select sx={{
+                                        "& .MuiInputBase-input.MuiSelect-select": {
+                                            color: "#000 !important",
+                                        },
+                                        "& .MuiSvgIcon-root": {
+                                            color: "#000",
+                                        },
+                                    }}
+                                        name="relationship_with_employee"
+                                        value={updatedData.relationship_with_employee || ""}
                                         onChange={handleInputChange}
-                                    />
-                                </div>
-                            </div>
-                            {/* ////excel sheet wise changes end*/}
-
-                        </div>
-                    </div>
-
-                    <div className="col-md-6">
-                        <div className="card card1corporate" style={{ height: '93%' }}>
-
-                            <div className="row">
-                                <h5 className='employeetitle'>Growth Monitoring</h5>
-                                <div className="elementemployee3"></div>
-                            </div>
-
-                            <div className="row formspaceemployee">
-                                <div className="col-md-4">
-                                    <label className="form-label corporatelabel">Height</label>
-                                    <input type="number" className="form-control corporateinput"
-                                        name='height'
-                                        value={updatedData.height}
-                                        onChange={handleInputChange}
-                                    />
-                                </div>
-
-                                <div className="col-md-4">
-                                    <label className="form-label corporatelabel">Weight</label>
-                                    <input type="number" className="form-control corporateinput"
-                                        name='weight'
-                                        value={updatedData.weight}
-                                        onChange={handleInputChange}
-                                    />
-                                </div>
-
-                                <div className="col-md-4">
-                                    <label className="form-label corporatelabel">BMI</label>
-                                    <input type="text" className="form-control corporateinput" readOnly
-                                        name='bmi'
-                                        value={updatedData.bmi}
-                                        onChange={handleInputChange}
-                                    />
-                                </div>
-
-                                <div className="col-md-4">
-                                    <label className="form-label corporatelabel">Arm Size</label>
-                                    <input type="number" className="form-control corporateinput"
-                                        onInput={(e) => {
-                                            if (e.target.value < 0) {
-                                                e.target.value = 0;
-                                            }
-
-                                            if (e.target.value.length > 3) {
-                                                e.target.value = e.target.value.slice(0, 3);
-                                            }
-                                        }}
-                                        name='arm_size'
-                                        value={updatedData.arm_size}
-                                        onChange={handleInputChange}
-                                    />
-                                </div>
-
-                                <div className="col-md-8">
-                                    <label className="form-label corporatelabel">Symptoms if any</label>
-                                    <input type="text" className="form-control corporateinput"
-                                        onInput={(e) => {
-                                            e.target.value = e.target.value.replace(/[0-9]/, '');
-                                        }}
-                                        name='symptoms'
-                                        value={updatedData.symptoms}
-                                        onChange={handleInputChange}
-                                    />
-                                </div>
-
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="col-md-6">
-                        <div className="card card2corporate ml-3">
-
-                            <div className="row">
-                                <h5 className='employeetitle'>Address</h5>
-                                <div className="elementemployee4"></div>
-                            </div>
-
-                            <div className="row formspaceemployee">
-                                <div className="col-md-6">
-                                    <label className="form-label corporatelabel">State</label>
-                                    <select className="form-control corporateinput"
-                                        value={updatedData.state}
-                                        onChange={(e) => setUpdatedData({ ...updatedData, state: e.target.value })}>
-                                        <option>Select State</option>
-                                        {state.map((stateOption) => (
-                                            <option key={stateOption.source_state} value={stateOption.source_state}>
-                                                {stateOption.state_name}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </div>
-
-                                <div className="col-md-6">
-                                    <label className="form-label corporatelabel">District</label>
-                                    <select className="form-control corporateinput"
-                                        value={updatedData.district}
-                                        onChange={(e) => setUpdatedData({ ...updatedData, district: e.target.value })}
+                                        label="Relationship With Employee"
                                     >
-                                        <option>Select District</option>
-                                        {district.map((districtOption) => (
-                                            <option key={districtOption.source_district} value={districtOption.source_district}>
-                                                {districtOption.dist_name}
-                                            </option>
+                                        <MenuItem value="">Select</MenuItem>
+                                        {[
+                                            "Father",
+                                            "Mother",
+                                            "Brother",
+                                            "Sister",
+                                            "Spouse",
+                                            "Son",
+                                            "Daughter",
+                                        ].map((relation) => (
+                                            <MenuItem key={relation} value={relation.toLowerCase()}>
+                                                {relation}
+                                            </MenuItem>
                                         ))}
-                                    </select>
-                                </div>
+                                    </Select>
+                                </FormControl>
+                            </Grid>
 
-                                <div className="col-md-6">
-                                    <label className="form-label corporatelabel">Tehsil</label>
-                                    <select className="form-control corporateinput"
-                                        value={updatedData.tehsil}
-                                        onChange={(e) => setUpdatedData({ ...updatedData, tehsil: e.target.value })}>
-                                        <option>Select Tehsil</option>
-                                        {tehsil.map((TehsilOption) => (
-                                            <option key={TehsilOption.source_taluka} value={TehsilOption.source_taluka}>
-                                                {TehsilOption.tahsil_name}
-                                            </option>
+                            {/* Address */}
+                            <Grid item xs={12} sm={6}>
+                                <TextField
+                                    fullWidth
+                                    size="small"
+                                    label="Present Address"
+                                    name="emergency_address"
+                                    value={updatedData.emergency_address || ""}
+                                    onChange={handleInputChange}
+                                />
+                            </Grid>
+                        </Grid>
+                    </Card>
+                </Grid>
+
+                <Grid item xs={12} md={6}>
+                    <Card
+                        sx={{
+                            p: 2,
+                            borderRadius: 3,
+                            height: "100%",
+                            boxShadow: 3,
+                        }}
+                    >
+                        <Typography variant="h6" gutterBottom>
+                            Growth Monitoring
+                        </Typography>
+
+                        <Grid container spacing={2}>
+                            {/* Height */}
+                            <Grid item xs={12} sm={4}>
+                                <TextField
+                                    fullWidth
+                                    size="small"
+                                    label="Height"
+                                    type="number"
+                                    name="height"
+                                    value={updatedData.height || ""}
+                                    onChange={handleInputChange}
+                                />
+                            </Grid>
+
+                            {/* Weight */}
+                            <Grid item xs={12} sm={4}>
+                                <TextField
+                                    fullWidth
+                                    size="small"
+                                    label="Weight"
+                                    type="number"
+                                    name="weight"
+                                    value={updatedData.weight || ""}
+                                    onChange={handleInputChange}
+                                />
+                            </Grid>
+
+                            {/* BMI */}
+                            <Grid item xs={12} sm={4}>
+                                <TextField
+                                    fullWidth
+                                    size="small"
+                                    label="BMI"
+                                    name="bmi"
+                                    value={updatedData.bmi || ""}
+                                    onChange={handleInputChange}
+                                    InputProps={{ readOnly: true }}
+                                />
+                            </Grid>
+
+                            {/* Arm Size */}
+                            <Grid item xs={12} sm={4}>
+                                <TextField
+                                    fullWidth
+                                    size="small"
+                                    label="Arm Size"
+                                    type="number"
+                                    name="arm_size"
+                                    value={updatedData.arm_size || ""}
+                                    onChange={handleInputChange}
+                                    onInput={(e) => {
+                                        if (e.target.value < 0) e.target.value = 0;
+                                        if (e.target.value.length > 3)
+                                            e.target.value = e.target.value.slice(0, 3);
+                                    }}
+                                />
+                            </Grid>
+
+                            {/* Symptoms */}
+                            <Grid item xs={12} sm={8}>
+                                <TextField
+                                    fullWidth
+                                    size="small"
+                                    label="Symptoms (if any)"
+                                    name="symptoms"
+                                    value={updatedData.symptoms || ""}
+                                    onChange={handleInputChange}
+                                    onInput={(e) => {
+                                        e.target.value = e.target.value.replace(/[0-9]/g, "");
+                                    }}
+                                />
+                            </Grid>
+                        </Grid>
+                    </Card>
+                </Grid>
+
+                <Grid item xs={12} md={6}>
+                    <Card
+                        sx={{
+                            p: 2,
+                            borderRadius: 3,
+                            height: "100%",
+                            boxShadow: 3,
+                        }}
+                    >
+                        <Typography variant="h6" gutterBottom>
+                            Address
+                        </Typography>
+
+                        <Grid container spacing={2}>
+                            {/* State */}
+                            <Grid item xs={12} sm={6}>
+                                <FormControl fullWidth size="small">
+                                    <InputLabel>State</InputLabel>
+                                    <Select sx={{
+                                        "& .MuiInputBase-input.MuiSelect-select": {
+                                            color: "#000 !important",
+                                        },
+                                        "& .MuiSvgIcon-root": {
+                                            color: "#000",
+                                        },
+                                    }}
+                                        value={updatedData.state || ""}
+                                        label="State"
+                                        onChange={(e) =>
+                                            setUpdatedData({ ...updatedData, state: e.target.value })
+                                        }
+                                    >
+                                        <MenuItem value="">Select State</MenuItem>
+                                        {state.map((s) => (
+                                            <MenuItem key={s.source_state} value={s.source_state}>
+                                                {s.state_name}
+                                            </MenuItem>
                                         ))}
-                                    </select>
-                                </div>
+                                    </Select>
+                                </FormControl>
+                            </Grid>
 
-                                <div className="col-md-6">
-                                    <label className="form-label corporatelabel">Source Name</label>
-                                    <select className="form-control corporateinput"
-                                        value={updatedData.source_name}
-                                        onChange={(e) => setUpdatedData({ ...updatedData, source_name: e.target.value })}>
-                                        <option>Select Source Name</option>
-                                        {sourceName.map((NameOption) => (
-                                            <option key={NameOption.source_pk_id} value={NameOption.source_pk_id}>
-                                                {NameOption.source_names}
-                                            </option>
+                            {/* District */}
+                            <Grid item xs={12} sm={6}>
+                                <FormControl fullWidth size="small">
+                                    <InputLabel>District</InputLabel>
+                                    <Select sx={{
+                                        "& .MuiInputBase-input.MuiSelect-select": {
+                                            color: "#000 !important",
+                                        },
+                                        "& .MuiSvgIcon-root": {
+                                            color: "#000",
+                                        },
+                                    }}
+                                        value={updatedData.district || ""}
+                                        label="District"
+                                        onChange={(e) =>
+                                            setUpdatedData({ ...updatedData, district: e.target.value })
+                                        }
+                                    >
+                                        <MenuItem value="">Select District</MenuItem>
+                                        {district.map((d) => (
+                                            <MenuItem key={d.source_district} value={d.source_district}>
+                                                {d.dist_name}
+                                            </MenuItem>
                                         ))}
-                                    </select>
-                                </div>
+                                    </Select>
+                                </FormControl>
+                            </Grid>
 
-                                <div className="col-md-6">
-                                    <label className="form-label corporatelabel">Address</label>
-                                    <input className="form-control corporateinput"
-                                        name='address'
-                                        value={updatedData.address}
-                                        onChange={handleInputChange}
-                                    />
-                                </div>
+                            {/* Tehsil */}
+                            <Grid item xs={12} sm={6}>
+                                <FormControl fullWidth size="small">
+                                    <InputLabel>Tehsil</InputLabel>
+                                    <Select sx={{
+                                        "& .MuiInputBase-input.MuiSelect-select": {
+                                            color: "#000 !important",
+                                        },
+                                        "& .MuiSvgIcon-root": {
+                                            color: "#000",
+                                        },
+                                    }}
+                                        value={updatedData.tehsil || ""}
+                                        label="Tehsil"
+                                        onChange={(e) =>
+                                            setUpdatedData({ ...updatedData, tehsil: e.target.value })
+                                        }
+                                    >
+                                        <MenuItem value="">Select Tehsil</MenuItem>
+                                        {tehsil.map((t) => (
+                                            <MenuItem key={t.source_taluka} value={t.source_taluka}>
+                                                {t.tahsil_name}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
+                            </Grid>
 
-                                <div className="col-md-6">
-                                    <label className="form-label corporatelabel">Permanant Address</label>
-                                    <input className="form-control corporateinput"
-                                        name='permanant_address'
-                                        value={updatedData.permanant_address}
-                                        onChange={handleInputChange}
-                                    />
-                                </div>
+                            {/* Source Name */}
+                            <Grid item xs={12} sm={6}>
+                                <FormControl fullWidth size="small">
+                                    <InputLabel>Source Name</InputLabel>
+                                    <Select sx={{
+                                        "& .MuiInputBase-input.MuiSelect-select": {
+                                            color: "#000 !important",
+                                        },
+                                        "& .MuiSvgIcon-root": {
+                                            color: "#000",
+                                        },
+                                    }}
+                                        value={updatedData.source_name || ""}
+                                        label="Source Name"
+                                        onChange={(e) =>
+                                            setUpdatedData({
+                                                ...updatedData,
+                                                source_name: e.target.value,
+                                            })
+                                        }
+                                    >
+                                        <MenuItem value="">Select Source Name</MenuItem>
+                                        {sourceName.map((src) => (
+                                            <MenuItem key={src.source_pk_id} value={src.source_pk_id}>
+                                                {src.source_names}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
+                            </Grid>
 
-                                <div className="col-md-6">
-                                    <label className="form-label corporatelabel">Pincode</label>
-                                    <input type="number" className="form-control corporateinput"
-                                        onInput={(e) => {
-                                            if (e.target.value < 0) {
-                                                e.target.value = 0;
-                                            }
+                            {/* Address */}
+                            <Grid item xs={12} sm={6}>
+                                <TextField
+                                    fullWidth
+                                    size="small"
+                                    label="Address"
+                                    name="address"
+                                    value={updatedData.address || ""}
+                                    onChange={handleInputChange}
+                                />
+                            </Grid>
 
-                                            if (e.target.value.length > 6) {
-                                                e.target.value = e.target.value.slice(0, 6);
-                                            }
-                                        }}
-                                        name='pincode'
-                                        value={updatedData.pincode}
-                                        onChange={handleInputChange}
-                                    />
-                                </div>
+                            {/* Permanent Address */}
+                            <Grid item xs={12} sm={6}>
+                                <TextField
+                                    fullWidth
+                                    size="small"
+                                    label="Permanent Address"
+                                    name="permanant_address"
+                                    value={updatedData.permanant_address || ""}
+                                    onChange={handleInputChange}
+                                />
+                            </Grid>
 
-                                <div className="col-md-6">
-                                    <label className="form-label corporatelabel">Site Plant</label>
-                                    <input className="form-control corporateinput"
-                                        name='site_plant'
-                                        value={updatedData.site_plant}
-                                        onChange={handleInputChange}
-                                    />
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                            {/* Pincode */}
+                            <Grid item xs={12} sm={6}>
+                                <TextField
+                                    fullWidth
+                                    size="small"
+                                    label="Pincode"
+                                    type="number"
+                                    name="pincode"
+                                    value={updatedData.pincode || ""}
+                                    onChange={handleInputChange}
+                                    onInput={(e) => {
+                                        if (e.target.value < 0) e.target.value = 0;
+                                        if (e.target.value.length > 6)
+                                            e.target.value = e.target.value.slice(0, 6);
+                                    }}
+                                />
+                            </Grid>
 
-                <div className="row buttoncorporate">
-                    <button type="submit" className="corporatesubmit">Update</button>
-                </div>
-            </form>
-        </div>
+                            {/* <Grid item xs={12} sm={6}>
+                                <TextField
+                                    fullWidth
+                                    size="small"
+                                    label="Site Plant"
+                                    name="site_plant"
+                                    value={updatedData.site_plant || ""}
+                                    onChange={handleInputChange}
+                                />
+                            </Grid> */}
+                        </Grid>
+                    </Card>
+                </Grid>
+
+                <Grid item xs={12} textAlign="center">
+                    <Button
+                        variant="contained"
+                        color="primary"
+                        size="small"
+                        type="submit"
+                    >
+                        Update
+                    </Button>
+                </Grid>
+            </Grid>
+        </Box>
     );
 };
 

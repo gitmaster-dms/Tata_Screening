@@ -1,6 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import CloudDownloadOutlinedIcon from '@mui/icons-material/CloudDownloadOutlined';
+import {
+    Grid,
+    Card,
+    Typography,
+    TextField,
+    Radio,
+    RadioGroup,
+    FormControlLabel,
+    FormControl,
+    FormLabel,
+    Button,
+    Box,
+    Divider,
+    Dialog,
+    DialogTitle,
+    DialogContent,
+    DialogActions, Checkbox
+} from "@mui/material";
 
 const InvestigationInfo = ({ citizensPkId, pkid, fetchVital, selectedName, onAcceptClick }) => {
 
@@ -287,350 +305,179 @@ const InvestigationInfo = ({ citizensPkId, pkid, fetchVital, selectedName, onAcc
     };
 
     return (
-        <div>
-            <div>
-                <div className="row backdesign">
-                    <div className="col-md-12">
-                        <div className="card bmicard">
-                            <div className="row">
-                                <div className="col-md-4">
-                                    <h6 className='mt-1 familyTital'>INVESTIGATION INFORMATION</h6>
-                                </div>
-                                <div className="col-md-5 ml-auto">
-                                    <div class="progress-barbmi"></div>
-                                </div>
-                            </div>
-                        </div>
+        <Box>
+            <Card sx={{ borderRadius: "20px", p: 1, mb: 1, background: "linear-gradient(90deg, #039BEF 0%, #1439A4 100%)" }}>
+                <Typography sx={{ fontWeight: 600, fontFamily: "Roboto", fontSize: "16px", color: "white" }}>
+                    Investigation Report
+                </Typography>
+            </Card>
 
-                        <div className="card grothcardmonitor">
-                            <div className="row">
-                                <div className="col-md-12">
-                                    <h6 className="BMITitle">INVESTIGATION REPORT</h6>
-                                    <div className="childdetailelement"></div>
-                                </div>
-                            </div>
+            <Box
+                sx={{
+                    maxHeight: "70vh",
+                    overflowY: "auto",
+                    pr: 2,
+                }}
+            >
+                <Card sx={{ p: 2, mb: 2, borderRadius: "20px", }}>
+                    <Box sx={{ display: "flex", flexWrap: "wrap", gap: 2 }}>
+                        {investtData && investtData.map((data, i) => (
+                            <FormControlLabel
+                                key={i}
+                                control={<Checkbox id={`checkbox-${i}`} />}
+                                label={
+                                    <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                                        {data.submoduleName}
+                                    </Typography>
+                                }
+                                sx={{ mr: 2 }}
+                            />
+                        ))}
+                    </Box>
 
-                            {/* <li>{formatSubmoduleName(data.submoduleName)}</li> */}
-                            <div>
-                                {investtData && investtData.map((data, i) => (
-                                    <ul key={i} style={{ listStyle: 'none' }}>
-                                        <li><input type="checkbox" id={`checkbox-${i}`} style={{ marginRight: '4px' }} />{data.submoduleName}</li>
-                                    </ul>
-                                ))}
-                            </div>
+                    <Box sx={{ display: "flex", flexWrap: "wrap", p: 3, ml: 5 }}>
+                        {investtData && investtData.map((data, i) => (
+                            <Grid container spacing={2} sx={{ mb: 3 }} key={i}>
+                                {data.submoduleName === "Blood Report" && (
+                                    <Grid container spacing={2}>
+                                        <Grid item xs={12} md={4}>
+                                            <Typography variant="body2" sx={{ mb: 1 }}>Upload Blood Report</Typography>
+                                            <input
+                                                type="file"
+                                                className="form-control"
+                                                onChange={(e) => handleFileChange(e, 'investigation_report')}
+                                                style={{ width: '100%' }}
+                                            />
+                                        </Grid>
+                                        {Array.isArray(investData) && investData.length > 0 && investData[0].investigation_report !== '/media/undefined' && (
+                                            <Grid item xs={12} md={4} display="flex" alignItems="center">
+                                                <Button
+                                                    variant="contained"
+                                                    size="small"
+                                                    sx={{
+                                                        backgroundColor: "#F77C00",
+                                                        borderRadius: '6px',
+                                                        '&:hover': { backgroundColor: "#F77C00" },
+                                                    }}
+                                                    startIcon={<CloudDownloadOutlinedIcon />}
+                                                    onClick={() => downloadFile(investData[0]?.investigation_report)}
+                                                >
+                                                    Download
+                                                </Button>
+                                            </Grid>
+                                        )}
+                                    </Grid>
+                                )}
 
-                            {investtData && investtData.map((data, i) => (
-                                <div className="row paddingwhole mb-4" key={i} value={i}>
+                                {data.submoduleName === "Urine Report" && (
+                                    <Grid container spacing={2}>
+                                        <Grid item xs={12} md={4}>
+                                            <Typography variant="body2" sx={{ mb: 1 }}>Upload Urine Report</Typography>
+                                            <input
+                                                type="file"
+                                                className="form-control"
+                                                onChange={(e) => handleFileChange(e, 'urine_report')}
+                                                style={{ width: '100%' }}
+                                            />
+                                        </Grid>
+                                        {Array.isArray(investData) && investData.length > 0 && investData[0].urine_report !== '/media/undefined' && (
+                                            <Grid item xs={12} md={4} display="flex" alignItems="center">
+                                                <Button
+                                                    variant="contained"
+                                                    size="small"
+                                                    sx={{
+                                                        backgroundColor: "#F77C00",
+                                                        borderRadius: '6px',
+                                                        '&:hover': { backgroundColor: "#F77C00" },
+                                                    }}
+                                                    startIcon={<CloudDownloadOutlinedIcon />}
+                                                    onClick={() => downloadFile(investData[0]?.urine_report)}
+                                                >
+                                                    Download
+                                                </Button>
+                                            </Grid>
+                                        )}
+                                    </Grid>
+                                )}
 
-                                    {data.submoduleName === "Blood Report" && (
-                                        <div className="row paddingwhole">
-                                            <div className="col-md-8">
-                                                <label className="visually-hidden childvitaldetails">Upload Blood Report</label>
-                                                <input type="file" className="form-control childvitalinput" onChange={(e) => handleFileChange(e, 'investigation_report')} />
-                                            </div>
-                                            {/* {Array.isArray(investData) && investData.length > 0 && ( */}
-                                            {Array.isArray(investData) && investData.length > 0 && investData[0].investigation_report !== '/media/undefined' && (
-                                                <div className="col-md-4 mt-4">
-                                                    <div className="btn btn-sm" style={{ background: "#F77C00", color: "white", borderRadius: "4px" }} onClick={() => downloadFile(investData[0]?.investigation_report)}>
-                                                        <CloudDownloadOutlinedIcon /> Download
-                                                    </div>
-                                                </div>
-                                            )}
-                                        </div>
-                                    )}
+                                {data.submoduleName === "ECG Report" && (
+                                    <Grid container spacing={2}>
+                                        <Grid item xs={12} md={4}>
+                                            <Typography variant="body2" sx={{ mb: 1 }}>Upload ECG Report</Typography>
+                                            <input
+                                                type="file"
+                                                className="form-control"
+                                                onChange={(e) => handleFileChange(e, 'ecg_report')}
+                                                style={{ width: '100%' }}
+                                            />
+                                        </Grid>
+                                        {Array.isArray(investData) && investData.length > 0 && investData[0].ecg_report !== '/media/undefined' && (
+                                            <Grid item xs={12} md={4} display="flex" alignItems="center">
+                                                <Button
+                                                    variant="contained"
+                                                    size="small"
+                                                    sx={{
+                                                        backgroundColor: "#F77C00",
+                                                        borderRadius: '6px',
+                                                        '&:hover': { backgroundColor: "#F77C00" },
+                                                    }}
+                                                    startIcon={<CloudDownloadOutlinedIcon />}
+                                                    onClick={() => downloadFile(investData[0]?.ecg_report)}
+                                                >
+                                                    Download
+                                                </Button>
+                                            </Grid>
+                                        )}
+                                    </Grid>
+                                )}
 
-                                    {data.submoduleName === 'Urine Report' && (
-                                        <div className="row paddingwhole">
-                                            <div className="col-md-8">
-                                                <label className="visually-hidden childvitaldetails">Upload Urine Report</label>
-                                                <input type="file" className="form-control childvitalinput" onChange={(e) => handleFileChange(e, 'urine_report')} />
-                                            </div>
-                                            {Array.isArray(investData) && investData.length > 0 && investData[0].urine_report !== '/media/undefined' && (
+                                {data.submoduleName === "X-Ray Report" && (
+                                    <Grid container spacing={2}>
+                                        <Grid item xs={12} md={4}>
+                                            <Typography variant="body2" sx={{ mb: 1 }}>Upload X-Ray Report</Typography>
+                                            <input
+                                                type="file"
+                                                className="form-control"
+                                                onChange={(e) => handleFileChange(e, 'x_ray_report')}
+                                                style={{ width: '100%' }}
+                                            />
+                                        </Grid>
+                                        {Array.isArray(investData) && investData.length > 0 && investData[0].x_ray_report !== '/media/undefined' && (
+                                            <Grid item xs={12} md={4} display="flex" alignItems="center">
+                                                <Button
+                                                    variant="contained"
+                                                    size="small"
+                                                    sx={{
+                                                        backgroundColor: "#F77C00",
+                                                        borderRadius: '6px',
+                                                        '&:hover': { backgroundColor: "#F77C00" },
+                                                    }}
+                                                    startIcon={<CloudDownloadOutlinedIcon />}
+                                                    onClick={() => downloadFile(investData[0]?.x_ray_report)}
+                                                >
+                                                    Download
+                                                </Button>
+                                            </Grid>
+                                        )}
+                                    </Grid>
+                                )}
+                            </Grid>
+                        ))}
+                    </Box>
+                </Card>
+            </Box>
 
-                                                <div className="col-md-4 mt-4">
-                                                    <div className="btn btn-sm" style={{ background: "#F77C00", color: "white", borderRadius: "4px" }} onClick={() => downloadFile(investData[0]?.urine_report)}>
-                                                        <CloudDownloadOutlinedIcon /> Download
-                                                    </div>
-                                                </div>
-                                            )}
-                                        </div>
-                                    )}
-
-                                    {data.submoduleName === 'ECG Report' && (
-                                        <div className="row paddingwhole">
-                                            <div className="col-md-8">
-                                                <label className="visually-hidden childvitaldetails">Upload ECG Report</label>
-                                                <input type="file" className="form-control childvitalinput" onChange={(e) => handleFileChange(e, 'ecg_report')} />
-                                            </div>
-                                            {Array.isArray(investData) && investData.length > 0 && investData[0].ecg_report !== '/media/undefined' && (
-                                                <div className="col-md-4 mt-4">
-                                                    <div className="btn btn-sm" style={{ background: "#F77C00", color: "white", borderRadius: "4px" }} onClick={() => downloadFile(investData[0]?.ecg_report)}>
-                                                        <CloudDownloadOutlinedIcon /> Download
-                                                    </div>
-                                                </div>
-                                            )}
-                                        </div>
-                                    )}
-
-                                    {data.submoduleName === 'X-Ray Report' && (
-                                        <div className="row paddingwhole">
-                                            <div className="col-md-8">
-                                                <label className="visually-hidden childvitaldetails">Upload X-Ray Report</label>
-                                                <input type="file" className="form-control childvitalinput" onChange={(e) => handleFileChange(e, 'x_ray_report')} />
-                                            </div>
-                                            {Array.isArray(investData) && investData.length > 0 && investData[0].x_ray_report !== '/media/undefined' && (
-                                                <div className="col-md-4 mt-4">
-                                                    <div className="btn btn-sm" style={{ background: "#F77C00", color: "white", borderRadius: "4px" }} onClick={() => downloadFile(investData[0]?.x_ray_report)}>
-                                                        <CloudDownloadOutlinedIcon /> Download
-                                                    </div>
-                                                </div>
-                                            )}
-                                        </div>
-                                    )}
-                                </div>
-                            ))}
-
-                            {/* <div className="row paddingwhole">
-                                <div className="col-md-3">
-                                    <label for="childName" class="visually-hidden childvitaldetails">CBC Report</label>
-                                    <input type="file" class="form-control childvitalinput" placeholder="Enter Name"
-                                        onChange={(e) => handleFileChange(e, 'cbc_report')}
-                                    />
-                                </div>
-                                <div className="col-md-3">
-                                    <label for="childName" class="visually-hidden childvitaldetails">Lipid Profile Report </label>
-                                    <input type="file" class="form-control childvitalinput" placeholder="Enter Name"
-                                        onChange={(e) => handleFileChange(e, 'lipid_profile_report')}
-                                    />
-                                </div>
-                                <div className="col-md-3">
-                                    <label for="childName" class="visually-hidden childvitaldetails">Creatinine Report</label>
-                                    <input type="file" class="form-control childvitalinput" placeholder="Enter Name"
-                                        onChange={(e) => handleFileChange(e, 'creatinine_report')}
-                                    />
-                                </div>
-                                <div className="col-md-3">
-                                    <label for="childName" class="visually-hidden childvitaldetails">RBS Report </label>
-                                    <input type="file" class="form-control childvitalinput" placeholder="Enter Name"
-                                        onChange={(e) => handleFileChange(e, 'rbs_report')}
-                                    />
-                                </div>
-                            </div> */}
-
-                            {/* <div className="row paddingwhole">
-                                <div className="col-md-3">
-                                    <label for="childName" class="visually-hidden childvitaldetails">Uric Acid Report</label>
-                                    <input type="file" class="form-control childvitalinput" placeholder="Enter Name"
-                                        onChange={(e) => handleFileChange(e, 'uric_acid_report')}
-                                    />
-                                </div>
-                                <div className="col-md-3">
-                                    <label for="childName" class="visually-hidden childvitaldetails">Protein Report </label>
-                                    <input type="file" class="form-control childvitalinput" placeholder="Enter Name"
-                                        onChange={(e) => handleFileChange(e, 'protein_report')}
-                                    />
-                                </div>
-                                <div className="col-md-3">
-                                    <label for="childName" class="visually-hidden childvitaldetails">Albumin Report </label>
-                                    <input type="file" class="form-control childvitalinput" placeholder="Enter Name"
-                                        onChange={(e) => handleFileChange(e, 'albumin_report')}
-                                    />
-                                </div>
-                                <div className="col-md-3">
-                                    <label for="childName" class="visually-hidden childvitaldetails">ALP Alkaline phosphate Report </label>
-                                    <input type="file" class="form-control childvitalinput" placeholder="Enter Name"
-                                        onChange={(e) => handleFileChange(e, 'alp_alkaline_phosphate_report')}
-                                    />
-                                </div>
-                            </div> */}
-
-                            {/* <div className="row paddingwhole">
-                                <div className="col-md-3">
-                                    <label for="childName" class="visually-hidden childvitaldetails">Urea Report </label>
-                                    <input type="file" class="form-control childvitalinput" placeholder="Enter Name"
-                                        onChange={(e) => handleFileChange(e, 'urea_report')}
-                                    />
-                                </div>
-                                <div className="col-md-3">
-                                    <label for="childName" class="visually-hidden childvitaldetails">Bilirubin Report</label>
-                                    <input type="file" class="form-control childvitalinput" placeholder="Enter Name"
-                                        onChange={(e) => handleFileChange(e, 'bilirubin_report')}
-                                    />
-
-                                </div>
-                                <div className="col-md-3">
-                                    <label for="childName" class="visually-hidden childvitaldetails">SGOT Report </label>
-                                    <input type="file" class="form-control childvitalinput" placeholder="Enter Name"
-                                        onChange={(e) => handleFileChange(e, 'sgot_report')}
-                                    />
-                                </div>
-                                <div className="col-md-3">
-                                    <label for="childName" class="visually-hidden childvitaldetails">Thyroid Profile Report </label>
-                                    <input type="file" class="form-control childvitalinput" placeholder="Enter Name"
-                                        onChange={(e) => handleFileChange(e, 'thyroid_profile_report')}
-                                    />
-                                </div>
-                            </div> */}
-
-                            {/* <div className="row paddingwhole">
-                                <div className="col-md-3">
-                                    <label for="childName" class="visually-hidden childvitaldetails">T3 Report</label>
-                                    <input type="file" class="form-control childvitalinput" id="t3_report" name="t3_report"
-                                        value={investData && investData.t3_report ? investData.t3_report : ''}
-                                        onChange={(e) => handleFileChange(e, 't3_report')}
-                                    />
-                                </div>
-                                <div className="col-md-3">
-                                    <label for="childName" class="visually-hidden childvitaldetails">T4 Report</label>
-                                    <input type="file" class="form-control childvitalinput"
-                                        onChange={(e) => handleFileChange(e, 't4_report')}
-                                    />
-                                </div>
-                                <div className="col-md-3">
-                                    <label for="childName" class="visually-hidden childvitaldetails">TSH Report</label>
-                                    <input type="file" class="form-control childvitalinput" placeholder="Enter Name"
-                                        onChange={(e) => handleFileChange(e, 'tsh_report')}
-                                    />
-                                </div>
-                                <div className="col-md-3">
-                                    <label for="childName" class="visually-hidden childvitaldetails">Vitamin b12 Report </label>
-                                    <input type="file" class="form-control childvitalinput" placeholder="Enter Name"
-                                        onChange={(e) => handleFileChange(e, 'vitamin_b12_report')}
-                                    />
-                                </div>
-                            </div> */}
-
-                            {/* <div className="row paddingwhole">
-                                <div className="col-md-3">
-                                    <label for="childName" class="visually-hidden childvitaldetails">Vitamin D3 Report </label>
-                                    <input type="file" class="form-control childvitalinput" placeholder="Enter Name"
-                                        onChange={(e) => handleFileChange(e, 'vitamin_d3_report')}
-                                    />
-                                </div>
-                                <div className="col-md-3">
-                                    <label for="childName" class="visually-hidden childvitaldetails">HIV Report</label>
-                                    <input type="file" class="form-control childvitalinput" placeholder="Enter Name"
-                                        onChange={(e) => handleFileChange(e, 'hiv_report')}
-                                    />
-                                </div>
-                                <div className="col-md-3">
-                                    <label for="childName" class="visually-hidden childvitaldetails">VDRL Report</label>
-                                    <input type="file" class="form-control childvitalinput" placeholder="Enter Name"
-                                        onChange={(e) => handleFileChange(e, 'vdrl_report')}
-                                    />
-                                </div>
-                                <div className="col-md-3">
-                                    <label for="childName" class="visually-hidden childvitaldetails">Bilirubin Urine Report</label>
-                                    <input type="file" class="form-control childvitalinput" placeholder="Enter Name"
-                                        onChange={(e) => handleFileChange(e, 'bilirubin_urine_report')}
-                                    />
-                                </div>
-                            </div> */}
-
-                            {/* <div className="row paddingwhole">
-                                <div className="col-md-3">
-                                    <label for="childName" class="visually-hidden childvitaldetails">Protein Urine Report</label>
-                                    <input type="file" class="form-control childvitalinput" placeholder="Enter Name"
-                                        onChange={(e) => handleFileChange(e, 'protein_urine_report')}
-                                    />
-                                </div>
-                                <div className="col-md-3">
-                                    <label for="childName" class="visually-hidden childvitaldetails">Glucose Report</label>
-                                    <input type="file" class="form-control childvitalinput" placeholder="Enter Name"
-                                        onChange={(e) => handleFileChange(e, 'glucose_report')}
-                                    />
-                                </div>
-                                <div className="col-md-3">
-                                    <label for="childName" class="visually-hidden childvitaldetails">Specific Gravity Report </label>
-                                    <input type="file" class="form-control childvitalinput" placeholder="Enter Name"
-                                        onChange={(e) => handleFileChange(e, 'specific_gravity_report')}
-                                    />
-                                </div>
-                                <div className="col-md-3">
-                                    <label for="childName" class="visually-hidden childvitaldetails">PH Report</label>
-                                    <input type="file" class="form-control childvitalinput" placeholder="Enter Name"
-                                        onChange={(e) => handleFileChange(e, 'ph_report')}
-                                    />
-                                </div>
-                            </div> */}
-
-                            {/* <div className="row paddingwhole">
-                                <div className="col-md-3">
-                                    <label for="childName" class="visually-hidden childvitaldetails">Urine Bilinogen Report </label>
-                                    <input type="file" class="form-control childvitalinput" placeholder="Enter Name"
-                                        onChange={(e) => handleFileChange(e, 'urine_bilinogen_report')}
-                                    />
-                                </div>
-                                <div className="col-md-3">
-                                    <label for="childName" class="visually-hidden childvitaldetails">PUS Cells Report</label>
-                                    <input type="file" class="form-control childvitalinput" placeholder="Enter Name"
-                                        onChange={(e) => handleFileChange(e, 'pus_cells_report')}
-                                    />
-                                </div>
-
-                                <div className="col-md-3">
-                                    <label for="childName" class="visually-hidden childvitaldetails">Epithelial Cells Report </label>
-                                    <input type="file" class="form-control childvitalinput" placeholder="Enter Name"
-                                        onChange={(e) => handleFileChange(e, 'epithelial_cells_report')}
-                                    />
-                                </div>
-                                <div className="col-md-3">
-                                    <label for="childName" class="visually-hidden childvitaldetails">Blood Report </label>
-                                    <input type="file" class="form-control childvitalinput" placeholder="Enter Name"
-                                        onChange={(e) => handleFileChange(e, 'blood_report')}
-                                    />
-                                </div>
-                            </div> */}
-
-                            {/* <div className="row paddingwhole">
-                                <div className="col-md-3">
-                                    <label for="childName" class="visually-hidden childvitaldetails">Leukocytes Report </label>
-                                    <input type="file" class="form-control childvitalinput" placeholder="Enter Name"
-                                        onChange={(e) => handleFileChange(e, 'leukocytes_report')}
-                                    />
-                                </div>
-                                <div className="col-md-3">
-                                    <label for="childName" class="visually-hidden childvitaldetails">Crystals Report</label>
-                                    <input type="file" class="form-control childvitalinput" placeholder="Enter Name"
-                                        onChange={(e) => handleFileChange(e, 'crystals_report')}
-                                    />
-                                </div>
-                                <div className="col-md-3">
-                                    <label for="childName" class="visually-hidden childvitaldetails">RBC Report </label>
-                                    <input type="file" class="form-control childvitalinput" placeholder="Enter Name"
-                                        onChange={(e) => handleFileChange(e, 'rbc_report')}
-                                    />
-                                </div>
-                                <div className="col-md-3">
-                                    <label for="childName" class="visually-hidden childvitaldetails">ECG Report</label>
-                                    <input type="file" class="form-control childvitalinput" placeholder="Enter Name"
-                                        onChange={(e) => handleFileChange(e, 'ecg_report')}
-                                    />
-                                </div>
-                            </div> */}
-
-                            {/* <div className="row paddingwhole">
-                                <div className="col-md-3">
-                                    <label for="childName" class="visually-hidden childvitaldetails">PFT Report </label>
-                                    <input type="file" class="form-control childvitalinput" placeholder="Enter Name"
-                                        onChange={(e) => handleFileChange(e, 'pft_report')}
-                                    />
-                                </div>
-                                <div className="col-md-3">
-                                    <label for="childName" class="visually-hidden childvitaldetails">X Ray Report</label>
-                                    <input type="file" class="form-control childvitalinput" placeholder="Enter Name"
-                                        onChange={(e) => handleFileChange(e, 'x_ray_report')}
-                                    />
-                                </div>
-                            </div> */}
-                        </div>
-                        <div className="row mb-4 mt-4">
-                            <div type="button" className="btn btn-sm submitvital" onClick={handleSubmit}>Submit</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+            <Box textAlign="center" mt={1} mb={2}>
+                <Button
+                    variant="contained"
+                    size="small"
+                    sx={{ bgcolor: "#1439A4", textTransform: "none" }}
+                    onClick={handleSubmit}
+                >
+                    Submit
+                </Button>
+            </Box>
+        </Box>
     )
 }
 

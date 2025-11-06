@@ -1,38 +1,19 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import {
+    Box,
+    Grid,
+    Card,
+    Typography,
+    FormGroup,
+    FormControlLabel,
+    Checkbox,
+    Button,
+    LinearProgress,
+} from "@mui/material";
 
 const MedicalInfo = ({ citizensPkId, pkid, fetchVital, selectedName, onAcceptClick }) => {
-
-    //_________________________________START
-    console.log(selectedName, 'Present name');
-    console.log(fetchVital, 'Overall GET API');
-    const [nextName, setNextName] = useState('');
-
-    useEffect(() => {
-        if (fetchVital && selectedName) {
-            const currentIndex = fetchVital.findIndex(item => item.screening_list === selectedName);
-
-            console.log('Current Indexxxx:', currentIndex);
-
-            if (currentIndex !== -1 && currentIndex < fetchVital.length - 1) {
-                const nextItem = fetchVital[currentIndex + 1];
-                const nextName = nextItem.screening_list;
-                setNextName(nextName);
-                console.log('Next Name Setttt:', nextName);
-            } else {
-                setNextName('');
-                console.log('No next item or selectedName not found');
-            }
-        }
-    }, [selectedName, fetchVital]);
-    //_________________________________END
-
-    const userID = localStorage.getItem('userID');
-    const accessToken = localStorage.getItem('token');
-    console.log(userID);
-
-    const Port = process.env.REACT_APP_API_KEY;
-
+    const [nextName, setNextName] = useState("");
     const [medInfoChechBox, setMedInfoChechBox] = useState([]);
     const [medPastInfoChechBox, setMedPastInfoChechBox] = useState([]);
 
@@ -47,179 +28,141 @@ const MedicalInfo = ({ citizensPkId, pkid, fetchVital, selectedName, onAcceptCli
         selectedMedPastName: [],
     });
 
-    console.log("checked formData....", formData.selectedNames);
-    console.log("checked formMedPastData....", formPastData.selectedMedPastName);
+    const userID = localStorage.getItem("userID");
+    const accessToken = localStorage.getItem("token");
+    const Port = process.env.REACT_APP_API_KEY;
 
+    // Determine next screening name
+    useEffect(() => {
+        if (fetchVital && selectedName) {
+            const currentIndex = fetchVital.findIndex(
+                (item) => item.screening_list === selectedName
+            );
+
+            if (currentIndex !== -1 && currentIndex < fetchVital.length - 1) {
+                const nextItem = fetchVital[currentIndex + 1];
+                const nextName = nextItem.screening_list;
+                setNextName(nextName);
+            } else {
+                setNextName("");
+            }
+        }
+    }, [selectedName, fetchVital]);
+
+    // Fetch Medical Info
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const response = await fetch(`${Port}/Screening/citizen_medical_history/`, {
                     headers: {
-                        'Authorization': `Bearer ${accessToken}`,
-                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${accessToken}`,
+                        "Content-Type": "application/json",
                     },
                 });
-                if (!response.ok) {
-                    throw new Error(`Failed to fetch data. Status: ${response.status}`);
-                }
-                const medDataFromApi = await response.json();
-                setMedInfoChechBox(medDataFromApi);
-                console.log('Medical Data Idddddd:', medDataFromApi);
+                const data = await response.json();
+                setMedInfoChechBox(data);
             } catch (error) {
-                console.error('Error fetching Medical data', error);
+                console.error("Error fetching medical info", error);
             }
         };
         fetchData();
     }, []);
 
+    // Handle checkbox change for medical info
     const handleCheckboxChange = (index) => {
         const updatedCheckboxes = [...formData.checkboxes];
         updatedCheckboxes[index] = !updatedCheckboxes[index];
-
         const selectedNames = medInfoChechBox
-            .filter((item, i) => updatedCheckboxes[i])
+            .filter((_, i) => updatedCheckboxes[i])
             .map((item) => item.medical_history);
 
         setFormData({
             ...formData,
             checkboxes: updatedCheckboxes,
-            selectedNames: selectedNames,
+            selectedNames,
         });
     };
 
-    // Medical Past Info
+    // Fetch Medical Past Info
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const response = await fetch(`${Port}/Screening/citizen_past_operative_history/`, {
                     headers: {
-                        'Authorization': `Bearer ${accessToken}`,
-                        'Content-Type': 'application/json',
+                        Authorization: `Bearer ${accessToken}`,
+                        "Content-Type": "application/json",
                     },
                 });
-                if (!response.ok) {
-                    throw new Error(`Failed to fetch data. Status: ${response.status}`);
-                }
-                const medDataFromApi = await response.json();
-                setMedPastInfoChechBox(medDataFromApi);
-                console.log('Medical Past Info:', medDataFromApi);
+                const data = await response.json();
+                setMedPastInfoChechBox(data);
             } catch (error) {
-                console.error('Error fetching Medical Past Info', error);
+                console.error("Error fetching past info", error);
             }
         };
         fetchData();
     }, []);
 
+    // Handle checkbox change for past info
     const handleCheckboxMedPastChange = (index) => {
-        const updatedCheckbox = [...formPastData.checkbox];
-        updatedCheckbox[index] = !updatedCheckbox[index];
-
+        const updatedCheckboxes = [...formPastData.checkbox];
+        updatedCheckboxes[index] = !updatedCheckboxes[index];
         const selectedMedPastName = medPastInfoChechBox
-            .filter((item, i) => updatedCheckbox[i])
+            .filter((_, i) => updatedCheckboxes[i])
             .map((item) => item.past_operative_history);
 
         setFormPastData({
             ...formPastData,
-            checkbox: updatedCheckbox,
-            selectedMedPastName: selectedMedPastName,
+            checkbox: updatedCheckboxes,
+            selectedMedPastName,
         });
     };
 
+    // Fetch selected data by pkid
     useEffect(() => {
         const fetchDataById = async (pkid) => {
-            console.error('Citizens Pk Id...', pkid);
             try {
                 const response = await fetch(`${Port}/Screening/medical_history_get/${pkid}`, {
-                    method: 'GET',
                     headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${accessToken}`,
+                        Authorization: `Bearer ${accessToken}`,
+                        "Content-Type": "application/json",
                     },
                 });
 
                 if (response.ok) {
                     const data = await response.json();
-                    console.error('hiii data array.');
                     if (Array.isArray(data) && data.length > 0) {
                         const screeningInfo = data[0];
                         const medDefectsData = screeningInfo.medical_history || [];
                         const pastOperativeData = screeningInfo.past_operative_history || [];
 
-                        // Set checkboxes for medical history
-                        const initialCheckboxes = medInfoChechBox.map(item =>
+                        const initialCheckboxes = medInfoChechBox.map((item) =>
                             medDefectsData.includes(item.medical_history)
                         );
-                        setFormData((prevState) => ({
-                            ...prevState,
-                            checkboxes: initialCheckboxes,
-                            selectedNames: medDefectsData,
-                        }));
-
-                        // Set checkboxes for past operative history
-                        const initialPastCheckboxes = medPastInfoChechBox.map(item =>
+                        const initialPastCheckboxes = medPastInfoChechBox.map((item) =>
                             pastOperativeData.includes(item.past_operative_history)
                         );
-                        setFormPastData((prevState) => ({
-                            ...prevState,
+
+                        setFormData({
+                            ...formData,
+                            checkboxes: initialCheckboxes,
+                            selectedNames: medDefectsData,
+                        });
+                        setFormPastData({
+                            ...formPastData,
                             checkbox: initialPastCheckboxes,
                             selectedMedPastName: pastOperativeData,
-                        }));
-                    } else {
-                        console.error('Empty or invalid data array.');
+                        });
                     }
-                } else {
-                    console.error('Server Error:', response.status, response.statusText);
                 }
             } catch (error) {
-                console.error('Error fetching data:', error.message);
+                console.error("Error fetching by ID:", error);
             }
         };
 
         fetchDataById(pkid);
     }, [pkid, medInfoChechBox, medPastInfoChechBox]);
 
-    // useEffect(() => {
-    //     const fetchDataById = async (pkid) => {
-    //         console.error('Citizens Pk Id...', pkid);
-    //         try {
-    //             const response = await fetch(`${Port}/Screening/medical_history_get/${pkid}`, {
-    //                 method: 'GET',
-    //                 headers: {
-    //                     'Content-Type': 'application/json',
-    //                     'Authorization': `Bearer ${accessToken}`,
-    //                 },
-    //             });
-
-    //             if (response.ok) {
-    //                 const data = await response.json();
-    //                 console.error('hiii data array.');
-    //                 if (Array.isArray(data) && data.length > 0) {
-    //                     const screeningInfo = data[0];
-    //                     const medDefectsData = screeningInfo.medical_history || [];
-
-    //                     const initialCheckboxes = medInfoChechBox.map(item =>
-    //                         medDefectsData.includes(item.medical_history)
-    //                     );
-
-    //                     setFormData((prevState) => ({
-    //                         ...prevState,
-    //                         checkboxes: initialCheckboxes,
-    //                         selectedNames: medDefectsData,
-    //                     }));
-    //                 } else {
-    //                     console.error('Empty or invalid data array.');
-    //                 }
-    //             } else {
-    //                 console.error('Server Error:', response.status, response.statusText);
-    //             }
-    //         } catch (error) {
-    //             console.error('Error fetching data:', error.message);
-    //         }
-    //     };
-
-    //     fetchDataById(pkid);
-    // }, [pkid, medInfoChechBox]);
-
+    // Submit Handler
     const handleSubmit = async (e) => {
         e.preventDefault();
         const postData = {
@@ -228,117 +171,105 @@ const MedicalInfo = ({ citizensPkId, pkid, fetchVital, selectedName, onAcceptCli
             added_by: userID,
             modify_by: userID,
             medical_history: formData.selectedNames,
-            past_operative_history: formPastData.selectedMedPastName
+            past_operative_history: formPastData.selectedMedPastName,
         };
-        console.log('Form Submitted Successfully', postData);
+
         try {
-            const response = await axios.post(`${Port}/Screening/medical_history/${pkid}`,
-                postData, {
+            const response = await axios.post(`${Port}/Screening/medical_history/${pkid}`, postData, {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
-                    'Content-Type': 'application/json',
+                    "Content-Type": "application/json",
                 },
             });
 
-            if (window.confirm('Submit Medical Form') && response.status === 200) {
-                const responseData = response.data;
-                console.log('Form Submitted Successfully');
-                // onMoveToInvestigation('investigation');
+            if (window.confirm("Submit Medical Form") && response.status === 200) {
                 onAcceptClick(nextName);
-            } else if (response.status === 400) {
-                console.error('Bad Request:', response.data);
-            } else {
-                console.error('Unhandled Status Code:', response.status);
             }
         } catch (error) {
-            console.error('Error posting data:', error);
+            console.error("Error posting data:", error);
         }
     };
 
     return (
-        <div>
-            <div>
-                <div className="row backdesign">
-                    <div className="col-md-12">
-                        <div className="card bmicard">
-                            <div className="row">
-                                <div className="col-md-4">
-                                    <h6 className='mt-1 familyTital'>MEDICAL INFORMATION</h6>
-                                </div>
-                                <div className="col-md-5 ml-auto">
-                                    <div class="progress-barbmi"></div>
-                                </div>
-                            </div>
-                        </div>
+        <Box sx={{ p: 1 }}>
+            <Card sx={{ borderRadius: "20px", p: 1, mb: 1, background: "linear-gradient(90deg, #039BEF 0%, #1439A4 100%)" }}>
+                <Grid container alignItems="center" justifyContent="space-between">
+                    <Typography sx={{ fontWeight: 600, fontFamily: "Roboto", fontSize: "16px", color: "white" }}>
+                        Medical Information
+                    </Typography>
+                </Grid>
+            </Card>
 
-                        <div className="card grothcardmonitor">
-                            <div className="row">
-                                <div className="col-md-12">
-                                    <h6 className="BMITitle">MEDICAL INFORMATION</h6>
-                                    {/* <div className="childdetailelement"></div> */}
-                                </div>
-                            </div>
+            <Card
+                sx={{
+                    p: 1,
+                    mb: 3,
+                    borderRadius: "20px",
+                    maxHeight: "70vh",
+                    overflowY: "auto",
+                    pr: 2,
+                }}
+            >
+                <Typography sx={{ fontWeight: 600, fontFamily: "Roboto", fontSize: "16px", color: "black" }}>
+                    Medical Information
+                </Typography>
+                <Grid container>
+                    {medInfoChechBox.map((item, index) => (
+                        <Grid item xs={12} sm={6} md={4} key={index}>
+                            <FormControlLabel
+                                control={
+                                    <Checkbox
+                                        checked={formData.checkboxes[index] || false}
+                                        onChange={() => handleCheckboxChange(index)}
+                                    />
+                                }
+                                label={item.medical_history}
+                            />
+                        </Grid>
+                    ))}
+                </Grid>
 
-                            <div>
-                                <div className="elementvital"></div>
-                                <form
-                                    onSubmit={handleSubmit}
-                                >
-                                    <div className="row ml-1 headeskinvital">
-                                        {medInfoChechBox.map((item, index) => (
-                                            <div key={index} className="col-md-4">
-                                                <div className="form-check">
-                                                    <input
-                                                        className="form-check-input"
-                                                        type="checkbox"
-                                                        checked={formData.checkboxes[index]}
-                                                        onChange={() => handleCheckboxChange(index)}
-                                                    />
-                                                    <label className="form-check-label">
-                                                        {item.medical_history}
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
+                <Typography sx={{ fontWeight: 600, fontFamily: "Roboto", fontSize: "16px", color: "black" }}>
+                    Medical Past Information
+                </Typography>
 
+                <FormGroup>
+                    <Grid container>
+                        {medPastInfoChechBox.map((item, index) => (
+                            <Grid item xs={12} sm={6} md={4} key={index}>
+                                <FormControlLabel
+                                    control={
+                                        <Checkbox
+                                            checked={formPastData.checkbox[index] || false}
+                                            onChange={() => handleCheckboxMedPastChange(index)}
+                                        />
+                                    }
+                                    label={item.past_operative_history}
+                                />
+                            </Grid>
+                        ))}
+                    </Grid>
+                </FormGroup>
 
-                                    <div className="row">
-                                        <div className="col-md-12">
-                                            <h6 className="BMITitle">MEDICAL PAST INFORMATION</h6>
-                                            <div className="childdetailelement"></div>
-                                        </div>
-                                    </div>
-                                    <div className="row ml-1 headeskinvital">
-                                        {medPastInfoChechBox.map((item, index) => (
-                                            <div key={index} className="col-md-4">
-                                                <div className="form-check">
-                                                    <input
-                                                        className="form-check-input"
-                                                        type="checkbox"
-                                                        checked={formPastData.checkbox[index]}
-                                                        onChange={() => handleCheckboxMedPastChange(index)}
-                                                    />
-                                                    <label className="form-check-label">
-                                                        {item.past_operative_history}
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
+                <Box textAlign="center" mb={2}>
+                    <Button
+                        type="submit"
+                        variant="contained"
+                        color="primary"
+                        onClick={handleSubmit}
+                        sx={{
+                            borderRadius: 3,
+                            textTransform: "none",
+                            px: 4,
+                            "&:hover": { backgroundColor: "primary.main" },
+                        }}
+                    >
+                        Submit
+                    </Button>
+                </Box>
+            </Card>
+        </Box>
+    );
+};
 
-                                    <div>
-                                        <button type="submit" className="btn btn-sm generalexambutton mb-4">Submit</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-
-                    </div>
-                </div>
-            </div>
-        </div>
-    )
-}
-
-export default MedicalInfo
+export default MedicalInfo;

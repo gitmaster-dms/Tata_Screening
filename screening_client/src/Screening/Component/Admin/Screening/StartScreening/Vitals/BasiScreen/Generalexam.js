@@ -1,10 +1,22 @@
 import React, { useState, useEffect } from 'react'
-import headpic from '../../../../../../Images/Head Massage Area.png'
 import dermatology from '../../../../../../Images/Dermatology.png'
 import mouth from '../../../../../../Images/Smiling Mouth.png'
 import torso from '../../../../../../Images/Torso.png'
 import axios from 'axios'
-import './Generalexam.css'
+import headpic from '../../../../../../Images/Head Massage Area.png'
+// import './Generalexam.css'
+import {
+    Grid,
+    Box,
+    Typography,
+    Card,
+    Select,
+    MenuItem,
+    TextField,
+    Button,
+    InputLabel,
+    FormControl,
+} from "@mui/material";
 
 const Generalexam = ({ pkid, onAcceptClick, citizensPkId, citizenidddddddd, selectedTab, subVitalList }) => {
 
@@ -525,436 +537,589 @@ const Generalexam = ({ pkid, onAcceptClick, citizensPkId, citizenidddddddd, sele
     }, [])
 
     return (
-        <div>
-            <h5 className="vitaltitlebasicscreen">General Examination</h5>
-            <div className="elementvital"></div>
+        <Box>
+            <Typography
+                variant="h5"
+                sx={{
+                    fontWeight: 600,
+                    mb: 1,
+                    color: "#333",
+                    fontSize: '17px'
+                }}
+            >
+                General Examination
+            </Typography>
+            <Box sx={{ borderBottom: "2px solid #ddd", mb: 2 }} />
+
             <form onSubmit={handleSubmit}>
-                {/* Head */}
-                <div className='row'>
-                    <div className="col-md-4">
-                        <div className="card gendercardexam">
-                            <div className="row">
-                                <div className="col-md-4">
-                                    <img className="headbasicscreen" src={headpic} />
-                                </div>
-                                <div className="col-md-8">
-                                    <h6 className='headtitle'>Head / Scalp</h6>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <Grid container spacing={2} sx={{ mb: 2 }}>
+                    <Grid item xs={12} md={4}>
+                        <Card sx={{ display: "flex", alignItems: "center" }}>
+                            <Box component="img" src={headpic} alt="head" sx={{ width: 50, mr: 2, backgroundColor: "#9ACAA1" }} />
+                            <Typography variant="subtitle1">Head / Scalp</Typography>
+                        </Card>
+                    </Grid>
+                </Grid>
 
-                <div className='row headeskinvital'>
-                    <div className="col-md-4">
-                        <label className="Visually-hidden basicscreenheadline">Head/Scalp</label>
-                        <select className="form-control form-select form-select-sm selectdropexam"
-                            onChange={handleChange}
-                            name="head"
-                            value={generalExam.head}>
-                            <option selected>Select</option>
-                            {
-                                headData.map((drop) => (
-                                    <option key={drop.head_scalp_id} value={drop.head_scalp_id}>
-                                        {drop.head_scalp}
-                                    </option>
-                                ))
-                            }
-                        </select>
-                    </div>
-
-                    {
-                        source === '1' && (
-                            <>
-
-                                <div className="col-md-4">
-                                    <label className="Visually-hidden basicscreenheadline">Hair Color</label>
-                                    <select className="form-control form-select form-select-sm selectdropexam"
-                                        onChange={handleChange}
-                                        name="hair_color"
-                                        value={generalExam.hair_color}>
-                                        <option selected>Select</option>
-                                        {
-                                            hairData.map((drop) => (
-                                                <option key={drop.hair_color_id} value={drop.hair_color_id}>
-                                                    {drop.hair_color}
-                                                </option>
-                                            ))
-                                        }
-                                    </select>
-                                </div>
-
-                                <div className="col-md-4">
-                                    <label className="Visually-hidden basicscreenheadline">Hair Density</label>
-                                    <select className="form-control form-select form-select-sm selectdropexam"
-                                        onChange={handleChange}
-                                        name="hair_density"
-                                        value={generalExam.hair_density}>
-                                        <option selected>Select</option>
-                                        {
-                                            hairDensity.map((drop) => (
-                                                <option key={drop.hair_density_id} value={drop.hair_density_id}>
-                                                    {drop.hair_density}
-                                                </option>
-                                            ))
-                                        }
-                                    </select>
-                                </div>
-
-                                <div className='col-md-4'>
-                                    <label className="Visually-hidden basicscreenheadline">Hair Texture</label>
-                                    <select class="form-control form-select-lg mb-1 selectdropexam"
-                                        onChange={handleChange}
-                                        name="hair_texture"
-                                        value={generalExam.hair_texture}>
-                                        <option className='selecttag' selected>Select</option>
-                                        {
-                                            hairTexture.map((drop) => (
-                                                <option key={drop.hair_texture_id} value={drop.hair_texture_id}>
-                                                    {drop.hair_texture}
-                                                </option>
-                                            ))
-                                        }
-                                    </select>
-                                </div>
-
-                            </>
-                        )
-                    }
-                    <div className='col-md-4'>
-                        <label className="Visually-hidden basicscreenheadline">Alopecia</label>
-                        <select class="form-control form-select-lg mb-1 selectdropexam"
-                            onChange={handleChange}
-                            name="alopecia"
-                            value={generalExam.alopecia}>
-                            <option selected>Select</option>
-                            {
-                                alopecia.map((drop) => (
-                                    <option key={drop.alopecia_id} value={drop.alopecia_id}>
-                                        {drop.alopecia}
-                                    </option>
-                                ))
-                            }
-                        </select>
-                    </div>
-
-                    <div className='col-md-4'>
-                        <label className="Visually-hidden basicscreenheadline">Neck</label>
-                        <select class="form-control form-select-lg mb-1 selectdropexam"
-                            onChange={handleChange}
-                            name="neck"
-                            value={generalExam.neck}>
-                            <option selected>Select</option>
-                            {
-                                neck.map((drop) => (
-                                    <option key={drop.neck_id} value={drop.neck_id}>
-                                        {drop.neck}
-                                    </option>
-                                ))
-                            }
-                        </select>
-                    </div>
-
-                    <div className='col-md-4'>
-                        <label className="Visually-hidden basicscreenheadline">Nose</label>
-                        <select class="form-control form-select-lg mb-3 selectdropexam"
-                            onChange={handleChange}
-                            name="nose"
-                            value={generalExam.nose}>
-                            <option selected>Select</option>
-                            {
-                                nose.map((drop) => (
-                                    <option key={drop.nose_id} value={drop.nose_id}>
-                                        {drop.nose}
-                                    </option>
-                                ))
-                            }
-                        </select>
-                    </div>
-                </div>
-
-                {/* SKIN */}
-                <div className='row headeskinvital'>
-                    <div className="col-md-4">
-                        <div className="card gendercardexam">
-                            <div className="row shiftttttttt">
-                                <div className="col-md-4 skin">
-                                    <img className="mouth1" src={dermatology} />
-                                </div>
-                                <div className="col-md-8">
-                                    <h6 className='headtitle'>Skin</h6>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div className='row headeskinvital'>
-                    <div className="col-md-4">
-                        <label className="Visually-hidden basicscreenheadline">Skin Colour</label>
-                        <select className="form-control form-select form-select-sm selectdropexam"
-                            onChange={handleChange}
-                            name="skin_color"
-                            value={generalExam.skin_color}>
-                            <option selected>Select</option>
-                            {
-                                skinColor.map((drop) => (
-                                    <option key={drop.skin_id} value={drop.skin_id}>
-                                        {drop.skin_color}
-                                    </option>
-                                ))
-                            }
-                        </select>
-                    </div>
-
-                    {
-                        source === '1' && (
-                            <>
-                                <div className="col-md-4">
-                                    <label className="Visually-hidden basicscreenheadline">Skin Texture</label>
-                                    <select className="form-control form-select form-select-sm selectdropexam"
-                                        onChange={handleChange}
-                                        name="skin_texture"
-                                        value={generalExam.skin_texture}>
-                                        <option selected>Select</option>
-                                        {
-                                            skinTexture.map((drop) => (
-                                                <option key={drop.skin_texture_id} value={drop.skin_texture_id}>
-                                                    {drop.skin_texture}
-                                                </option>
-                                            ))
-                                        }
-                                    </select>
-                                </div>
-
-                            </>
-                        )
-                    }
-
-                    <div className="col-md-4">
-                        <label className="Visually-hidden basicscreenheadline">Skin Lesions</label>
-                        <select className="form-control form-select form-select-sm selectdropexam"
-                            onChange={handleChange}
-                            name="skin_lesions"
-                            value={generalExam.skin_lesions}>
-                            <option selected>Select</option>
-                            {
-                                skinLessions.map((drop) => (
-                                    <option key={drop.skin_lesions_id} value={drop.skin_lesions_id}>
-                                        {drop.skin_lesions}
-                                    </option>
-                                ))
-                            }
-                        </select>
-                    </div>
-
-                </div>
-
-                {/* Mouth */}
-                {/* {
-                    source === '1' && (
-                        <> */}
-                <div className='row mt-2 headeskinvital'>
-                    <div className="col-md-4">
-                        <div className="card gendercardexam">
-                            <div className="row shiftttttttt">
-                                <div className="col-md-4 mouth">
-                                    <img className="mouth1" src={mouth} />
-                                </div>
-                                <div className="col-md-8">
-                                    <h6 className='headtitle'>Mouth</h6>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div className='row headeskinvital'>
-                    <div className="col-md-4">
-                        <label className="Visually-hidden basicscreenheadline">Lips</label>
-                        <select className="form-control form-select form-select-sm selectdropexam"
-                            onChange={handleChange}
-                            name="lips"
-                            value={generalExam.lips}>
-                            <option selected>Select</option>
-                            {
-                                lips.map((drop) => (
-                                    <option key={drop.lips_id} value={drop.lips_id}>
-                                        {drop.lips}
-                                    </option>
-                                ))
-                            }
-                        </select>
-                    </div>
-
-                    <div className="col-md-4">
-                        <label className="Visually-hidden basicscreenheadline">Gums</label>
-                        <select className="form-control form-select form-select-sm selectdropexam"
-                            onChange={handleChange}
-                            name="gums"
-                            value={generalExam.gums}>
-                            <option selected>Select</option>
-                            {
-                                gum.map((drop) => (
-                                    <option key={drop.gums_id} value={drop.gums_id}>
-                                        {drop.gums}
-                                    </option>
-                                ))
-                            }
-                        </select>
-                    </div>
-
-                    <div className="col-md-4">
-                        <label className="Visually-hidden basicscreenheadline">Dention</label>
-                        <select className="form-control form-select form-select-sm selectdropexam"
-                            onChange={handleChange}
-                            name="dention"
-                            value={generalExam.dention}>
-                            <option selected>Select</option>
-                            {
-                                dention.map((drop) => (
-                                    <option key={drop.dentition_id} value={drop.dentition_id}>
-                                        {drop.dentition}
-                                    </option>
-                                ))
-                            }
-                        </select>
-                    </div>
-
-                    <div className='col-md-4'>
-                        <label className="Visually-hidden basicscreenheadline">Oral Mucosa</label>
-                        <select class="form-control form-select-lg mb-3 selectdropexam"
-                            onChange={handleChange}
-                            name="oral_mucosa"
-                            value={generalExam.oral_mucosa}>
-                            <option className='selecttag' selected>Select</option>
-                            {
-                                mucosa.map((drop) => (
-                                    <option key={drop.oral_mucosa_id} value={drop.oral_mucosa_id}>
-                                        {drop.oral_mucosa}
-                                    </option>
-                                ))
-                            }
-                        </select>
-                    </div>
-
-                    <div className='col-md-4'>
-                        <label className="Visually-hidden basicscreenheadline">Tongue</label>
-                        <select class="form-control form-select-lg mb-3 selectdropexam"
-                            onChange={handleChange}
-                            name="tongue"
-                            value={generalExam.tongue}>
-                            <option selected>Select</option>
-                            {
-                                toungue.map((drop) => (
-                                    <option key={drop.tounge_id} value={drop.tounge_id}>
-                                        {drop.tounge}
-                                    </option>
-                                ))
-                            }
-                        </select>
-                    </div>
-                </div>
-                {/* </> */}
-                {/* )
-                } */}
-
-                {/* Other */}
-                <div className='row headeskinvital'>
-                    <div className="col-md-4">
-                        <div className="card gendercardexam">
-                            <div className="row shiftttttttt">
-                                <div className="col-md-4 torso">
-                                    <img className="mouth1" src={torso} />
-                                </div>
-                                <div className="col-md-8">
-                                    <h6 className='headtitle'>Other</h6>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <div className='row mb-2 headeskinvital'>
-                    {
-                        source === '1' && (
-                            <>
-                                <div className="col-md-4">
-                                    <label className="Visually-hidden basicscreenheadline">Chest</label>
-                                    <select className="form-control form-select form-select-sm selectdropexam"
-                                        onChange={handleChange}
-                                        name="chest"
-                                        value={generalExam.chest}>
-                                        <option selected>Select</option>
-                                        {
-                                            chest.map((drop) => (
-                                                <option key={drop.chest_id} value={drop.chest_id}>
-                                                    {drop.chest}
-                                                </option>
-                                            ))
-                                        }
-                                    </select>
-                                </div>
-
-                            </>
-                        )
-                    }
-
-                    <div className="col-md-4">
-                        <label className="Visually-hidden basicscreenheadline">Abdomen</label>
-                        <select className="form-control form-select form-select-sm selectdropexam"
-                            onChange={handleChange}
-                            name="abdomen"
-                            value={generalExam.abdomen}>
-                            <option selected>Select</option>
-                            {
-                                abdomen.map((drop) => (
-                                    <option key={drop.abdomen_id} value={drop.abdomen_id}>
-                                        {drop.abdomen}
-                                    </option>
-                                ))
-                            }
-                        </select>
-                    </div>
-
-                    <div className="col-md-4">
-                        <label className="Visually-hidden basicscreenheadline">Extremity</label>
-                        <select className="form-control form-select form-select-sm selectdropexam"
-                            onChange={handleChange}
-                            name="extremity"
-                            value={generalExam.extremity}>
-                            <option selected>Select</option>
-                            {
-                                extremity.map((drop) => (
-                                    <option key={drop.extremity} value={drop.extremity_id}>
-                                        {drop.extremity}
-                                    </option>
-                                ))
-                            }
-                        </select>
-                    </div>
-                </div>
-
-                <div className='row mb-2 headeskinvital'>
-                    {source === '5' && (
-                        <div className='col-12'>
-                            <label className="visually-hidden basicscreenheadline">General Remark</label>
-                            <textarea
-                                className="form-control form-select form-select-sm selectdropexam"
+                <Grid container spacing={2}>
+                    <Grid item xs={12} md={4}>
+                        <FormControl fullWidth size="small">
+                            <InputLabel>Head / Scalp</InputLabel>
+                            <Select
+                                sx={{
+                                    "& .MuiInputBase-input.MuiSelect-select": {
+                                        color: "#000 !important",
+                                    },
+                                    "& .MuiSvgIcon-root": {
+                                        color: "#000",
+                                    },
+                                }}
+                                name="head"
+                                value={generalExam.head}
                                 onChange={handleChange}
-                                name="observation"
-                                value={generalExam.observation}
-                            />
-                        </div>
+                                label="Head / Scalp"
+                            >
+                                <MenuItem value="">Select</MenuItem>
+                                {headData.map((drop) => (
+                                    <MenuItem key={drop.head_scalp_id} value={drop.head_scalp_id}>
+                                        {drop.head_scalp}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </Grid>
+
+                    {source === "1" && (
+                        <>
+                            {/* Hair Color */}
+                            <Grid item xs={12} md={4}>
+                                <FormControl fullWidth size="small">
+                                    <InputLabel>Hair Color</InputLabel>
+                                    <Select
+                                        sx={{
+                                            "& .MuiInputBase-input.MuiSelect-select": {
+                                                color: "#000 !important",
+                                            },
+                                            "& .MuiSvgIcon-root": {
+                                                color: "#000",
+                                            },
+                                        }} name="hair_color"
+                                        value={generalExam.hair_color}
+                                        onChange={handleChange}
+                                        label="Hair Color"
+                                    >
+                                        <MenuItem value="">Select</MenuItem>
+                                        {hairData.map((drop) => (
+                                            <MenuItem key={drop.hair_color_id} value={drop.hair_color_id}>
+                                                {drop.hair_color}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
+                            </Grid>
+
+                            {/* Hair Density */}
+                            <Grid item xs={12} md={4}>
+                                <FormControl fullWidth size="small">
+                                    <InputLabel>Hair Density</InputLabel>
+                                    <Select
+                                        sx={{
+                                            "& .MuiInputBase-input.MuiSelect-select": {
+                                                color: "#000 !important",
+                                            },
+                                            "& .MuiSvgIcon-root": {
+                                                color: "#000",
+                                            },
+                                        }} name="hair_density"
+                                        value={generalExam.hair_density}
+                                        onChange={handleChange}
+                                        label="Hair Density"
+                                    >
+                                        <MenuItem value="">Select</MenuItem>
+                                        {hairDensity.map((drop) => (
+                                            <MenuItem key={drop.hair_density_id} value={drop.hair_density_id}>
+                                                {drop.hair_density}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
+                            </Grid>
+
+                            {/* Hair Texture */}
+                            <Grid item xs={12} md={4}>
+                                <FormControl fullWidth size="small">
+                                    <InputLabel>Hair Texture</InputLabel>
+                                    <Select
+                                        sx={{
+                                            "& .MuiInputBase-input.MuiSelect-select": {
+                                                color: "#000 !important",
+                                            },
+                                            "& .MuiSvgIcon-root": {
+                                                color: "#000",
+                                            },
+                                        }} name="hair_texture"
+                                        value={generalExam.hair_texture}
+                                        onChange={handleChange}
+                                        label="Hair Texture"
+                                    >
+                                        <MenuItem value="">Select</MenuItem>
+                                        {hairTexture.map((drop) => (
+                                            <MenuItem key={drop.hair_texture_id} value={drop.hair_texture_id}>
+                                                {drop.hair_texture}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
+                            </Grid>
+                        </>
                     )}
-                </div>
 
-                <div>
-                    <button type="submit" className="btn btn-sm generalexambutton">Submit</button>
-                </div>
+                    {/* Alopecia */}
+                    <Grid item xs={12} md={4}>
+                        <FormControl fullWidth size="small">
+                            <InputLabel>Alopecia</InputLabel>
+                            <Select
+                                sx={{
+                                    "& .MuiInputBase-input.MuiSelect-select": {
+                                        color: "#000 !important",
+                                    },
+                                    "& .MuiSvgIcon-root": {
+                                        color: "#000",
+                                    },
+                                }} name="alopecia"
+                                value={generalExam.alopecia}
+                                onChange={handleChange}
+                                label="Alopecia"
+                            >
+                                <MenuItem value="">Select</MenuItem>
+                                {alopecia.map((drop) => (
+                                    <MenuItem key={drop.alopecia_id} value={drop.alopecia_id}>
+                                        {drop.alopecia}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </Grid>
 
+                    {/* Neck */}
+                    <Grid item xs={12} md={4}>
+                        <FormControl fullWidth size="small">
+                            <InputLabel>Neck</InputLabel>
+                            <Select
+                                sx={{
+                                    "& .MuiInputBase-input.MuiSelect-select": {
+                                        color: "#000 !important",
+                                    },
+                                    "& .MuiSvgIcon-root": {
+                                        color: "#000",
+                                    },
+                                }} name="neck"
+                                value={generalExam.neck}
+                                onChange={handleChange}
+                                label="Neck"
+                            >
+                                <MenuItem value="">Select</MenuItem>
+                                {neck.map((drop) => (
+                                    <MenuItem key={drop.neck_id} value={drop.neck_id}>
+                                        {drop.neck}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </Grid>
+
+                    {/* Nose */}
+                    <Grid item xs={12} md={4}>
+                        <FormControl fullWidth size="small">
+                            <InputLabel>Nose</InputLabel>
+                            <Select
+                                sx={{
+                                    "& .MuiInputBase-input.MuiSelect-select": {
+                                        color: "#000 !important",
+                                    },
+                                    "& .MuiSvgIcon-root": {
+                                        color: "#000",
+                                    },
+                                }} name="nose"
+                                value={generalExam.nose}
+                                onChange={handleChange}
+                                label="Nose"
+                            >
+                                <MenuItem value="">Select</MenuItem>
+                                {nose.map((drop) => (
+                                    <MenuItem key={drop.nose_id} value={drop.nose_id}>
+                                        {drop.nose}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                </Grid>
+
+                <Box sx={{ mt: 1 }}>
+                    <Card sx={{ display: "flex", alignItems: "center", mb: 2, width: "10em" }}>
+                        <Box component="img" src={dermatology} alt="skin" sx={{ height: '2.5em', mr: 2, backgroundColor: "#F3D8A5" }} />
+                        <Typography variant="subtitle1">Skin</Typography>
+                    </Card>
+                </Box>
+
+                <Grid container spacing={2}>
+                    <Grid item xs={12} md={4}>
+                        <FormControl fullWidth size="small">
+                            <InputLabel>Skin Colour</InputLabel>
+                            <Select
+                                sx={{
+                                    "& .MuiInputBase-input.MuiSelect-select": {
+                                        color: "#000 !important",
+                                    },
+                                    "& .MuiSvgIcon-root": {
+                                        color: "#000",
+                                    },
+                                }} name="skin_color"
+                                value={generalExam.skin_color}
+                                onChange={handleChange}
+                                label="Skin Colour"
+                            >
+                                <MenuItem value="">Select</MenuItem>
+                                {skinColor.map((drop) => (
+                                    <MenuItem key={drop.skin_id} value={drop.skin_id}>
+                                        {drop.skin_color}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </Grid>
+
+                    {source === "1" && (
+                        <Grid item xs={12} md={4}>
+                            <FormControl fullWidth size="small">
+                                <InputLabel>Skin Texture</InputLabel>
+                                <Select
+                                    sx={{
+                                        "& .MuiInputBase-input.MuiSelect-select": {
+                                            color: "#000 !important",
+                                        },
+                                        "& .MuiSvgIcon-root": {
+                                            color: "#000",
+                                        },
+                                    }} name="skin_texture"
+                                    value={generalExam.skin_texture}
+                                    onChange={handleChange}
+                                    label="Skin Texture"
+                                >
+                                    <MenuItem value="">Select</MenuItem>
+                                    {skinTexture.map((drop) => (
+                                        <MenuItem key={drop.skin_texture_id} value={drop.skin_texture_id}>
+                                            {drop.skin_texture}
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+                            </FormControl>
+                        </Grid>
+                    )}
+
+                    <Grid item xs={12} md={4}>
+                        <FormControl fullWidth size="small">
+                            <InputLabel>Skin Lesions</InputLabel>
+                            <Select
+                                sx={{
+                                    "& .MuiInputBase-input.MuiSelect-select": {
+                                        color: "#000 !important",
+                                    },
+                                    "& .MuiSvgIcon-root": {
+                                        color: "#000",
+                                    },
+                                }} name="skin_lesions"
+                                value={generalExam.skin_lesions}
+                                onChange={handleChange}
+                                label="Skin Lesions"
+                            >
+                                <MenuItem value="">Select</MenuItem>
+                                {skinLessions.map((drop) => (
+                                    <MenuItem key={drop.skin_lesions_id} value={drop.skin_lesions_id}>
+                                        {drop.skin_lesions}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                </Grid>
+
+                <Box sx={{ mt: 3 }}>
+                    <Card sx={{ display: "flex", alignItems: "center", mb: 2, width: "10em" }}>
+                        <Box component="img" src={mouth} alt="skin" sx={{ height: '2.5em', mr: 2, backgroundColor: "#F3D8A5" }} />
+                        <Typography variant="subtitle1">Mouth</Typography>
+                    </Card>
+                </Box>
+
+                <Grid container spacing={2}>
+                    <Grid item xs={12} md={4}>
+                        <FormControl fullWidth size="small">
+                            <InputLabel>Lips</InputLabel>
+                            <Select
+                                sx={{
+                                    "& .MuiInputBase-input.MuiSelect-select": {
+                                        color: "#000 !important",
+                                    },
+                                    "& .MuiSvgIcon-root": {
+                                        color: "#000",
+                                    },
+                                }} name="lips"
+                                value={generalExam.lips}
+                                onChange={handleChange}
+                                label="Lips"
+                            >
+                                <MenuItem value="">Select</MenuItem>
+                                {lips.map((drop) => (
+                                    <MenuItem key={drop.lips_id} value={drop.lips_id}>
+                                        {drop.lips}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </Grid>
+
+                    {/* Gums */}
+                    <Grid item xs={12} md={4}>
+                        <FormControl fullWidth size="small">
+                            <InputLabel>Gums</InputLabel>
+                            <Select
+                                sx={{
+                                    "& .MuiInputBase-input.MuiSelect-select": {
+                                        color: "#000 !important",
+                                    },
+                                    "& .MuiSvgIcon-root": {
+                                        color: "#000",
+                                    },
+                                }} name="gums"
+                                value={generalExam.gums}
+                                onChange={handleChange}
+                                label="Gums"
+                            >
+                                <MenuItem value="">Select</MenuItem>
+                                {gum.map((drop) => (
+                                    <MenuItem key={drop.gums_id} value={drop.gums_id}>
+                                        {drop.gums}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </Grid>
+
+                    {/* Dention */}
+                    <Grid item xs={12} md={4}>
+                        <FormControl fullWidth size="small">
+                            <InputLabel>Dention</InputLabel>
+                            <Select
+                                sx={{
+                                    "& .MuiInputBase-input.MuiSelect-select": {
+                                        color: "#000 !important",
+                                    },
+                                    "& .MuiSvgIcon-root": {
+                                        color: "#000",
+                                    },
+                                }} name="dention"
+                                value={generalExam.dention}
+                                onChange={handleChange}
+                                label="Dention"
+                            >
+                                <MenuItem value="">Select</MenuItem>
+                                {dention.map((drop) => (
+                                    <MenuItem key={drop.dentition_id} value={drop.dentition_id}>
+                                        {drop.dentition}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </Grid>
+
+                    {/* Oral Mucosa */}
+                    <Grid item xs={12} md={4}>
+                        <FormControl fullWidth size="small">
+                            <InputLabel>Oral Mucosa</InputLabel>
+                            <Select
+                                sx={{
+                                    "& .MuiInputBase-input.MuiSelect-select": {
+                                        color: "#000 !important",
+                                    },
+                                    "& .MuiSvgIcon-root": {
+                                        color: "#000",
+                                    },
+                                }} name="oral_mucosa"
+                                value={generalExam.oral_mucosa}
+                                onChange={handleChange}
+                                label="Oral Mucosa"
+                            >
+                                <MenuItem value="">Select</MenuItem>
+                                {mucosa.map((drop) => (
+                                    <MenuItem key={drop.oral_mucosa_id} value={drop.oral_mucosa_id}>
+                                        {drop.oral_mucosa}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </Grid>
+
+                    {/* Tongue */}
+                    <Grid item xs={12} md={4}>
+                        <FormControl fullWidth size="small">
+                            <InputLabel>Tongue</InputLabel>
+                            <Select
+                                sx={{
+                                    "& .MuiInputBase-input.MuiSelect-select": {
+                                        color: "#000 !important",
+                                    },
+                                    "& .MuiSvgIcon-root": {
+                                        color: "#000",
+                                    },
+                                }} name="tongue"
+                                value={generalExam.tongue}
+                                onChange={handleChange}
+                                label="Tongue"
+                            >
+                                <MenuItem value="">Select</MenuItem>
+                                {toungue.map((drop) => (
+                                    <MenuItem key={drop.tounge_id} value={drop.tounge_id}>
+                                        {drop.tounge}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                </Grid>
+
+                <Box sx={{ mt: 3 }}>
+                    <Card sx={{ display: "flex", alignItems: "center", mb: 2, width: "10em" }}>
+                        <Box component="img" src={torso} alt="skin" sx={{ height: '2.5em', mr: 2, backgroundColor: "#F3D8A5" }} />
+                        <Typography variant="subtitle1">Other</Typography>
+                    </Card>
+                </Box>
+
+                <Grid container spacing={2}>
+                    {source === "1" && (
+                        <Grid item xs={12} md={4}>
+                            <FormControl fullWidth size="small">
+                                <InputLabel>Chest</InputLabel>
+                                <Select
+                                    sx={{
+                                        "& .MuiInputBase-input.MuiSelect-select": {
+                                            color: "#000 !important",
+                                        },
+                                        "& .MuiSvgIcon-root": {
+                                            color: "#000",
+                                        },
+                                    }} name="chest"
+                                    value={generalExam.chest}
+                                    onChange={handleChange}
+                                    label="Chest"
+                                >
+                                    <MenuItem value="">Select</MenuItem>
+                                    {chest.map((drop) => (
+                                        <MenuItem key={drop.chest_id} value={drop.chest_id}>
+                                            {drop.chest}
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+                            </FormControl>
+                        </Grid>
+                    )}
+
+                    {/* Abdomen */}
+                    <Grid item xs={12} md={4}>
+                        <FormControl fullWidth size="small">
+                            <InputLabel>Abdomen</InputLabel>
+                            <Select
+                                sx={{
+                                    "& .MuiInputBase-input.MuiSelect-select": {
+                                        color: "#000 !important",
+                                    },
+                                    "& .MuiSvgIcon-root": {
+                                        color: "#000",
+                                    },
+                                }} name="abdomen"
+                                value={generalExam.abdomen}
+                                onChange={handleChange}
+                                label="Abdomen"
+                            >
+                                <MenuItem value="">Select</MenuItem>
+                                {abdomen.map((drop) => (
+                                    <MenuItem key={drop.abdomen_id} value={drop.abdomen_id}>
+                                        {drop.abdomen}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </Grid>
+
+                    {/* Extremity */}
+                    <Grid item xs={12} md={4}>
+                        <FormControl fullWidth size="small">
+                            <InputLabel>Extremity</InputLabel>
+                            <Select
+                                sx={{
+                                    "& .MuiInputBase-input.MuiSelect-select": {
+                                        color: "#000 !important",
+                                    },
+                                    "& .MuiSvgIcon-root": {
+                                        color: "#000",
+                                    },
+                                }}
+                                name="extremity"
+                                value={generalExam.extremity}
+                                onChange={handleChange}
+                                label="Extremity"
+                            >
+                                <MenuItem value="">Select</MenuItem>
+                                {extremity.map((drop) => (
+                                    <MenuItem key={drop.extremity_id} value={drop.extremity_id}>
+                                        {drop.extremity}
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                </Grid>
+
+                {/* Observation */}
+                {source === "5" && (
+                    <Box sx={{ mt: 3 }}>
+                        <TextField
+                            fullWidth
+                            multiline
+                            rows={3}
+                            name="observation"
+                            value={generalExam.observation}
+                            onChange={handleChange}
+                            label="General Remark"
+                        />
+                    </Box>
+                )}
+
+                <Grid
+                    item
+                    xs={12}
+                    sx={{
+                        mt: 2,
+                        display: "flex",
+                        justifyContent: "center",
+                    }}
+                >
+                    <Button
+                        type="submit"
+                        variant="contained"
+                        color="primary"
+                        size="medium"
+                        onClick={handleSubmit}
+                        sx={{
+                            textTransform: "none",
+                            borderRadius: 2,
+                        }}
+                    >
+                        Submit
+                    </Button>
+                </Grid>
             </form>
-        </div>
+        </Box >
     )
 }
 

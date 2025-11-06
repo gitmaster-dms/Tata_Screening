@@ -1,5 +1,14 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
+import {
+    Grid,
+    Typography,
+    FormControl,
+    InputLabel,
+    Select,
+    MenuItem,
+    Button,
+} from "@mui/material";
 
 const Systematic = ({ pkid, onAcceptClick, citizensPkId, selectedTab, subVitalList }) => {
 
@@ -481,384 +490,626 @@ const Systematic = ({ pkid, onAcceptClick, citizensPkId, selectedTab, subVitalLi
 
     return (
         <div>
-            <h5 className="vitaltitlebasicscreen">Systemic Exam</h5>
-            <div className="elementvital"></div>
+            <Typography
+                variant="h6"
+                sx={{
+                    fontWeight: 600,
+                    mb: 1,
+                    color: "#333",
+                    fontSize: '17px'
+                }}
+            >
+                Systemic Exam
+            </Typography>
 
             <form onSubmit={handleSubmit}>
-                <div className='row headeskinvital'>
-                    <div className="col-md-4">
-                        <label className="Visually-hidden basicscreenheadline">RS Right</label>
-                        <select className="form-control form-select form-select-sm selectdropexam"
-                            onChange={handleChange}
-                            name="rs_right"
-                            value={systematicExam.rs_right}>
-                            <option selected>Select</option>
-                            {
-                                rsright.map((drop) => (
-                                    <option key={drop.rs_right_id} value={drop.rs_right_id}>
+                <Grid container spacing={2}>
+                    <Grid item xs={12} md={4}>
+                        <FormControl fullWidth size="small">
+                            <InputLabel>RS Right</InputLabel>
+                            <Select sx={{
+                                "& .MuiInputBase-input.MuiSelect-select": {
+                                    color: "#000 !important",
+                                },
+                                "& .MuiSvgIcon-root": {
+                                    color: "#000",
+                                },
+                            }}
+                                label="RS Right"
+                                name="rs_right"
+                                value={systematicExam.rs_right || ""}
+                                onChange={handleChange}
+                            >
+                                <MenuItem value="">Select</MenuItem>
+                                {rsright.map((drop) => (
+                                    <MenuItem key={drop.rs_right_id} value={drop.rs_right_id}>
                                         {drop.rs_right}
-                                    </option>
-                                ))
-                            }
-                        </select>
-                    </div>
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </Grid>
 
-                    <div className="col-md-4">
-                        <label className="Visually-hidden basicscreenheadline">RS Left</label>
-                        <select className="form-control form-select form-select-sm selectdropexam"
-                            onChange={handleChange}
-                            name="rs_left"
-                            value={systematicExam.rs_left}>
-                            <option selected>Select</option>
-                            {
-                                rsleft.map((drop) => (
-                                    <option key={drop.rs_left_id} value={drop.rs_left_id}>
+                    <Grid item xs={12} md={4}>
+                        <FormControl fullWidth size="small">
+                            <InputLabel>RS Left</InputLabel>
+                            <Select sx={{
+                                "& .MuiInputBase-input.MuiSelect-select": {
+                                    color: "#000 !important",
+                                },
+                                "& .MuiSvgIcon-root": {
+                                    color: "#000",
+                                },
+                            }}
+                                label="RS Left"
+                                name="rs_left"
+                                value={systematicExam.rs_left || ""}
+                                onChange={handleChange}
+                            >
+                                <MenuItem value="">Select</MenuItem>
+                                {rsleft.map((drop) => (
+                                    <MenuItem key={drop.rs_left_id} value={drop.rs_left_id}>
                                         {drop.rs_left}
-                                    </option>
-                                ))
-                            }
-                        </select>
-                    </div>
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </Grid>
 
-                    <div className="col-md-4">
-                        <label className="Visually-hidden basicscreenheadline">CVS</label>
-                        <select className="form-control form-select form-select-sm selectdropexam"
-                            onChange={handleChange}
-                            name="cvs"
-                            value={systematicExam.cvs}>
-                            <option selected>Select</option>
-                            {
-                                cvs.map((drop) => (
-                                    <option key={drop.cvs_id} value={drop.cvs_id}>
+                    <Grid item xs={12} md={4}>
+                        <FormControl fullWidth size="small">
+                            <InputLabel>CVS</InputLabel>
+                            <Select sx={{
+                                "& .MuiInputBase-input.MuiSelect-select": {
+                                    color: "#000 !important",
+                                },
+                                "& .MuiSvgIcon-root": {
+                                    color: "#000",
+                                },
+                            }}
+                                label="CVS"
+                                name="cvs"
+                                value={systematicExam.cvs || ""}
+                                onChange={handleChange}
+                            >
+                                <MenuItem value="">Select</MenuItem>
+                                {cvs.map((drop) => (
+                                    <MenuItem key={drop.cvs_id} value={drop.cvs_id}>
                                         {drop.cvs}
-                                    </option>
-                                ))
-                            }
-                        </select>
-                    </div>
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </Grid>
 
-                    <div className='col-md-4'>
-                        <label className="Visually-hidden basicscreenheadline">Varicose Veins</label>
-                        <select class="form-control form-select-lg mb-3 selectdropexam"
-                            onChange={handleChange}
-                            name="varicose_veins"
-                            value={systematicExam.varicose_veins}>
-                            <option className='selecttag' selected>Select</option>
-                            {
-                                varicose.map((drop) => (
-                                    <option key={drop.varicose_veins_id} value={drop.varicose_veins_id}>
+                    <Grid item xs={12} md={4}>
+                        <FormControl fullWidth size="small">
+                            <InputLabel>Varicose Veins</InputLabel>
+                            <Select sx={{
+                                "& .MuiInputBase-input.MuiSelect-select": {
+                                    color: "#000 !important",
+                                },
+                                "& .MuiSvgIcon-root": {
+                                    color: "#000",
+                                },
+                            }}
+                                label="Varicose Veins"
+                                name="varicose_veins"
+                                value={systematicExam.varicose_veins || ""}
+                                onChange={handleChange}
+                            >
+                                <MenuItem value="">Select</MenuItem>
+                                {varicose.map((drop) => (
+                                    <MenuItem
+                                        key={drop.varicose_veins_id}
+                                        value={drop.varicose_veins_id}
+                                    >
                                         {drop.varicose_veins}
-                                    </option>
-                                ))
-                            }
-                        </select>
-                    </div>
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </Grid>
 
-                    {
-                        source === '1' && (
-                            <>
-                                <div className='col-md-4'>
-                                    <label className="Visually-hidden basicscreenheadline">LMP</label>
-                                    <select class="form-control form-select-lg mb-3 selectdropexam"
-                                        onChange={handleChange}
-                                        name="lmp"
-                                        value={systematicExam.lmp}>
-                                        <option selected>Select</option>
-                                        {
-                                            lmp.map((drop) => (
-                                                <option key={drop.lmp_id} value={drop.lmp_id}>
-                                                    {drop.lmp}
-                                                </option>
-                                            ))
-                                        }
-                                    </select>
-                                </div>
-                            </>
-                        )
-                    }
+                    {source === "1" && (
+                        <Grid item xs={12} md={4}>
+                            <FormControl fullWidth size="small">
+                                <InputLabel>LMP</InputLabel>
+                                <Select sx={{
+                                    "& .MuiInputBase-input.MuiSelect-select": {
+                                        color: "#000 !important",
+                                    },
+                                    "& .MuiSvgIcon-root": {
+                                        color: "#000",
+                                    },
+                                }}
+                                    label="LMP"
+                                    name="lmp"
+                                    value={systematicExam.lmp || ""}
+                                    onChange={handleChange}
+                                >
+                                    <MenuItem value="">Select</MenuItem>
+                                    {lmp.map((drop) => (
+                                        <MenuItem key={drop.lmp_id} value={drop.lmp_id}>
+                                            {drop.lmp}
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+                            </FormControl>
+                        </Grid>
+                    )}
 
-                    <div className='col-md-4'>
-                        <label className="Visually-hidden basicscreenheadline">CNS</label>
-                        <select class="form-control form-select-lg mb-3 selectdropexam"
-                            onChange={handleChange}
-                            name="cns"
-                            value={systematicExam.cns}>
-                            <option selected>Select</option>
-                            {
-                                cns.map((drop) => (
-                                    <option key={drop.cns_id} value={drop.cns_id}>
+                    <Grid item xs={12} md={4}>
+                        <FormControl fullWidth size="small">
+                            <InputLabel>CNS</InputLabel>
+                            <Select sx={{
+                                "& .MuiInputBase-input.MuiSelect-select": {
+                                    color: "#000 !important",
+                                },
+                                "& .MuiSvgIcon-root": {
+                                    color: "#000",
+                                },
+                            }}
+                                label="CNS"
+                                name="cns"
+                                value={systematicExam.cns || ""}
+                                onChange={handleChange}
+                            >
+                                <MenuItem value="">Select</MenuItem>
+                                {cns.map((drop) => (
+                                    <MenuItem key={drop.cns_id} value={drop.cns_id}>
                                         {drop.cns}
-                                    </option>
-                                ))
-                            }
-                        </select>
-                    </div>
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </Grid>
 
-                    <div className="col-md-4">
-                        <label className="Visually-hidden basicscreenheadline">Reflexes</label>
-                        <select className="form-control form-select form-select-sm selectdropexam"
-                            onChange={handleChange}
-                            name="reflexes"
-                            value={systematicExam.reflexes}>
-                            <option selected>Select</option>
-                            {
-                                reflexes.map((drop) => (
-                                    <option key={drop.reflexes_id} value={drop.reflexes_id}>
+                    <Grid item xs={12} md={4}>
+                        <FormControl fullWidth size="small">
+                            <InputLabel>Reflexes</InputLabel>
+                            <Select sx={{
+                                "& .MuiInputBase-input.MuiSelect-select": {
+                                    color: "#000 !important",
+                                },
+                                "& .MuiSvgIcon-root": {
+                                    color: "#000",
+                                },
+                            }}
+                                label="Reflexes"
+                                name="reflexes"
+                                value={systematicExam.reflexes || ""}
+                                onChange={handleChange}
+                            >
+                                <MenuItem value="">Select</MenuItem>
+                                {reflexes.map((drop) => (
+                                    <MenuItem key={drop.reflexes_id} value={drop.reflexes_id}>
                                         {drop.reflexes}
-                                    </option>
-                                ))
-                            }
-                        </select>
-                    </div>
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </Grid>
 
-                    <div className="col-md-4">
-                        <label className="Visually-hidden basicscreenheadline">Romberg's</label>
-                        <select className="form-control form-select form-select-sm selectdropexam"
-                            onChange={handleChange}
-                            name="rombergs"
-                            value={systematicExam.rombergs}>
-                            <option selected>Select</option>
-                            {
-                                romberg.map((drop) => (
-                                    <option key={drop.rombergs_id} value={drop.rombergs_id}>
+                    <Grid item xs={12} md={4}>
+                        <FormControl fullWidth size="small">
+                            <InputLabel>Romberg’s</InputLabel>
+                            <Select sx={{
+                                "& .MuiInputBase-input.MuiSelect-select": {
+                                    color: "#000 !important",
+                                },
+                                "& .MuiSvgIcon-root": {
+                                    color: "#000",
+                                },
+                            }}
+                                label="Romberg’s"
+                                name="rombergs"
+                                value={systematicExam.rombergs || ""}
+                                onChange={handleChange}
+                            >
+                                <MenuItem value="">Select</MenuItem>
+                                {romberg.map((drop) => (
+                                    <MenuItem key={drop.rombergs_id} value={drop.rombergs_id}>
                                         {drop.rombergs}
-                                    </option>
-                                ))
-                            }
-                        </select>
-                    </div>
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </Grid>
 
-                    <div className="col-md-4">
-                        <label className="Visually-hidden basicscreenheadline">Pupils</label>
-                        <select className="form-control form-select form-select-sm selectdropexam"
-                            onChange={handleChange}
-                            name="pupils"
-                            value={systematicExam.pupils}>
-                            <option selected>Select</option>
-                            {
-                                pupils.map((drop) => (
-                                    <option key={drop.pupils_id} value={drop.pupils_id}>
+                    <Grid item xs={12} md={4}>
+                        <FormControl fullWidth size="small">
+                            <InputLabel>Pupils</InputLabel>
+                            <Select sx={{
+                                "& .MuiInputBase-input.MuiSelect-select": {
+                                    color: "#000 !important",
+                                },
+                                "& .MuiSvgIcon-root": {
+                                    color: "#000",
+                                },
+                            }}
+                                label="Pupils"
+                                name="pupils"
+                                value={systematicExam.pupils || ""}
+                                onChange={handleChange}
+                            >
+                                <MenuItem value="">Select</MenuItem>
+                                {pupils.map((drop) => (
+                                    <MenuItem key={drop.pupils_id} value={drop.pupils_id}>
                                         {drop.pupils}
-                                    </option>
-                                ))
-                            }
-                        </select>
-                    </div>
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </Grid>
 
-                    <div className="col-md-4">
-                        <label className="Visually-hidden basicscreenheadline">P/A</label>
-                        <select className="form-control form-select form-select-sm selectdropexam"
-                            onChange={handleChange}
-                            name="pa"
-                            value={systematicExam.pa}>
-                            <option selected>Select</option>
-                            {
-                                pa.map((drop) => (
-                                    <option key={drop.pa_id} value={drop.pa_id}>
+                    <Grid item xs={12} md={4}>
+                        <FormControl fullWidth size="small">
+                            <InputLabel>P/A</InputLabel>
+                            <Select sx={{
+                                "& .MuiInputBase-input.MuiSelect-select": {
+                                    color: "#000 !important",
+                                },
+                                "& .MuiSvgIcon-root": {
+                                    color: "#000",
+                                },
+                            }}
+                                label="P/A"
+                                name="pa"
+                                value={systematicExam.pa || ""}
+                                onChange={handleChange}
+                            >
+                                <MenuItem value="">Select</MenuItem>
+                                {pa.map((drop) => (
+                                    <MenuItem key={drop.pa_id} value={drop.pa_id}>
                                         {drop.pa}
-                                    </option>
-                                ))
-                            }
-                        </select>
-                    </div>
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </Grid>
 
-                    <div className="col-md-4">
-                        <label className="Visually-hidden basicscreenheadline">Tenderness</label>
-                        <select className="form-control form-select form-select-sm selectdropexam"
-                            onChange={handleChange}
-                            name="tenderness"
-                            value={systematicExam.tenderness}>
-                            <option selected>Select</option>
-                            {
-                                tenderness.map((drop) => (
-                                    <option key={drop.tenderness_id} value={drop.tenderness_id}>
+                    <Grid item xs={12} md={4}>
+                        <FormControl fullWidth size="small">
+                            <InputLabel>Tenderness</InputLabel>
+                            <Select sx={{
+                                "& .MuiInputBase-input.MuiSelect-select": {
+                                    color: "#000 !important",
+                                },
+                                "& .MuiSvgIcon-root": {
+                                    color: "#000",
+                                },
+                            }}
+                                label="Tenderness"
+                                name="tenderness"
+                                value={systematicExam.tenderness || ""}
+                                onChange={handleChange}
+                            >
+                                <MenuItem value="">Select</MenuItem>
+                                {tenderness.map((drop) => (
+                                    <MenuItem key={drop.tenderness_id} value={drop.tenderness_id}>
                                         {drop.tenderness}
-                                    </option>
-                                ))
-                            }
-                        </select>
-                    </div>
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </Grid>
 
-                    <div className="col-md-4">
-                        <label className="Visually-hidden basicscreenheadline">Ascitis</label>
-                        <select className="form-control form-select form-select-sm selectdropexam"
-                            onChange={handleChange}
-                            name="ascitis"
-                            value={systematicExam.ascitis}>
-                            <option selected>Select</option>
-                            {
-                                ascitis.map((drop) => (
-                                    <option key={drop.ascitis_id} value={drop.ascitis_id}>
+                    <Grid item xs={12} md={4}>
+                        <FormControl fullWidth size="small">
+                            <InputLabel>Ascitis</InputLabel>
+                            <Select sx={{
+                                "& .MuiInputBase-input.MuiSelect-select": {
+                                    color: "#000 !important",
+                                },
+                                "& .MuiSvgIcon-root": {
+                                    color: "#000",
+                                },
+                            }}
+                                label="Ascitis"
+                                name="ascitis"
+                                value={systematicExam.ascitis || ""}
+                                onChange={handleChange}
+                            >
+                                <MenuItem value="">Select</MenuItem>
+                                {ascitis.map((drop) => (
+                                    <MenuItem key={drop.ascitis_id} value={drop.ascitis_id}>
                                         {drop.ascitis}
-                                    </option>
-                                ))
-                            }
-                        </select>
-                    </div>
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </Grid>
 
-                    <div className='col-md-4'>
-                        <label className="Visually-hidden basicscreenheadline">Guarding</label>
-                        <select class="form-control form-select-lg mb-3 selectdropexam"
-                            onChange={handleChange}
-                            name="guarding"
-                            value={systematicExam.guarding}>
-                            <option className='selecttag' selected>Select</option>
-                            {
-                                guarding.map((drop) => (
-                                    <option key={drop.guarding_id} value={drop.guarding_id}>
+                    <Grid item xs={12} md={4}>
+                        <FormControl fullWidth size="small">
+                            <InputLabel>Guarding</InputLabel>
+                            <Select sx={{
+                                "& .MuiInputBase-input.MuiSelect-select": {
+                                    color: "#000 !important",
+                                },
+                                "& .MuiSvgIcon-root": {
+                                    color: "#000",
+                                },
+                            }}
+                                label="Guarding"
+                                name="guarding"
+                                value={systematicExam.guarding || ""}
+                                onChange={handleChange}
+                            >
+                                <MenuItem value="">Select</MenuItem>
+                                {guarding.map((drop) => (
+                                    <MenuItem key={drop.guarding_id} value={drop.guarding_id}>
                                         {drop.guarding}
-                                    </option>
-                                ))
-                            }
-                        </select>
-                    </div>
+                                    </MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </Grid>
 
-                    {
-                        source === '1' && (
-                            <>
-                                <div className='col-md-4'>
-                                    <label className="Visually-hidden basicscreenheadline">Joints</label>
-                                    <select class="form-control form-select-lg mb-3 selectdropexam"
-                                        onChange={handleChange}
+                    {source === "1" && (
+                        <>
+                            <Grid item xs={12} md={4}>
+                                <FormControl fullWidth size="small">
+                                    <InputLabel>Joints</InputLabel>
+                                    <Select sx={{
+                                        "& .MuiInputBase-input.MuiSelect-select": {
+                                            color: "#000 !important",
+                                        },
+                                        "& .MuiSvgIcon-root": {
+                                            color: "#000",
+                                        },
+                                    }}
+                                        label="Joints"
                                         name="joints"
-                                        value={systematicExam.joints}>
-                                        <option selected>Select</option>
-                                        {
-                                            joints.map((drop) => (
-                                                <option key={drop.joints_id} value={drop.joints_id}>
-                                                    {drop.joints}
-                                                </option>
-                                            ))
-                                        }
-                                    </select>
-                                </div>
-
-                                <div className="col-md-4">
-                                    <label className="Visually-hidden basicscreenheadline">Swollen Joints</label>
-                                    <select className="form-control form-select form-select-sm selectdropexam"
+                                        value={systematicExam.joints || ""}
                                         onChange={handleChange}
+                                    >
+                                        <MenuItem value="">Select</MenuItem>
+                                        {joints.map((drop) => (
+                                            <MenuItem key={drop.joints_id} value={drop.joints_id}>
+                                                {drop.joints}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
+                            </Grid>
+
+                            <Grid item xs={12} md={4}>
+                                <FormControl fullWidth size="small">
+                                    <InputLabel>Swollen Joints</InputLabel>
+                                    <Select sx={{
+                                        "& .MuiInputBase-input.MuiSelect-select": {
+                                            color: "#000 !important",
+                                        },
+                                        "& .MuiSvgIcon-root": {
+                                            color: "#000",
+                                        },
+                                    }}
+                                        label="Swollen Joints"
                                         name="swollen_joints"
-                                        value={systematicExam.swollen_joints}>
-                                        <option selected>Select</option>
-                                        {
-                                            swollen.map((drop) => (
-                                                <option key={drop.swollen_joints_id} value={drop.swollen_joints_id}>
-                                                    {drop.swollen_joints}
-                                                </option>
-                                            ))
-                                        }
-                                    </select>
-                                </div>
-
-                                <div className="col-md-4">
-                                    <label className="Visually-hidden basicscreenheadline">Spine/Posture</label>
-                                    <select className="form-control form-select form-select-sm selectdropexam"
+                                        value={systematicExam.swollen_joints || ""}
                                         onChange={handleChange}
+                                    >
+                                        <MenuItem value="">Select</MenuItem>
+                                        {swollen.map((drop) => (
+                                            <MenuItem
+                                                key={drop.swollen_joints_id}
+                                                value={drop.swollen_joints_id}
+                                            >
+                                                {drop.swollen_joints}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
+                            </Grid>
+
+                            <Grid item xs={12} md={4}>
+                                <FormControl fullWidth size="small">
+                                    <InputLabel>Spine / Posture</InputLabel>
+                                    <Select sx={{
+                                        "& .MuiInputBase-input.MuiSelect-select": {
+                                            color: "#000 !important",
+                                        },
+                                        "& .MuiSvgIcon-root": {
+                                            color: "#000",
+                                        },
+                                    }}
+                                        label="Spine / Posture"
                                         name="spine_posture"
-                                        value={systematicExam.spine_posture}>
-                                        <option selected>Select</option>
-                                        {
-                                            spine.map((drop) => (
-                                                <option key={drop.spine_posture_id} value={drop.spine_posture_id}>
-                                                    {drop.spine_posture}
-                                                </option>
-                                            ))
-                                        }
-                                    </select>
-                                </div>
-                            </>
-                        )
-                    }
+                                        value={systematicExam.spine_posture || ""}
+                                        onChange={handleChange}
+                                    >
+                                        <MenuItem value="">Select</MenuItem>
+                                        {spine.map((drop) => (
+                                            <MenuItem
+                                                key={drop.spine_posture_id}
+                                                value={drop.spine_posture_id}
+                                            >
+                                                {drop.spine_posture}
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
+                            </Grid>
+                        </>
+                    )}
 
-                    {/* ////////////////// ADDED Fieldss */}
-                    <div className="col-md-4">
-                        <label className="Visually-hidden basicscreenheadline">Genito Urinary</label>
-                        <select className="form-control form-select form-select-sm selectdropexam"
-                            onChange={handleChange}
-                            name="discharge"
-                            value={systematicExam.discharge}>
-                            <option selected>Select</option>
-                            <option value="Normal">Normal</option>
-                            <option value="Abnormal">Abnormal</option>
-                        </select>
-                    </div>
+                    <Grid item xs={12} md={4}>
+                        <FormControl fullWidth size="small">
+                            <InputLabel>Genito Urinary</InputLabel>
+                            <Select sx={{
+                                "& .MuiInputBase-input.MuiSelect-select": {
+                                    color: "#000 !important",
+                                },
+                                "& .MuiSvgIcon-root": {
+                                    color: "#000",
+                                },
+                            }}
+                                label="Genito Urinary"
+                                name="discharge"
+                                value={systematicExam.discharge || ""}
+                                onChange={handleChange}
+                            >
+                                <MenuItem value="">Select</MenuItem>
+                                <MenuItem value="Normal">Normal</MenuItem>
+                                <MenuItem value="Abnormal">Abnormal</MenuItem>
+                            </Select>
+                        </FormControl>
+                    </Grid>
 
-                    <div className="col-md-4">
-                        <label className="Visually-hidden basicscreenheadline">Discharge</label>
-                        <select className="form-control form-select form-select-sm selectdropexam"
-                            onChange={handleChange}
-                            name="genito_urinary"
-                            value={systematicExam.genito_urinary}>
-                            <option selected>Select</option>
-                            <option value="Yes">Yes</option>
-                            <option value="No">No</option>
-                        </select>
-                    </div>
+                    <Grid item xs={12} md={4}>
+                        <FormControl fullWidth size="small">
+                            <InputLabel>Discharge</InputLabel>
+                            <Select sx={{
+                                "& .MuiInputBase-input.MuiSelect-select": {
+                                    color: "#000 !important",
+                                },
+                                "& .MuiSvgIcon-root": {
+                                    color: "#000",
+                                },
+                            }}
+                                label="Discharge"
+                                name="genito_urinary"
+                                value={systematicExam.genito_urinary || ""}
+                                onChange={handleChange}
+                            >
+                                <MenuItem value="">Select</MenuItem>
+                                <MenuItem value="Yes">Yes</MenuItem>
+                                <MenuItem value="No">No</MenuItem>
+                            </Select>
+                        </FormControl>
+                    </Grid>
 
-                    <div className="col-md-4">
-                        <label className="Visually-hidden basicscreenheadline">Hydrocele</label>
-                        <select className="form-control form-select form-select-sm selectdropexam"
-                            onChange={handleChange}
-                            name="hydrocele "
-                            value={systematicExam.hydrocele}>
-                            <option selected>Select</option>
-                            <option value="Present">Present</option>
-                            <option value="Absent">Absent</option>
-                        </select>
-                    </div>
+                    {/* Hydrocele */}
+                    <Grid item xs={12} md={4}>
+                        <FormControl fullWidth size="small">
+                            <InputLabel>Hydrocele</InputLabel>
+                            <Select sx={{
+                                "& .MuiInputBase-input.MuiSelect-select": {
+                                    color: "#000 !important",
+                                },
+                                "& .MuiSvgIcon-root": {
+                                    color: "#000",
+                                },
+                            }}
+                                label="Hydrocele"
+                                name="hydrocele"
+                                value={systematicExam.hydrocele || ""}
+                                onChange={handleChange}
+                            >
+                                <MenuItem value="">Select</MenuItem>
+                                <MenuItem value="Present">Present</MenuItem>
+                                <MenuItem value="Absent">Absent</MenuItem>
+                            </Select>
+                        </FormControl>
+                    </Grid>
 
-                    <div className="col-md-4">
-                        <label className="Visually-hidden basicscreenheadline">Cervical</label>
-                        <select className="form-control form-select form-select-sm selectdropexam"
-                            onChange={handleChange}
-                            name="cervical"
-                            value={systematicExam.cervical}>
-                            <option selected>Select</option>
-                            <option value="Palpable">Palpable</option>
-                            <option value="Not Palpable">Not Palpable</option>
-                        </select>
-                    </div>
+                    {/* Cervical */}
+                    <Grid item xs={12} md={4}>
+                        <FormControl fullWidth size="small">
+                            <InputLabel>Cervical</InputLabel>
+                            <Select sx={{
+                                "& .MuiInputBase-input.MuiSelect-select": {
+                                    color: "#000 !important",
+                                },
+                                "& .MuiSvgIcon-root": {
+                                    color: "#000",
+                                },
+                            }}
+                                label="Cervical"
+                                name="cervical"
+                                value={systematicExam.cervical || ""}
+                                onChange={handleChange}
+                            >
+                                <MenuItem value="">Select</MenuItem>
+                                <MenuItem value="Palpable">Palpable</MenuItem>
+                                <MenuItem value="Not Palpable">Not Palpable</MenuItem>
+                            </Select>
+                        </FormControl>
+                    </Grid>
 
-                    <div className="col-md-4">
-                        <label className="Visually-hidden basicscreenheadline">Axilla</label>
-                        <select className="form-control form-select form-select-sm selectdropexam"
-                            onChange={handleChange}
-                            name="axilla"
-                            value={systematicExam.axilla}>
-                            <option selected>Select</option>
-                            <option value="Palpable">Palpable</option>
-                            <option value="Not Palpable">Not Palpable</option>
-                        </select>
-                    </div>
+                    {/* Axilla */}
+                    <Grid item xs={12} md={4}>
+                        <FormControl fullWidth size="small">
+                            <InputLabel>Axilla</InputLabel>
+                            <Select sx={{
+                                "& .MuiInputBase-input.MuiSelect-select": {
+                                    color: "#000 !important",
+                                },
+                                "& .MuiSvgIcon-root": {
+                                    color: "#000",
+                                },
+                            }}
+                                label="Axilla"
+                                name="axilla"
+                                value={systematicExam.axilla || ""}
+                                onChange={handleChange}
+                            >
+                                <MenuItem value="">Select</MenuItem>
+                                <MenuItem value="Palpable">Palpable</MenuItem>
+                                <MenuItem value="Not Palpable">Not Palpable</MenuItem>
+                            </Select>
+                        </FormControl>
+                    </Grid>
 
-                    <div className="col-md-4">
-                        <label className="Visually-hidden basicscreenheadline">Inguinal</label>
-                        <select className="form-control form-select form-select-sm selectdropexam"
-                            onChange={handleChange}
-                            name="inguinal"
-                            value={systematicExam.inguinal}>
-                            <option selected>Select</option>
-                            <option value="Palpable">Palpable</option>
-                            <option value="Not Palpable">Not Palpable</option>
-                        </select>
-                    </div>
+                    {/* Inguinal */}
+                    <Grid item xs={12} md={4}>
+                        <FormControl fullWidth size="small">
+                            <InputLabel>Inguinal</InputLabel>
+                            <Select sx={{
+                                "& .MuiInputBase-input.MuiSelect-select": {
+                                    color: "#000 !important",
+                                },
+                                "& .MuiSvgIcon-root": {
+                                    color: "#000",
+                                },
+                            }}
+                                label="Inguinal"
+                                name="inguinal"
+                                value={systematicExam.inguinal || ""}
+                                onChange={handleChange}
+                            >
+                                <MenuItem value="">Select</MenuItem>
+                                <MenuItem value="Palpable">Palpable</MenuItem>
+                                <MenuItem value="Not Palpable">Not Palpable</MenuItem>
+                            </Select>
+                        </FormControl>
+                    </Grid>
 
-                    <div className="col-md-4">
-                        <label className="Visually-hidden basicscreenheadline">Thyroid</label>
-                        <select className="form-control form-select form-select-sm selectdropexam"
-                            onChange={handleChange}
-                            name="thyroid"
-                            value={systematicExam.thyroid}>
-                            <option selected>Select</option>
-                            <option value="Palpable">Palpable</option>
-                            <option value="Not Palpable">Not Palpable</option>
-                        </select>
-                    </div>
-                </div>
+                    {/* Thyroid */}
+                    <Grid item xs={12} md={4}>
+                        <FormControl fullWidth size="small">
+                            <InputLabel>Thyroid</InputLabel>
+                            <Select sx={{
+                                "& .MuiInputBase-input.MuiSelect-select": {
+                                    color: "#000 !important",
+                                },
+                                "& .MuiSvgIcon-root": {
+                                    color: "#000",
+                                },
+                            }}
+                                label="Thyroid"
+                                name="thyroid"
+                                value={systematicExam.thyroid || ""}
+                                onChange={handleChange}
+                            >
+                                <MenuItem value="">Select</MenuItem>
+                                <MenuItem value="Palpable">Palpable</MenuItem>
+                                <MenuItem value="Not Palpable">Not Palpable</MenuItem>
+                            </Select>
+                        </FormControl>
+                    </Grid>
+                </Grid>
 
-                <div>
-                    <button type="submit" className="btn btn-sm generalexambutton">Submit</button>
-                </div>
+                <Button
+                    variant="contained"
+                    size="small"
+                    type="submit"
+                    sx={{ mt: 3, backgroundColor: "#1976d2", textTransform: "none" }}
+                >
+                    Submit
+                </Button>
             </form>
         </div>
     )

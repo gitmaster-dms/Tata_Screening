@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import './BasicScreen.css'
 import Generalexam from './BasiScreen/Generalexam'
 import Systematic from './BasiScreen/Systematic'
@@ -13,6 +13,9 @@ import Treatment from './BasiScreen/Treatment'
 import Femalescreening from './BasiScreen/Femalescreening'
 import BadHabits from './BasiScreen/BadHabits'
 import axios from 'axios';
+import { Grid, Card, Typography, Box, IconButton } from '@mui/material';
+import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
+import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 
 const BasicScreen = ({ pkid, citizensPkId, gender, scheduleID, citizenidddddddd, fetchVital, onAcceptClick }) => {
 
@@ -71,149 +74,265 @@ const BasicScreen = ({ pkid, citizensPkId, gender, scheduleID, citizenidddddddd,
 
   };
 
+
+  const scrollRef = useRef(null);
+  const [canScrollUp, setCanScrollUp] = useState(false);
+  const [canScrollDown, setCanScrollDown] = useState(false);
+
+  const checkScroll = () => {
+    const el = scrollRef.current;
+    if (el) {
+      setCanScrollUp(el.scrollTop > 0);
+      setCanScrollDown(el.scrollTop + el.clientHeight < el.scrollHeight);
+    }
+  };
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (el) {
+      checkScroll();
+      el.addEventListener("scroll", checkScroll);
+      return () => el.removeEventListener("scroll", checkScroll);
+    }
+  }, []);
+
+  const scrollByAmount = (amount) => {
+    scrollRef.current.scrollBy({ top: amount, behavior: "smooth" });
+  };
+
   return (
-    <div>
-      <div className="row scroll mb-3">
-        <div className="col-md-2" style={{ height: "auto" }}>
-          <div className="card generalcard" style={{ height: "100%" }}>
-            <div style={{ height: "100%" }}>
-              <h5 className="basictitle">Basic Screening</h5>
-              <div>
-                {subVitalList.map((option) => (
-                  <div key={option.screening_vitals} onClick={() => handleTabClick(option.screening_list, option.basicScreeningPkId)}>
-                    <h5 className={`generaltitle ${selectedTab === option.screening_list ? 'selected-general' : ''}`}>
-                      {option.screening_list}
-                    </h5>
-                  </div>
-                ))}
-              </div>
+    <Box>
+      <Grid container spacing={2}>
+        <Grid item xs={12} sm={2}>
+          <Card sx={{ height: 'auto', p: 1, backgroundColor: '#0A70B7', borderRadius: "20px" }}>
+            <Typography sx={{ fontWeight: 600, fontFamily: "Roboto", fontSize: "16px", color: "white" }}>
+              Basic Screening
+            </Typography>
+            <Box sx={{ position: "relative", width: "100%" }}>
+              {canScrollUp && (
+                <IconButton
+                  size="small"
+                  onClick={() => scrollByAmount(-100)}
+                  sx={{
+                    position: "absolute",
+                    top: 0,
+                    left: "50%",
+                    transform: "translateX(-50%)",
+                    zIndex: 2,
+                    bgcolor: "#ffffffff",
+                    boxShadow: 1,
+                    "&:hover": {
+                      bgcolor: "#ffffff",
+                    },
+                  }}
+                >
+                  <ArrowDropUpIcon />
+                </IconButton>
+              )}
 
-            </div>
-          </div>
-        </div>
+              <Box
+                ref={scrollRef}
+                sx={{
+                  maxHeight: "70vh",
+                  overflowY: "auto",
+                  scrollbarWidth: "none",
+                  "&::-webkit-scrollbar": { display: "none" },
+                  pt: canScrollUp ? 3 : 0,
+                  pb: canScrollDown ? 3 : 0,
+                }}
+              >
+                <Grid container direction="column" spacing={1}>
+                  {subVitalList.map((option) => (
+                    <Grid item key={option.screening_vitals}>
+                      <Box
+                        onClick={() =>
+                          handleTabClick(option.screening_list, option.basicScreeningPkId)
+                        }
+                        sx={{
+                          p: 0.5,
+                          cursor: "pointer",
+                          bgcolor:
+                            selectedTab === option.screening_list ? "#f1f4f6ff" : null,
+                          color: selectedTab === option.screening_list ? "#080707ff" : "#fefefeff",
+                          borderRadius: 1,
+                          "&:hover": {
+                            bgcolor:
+                              selectedTab === option.screening_list
+                                ? "#f1f4f6ff"
+                                : "fefefeff",
+                          },
+                        }}
+                      >
+                        <Typography
+                          variant="subtitle1"
+                          sx={{
+                            fontWeight: 500,
+                            fontSize: "13px",
+                            fontFamily: "Roboto",
+                          }}
+                        >
+                          {option.screening_list}
+                        </Typography>
+                      </Box>
+                    </Grid>
+                  ))}
+                </Grid>
+              </Box>
 
-        <div className="col-md-10">
-          <div className="card basicscreentabbbbb" style={{ height: "100%" }}>
-            {selectedTab ? (
-              <div className="content contenttype" id="generalContent">
-                {selectedTab === 'General Examination' && (
-                  <Generalexam
-                    pkid={pkid}
-                    citizensPkId={citizensPkId} scheduleID={scheduleID} citizenidddddddd={citizenidddddddd}
+              {canScrollDown && (
+                <IconButton
+                  size="small"
+                  onClick={() => scrollByAmount(100)}
+                  sx={{
+                    position: "absolute",
+                    bottom: 0,
+                    left: "50%",
+                    transform: "translateX(-50%)",
+                    zIndex: 2,
+                    bgcolor: "#ffffffff",
+                    boxShadow: 1,
+                    "&:hover": {
+                      bgcolor: "#ffffff",
+                    },
+                  }}
+                >
+                  <ArrowDropDownIcon />
+                </IconButton>
+              )}
+            </Box>
+          </Card>
+        </Grid>
 
-                    onAcceptClick={handleAcceptClick}
-                    selectedTab={selectedTab} subVitalList={subVitalList}
-                  />
-                )}
+        <Grid item xs={12} sm={10}>
+          <Box
+            sx={{
+              maxHeight: "80vh",
+              overflowY: "auto",
+              pr: 2,
+            }}
+          >
+            <Card sx={{ p: 2, mb: 2, borderRadius: "20px", }}>
+              {selectedTab ? (
+                <div className="content contenttype" id="generalContent">
+                  {selectedTab === 'General Examination' && (
+                    <Generalexam
+                      pkid={pkid}
+                      citizensPkId={citizensPkId} scheduleID={scheduleID} citizenidddddddd={citizenidddddddd}
 
-                {selectedTab === 'Treatment' && (
-                  <Treatment pkid={pkid} citizensPkId={citizensPkId}
-                    basicScreeningPkId={basicScreeningPkId} scheduleID={scheduleID} citizenidddddddd={citizenidddddddd}
-                    // onAcceptClick={(tabName, basicScreeningPkId) => handleTabClick(tabName, basicScreeningPkId)}
-                    onAcceptClick={handleAcceptClick}
-                    selectedTab={selectedTab} subVitalList={subVitalList}
-                  />
-                )}
+                      onAcceptClick={handleAcceptClick}
+                      selectedTab={selectedTab} subVitalList={subVitalList}
+                    />
+                  )}
 
-                {selectedTab === 'Systemic Exam' && (
-                  <Systematic pkid={pkid} citizensPkId={citizensPkId}
-                    basicScreeningPkId={basicScreeningPkId} scheduleID={scheduleID} citizenidddddddd={citizenidddddddd}
-                    // onAcceptClick={(tabName, basicScreeningPkId) => handleTabClick(tabName, basicScreeningPkId)} 
-                    onAcceptClick={handleAcceptClick}
-                    selectedTab={selectedTab} subVitalList={subVitalList}
-                  />
-                )}
+                  {selectedTab === 'Treatment' && (
+                    <Treatment pkid={pkid} citizensPkId={citizensPkId}
+                      basicScreeningPkId={basicScreeningPkId} scheduleID={scheduleID} citizenidddddddd={citizenidddddddd}
+                      // onAcceptClick={(tabName, basicScreeningPkId) => handleTabClick(tabName, basicScreeningPkId)}
+                      onAcceptClick={handleAcceptClick}
+                      selectedTab={selectedTab} subVitalList={subVitalList}
+                    />
+                  )}
 
-                {selectedTab === 'Disability Screening' && (
-                  <Disiability pkid={pkid} citizensPkId={citizensPkId}
-                    basicScreeningPkId={basicScreeningPkId} scheduleID={scheduleID} citizenidddddddd={citizenidddddddd}
-                    // onAcceptClick={(tabName, basicScreeningPkId) => handleTabClick(tabName, basicScreeningPkId)}  
-                    onAcceptClick={handleAcceptClick}
-                    selectedTab={selectedTab} subVitalList={subVitalList}
-                  />
-                )}
+                  {selectedTab === 'Systemic Exam' && (
+                    <Systematic pkid={pkid} citizensPkId={citizensPkId}
+                      basicScreeningPkId={basicScreeningPkId} scheduleID={scheduleID} citizenidddddddd={citizenidddddddd}
+                      // onAcceptClick={(tabName, basicScreeningPkId) => handleTabClick(tabName, basicScreeningPkId)} 
+                      onAcceptClick={handleAcceptClick}
+                      selectedTab={selectedTab} subVitalList={subVitalList}
+                    />
+                  )}
 
-                {selectedTab === 'Birth Defects' && (
-                  <Birthdefect pkid={pkid} citizensPkId={citizensPkId} citizenidddddddd={citizenidddddddd}
-                    basicScreeningPkId={basicScreeningPkId} scheduleID={scheduleID}
-                    // onAcceptClick={(tabName, basicScreeningPkId) => handleTabClick(tabName, basicScreeningPkId)} 
-                    onAcceptClick={handleAcceptClick}
-                    selectedTab={selectedTab} subVitalList={subVitalList}
-                  />
-                )}
+                  {selectedTab === 'Disability Screening' && (
+                    <Disiability pkid={pkid} citizensPkId={citizensPkId}
+                      basicScreeningPkId={basicScreeningPkId} scheduleID={scheduleID} citizenidddddddd={citizenidddddddd}
+                      // onAcceptClick={(tabName, basicScreeningPkId) => handleTabClick(tabName, basicScreeningPkId)}  
+                      onAcceptClick={handleAcceptClick}
+                      selectedTab={selectedTab} subVitalList={subVitalList}
+                    />
+                  )}
 
-                {selectedTab === 'Childhood disease' && (
-                  <Childhood pkid={pkid} citizensPkId={citizensPkId} citizenidddddddd={citizenidddddddd}
-                    basicScreeningPkId={basicScreeningPkId} scheduleID={scheduleID}
-                    // onAcceptClick={(tabName, basicScreeningPkId) => handleTabClick(tabName, basicScreeningPkId)}
-                    onAcceptClick={handleAcceptClick}
-                    selectedTab={selectedTab} subVitalList={subVitalList}
-                  />
-                )}
+                  {selectedTab === 'Birth Defects' && (
+                    <Birthdefect pkid={pkid} citizensPkId={citizensPkId} citizenidddddddd={citizenidddddddd}
+                      basicScreeningPkId={basicScreeningPkId} scheduleID={scheduleID}
+                      // onAcceptClick={(tabName, basicScreeningPkId) => handleTabClick(tabName, basicScreeningPkId)} 
+                      onAcceptClick={handleAcceptClick}
+                      selectedTab={selectedTab} subVitalList={subVitalList}
+                    />
+                  )}
 
-                {selectedTab === 'Deficiencies' && (
-                  <Difieciency pkid={pkid} citizensPkId={citizensPkId} citizenidddddddd={citizenidddddddd}
-                    basicScreeningPkId={basicScreeningPkId} scheduleID={scheduleID}
-                    // onAcceptClick={(tabName, basicScreeningPkId) => handleTabClick(tabName, basicScreeningPkId)}
-                    onAcceptClick={handleAcceptClick}
-                    selectedTab={selectedTab} subVitalList={subVitalList}
-                  />
-                )}
-
-                {selectedTab === 'Skin Condition' && (
-                  <Skin pkid={pkid} citizensPkId={citizensPkId} citizenidddddddd={citizenidddddddd}
-                    basicScreeningPkId={basicScreeningPkId} scheduleID={scheduleID}
-                    // onAcceptClick={(tabName, basicScreeningPkId) => handleTabClick(tabName, basicScreeningPkId)} 
-                    onAcceptClick={handleAcceptClick}
-                    selectedTab={selectedTab} subVitalList={subVitalList}
-                  />
-                )}
-
-                {selectedTab === 'Check Box if Normal' && (
-                  <Checkbox pkid={pkid} citizensPkId={citizensPkId} citizenidddddddd={citizenidddddddd}
-                    basicScreeningPkId={basicScreeningPkId} scheduleID={scheduleID}
-                    // onAcceptClick={(tabName, basicScreeningPkId) => handleTabClick(tabName, basicScreeningPkId)}
-                    onAcceptClick={handleAcceptClick}
-                    selectedTab={selectedTab} subVitalList={subVitalList}
-                  />
-                )}
-
-                {selectedTab === 'Diagnosis' && (
-                  <Diagnosis pkid={pkid} citizensPkId={citizensPkId} citizenidddddddd={citizenidddddddd}
-                    basicScreeningPkId={basicScreeningPkId} scheduleID={scheduleID}
-                    // onAcceptClick={(tabName, basicScreeningPkId) => handleTabClick(tabName, basicScreeningPkId)}
-                    onAcceptClick={handleAcceptClick}
-                    selectedTab={selectedTab} subVitalList={subVitalList}
-                  />
-                )}
-
-                {
-                  selectedTab === 'Female Child Screening' && (
-                    <Femalescreening pkid={pkid} citizensPkId={citizensPkId} citizenidddddddd={citizenidddddddd}
+                  {selectedTab === 'Childhood disease' && (
+                    <Childhood pkid={pkid} citizensPkId={citizensPkId} citizenidddddddd={citizenidddddddd}
                       basicScreeningPkId={basicScreeningPkId} scheduleID={scheduleID}
                       // onAcceptClick={(tabName, basicScreeningPkId) => handleTabClick(tabName, basicScreeningPkId)}
                       onAcceptClick={handleAcceptClick}
                       selectedTab={selectedTab} subVitalList={subVitalList}
                     />
-                  )
-                }
-                {
-                  selectedTab === 'Bad Habit' && (
-                    <BadHabits pkid={pkid} citizensPkId={citizensPkId} citizenidddddddd={citizenidddddddd}
+                  )}
+
+                  {selectedTab === 'Deficiencies' && (
+                    <Difieciency pkid={pkid} citizensPkId={citizensPkId} citizenidddddddd={citizenidddddddd}
                       basicScreeningPkId={basicScreeningPkId} scheduleID={scheduleID}
                       // onAcceptClick={(tabName, basicScreeningPkId) => handleTabClick(tabName, basicScreeningPkId)}
                       onAcceptClick={handleAcceptClick}
                       selectedTab={selectedTab} subVitalList={subVitalList}
                     />
-                  )
-                }
+                  )}
 
-              </div>
-            ) : null}
-          </div>
-        </div>
-      </div>
-    </div>
+                  {selectedTab === 'Skin Condition' && (
+                    <Skin pkid={pkid} citizensPkId={citizensPkId} citizenidddddddd={citizenidddddddd}
+                      basicScreeningPkId={basicScreeningPkId} scheduleID={scheduleID}
+                      // onAcceptClick={(tabName, basicScreeningPkId) => handleTabClick(tabName, basicScreeningPkId)} 
+                      onAcceptClick={handleAcceptClick}
+                      selectedTab={selectedTab} subVitalList={subVitalList}
+                    />
+                  )}
+
+                  {selectedTab === 'Check Box if Normal' && (
+                    <Checkbox pkid={pkid} citizensPkId={citizensPkId} citizenidddddddd={citizenidddddddd}
+                      basicScreeningPkId={basicScreeningPkId} scheduleID={scheduleID}
+                      // onAcceptClick={(tabName, basicScreeningPkId) => handleTabClick(tabName, basicScreeningPkId)}
+                      onAcceptClick={handleAcceptClick}
+                      selectedTab={selectedTab} subVitalList={subVitalList}
+                    />
+                  )}
+
+                  {selectedTab === 'Diagnosis' && (
+                    <Diagnosis pkid={pkid} citizensPkId={citizensPkId} citizenidddddddd={citizenidddddddd}
+                      basicScreeningPkId={basicScreeningPkId} scheduleID={scheduleID}
+                      // onAcceptClick={(tabName, basicScreeningPkId) => handleTabClick(tabName, basicScreeningPkId)}
+                      onAcceptClick={handleAcceptClick}
+                      selectedTab={selectedTab} subVitalList={subVitalList}
+                    />
+                  )}
+
+                  {
+                    selectedTab === 'Female Child Screening' && (
+                      <Femalescreening pkid={pkid} citizensPkId={citizensPkId} citizenidddddddd={citizenidddddddd}
+                        basicScreeningPkId={basicScreeningPkId} scheduleID={scheduleID}
+                        // onAcceptClick={(tabName, basicScreeningPkId) => handleTabClick(tabName, basicScreeningPkId)}
+                        onAcceptClick={handleAcceptClick}
+                        selectedTab={selectedTab} subVitalList={subVitalList}
+                      />
+                    )
+                  }
+                  {
+                    selectedTab === 'Bad Habit' && (
+                      <BadHabits pkid={pkid} citizensPkId={citizensPkId} citizenidddddddd={citizenidddddddd}
+                        basicScreeningPkId={basicScreeningPkId} scheduleID={scheduleID}
+                        // onAcceptClick={(tabName, basicScreeningPkId) => handleTabClick(tabName, basicScreeningPkId)}
+                        onAcceptClick={handleAcceptClick}
+                        selectedTab={selectedTab} subVitalList={subVitalList}
+                      />
+                    )
+                  }
+
+                </div>
+              ) : null}
+            </Card>
+          </Box>
+        </Grid>
+      </Grid>
+    </Box>
   )
 }
 
