@@ -1513,4 +1513,7 @@ class followup_save_info_Serializer(serializers.ModelSerializer):
 class Workshop_Get_Serializer(serializers.ModelSerializer):
     class Meta:
         model = Workshop
-        fields = ['ws_pk_id','Workshop_name']
+        # fields = ['ws_pk_id','Workshop_name']
+        fields = '__all__'
+
+
