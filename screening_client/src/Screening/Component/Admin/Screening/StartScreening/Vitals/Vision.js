@@ -1,47 +1,34 @@
 import React, { useState, useEffect } from 'react';
-import './Vision.css'
+import {
+  Box,
+  Grid,
+  Card,
+  Typography,
+  TextField,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  RadioGroup,
+  Radio,
+  FormControlLabel,
+  Button,
+  Checkbox
+} from '@mui/material';
 
 const Vision = ({ pkid, citizensPkId, fetchVital, selectedName, onAcceptClick }) => {
-
-  //_________________________________START
-  console.log(selectedName, 'Present name');
-  console.log(fetchVital, 'Overall GET API');
   const [nextName, setNextName] = useState('');
-
-  useEffect(() => {
-    if (fetchVital && selectedName) {
-      const currentIndex = fetchVital.findIndex(item => item.screening_list === selectedName);
-
-      console.log('Current Indexxxx:', currentIndex);
-
-      if (currentIndex !== -1 && currentIndex < fetchVital.length - 1) {
-        const nextItem = fetchVital[currentIndex + 1];
-        const nextName = nextItem.screening_list;
-        setNextName(nextName);
-        console.log('Next Name Setttt:', nextName);
-      } else {
-        setNextName('');
-        console.log('No next item or selectedName not found');
-      }
-    }
-  }, [selectedName, fetchVital]);
-  //_________________________________END
+  const [specialist, setSpecialist] = useState(null);
+  const [eyeMuscles, setEyeMuscles] = useState('');
+  const [referractive, setReferractive] = useState('');
+  const [editMode, setEditMode] = useState(false);
 
   const Port = process.env.REACT_APP_API_KEY;
   const accessToken = localStorage.getItem('token');
   const source = localStorage.getItem('source');
-
-  console.log(source, 'fetched source in the vision');
   const userID = localStorage.getItem('userID');
-  console.log(userID);
-
   const userGroup = localStorage.getItem('usergrp');
 
-  useEffect(() => {
-    console.log('User Group:', userGroup);
-  }, [userGroup]);
-
-  /////////// Field
   const [visionForm, setVisionForm] = useState({
     if_other_commnet: '',
     vision_with_glasses: '',
@@ -54,8 +41,6 @@ const Vision = ({ pkid, citizensPkId, fetchVital, selectedName, onAcceptClick })
     vision_screening_comment: '',
     referred_to_surgery: '',
     citizen_pk_id: citizensPkId,
-
-    //// corporate field
     re_near_without_glasses: null,
     re_far_without_glasses: null,
     le_near_without_glasses: null,
@@ -64,44 +49,40 @@ const Vision = ({ pkid, citizensPkId, fetchVital, selectedName, onAcceptClick })
     re_far_with_glasses: null,
     le_near_with_glasses: null,
     le_far_with_glasses: null,
-  })
+  });
 
-  const [specialist, setSpecialist] = useState(null);
-  const [eyeMuscles, setEyeMuscles] = useState('');
-  const [referractive, setReferractive] = useState('');
+  useEffect(() => {
+    if (fetchVital && selectedName) {
+      const currentIndex = fetchVital.findIndex(item => item.screening_list === selectedName);
+      if (currentIndex !== -1 && currentIndex < fetchVital.length - 1) {
+        const nextItem = fetchVital[currentIndex + 1];
+        setNextName(nextItem.screening_list);
+      } else {
+        setNextName('');
+      }
+    }
+  }, [selectedName, fetchVital]);
 
   const handleRadioChange = (event) => {
     const { name, value } = event.target;
-
     if (name === "reffered_to_specialist") {
       setSpecialist(parseInt(value));
     } else if (name === "eye_muscle_control") {
       setEyeMuscles(value);
-    }
-    else if (name === "refractive_error") {
+    } else if (name === "refractive_error") {
       setReferractive(value);
     }
-    // else if (name === "eye_muscle_control") {
-    //   setEyeMuscles(value);
-    // }
   };
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-
-    setVisionForm((prevState) => ({
-      ...prevState,
-      [name]: value,
-    }));
+    setVisionForm((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
-
-    const isConfirmed = window.confirm('Submit Vision Form');
-
-    const confirmationStatus = isConfirmed ? 'True' : 'False';
-
     e.preventDefault();
+    const isConfirmed = window.confirm('Submit Vision Form');
+    const confirmationStatus = isConfirmed ? 'True' : 'False';
 
     const formData = {
       ...visionForm,
@@ -114,8 +95,6 @@ const Vision = ({ pkid, citizensPkId, fetchVital, selectedName, onAcceptClick })
       modify_by: userID,
     };
 
-    console.log('Form Data:', formData);
-
     try {
       const response = await fetch(`${Port}/Screening/citizen_vision_info_post/${pkid}`, {
         method: 'POST',
@@ -126,15 +105,13 @@ const Vision = ({ pkid, citizensPkId, fetchVital, selectedName, onAcceptClick })
         body: JSON.stringify(formData),
       });
 
-
-      if (response.status === 201 && response.status === 200) {
-        const data = await response.json();
-        console.log('Server Response:', data);
+      if (response.ok) {
+        await response.json();
       }
     } catch (error) {
       console.error('Error sending data:', error.message);
     }
-    // onMoveToMedical('medical');
+
     onAcceptClick(nextName);
   };
 
@@ -150,44 +127,16 @@ const Vision = ({ pkid, citizensPkId, fetchVital, selectedName, onAcceptClick })
 
       if (response.ok) {
         const data = await response.json();
-
-        // Check if the array has at least one element before accessing properties
         if (Array.isArray(data) && data.length > 0) {
           const visionForm = data[0];
-
-          setVisionForm((prevState) => ({
-            ...prevState,
-            if_other_commnet: visionForm.if_other_commnet,
-            vision_with_glasses: visionForm.vision_with_glasses,
-            vision_without_glasses: visionForm.vision_without_glasses,
-            visual_perimetry: visionForm.visual_perimetry,
-            comment: visionForm.comment,
-            treatment: visionForm.treatment,
-            color_blindness: visionForm.color_blindness,
-            vision_screening: visionForm.vision_screening,
-            vision_screening_comment: visionForm.vision_screening_comment,
-            referred_to_surgery: visionForm.referred_to_surgery,
-
-
-            ////// corporate field
-            re_near_without_glasses: visionForm.re_near_without_glasses,
-            re_far_without_glasses: visionForm.re_far_without_glasses,
-            le_near_without_glasses: visionForm.le_near_without_glasses,
-            le_far_without_glasses: visionForm.le_far_without_glasses,
-            re_near_with_glasses: visionForm.re_near_with_glasses,
-            re_far_with_glasses: visionForm.re_far_with_glasses,
-            le_near_with_glasses: visionForm.le_near_with_glasses,
-            le_far_with_glasses: visionForm.le_far_with_glasses,
+          setVisionForm(prev => ({
+            ...prev,
+            ...visionForm,
           }));
-
           setSpecialist(visionForm.reffered_to_specialist);
-          setEyeMuscles(visionForm.eye_muscle_control.toString());
-          setReferractive(visionForm.refractive_error.toString());
-        } else {
-          console.error('Empty or invalid data array.');
+          setEyeMuscles(visionForm.eye_muscle_control?.toString());
+          setReferractive(visionForm.refractive_error?.toString());
         }
-      } else {
-        console.error('Server Error:', response.status, response.statusText);
       }
     } catch (error) {
       console.error('Error fetching data:', error.message);
@@ -198,522 +147,319 @@ const Vision = ({ pkid, citizensPkId, fetchVital, selectedName, onAcceptClick })
     fetchDataById(pkid);
   }, [pkid]);
 
-  const [editMode, setEditMode] = useState(false); // State to track edit mode
-
-  const handleEditClick = () => {
-    setEditMode(!editMode); // Toggle edit mode
-  };
-
   return (
-    <div>
-      <div className="row">
-        <div className="col-md-12">
-          <div className="card visioncard">
-            <div className="row">
-              <div className="col-md-7">
-                <h5 className="visiontitle">Vision Screening</h5>
-              </div>
-            </div>
-          </div>
-        </div>
+    <Box >
+      <Card sx={{ borderRadius: "20px", p: 1, mb: 1, background: "linear-gradient(90deg, #039BEF 0%, #1439A4 100%)" }}>
+        <Grid item xs={12} >
+          <Typography sx={{ fontWeight: 600, fontFamily: "Roboto", fontSize: "16px", color: "white" }}>
+            Vision Screening
+          </Typography>
+        </Grid>
+      </Card>
 
-        <div className="col-md-12">
+      <Grid item xs={12}>
+        <Card sx={{ p: 1, borderRadius: "20px" }}>
           <form onSubmit={handleSubmit}>
-            <div className="card">
-              <h5 className="eartitle">Eye</h5>
-              {
-                source === '1' ?
-                  (
-                    <>
-                      {
-                        ['UG-DOCTOR', 'UG-EXPERT', 'UG-SUPERADMIN', 'UG-ADMIN', 'CO-HR'].includes(userGroup) &&
-                        (
-                          <>
-                            <div className='row paddingcolvision'>
-                              <div className="col-md-3">
-                                <div class="form-check">
-                                  <input class="form-check-input checkboxdefault" type="checkbox" value="" id="defaultCheck1 checkboxdefault" />
-                                  <label class="form-check-label" for="defaultCheck1">
-                                    Exophthalmos
-                                  </label>
-                                </div>
-                              </div>
-                              <div className="col-md-3">
-                                <div class="form-check">
-                                  <input class="form-check-input checkboxdefault" type="checkbox" value="" id="defaultCheck1" />
-                                  <label class="form-check-label" for="defaultCheck1">
-                                    Squint_nys
-                                  </label>
-                                </div>
-                              </div>
-                              <div className="col-md-3">
-                                <div class="form-check">
-                                  <input class="form-check-input checkboxdefault" type="checkbox" value="" id="defaultCheck1" />
-                                  <label class="form-check-label" for="defaultCheck1">
-                                    Tagmus
-                                  </label>
-                                </div>
-                              </div>
-                              <div className="col-md-3">
-                                <div class="form-check">
-                                  <input class="form-check-input checkboxdefault" type="checkbox" value="" id="defaultCheck1" />
-                                  <label class="form-check-label" for="defaultCheck1">
-                                    Other
-                                  </label>
-                                </div>
-                              </div>
-                            </div>
+            {source === '1' ? (
+              <>
+                {['UG-DOCTOR', 'UG-EXPERT', 'UG-SUPERADMIN', 'UG-ADMIN', 'CO-HR'].includes(userGroup) && (
+                  <>
+                    <Grid container spacing={2}>
+                      {['Exophthalmos', 'Squint_nys', 'Tagmus', 'Other'].map((label) => (
+                        <Grid item xs={3} key={label}>
+                          <FormControlLabel
+                            control={<Checkbox />}
+                            label={label}
+                          />
+                        </Grid>
+                      ))}
+                    </Grid>
 
-                            <div className="row paddingcol1vision">
-                              <div className="col-md-12">
-                                <label className="visually-hidden remarkvision">If Other/Comment</label>
-                                <input className='form-control inputvision'
-                                  placeholder='Remark' name="if_other_commnet"
-                                  value={visionForm.if_other_commnet}
-                                  onChange={handleChange} />
-                              </div>
-                            </div>
-                          </>
-                        )
-                      }
+                    <TextField
+                      fullWidth
+                      label="If Other / Comment"
+                      name="if_other_commnet"
+                      value={visionForm.if_other_commnet}
+                      onChange={handleChange}
+                      sx={{ mt: 2 }}
+                    />
+                  </>
+                )}
 
-                      {
-                        ['UG-EXPERT', 'UG-SUPERADMIN', 'UG-ADMIN', 'CO-HR'].includes(userGroup) &&
-                        (
-                          <>
-                            <div className="visualllllllll">
-                              <h6 className='Acuity'>Visual Acuity test</h6>
-                              <div className="row everyrow">
-                                <div className="col-md-4">
-                                  <label className="visually-hidden labelvision">Vision With Glasses</label>
-                                  <select className="form-control visioninput"
-                                    onChange={handleChange}
-                                    name="vision_with_glasses"
-                                    value={visionForm.vision_with_glasses}>
-                                    <option>Select</option>
-                                    <option value="2">Good</option>
-                                    <option value="1">Poor</option>
-                                  </select>
-                                </div>
+                {['UG-EXPERT', 'UG-SUPERADMIN', 'UG-ADMIN', 'CO-HR'].includes(userGroup) && (
+                  <>
+                    <Typography variant="subtitle1" sx={{ mt: 2 }}>Visual Acuity Test</Typography>
+                    <Grid container spacing={2}>
+                      <Grid item xs={4}>
+                        <FormControl fullWidth>
+                          <InputLabel>Vision With Glasses</InputLabel>
+                          <Select
+                            size='small'
+                            name="vision_with_glasses"
+                            value={visionForm.vision_with_glasses}
+                            onChange={handleChange}
+                          >
+                            <MenuItem value="">Select</MenuItem>
+                            <MenuItem value="2">Good</MenuItem>
+                            <MenuItem value="1">Poor</MenuItem>
+                          </Select>
+                        </FormControl>
+                      </Grid>
 
-                                <div className="col-md-4">
-                                  <label className="visually-hidden labelvision">Vision Without Glasses</label>
-                                  <select className="form-control visioninput"
-                                    onChange={handleChange}
-                                    name="vision_without_glasses"
-                                    value={visionForm.vision_without_glasses}>
-                                    <option>Select</option>
-                                    <option value="1">Good</option>
-                                    <option value="2">Poor</option>
-                                  </select>
-                                </div>
+                      <Grid item xs={4}>
+                        <FormControl fullWidth>
+                          <InputLabel>Vision Without Glasses</InputLabel>
+                          <Select
+                            size='small'
+                            name="vision_without_glasses"
+                            value={visionForm.vision_without_glasses}
+                            onChange={handleChange}
+                          >
+                            <MenuItem value="">Select</MenuItem>
+                            <MenuItem value="1">Good</MenuItem>
+                            <MenuItem value="2">Poor</MenuItem>
+                          </Select>
+                        </FormControl>
+                      </Grid>
+                    </Grid>
 
-                              </div>
-                            </div>
+                    <Typography variant="subtitle1" sx={{ mt: 3 }}>Eye Muscle Control</Typography>
+                    <RadioGroup row name="eye_muscle_control" value={eyeMuscles} onChange={handleRadioChange}>
+                      <FormControlLabel value="1" control={<Radio />} label="Good" />
+                      <FormControlLabel value="2" control={<Radio />} label="Poor Control" />
+                      <FormControlLabel value="3" control={<Radio />} label="Poor Coordination" />
+                    </RadioGroup>
 
-                            <div className="row everyrow">
-                              <div className="col-md-4">
-                                <h6 className='remarklabelreffer mt-1'>Eye Muscle Control</h6>
-                              </div>
+                    <Typography variant="subtitle1" sx={{ mt: 3 }}>Refractive Error</Typography>
+                    <RadioGroup row name="refractive_error" value={referractive} onChange={handleRadioChange}>
+                      <FormControlLabel value="1" control={<Radio />} label="Yes" />
+                      <FormControlLabel value="2" control={<Radio />} label="No" />
+                    </RadioGroup>
 
-                              <div className="col-md-2">
-                                <div class="form-check">
-                                  <input
-                                    className="form-check-input inputradio"
-                                    type="radio"
-                                    id='eye_muscle_control'
-                                    name="eye_muscle_control"
-                                    value="1"
-                                    checked={eyeMuscles === "1"}
-                                    onChange={handleRadioChange}
-                                  />
-                                  <label class="form-check-label" for="flexRadioOralGood">
-                                    Good
-                                  </label>
-                                </div>
-                              </div>
+                    <Grid container spacing={2} sx={{ mt: 2 }}>
+                      <Grid item xs={4}>
+                        <TextField
+                          fullWidth
+                          label="Visual Field Perimetry"
+                          name="visual_perimetry"
+                          value={visionForm.visual_perimetry}
+                          onChange={handleChange}
+                        />
+                      </Grid>
 
-                              <div className="col-md-2">
-                                <div class="form-check">
-                                  <input class="form-check-input inputradio" type="radio"
-                                    name="eye_muscle_control"
-                                    id='eye_muscle_control'
-                                    value="2"
-                                    checked={eyeMuscles === "2"}
-                                    onChange={handleRadioChange}
-                                  />
-                                  <label class="form-check-label">
-                                    Poor Control
-                                  </label>
-                                </div>
-                              </div>
+                      <Grid item xs={4}>
+                        <TextField
+                          fullWidth
+                          label="Comment"
+                          name="comment"
+                          value={visionForm.comment}
+                          onChange={handleChange}
+                        />
+                      </Grid>
 
-                              <div className="col-md-4">
-                                <div class="form-check">
-                                  <input class="form-check-input inputradio" type="radio"
-                                    name="eye_muscle_control"
-                                    id='eye_muscle_control'
-                                    value="3"
-                                    checked={eyeMuscles === "3"}
-                                    onChange={handleRadioChange} />
-                                  <label class="form-check-label" for="flexRadioOralPoor">
-                                    Poor Coordination
-                                  </label>
-                                </div>
-                              </div>
-                            </div>
+                      <Grid item xs={4}>
+                        <TextField
+                          fullWidth
+                          label="Treatment Given"
+                          name="treatment"
+                          value={visionForm.treatment}
+                          onChange={handleChange}
+                        />
+                      </Grid>
+                    </Grid>
 
-                            <div className="row everyrow">
-                              <div className="col-md-4">
-                                <h6 className='remarklabelreffer mt-1'>Refractive error</h6>
-                              </div>
+                    <Grid container spacing={2} sx={{ mt: 2 }}>
+                      <Grid item xs={4}>
+                        <FormControl fullWidth>
+                          <InputLabel>Color Blindness</InputLabel>
+                          <Select
+                            size='small'
+                            name="color_blindness"
+                            value={visionForm.color_blindness}
+                            onChange={handleChange}
+                          >
+                            <MenuItem value="">Select</MenuItem>
+                            <MenuItem value="1">Yes</MenuItem>
+                            <MenuItem value="2">No</MenuItem>
+                          </Select>
+                        </FormControl>
+                      </Grid>
 
-                              <div className="col-md-2">
-                                <div class="form-check">
-                                  <input
-                                    className="form-check-input inputradio"
-                                    type="radio"
-                                    name="refractive_error"
-                                    value="1"
-                                    checked={referractive === "1"} onChange={handleRadioChange}
-                                  />
-                                  <label class="form-check-label" for="flexRadioOralGood">
-                                    Yes
-                                  </label>
-                                </div>
-                              </div>
+                      <Grid item xs={4}>
+                        <FormControl fullWidth>
+                          <InputLabel>Vision Screening</InputLabel>
+                          <Select
+                            name="vision_screening"
+                            value={visionForm.vision_screening}
+                            onChange={handleChange}
+                          >
+                            <MenuItem value="">Select</MenuItem>
+                            <MenuItem value="1">Hypermertropia</MenuItem>
+                            <MenuItem value="2">Myopia</MenuItem>
+                          </Select>
+                        </FormControl>
+                      </Grid>
+                    </Grid>
 
-                              <div className="col-md-2">
-                                <div class="form-check">
-                                  <input class="form-check-input inputradio" type="radio"
-                                    name="refractive_error"
-                                    value="2"
-                                    checked={referractive === "2"} onChange={handleRadioChange}
-                                  />
-                                  <label class="form-check-label" for="flexRadioOralFair">
-                                    No
-                                  </label>
-                                </div>
-                              </div>
-                            </div>
+                    <Grid container spacing={2} sx={{ mt: 2 }}>
+                      <Grid item xs={6}>
+                        <TextField
+                          fullWidth
+                          label="Vision Screening Comment"
+                          name="vision_screening_comment"
+                          value={visionForm.vision_screening_comment}
+                          onChange={handleChange}
+                        />
+                      </Grid>
 
-                            <div className="row everyrow">
-                              <div className="col-md-4">
-                                <label className="visually-hidden labelvision">Visual Field Perimetry</label>
-                                <input className='form-control form-control-sm visioninput'
-                                  name="visual_perimetry"
-                                  value={visionForm.visual_perimetry}
-                                  onChange={handleChange} />
-                              </div>
+                      <Grid item xs={6}>
+                        <FormControl fullWidth>
+                          <InputLabel>Referred to Surgery</InputLabel>
+                          <Select
+                            name="referred_to_surgery"
+                            value={visionForm.referred_to_surgery}
+                            onChange={handleChange}
+                          >
+                            <MenuItem value="">Select</MenuItem>
+                            <MenuItem value="1">Yes</MenuItem>
+                            <MenuItem value="2">No</MenuItem>
+                          </Select>
+                        </FormControl>
+                      </Grid>
+                    </Grid>
 
-                              <div className="col-md-4">
-                                <label className="visually-hidden labelvision">Comment</label>
-                                <input className='form-control form-control-sm visioninput'
-                                  name="comment"
-                                  value={visionForm.comment}
-                                  onChange={handleChange} />
-                              </div>
+                    <Typography variant="subtitle1" sx={{ mt: 3 }}>Referred To Specialist</Typography>
+                    <RadioGroup row name="reffered_to_specialist" value={specialist} onChange={handleRadioChange}>
+                      <FormControlLabel value={1} control={<Radio />} label="Yes" />
+                      <FormControlLabel value={2} control={<Radio />} label="No" />
+                    </RadioGroup>
+                  </>
+                )}
+              </>
+            ) : (
+              <>
+                <Grid container spacing={2}>
+                  {[
+                    { title: 'Vision Without Glasses', near: ['re_near_without_glasses', 'le_near_without_glasses'], far: ['re_far_without_glasses', 'le_far_without_glasses'] },
+                    { title: 'Vision With Glasses', near: ['re_near_with_glasses', 'le_near_with_glasses'], far: ['re_far_with_glasses', 'le_far_with_glasses'] }
+                  ].map((section, index) => (
+                    <Grid item xs={12} md={6} key={index}>
+                      <Typography variant="subtitle1" sx={{ mt: 1, fontWeight: 600 }}>
+                        {section.title}
+                      </Typography>
 
-                              <div className="col-md-4">
-                                <label className="visually-hidden labelvision">Treatment Given</label>
-                                <input className='form-control form-control-sm visioninput'
-                                  name="treatment"
-                                  value={visionForm.treatment}
-                                  onChange={handleChange} />
-                              </div>
+                      {/* Near Section */}
+                      <Grid container spacing={2} alignItems="center" sx={{ mt: 1, mr: 2 }}>
+                        <Grid item xs={12} sm={2}>
+                          <Typography variant="body2" sx={{ fontWeight: 500 }}>Near</Typography>
+                        </Grid>
+                        <Grid item xs={12} sm={4.5}>
+                          <TextField
+                            size="small"
+                            fullWidth
+                            label="Right"
+                            name={section.near[0]}
+                            value={visionForm[section.near[0]]}
+                            onChange={handleChange}
+                          />
+                        </Grid>
+                        <Grid item xs={12} sm={4.5}>
+                          <TextField
+                            size="small"
+                            fullWidth
+                            label="Left"
+                            name={section.near[1]}
+                            value={visionForm[section.near[1]]}
+                            onChange={handleChange}
+                          />
+                        </Grid>
+                      </Grid>
 
-                            </div>
+                      {/* Far Section */}
+                      <Grid container spacing={2} alignItems="center" sx={{ mt: 1, mr: 2 }}>
+                        <Grid item xs={12} sm={2}>
+                          <Typography variant="body2" sx={{ fontWeight: 500 }}>Far</Typography>
+                        </Grid>
+                        <Grid item xs={12} sm={4.5}>
+                          <TextField
+                            size="small"
+                            fullWidth
+                            label="Right"
+                            name={section.far[0]}
+                            value={visionForm[section.far[0]]}
+                            onChange={handleChange}
+                          />
+                        </Grid>
+                        <Grid item xs={12} sm={4.5}>
+                          <TextField
+                            size="small"
+                            fullWidth
+                            label="Left"
+                            name={section.far[1]}
+                            value={visionForm[section.far[1]]}
+                            onChange={handleChange}
+                          />
+                        </Grid>
+                      </Grid>
+                    </Grid>
+                  ))}
+                </Grid>
 
-                            <div className="row everyrow">
-                              <div className="col-md-4">
-                                <label className="visually-hidden labelvision">Color blindness</label>
-                                <select className="form-control visioninput"
-                                  onChange={handleChange}
-                                  name="color_blindness"
-                                  value={visionForm.color_blindness}>
-                                  <option>Select</option>
-                                  <option value="1">Yes</option>
-                                  <option value="2">No</option>
-                                </select>
-                              </div>
+                <Grid container spacing={2} sx={{ mt: 2 }}>
+                  <Grid item xs={3}>
+                    <FormControl fullWidth>
+                      <InputLabel>Color Blindness</InputLabel>
+                      <Select
+                        sx={{
+                          "& .MuiInputBase-input.MuiSelect-select": {
+                            color: "#000 !important",
+                          },
+                          "& .MuiSvgIcon-root": {
+                            color: "#000",
+                          },
+                        }}
+                        size='small'
+                        name="color_blindness"
+                        value={visionForm.color_blindness}
+                        onChange={handleChange}
+                      >
+                        <MenuItem value="">Select</MenuItem>
+                        <MenuItem value="1">Yes</MenuItem>
+                        <MenuItem value="2">No</MenuItem>
+                      </Select>
+                    </FormControl>
+                  </Grid>
 
-                              <div className="col-md-4">
-                                <label className="visually-hidden labelvision">Vision screening</label>
-                                <select className="form-control visioninput"
-                                  onChange={handleChange}
-                                  name="vision_screening"
-                                  value={visionForm.vision_screening}>
-                                  <option>Select</option>
-                                  <option value="1">Hypermertropia</option>
-                                  <option value="2">Myopia</option>
-                                </select>
-                              </div>
-                            </div>
+                  <Grid item xs={3}>
+                    <TextField
+                      size='small'
+                      fullWidth
+                      label="Comment"
+                      name="comment"
+                      value={visionForm.comment}
+                      onChange={handleChange}
+                    />
+                  </Grid>
 
-                            <div className="row everyrow">
-                              <div className="col-md-6">
-                                <label className="visually-hidden labelvision">Vision Screening Comment</label>
-                                <input className='form-control inputvision'
-                                  placeholder='Remark' name="vision_screening_comment"
-                                  value={visionForm.vision_screening_comment}
-                                  onChange={handleChange} />
-                              </div>
+                  <Grid item xs={12}>
+                    <Typography variant="subtitle1" sx={{ mb: 1 }}>Referred To Specialist</Typography>
+                    <RadioGroup row name="reffered_to_specialist" value={specialist} onChange={handleRadioChange}>
+                      <FormControlLabel value={1} control={<Radio />} label="Yes" />
+                      <FormControlLabel value={2} control={<Radio />} label="No" />
+                    </RadioGroup>
+                  </Grid>
+                </Grid>
+              </>
+            )}
 
-                              <div className="col-md-6">
-                                <label className="visually-hidden labelvision">Referred to Surgery</label>
-                                <select className="form-control visioninput"
-                                  onChange={handleChange}
-                                  name="referred_to_surgery"
-                                  value={visionForm.referred_to_surgery}>
-                                  <option>Select</option>
-                                  <option value="1">Yes</option>
-                                  <option value="2">No</option>
-                                </select>
-                              </div>
-                            </div>
-
-                            <div className="row paddingcol2vision">
-                              <div className='col-md-4'>
-                                <label className="visually-hidden remarklabelreffer">Reffered To Specialist</label>
-                              </div>
-
-                              <div className="col-md-2 ml-2">
-                                <div class="form-check">
-                                  <input class="form-check-input checkboxdefault"
-                                    type="radio"
-                                    value={1}
-                                    checked={specialist === 1}
-                                    onChange={handleRadioChange}
-                                    name="reffered_to_specialist" />
-                                  <label class="form-check-label" for="flexRadioDefault1">
-                                    Yes
-                                  </label>
-                                </div>
-                              </div>
-
-                              <div className="col-md-2">
-                                <div class="form-check">
-                                  <input class="form-check-input checkboxdefault"
-                                    type="radio"
-                                    value={2}
-                                    checked={specialist === 2}
-                                    onChange={handleRadioChange}
-                                    name="reffered_to_specialist" />
-                                  <label class="form-check-label" for="flexRadioDefault1">
-                                    No
-                                  </label>
-                                </div>
-                              </div>
-                            </div>
-                          </>
-                        )
-                      }
-                    </>
-                  )
-                  :
-                  ////// corporate form data
-                  (
-                    <>
-                      {
-                        ['UG-EXPERT', 'UG-SUPERADMIN', 'UG-ADMIN', 'UG-DOCTOR', 'UG-EXPERT', 'CO-HR'].includes(userGroup) &&
-                        (
-                          <>
-                            <div className="visualllllllll">
-                              <div className='row'>
-                                <div className="col-md-6">
-                                  <h6 className='Acuity mt-2'>Vision Without Glasses</h6>
-                                  <div className="row everyrow">
-                                    <div className="col-md-4">
-                                      <label className="visually-hidden labelvision" style={{ marginTop: '30px' }}>NEAR</label>
-                                    </div>
-
-                                    <div className="col-md-4">
-                                      <label className="visually-hidden labelvision" style={{ marginLeft: '2rem' }}>Right </label>
-                                      <input className='form-control inputvision'
-                                        name='re_near_without_glasses'
-                                        value={visionForm.re_near_without_glasses}
-                                        onChange={handleChange}
-                                        type="number"
-                                        min="0"
-                                      />
-                                    </div>
-
-                                    <div className="col-md-4">
-                                      <label className="visually-hidden labelvision" style={{ marginLeft: '2rem' }}>Left </label>
-                                      <input className='form-control inputvision'
-                                        name='le_near_without_glasses'
-                                        value={visionForm.le_near_without_glasses}
-                                        onChange={handleChange}
-                                        type="number"
-                                        min="0"
-                                      />
-                                    </div>
-                                  </div>
-
-                                  <div className="row everyrow">
-                                    <div className="col-md-4">
-                                      <label className="visually-hidden labelvision" style={{ marginTop: '30px' }}>FAR</label>
-                                    </div>
-
-                                    <div className="col-md-4">
-                                      <label className="visually-hidden labelvision" style={{ marginLeft: '2rem' }}>Right </label>
-                                      <input className='form-control inputvision'
-                                        name='re_far_without_glasses'
-                                        value={visionForm.re_far_without_glasses}
-                                        onChange={handleChange}
-                                        type="number"
-                                        min="0"
-                                      />
-                                    </div>
-
-                                    <div className="col-md-4">
-                                      <label className="visually-hidden labelvision" style={{ marginLeft: '2rem' }}>Left </label>
-                                      <input className='form-control inputvision'
-                                        name='le_far_without_glasses'
-                                        value={visionForm.le_far_without_glasses}
-                                        onChange={handleChange}
-                                        type="number"
-                                        min="0"
-                                      />
-                                    </div>
-                                  </div>
-                                </div>
-
-                                <div className="col-md-6">
-                                  <h6 className='Acuity mt-2'>Vision With Glasses</h6>
-                                  <div className="row everyrow">
-                                    <div className="col-md-4">
-                                      <label className="visually-hidden labelvision" style={{ marginTop: '30px' }}>NEAR</label>
-                                    </div>
-
-                                    <div className="col-md-4">
-                                      <label className="visually-hidden labelvision" style={{ marginLeft: '2rem' }}>Right </label>
-                                      <input className='form-control inputvision'
-                                        name='re_near_with_glasses'
-                                        value={visionForm.re_near_with_glasses}
-                                        onChange={handleChange}
-                                        type="number"
-                                        min="0"
-                                      />
-                                    </div>
-
-                                    <div className="col-md-4">
-                                      <label className="visually-hidden labelvision" style={{ marginLeft: '2rem' }}>Left </label>
-                                      <input className='form-control inputvision'
-                                        name='le_near_with_glasses'
-                                        value={visionForm.le_near_with_glasses}
-                                        onChange={handleChange}
-                                        type="number"
-                                        min="0"
-                                      />
-                                    </div>
-                                  </div>
-
-                                  <div className="row everyrow">
-                                    <div className="col-md-4">
-                                      <label className="visually-hidden labelvision" style={{ marginTop: '30px' }}>FAR</label>
-                                    </div>
-
-                                    <div className="col-md-4">
-                                      <label className="visually-hidden labelvision" style={{ marginLeft: '2rem' }}>Right </label>
-                                      <input className='form-control inputvision'
-                                        name='re_far_with_glasses'
-                                        value={visionForm.re_far_with_glasses}
-                                        onChange={handleChange}
-                                        type="number"
-                                        min="0"
-                                      />
-                                    </div>
-
-                                    <div className="col-md-4">
-                                      <label className="visually-hidden labelvision" style={{ marginLeft: '2rem' }}>Left </label>
-                                      <input className='form-control inputvision'
-                                        name='le_far_with_glasses'
-                                        value={visionForm.le_far_with_glasses}
-                                        onChange={handleChange}
-                                        type="number"
-                                        min="0"
-                                      />
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-
-                              <div className='row ml-4'>
-                                <div className="col-md-3">
-                                  <label className="visually-hidden labelvision">Color blindness</label>
-                                  <select className="form-control visioninput"
-                                    onChange={handleChange}
-                                    name="color_blindness"
-                                    value={visionForm.color_blindness}>
-                                    <option>Select</option>
-                                    <option value="1">Yes</option>
-                                    <option value="2">No</option>
-                                  </select>
-                                </div>
-
-                                <div className="col-md-3">
-                                  <label className="visually-hidden labelvision">Comment</label>
-                                  <input className='form-control visioninput'
-                                    name="comment"
-                                    value={visionForm.comment}
-                                    onChange={handleChange} />
-                                </div>
-
-                                <div className="col-md-6">
-                                  <div className="row">
-                                    <div className='col-md-12'>
-                                      <label className="visually-hidden labelvision">Reffered To Specialist</label>
-                                    </div>
-
-                                    <div className="col-md-2 ml-2">
-                                      <div class="form-check">
-                                        <input class="form-check-input checkboxdefault"
-                                          type="radio"
-                                          value={1}
-                                          checked={specialist === 1}
-                                          onChange={handleRadioChange}
-                                          name="reffered_to_specialist" />
-                                        <label class="form-check-label" for="flexRadioDefault1">
-                                          Yes
-                                        </label>
-                                      </div>
-                                    </div>
-
-                                    <div className="col-md-2">
-                                      <div class="form-check">
-                                        <input class="form-check-input checkboxdefault"
-                                          type="radio"
-                                          value={2}
-                                          checked={specialist === 2}
-                                          onChange={handleRadioChange}
-                                          name="reffered_to_specialist" />
-                                        <label class="form-check-label" for="flexRadioDefault1">
-                                          No
-                                        </label>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
-                            </div>
-                          </>
-                        )
-                      }
-                    </>
-                  )
-              }
-              <div className="row">
-                <div className="col-md-12">
-                  <button type="submit" className="btn btn-sm btnauditory">Accept</button>
-                </div>
-              </div>
-            </div>
+            <Box sx={{ textAlign: 'center' }}>
+              <Button type="submit" variant="contained" size="small">Submit</Button>
+            </Box>
           </form>
-        </div>
-      </div>
-    </div>
-  )
-}
+        </Card>
+      </Grid>
+    </Box>
+  );
+};
 
-export default Vision
+export default Vision;

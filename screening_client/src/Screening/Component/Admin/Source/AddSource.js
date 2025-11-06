@@ -319,13 +319,13 @@ const AddSource = () => {
     const [selectData, setSelectData] = useState(
         {
             source: "",
-            source_names: "",
+            Workshop_name: "",
             registration_no: "",
             mobile_no: "",
             email_id: "",
             // Registration_details: null, // Assuming Registration_details is a File object
-            source_pincode: "",
-            source_address: "",
+            ws_pincode: "",
+            ws_address: "",
             pk_id: '',
             added_by: userID,
             add_source_id: '',
@@ -350,31 +350,30 @@ const AddSource = () => {
                 return;
             }
 
-            // Create FormData
             const formData = new FormData();
             formData.append('source', selectData.source || '');
-            formData.append('source_names', selectData.source_names || '');
+            formData.append('Workshop_name', selectData.source_names || '');
             formData.append('registration_no', selectData.registration_no || '');
             formData.append('mobile_no', selectData.mobile_no || '');
             formData.append('email_id', selectData.email_id || '');
 
-            if (selectedFile) {
-                formData.append('Registration_details', selectedFile);
-            }
+            // if (selectedFile) {
+            //     formData.append('Registration_details', selectedFile);
+            // }
 
-            formData.append('source_pincode', selectData.source_pincode || '');
-            formData.append('source_address', selectData.source_address || '');
+            formData.append('ws_pincode', selectData.source_pincode || '');
+            formData.append('ws_address', selectData.source_address || '');
             formData.append('pk_id', selectData.pk_id || '');
 
             // Check for null values before appending
             if (selectedState) {
-                formData.append('source_state', selectedState);
+                formData.append('ws_state', selectedState);
             }
             if (selectedDistrict) {
-                formData.append('source_district', selectedDistrict);
+                formData.append('ws_district', selectedDistrict);
             }
             if (selectedTahsil) {
-                formData.append('source_taluka', selectedTahsil);
+                formData.append('ws_taluka', selectedTahsil);
             }
 
             // Append selected vitals
@@ -388,7 +387,7 @@ const AddSource = () => {
                 try {
                     formData.append('added_by', userID);
 
-                    const response = await fetch(`${Port}/Screening/add_new_source_POST/`, {
+                    const response = await fetch(`${Port}/Screening/Workshop_Post/`, {
                         method: 'POST',
                         body: formData,
                         headers: {
@@ -659,7 +658,7 @@ const AddSource = () => {
     useEffect(() => {
         const fetchStateOptions = async () => {
             try {
-                const response = await axios.get(`${Port}/Screening/agg_state_info_get/`, {
+                const response = await axios.get(`${Port}/Screening/State_Get/`, {
                     headers: {
                         'Authorization': `Bearer ${accessToken}`,
                     },
@@ -677,7 +676,7 @@ const AddSource = () => {
         const fetchDistrictOptions = async () => {
             if (selectedState) {
                 try {
-                    const res = await fetch(`${Port}/Screening/agg_district_info_get/${selectedState}`, {
+                    const res = await fetch(`${Port}/Screening/District_Get/${selectedState}/`, {
                         headers: {
                             'Authorization': `Bearer ${accessToken}`,
                         },
@@ -696,7 +695,7 @@ const AddSource = () => {
         const fetchTalukaOptions = async () => {
             if (selectedDistrict) {
                 try {
-                    const res = await fetch(`${Port}/Screening/agg_tahsil_get_api/${selectedDistrict}`, {
+                    const res = await fetch(`${Port}/Screening/Tehsil_Get/${selectedDistrict}/`, {
                         headers: {
                             'Authorization': `Bearer ${accessToken}`,
                         },
@@ -1152,13 +1151,13 @@ const AddSource = () => {
                                         <TextField
                                             fullWidth
                                             label="Workshop Name *"
-                                            name="source_names"
-                                            value={selectData.source_names}
+                                            name="Workshop_name"
+                                            value={selectData.Workshop_name}
                                             onChange={handleChange}
                                             size="small"
                                             disabled={!isFormEnabled}
-                                            error={!!errors.source_names}
-                                            helperText={errors.source_names}
+                                            error={!!errors.Workshop_name}
+                                            helperText={errors.Workshop_name}
                                         />
                                     </Grid>
 
@@ -1377,13 +1376,13 @@ const AddSource = () => {
                                         <TextField
                                             fullWidth
                                             label="Pin Code *"
-                                            name="source_pincode"
-                                            value={selectData.source_pincode}
+                                            name="ws_pincode"
+                                            value={selectData.ws_pincode}
                                             onChange={handleChange}
                                             size="small"
                                             disabled={!isFormEnabled}
-                                            error={!!errors.source_pincode}
-                                            helperText={errors.source_pincode}
+                                            error={!!errors.ws_pincode}
+                                            helperText={errors.ws_pincode}
                                         />
                                     </Grid>
 
@@ -1391,13 +1390,13 @@ const AddSource = () => {
                                         <TextField
                                             fullWidth
                                             label="Address *"
-                                            name="source_address"
-                                            value={selectData.source_address}
+                                            name="ws_address"
+                                            value={selectData.ws_address}
                                             onChange={handleChange}
                                             size="small"
                                             disabled={!isFormEnabled}
-                                            error={!!errors.source_address}
-                                            helperText={errors.source_address}
+                                            error={!!errors.ws_address}
+                                            helperText={errors.ws_address}
                                         />
                                     </Grid>
 

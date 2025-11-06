@@ -1,23 +1,20 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import './Corporate.css'
 import { useSourceContext } from '../../../../../../../src/contexts/SourceContext';
-import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import Webcam from 'react-webcam';
-import { Modal, Button, IconButton } from '@mui/material';
-import CameraAltIcon from '@mui/icons-material/CameraAlt';
-
-const modalStyle = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  width: 400,
-  backgroundColor: 'white',
-  border: '2px solid #000',
-  boxShadow: 24,
-  padding: '16px 32px 24px',
-};
+import {
+  Box,
+  Grid,
+  TextField,
+  Select,
+  MenuItem,
+  InputLabel,
+  FormControl,
+  Typography,
+  Button,
+  Card,
+  FormHelperText
+} from "@mui/material";
 
 const Corporate = (props) => {
 
@@ -640,644 +637,977 @@ const Corporate = (props) => {
   //   return minAllowedDate.toISOString().split('T')[0];
   // };
 
-  const getMaxAllowedDate = (selectedAge) => {
-    const currentDate = new Date();
-    const maxAllowedDate = new Date();
+  // const getMaxAllowedDate = (selectedAge) => {
+  //   const currentDate = new Date();
+  //   const maxAllowedDate = new Date();
 
-    let maxAge;
-    if (selectedAge === 5) {
-      maxAge = selectedAge + 13;
-    } else if (selectedAge === 6) {
-      maxAge = selectedAge + 25;
-    } else if (selectedAge === 7) {
-      maxAge = selectedAge + 44;
-    } else if (selectedAge === 8) {
-      maxAge = selectedAge + 52;
-    }
+  //   let maxAge;
+  //   if (selectedAge === 5) {
+  //     maxAge = selectedAge + 13;
+  //   } else if (selectedAge === 6) {
+  //     maxAge = selectedAge + 25;
+  //   } else if (selectedAge === 7) {
+  //     maxAge = selectedAge + 44;
+  //   } else if (selectedAge === 8) {
+  //     maxAge = selectedAge + 52;
+  //   }
 
-    // Calculate the maximum allowed date
-    maxAllowedDate.setFullYear(currentDate.getFullYear() - maxAge);
+  //   // Calculate the maximum allowed date
+  //   maxAllowedDate.setFullYear(currentDate.getFullYear() - maxAge);
 
-    // Format the maxAllowedDate to be compatible with input[type='date']
-    return maxAllowedDate.toISOString().split('T')[0];
-  };
+  //   // Format the maxAllowedDate to be compatible with input[type='date']
+  //   return maxAllowedDate.toISOString().split('T')[0];
+  // };
 
-  const getMinAllowedDate = (selectedAge) => {
-    const currentDate = new Date();
-    const minAllowedDate = new Date();
+  // const getMinAllowedDate = (selectedAge) => {
+  //   const currentDate = new Date();
+  //   const minAllowedDate = new Date();
 
-    let minAge;
-    if (selectedAge === 5) {
-      minAge = selectedAge + 25;
-    } else if (selectedAge === 6) {
-      minAge = selectedAge + 44;
-    } else if (selectedAge === 7) {
-      minAge = selectedAge + 52;
-    } else if (selectedAge === 8) {
-      minAge = selectedAge + 91;
-    }
+  //   let minAge;
+  //   if (selectedAge === 5) {
+  //     minAge = selectedAge + 25;
+  //   } else if (selectedAge === 6) {
+  //     minAge = selectedAge + 44;
+  //   } else if (selectedAge === 7) {
+  //     minAge = selectedAge + 52;
+  //   } else if (selectedAge === 8) {
+  //     minAge = selectedAge + 91;
+  //   }
 
-    // Calculate the minimum allowed date
-    minAllowedDate.setFullYear(currentDate.getFullYear() - minAge);
+  //   // Calculate the minimum allowed date
+  //   minAllowedDate.setFullYear(currentDate.getFullYear() - minAge);
 
-    // Format the minAllowedDate to be compatible with input[type='date']
-    return minAllowedDate.toISOString().split('T')[0];
-  };
+  //   // Format the minAllowedDate to be compatible with input[type='date']
+  //   return minAllowedDate.toISOString().split('T')[0];
+  // };
 
   return (
-    <div className="container ml-2">
-      {/* <form onSubmit={handleSubmit}> */}
-      <form onSubmit={handleSubmit} encType="multipart/form-data">
-        <div className="row cardsetup">
-          <div className="col-md-6">
-            <div className="card card1corporate">
-              <div className="row">
-                <h5 className='employeetitle'>Employee Details</h5>
-                <div className="elementemployee1"></div>
-              </div>
+    <Box component="form" onSubmit={handleSubmit} encType="multipart/form-data">
+      <Grid container spacing={1}>
+        <Grid item xs={12} md={6}>
+          <Card
+            sx={{
+              p: 2,
+              borderRadius: 3,
+              height: "100%",
+              boxShadow: 3,
+            }}
+          >
+            <Typography
+              variant="h6"
+              gutterBottom
+              sx={{
+                fontWeight: 500,
+                color: "#1A237E",
+                fontFamily: "Roboto",
+              }}
+            >
+              Citizen Details
+            </Typography>
 
-              <div className="row formspaceemployee">
-                <div className="col-md-2">
-                  <label className="form-label corporatelabel">Prefix</label>
-                  <select className="form-control corporateinput"
+            <Grid container spacing={2}>
+              <Grid item xs={12} sm={4} md={3}>
+                <FormControl fullWidth size="small" variant="outlined">
+                  <InputLabel id="prefix-label">Prefix</InputLabel>
+                  <Select
+                    sx={{
+                      "& .MuiInputBase-input.MuiSelect-select": {
+                        color: "#000 !important",
+                      },
+                      "& .MuiSvgIcon-root": {
+                        color: "#000",
+                      },
+                    }}
+                    labelId="prefix-label"
+                    name="prefix"
                     value={corporateForm.prefix}
                     onChange={handleChange}
-                    name='prefix'
+                    label="Prefix"
                   >
-                    <option>Select</option>
-                    <option value="Mr">Mr.</option>
-                    <option value="Ms">Ms.</option>
-                    <option value="Mrs">Mrs.</option>
-                    <option value="Adv">Adv.</option>
-                    <option value="Col">Col.</option>
-                    <option value="Dr">Dr.</option>
-                  </select>
+                    <MenuItem value="">Select</MenuItem>
+                    {["Mr", "Ms", "Mrs", "Adv", "Col", "Dr"].map((item) => (
+                      <MenuItem key={item} value={item}>
+                        {item}.
+                      </MenuItem>
+                    ))}
+                  </Select>
                   {errorMessages.prefix && (
-                    <label variant="caption" color="error" style={{ fontSize: '12px', color: 'red', fontWeight: 'normal' }}>
+                    <Typography color="error" variant="caption">
                       {errorMessages.prefix}
-                    </label>
+                    </Typography>
                   )}
-                </div>
+                </FormControl>
+              </Grid>
 
-                <div className="col-md-6">
-                  <label className="form-label corporatelabel">Employee Name</label>
-                  <input className="form-control corporateinput" type="text"
-                    onInput={(e) => {
-                      e.target.value = e.target.value.replace(/[0-9]/, '');
+              <Grid item xs={12} sm={8} md={6}>
+                <TextField
+                  size="small"
+                  fullWidth
+                  label="Name"
+                  name="name"
+                  value={corporateForm.name}
+                  onChange={handleChange}
+                  onInput={(e) =>
+                    (e.target.value = e.target.value.replace(/[0-9]/g, ""))
+                  }
+                  error={!!errorMessages.name}
+                  helperText={errorMessages.name}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={6} md={3}>
+                <FormControl
+                  fullWidth
+                  size="small"
+                  variant="outlined"
+                  error={!!errorMessages.blood_groups}
+                >
+                  <InputLabel id="blood-group-label">Blood Group</InputLabel>
+                  <Select
+                    sx={{
+                      "& .MuiInputBase-input.MuiSelect-select": {
+                        color: "#000 !important",
+                      },
+                      "& .MuiSvgIcon-root": {
+                        color: "#000",
+                      },
                     }}
-                    name='name'
-                    value={corporateForm.name}
-                    onChange={handleChange}
-                  />
-                  {errorMessages.name && (
-                    <label variant="caption" color="error" style={{ fontSize: '12px', color: 'red', fontWeight: 'normal' }}>
-                      {errorMessages.name}
-                    </label>
-                  )}
-                </div>
-
-                <div className="col-md-4">
-                  <label className="form-label corporatelabel">Blood Group</label>
-                  <select className="form-control corporateinput"
+                    labelId="blood-group-label"
+                    name="blood_groups"
                     value={corporateForm.blood_groups}
                     onChange={handleChange}
-                    name='blood_groups'
+                    label="Blood Group"
                   >
-                    <option>Select Group</option>
-                    <option>A+</option>
-                    <option>A-</option>
-                    <option>B+</option>
-                    <option>B-</option>
-                    <option>AB+</option>
-                    <option>AB-</option>
-                    <option>O+</option>
-                    <option>O-</option>
-                  </select>
+                    <MenuItem value="">Select Group</MenuItem>
+                    {["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"].map((grp) => (
+                      <MenuItem key={grp} value={grp}>
+                        {grp}
+                      </MenuItem>
+                    ))}
+                  </Select>
+
+                  {/* Error message display */}
                   {errorMessages.blood_groups && (
-                    <label variant="caption" color="error" style={{ fontSize: '12px', color: 'red', fontWeight: 'normal' }}>
+                    <Typography
+                      variant="caption"
+                      color="error"
+                      sx={{ mt: 0.5, fontSize: "0.75rem" }}
+                    >
                       {errorMessages.blood_groups}
-                    </label>
+                    </Typography>
                   )}
-                </div>
+                </FormControl>
+              </Grid>
 
-                <div className="col-md-2">
-                  <label className="form-label corporatelabel">EMP ID</label>
-                  <input type="text" className="form-control corporateinput"
-                    name='employee_id'
-                    value={corporateForm.employee_id}
-                    onChange={handleChange}
-                  />
-                  {errorMessages.employee_id && (
-                    <label variant="caption" color="error" style={{ fontSize: '12px', color: 'red', fontWeight: 'normal' }}>
-                      {errorMessages.employee_id}
-                    </label>
-                  )}
-                </div>
+              {/* Date of Birth */}
+              <Grid item xs={12} sm={6} md={6}>
+                <TextField
+                  size="small"
+                  fullWidth
+                  type="date"
+                  label="Date of Birth"
+                  name="dob"
+                  onChange={handleDOBChange}
+                  InputLabelProps={{ shrink: true }}
+                  // inputProps={{
+                  //   max: getMaxAllowedDate(selectedAge),
+                  //   min: getMinAllowedDate(selectedAge),
+                  // }}
+                  error={!!errorMessages.dob}
+                  helperText={errorMessages.dob}
+                />
+              </Grid>
 
-                <div className="col-md-4">
-                  <label className="form-label corporatelabel">Date of Birth</label>
-                  <input
-                    type="date"
-                    className="form-control corporateinput"
-                    onChange={handleDOBChange}
-                    name="dob"
-                    max={getMaxAllowedDate(selectedAge)}
-                    min={getMinAllowedDate(selectedAge)}
-                  />
-                  {errorMessages.dob && (
-                    <div className="error-message" style={{ fontSize: '12px', marginTop: '5px', color: 'red', fontWeight: 'normal' }}>{errorMessages.dob}</div>
-                  )}
-                </div>
+              <Grid item xs={4} sm={2}>
+                <TextField
+                  size="small"
+                  fullWidth
+                  label="Year"
+                  value={age.year}
+                  InputProps={{ readOnly: true }}
+                  InputLabelProps={{ shrink: true }}
+                />
+              </Grid>
 
-                <div className="col-md-2">
-                  <label className="form-label corporatelabel">Year</label>
-                  <input className="form-control corporateinput" value={age.year} readOnly
-                  />
-                </div>
+              <Grid item xs={4} sm={2}>
+                <TextField
+                  size="small"
+                  fullWidth
+                  label="Month"
+                  value={age.months}
+                  InputProps={{ readOnly: true }}
+                />
+              </Grid>
 
-                <div className="col-md-2">
-                  <label className="form-label corporatelabel">Month</label>
-                  <input className="form-control corporateinput" value={age.months} readOnly />
-                </div>
+              <Grid item xs={4} sm={2}>
+                <TextField
+                  size="small"
+                  fullWidth
+                  label="Days"
+                  value={age.days}
+                  InputProps={{ readOnly: true }}
+                />
+              </Grid>
 
-                <div className="col-md-2">
-                  <label className="form-label corporatelabel">Days</label>
-                  <input className="form-control corporateinput" value={age.days} readOnly />
-                </div>
+              <Grid item xs={12} sm={6} md={4}>
+                <TextField
+                  size="small"
+                  fullWidth
+                  label="Aadhar ID"
+                  type="number"
+                  name="aadhar_id"
+                  value={corporateForm.aadhar_id || ""}
+                  onChange={handleChange}
+                  onInput={(e) => {
+                    if (e.target.value < 0) e.target.value = 0;
+                    if (e.target.value.length > 12)
+                      e.target.value = e.target.value.slice(0, 12);
+                  }}
+                />
+              </Grid>
 
-                <div className="col-md-4">
-                  <label className="form-label corporatelabel">Aadhar ID</label>
-                  <input type="number" className="form-control corporateinput"
-                    name='aadhar_id'
-                    value={corporateForm.aadhar_id}
-                    onChange={handleChange}
-                    onInput={(e) => {
-                      if (e.target.value < 0) {
-                        e.target.value = 0;
-                      }
+              <Grid item xs={12} sm={6} md={4}>
+                <TextField
+                  size="small"
+                  fullWidth
+                  label="Email ID"
+                  type="email"
+                  name="email_id"
+                  value={corporateForm.email_id}
+                  onChange={handleChange}
+                />
+              </Grid>
 
-                      if (e.target.value.length > 12) {
-                        e.target.value = e.target.value.slice(0, 12);
-                      }
+              <Grid item xs={12} sm={6} md={4}>
+                <TextField
+                  size="small"
+                  fullWidth
+                  label="Mobile Number"
+                  type="number"
+                  name="emp_mobile_no"
+                  value={corporateForm.emp_mobile_no}
+                  onChange={handleChange}
+                  onInput={(e) => {
+                    if (e.target.value < 0) e.target.value = 0;
+                    if (e.target.value.length > 10)
+                      e.target.value = e.target.value.slice(0, 10);
+                  }}
+                  error={!!errorMessages.emp_mobile_no}
+                  helperText={errorMessages.emp_mobile_no}
+                />
+              </Grid>
+
+              {/* <Grid item xs={12} sm={6} md={4}>
+                <TextField
+                  size="small"
+                  fullWidth
+                  label="EMP ID"
+                  name="employee_id"
+                  value={corporateForm.employee_id}
+                  onChange={handleChange}
+                  error={!!errorMessages.employee_id}
+                  helperText={errorMessages.employee_id}
+                />
+              </Grid> */}
+
+              {/* <Grid item xs={12} sm={6} md={4}>
+                <FormControl
+                  fullWidth
+                  size="small"
+                  variant="outlined"
+                  error={!!errorMessages.department}
+                >
+                  <InputLabel id="department-label">Department</InputLabel>
+                  <Select
+                    sx={{
+                      "& .MuiInputBase-input.MuiSelect-select": {
+                        color: "#000 !important",
+                      },
+                      "& .MuiSvgIcon-root": {
+                        color: "#000",
+                      },
                     }}
-                  />
-                </div>
+                    labelId="department-label"
+                    name="department"
+                    value={selectedDepartment}
+                    onChange={handleDepartmentChange}
+                    label="Department"
+                  >
+                    <MenuItem value="">Select</MenuItem>
+                    {department.map((dept) => (
+                      <MenuItem
+                        key={dept.department_id}
+                        value={dept.department_id}
+                      >
+                        {dept.department}
+                      </MenuItem>
+                    ))}
+                  </Select>
 
-                <div className="col-md-4">
-                  <label className="form-label corporatelabel">Email ID</label>
-                  <input type="email" className="form-control corporateinput"
-                    name='email_id'
-                    value={corporateForm.email_id}
-                    onChange={handleChange}
-                  />
-                </div>
-
-                <div className="col-md-4">
-                  <label className="form-label corporatelabel">Employee Mobile Number</label>
-                  <input type="number" className="form-control corporateinput"
-                    name='emp_mobile_no'
-                    value={corporateForm.emp_mobile_no}
-                    onChange={handleChange}
-                    onInput={(e) => {
-                      if (e.target.value < 0) {
-                        e.target.value = 0;
-                      }
-
-                      if (e.target.value.length > 10) {
-                        e.target.value = e.target.value.slice(0, 10);
-                      }
-                    }}
-                  />
-                  {errorMessages.emp_mobile_no && (
-                    <label variant="caption" color="error" style={{ fontSize: '12px', color: 'red', fontWeight: 'normal' }}>
-                      {errorMessages.emp_mobile_no}
-                    </label>
-                  )}
-                </div>
-
-                <div className="col-md-4">
-                  <label className="form-label corporatelabel">Department</label>
-                  <select className="form-control corporateinput" value={selectedDepartment} onChange={handleDepartmentChange}>
-                    <option>Select</option>
-                    {
-                      department.map((dept) => (
-                        <option key={dept.department_id} value={dept.department_id}>
-                          {dept.department}
-                        </option>
-                      ))
-                    }
-                  </select>
                   {errorMessages.department && (
-                    <label variant="caption" color="error" style={{ fontSize: '12px', color: 'red', fontWeight: 'normal' }}>
+                    <Typography
+                      variant="caption"
+                      color="error"
+                      sx={{ mt: 0.5, fontSize: "0.75rem" }}
+                    >
                       {errorMessages.department}
-                    </label>
+                    </Typography>
                   )}
-                </div>
+                </FormControl>
+              </Grid>
 
-                <div className="col-md-4">
-                  <label className="form-label corporatelabel">Designation</label>
-                  <select className="form-control corporateinput" value={selectedDesignation} onChange={handleDesignationChange}>
-                    <option>Select</option>
-                    {
-                      designation.map((design) => (
-                        <option key={design.designation_id} value={design.designation_id}>
-                          {design.designation}
-                        </option>
-                      ))
-                    }
-                  </select>
+              <Grid item xs={12} sm={6} md={4}>
+                <FormControl
+                  fullWidth
+                  size="small"
+                  variant="outlined"
+                  error={!!errorMessages.designation}
+                >
+                  <InputLabel id="designation-label">Designation</InputLabel>
+                  <Select
+                    sx={{
+                      "& .MuiInputBase-input.MuiSelect-select": {
+                        color: "#000 !important",
+                      },
+                      "& .MuiSvgIcon-root": {
+                        color: "#000",
+                      },
+                    }}
+                    labelId="designation-label"
+                    name="designation"
+                    value={selectedDesignation}
+                    onChange={handleDesignationChange}
+                    label="Designation"
+                  >
+                    <MenuItem value="">Select</MenuItem>
+                    {designation.map((design) => (
+                      <MenuItem
+                        key={design.designation_id}
+                        value={design.designation_id}
+                      >
+                        {design.designation}
+                      </MenuItem>
+                    ))}
+                  </Select>
+
                   {errorMessages.designation && (
-                    <label variant="caption" color="error" style={{ fontSize: '12px', color: 'red', fontWeight: 'normal' }}>
+                    <Typography
+                      variant="caption"
+                      color="error"
+                      sx={{ mt: 0.5, fontSize: "0.75rem" }}
+                    >
                       {errorMessages.designation}
-                    </label>
+                    </Typography>
                   )}
-                </div>
+                </FormControl>
+              </Grid> */}
 
-                <div className="col-md-4">
-                  <label className="form-label corporatelabel">Employee Photo</label>
-                  <input type="file" className="form-control corporateinput"
-                    name='photo'
-                    onChange={handleChange}
-                  />
-                </div>
+              {/* Upload Photo */}
+              <Grid item xs={12} sm={6} md={4}>
+                <Button
+                  variant="outlined"
+                  component="label"
+                  fullWidth
+                  sx={{
+                    textTransform: "none",
+                    borderColor: "#1A237E",
+                    color: "#1A237E",
+                    "&:hover": { borderColor: "#1A237E" },
+                  }}
+                >
+                  Upload Photo
+                  <input type="file" hidden name="photo" onChange={handleChange} />
+                </Button>
+              </Grid>
 
-                <div className="col-md-4">
-                  <label className="form-label corporatelabel">DOJ</label>
-                  <input type="date" className="form-control corporateinput"
-                    name='doj'
-                    onChange={handleChange}
-                  />
-                  {errorMessages.doj && (
-                    <label variant="caption" color="error" style={{ fontSize: '12px', color: 'red', fontWeight: 'normal' }}>
-                      {errorMessages.doj}
-                    </label>
-                  )}
-                </div>
+              {/* DOJ */}
+              {/* <Grid item xs={12} sm={6} md={4}>
+                <TextField
+                  size="small"
+                  fullWidth
+                  type="date"
+                  label="Date of Joining"
+                  name="doj"
+                  onChange={handleChange}
+                  InputLabelProps={{ shrink: true }}
+                  error={!!errorMessages.doj}
+                  helperText={errorMessages.doj}
+                />
+              </Grid> */}
+            </Grid>
+          </Card>
+        </Grid>
 
-                {/* <div className="col-md-4">
-                  <label className="form-label corporatelabel">Photo</label>
-                  {imageSrc ? (
-                    <div>
-                      <img src={imageSrc} alt="Captured" className="form-control corporateinput" style={{ height: '8em' }} />
-                      <Button variant="contained" onClick={() => setImageSrc(null)}>
-                        Retake Photo
-                      </Button>
-                    </div>
-                  ) : (
-                    <>
-                      <IconButton onClick={handleOpen}>
-                        <CameraAltIcon fontSize="large" />
-                      </IconButton>
-                    </>
-                  )}
+        <Grid item xs={12} md={6}>
+          <Card
+            sx={{
+              p: 2,
+              borderRadius: 3,
+              height: "100%",
+              boxShadow: 3,
+            }}
+          >
+            <Typography
+              variant="h6"
+              sx={{
+                mb: 2,
+                fontWeight: 500,
+                color: "#1A237E",
+                fontFamily: "Roboto",
+              }}
+            >
+              Emergency Contact
+            </Typography>
 
-                  <Modal open={open} onClose={handleClose} aria-labelledby="modal-title" aria-describedby="modal-description">
-                    <div style={modalStyle}>
-                      {imageSrc ? (
-                        <div>
-                          <img src={imageSrc} alt="Captured" style={{ height: '8em', width: '100%' }} />
-                          <Button variant="contained" onClick={handleClose}>
-                            Save Photo
-                          </Button>
-                        </div>
-                      ) : (
-                        <>
-                          <Webcam audio={false} ref={webcamRef} screenshotFormat="image/jpeg" style={{ width: '100%' }} />
-                          <Button variant="contained" onClick={capture}>
-                            Capture Photo
-                          </Button>
-                        </>
-                      )}
-                    </div>
-                  </Modal>
-                </div> */}
-
-                {/* <div className="col-md-4">
-                  <label className="form-label corporatelabel">Employee Photo</label>
-                  <input type="file" className="form-control corporateinput"
-                    name='employee_id'
-                    value={corporateForm.employee_id}
-                    onChange={handleChange}
-                  />
-                </div> */}
-              </div>
-            </div>
-          </div>
-
-          <div className="col-md-6">
-            <div className="card card2corporate ml-3" style={{ height: '365px' }}>
-              <div className="row">
-                <h5 className='employeetitle'>Emergency Contact</h5>
-                <div className="elementemployee2"></div>
-              </div>
-
-              {/* /////// Current Sheet Wise Changes Start ///// */}
-              <div className="row formspaceemployee">
-                <div className="col-md-3">
-                  <label className="form-label corporatelabel">Prefix</label>
-                  <select className="form-control corporateinput"
-                    value={corporateForm.emergency_prefix}
-                    onChange={handleChange}
-                    name='emergency_prefix'
-                  >
-                    <option>Prefix</option>
-                    <option value="Mr">Mr.</option>
-                    <option value="Ms">Ms.</option>
-                    <option value="Mrs">Mrs.</option>
-                    <option value="Adv">Adv.</option>
-                    <option value="Col">Col.</option>
-                    <option value="Dr">Dr.</option>
-                  </select>
-                </div>
-
-                <div className="col-md-6">
-                  <label className="form-label corporatelabel">Full Name</label>
-                  <input className="form-control corporateinput" type="text"
-                    onInput={(e) => {
-                      e.target.value = e.target.value.replace(/[0-9]/, '');
+            <Grid container spacing={2}>
+              <Grid item xs={12} sm={4}>
+                <FormControl
+                  fullWidth
+                  size="small"
+                  variant="outlined"
+                  error={!!errorMessages.emergency_prefix}
+                >
+                  <InputLabel id="emergency-prefix-label">Prefix</InputLabel>
+                  <Select
+                    sx={{
+                      "& .MuiInputBase-input.MuiSelect-select": {
+                        color: "#000 !important",
+                      },
+                      "& .MuiSvgIcon-root": {
+                        color: "#000",
+                      },
                     }}
-                    name='emergency_fullname'
-                    value={corporateForm.emergency_fullname}
+                    labelId="emergency-prefix-label"
+                    name="emergency_prefix"
+                    value={corporateForm.emergency_prefix || ""}
                     onChange={handleChange}
-                  />
-                </div>
-
-                <div className="col-md-3">
-                  <label className="form-label corporatelabel">Gender</label>
-                  <select className="form-control corporateinput"
-                    value={corporateForm.emergency_gender}
-                    onChange={handleChange}
-                    name='emergency_gender'
+                    label="Prefix"
                   >
-                    <option>Gender</option>
-                    <option value="male">Male</option>
-                    <option value="female">Female</option>
-                    <option value="other">Other</option>
-                  </select>
-                </div>
+                    <MenuItem value="">Select</MenuItem>
+                    {["Mr", "Ms", "Mrs", "Adv", "Col", "Dr"].map((item) => (
+                      <MenuItem key={item} value={item}>
+                        {item}.
+                      </MenuItem>
+                    ))}
+                  </Select>
 
-                <div className="col-md-6">
-                  <label className="form-label corporatelabel">Emergency Contact Number</label>
-                  <input type="number" className="form-control corporateinput"
-                    onInput={(e) => {
-                      if (e.target.value < 0) {
-                        e.target.value = 0;
-                      }
+                  {/* Error Message */}
+                  {errorMessages.emergency_prefix && (
+                    <Typography
+                      color="error"
+                      variant="caption"
+                      sx={{ mt: 0.5, fontSize: "0.75rem" }}
+                    >
+                      {errorMessages.emergency_prefix}
+                    </Typography>
+                  )}
+                </FormControl>
+              </Grid>
 
-                      if (e.target.value.length > 10) {
-                        e.target.value = e.target.value.slice(0, 10);
-                      }
+              <Grid item xs={12} sm={8}>
+                <TextField
+                  size="small"
+                  fullWidth
+                  label="Full Name"
+                  name="emergency_fullname"
+                  value={corporateForm.emergency_fullname || ""}
+                  onChange={handleChange}
+                  onInput={(e) => {
+                    e.target.value = e.target.value.replace(/[0-9]/g, "");
+                  }}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={4}>
+                <FormControl
+                  fullWidth
+                  size="small"
+                  variant="outlined"
+                  error={!!errorMessages.emergency_gender}
+                >
+                  <InputLabel id="emergency-gender-label">Gender</InputLabel>
+                  <Select
+                    sx={{
+                      "& .MuiInputBase-input.MuiSelect-select": {
+                        color: "#000 !important",
+                      },
+                      "& .MuiSvgIcon-root": {
+                        color: "#000",
+                      },
                     }}
-                    name='emergency_contact'
-                    value={corporateForm.emergency_contact}
+                    labelId="emergency-gender-label"
+                    name="emergency_gender"
+                    value={corporateForm.emergency_gender || ""}
                     onChange={handleChange}
-                  />
-                </div>
-
-                <div className="col-md-6">
-                  <label className="form-label corporatelabel">Email ID</label>
-                  <input type="email" className="form-control corporateinput"
-                    name='emergency_email'
-                    value={corporateForm.emergency_email}
-                    onChange={handleChange}
-                  />
-                </div>
-
-                <div className="col-md-6">
-                  <label className="form-label corporatelabel">Relationship with Employee</label>
-                  <select className="form-control corporateinput"
-                    value={corporateForm.relationship_with_employee}
-                    onChange={handleChange}
-                    name='relationship_with_employee'
+                    label="Gender"
                   >
-                    <option>Relationship with Employee</option>
-                    <option value="father">Father</option>
-                    <option value="mother">Mother</option>
-                    <option value="brother">Brother</option>
-                    <option value="sister">Sister</option>
-                    <option value="spouse">Spouse</option>
-                    <option value="son">Son</option>
-                    <option value="daughter">Daughter</option>
-                  </select>
-                </div>
+                    <MenuItem value="">Select</MenuItem>
+                    <MenuItem value="male">Male</MenuItem>
+                    <MenuItem value="female">Female</MenuItem>
+                    <MenuItem value="other">Other</MenuItem>
+                  </Select>
 
-                <div className="col-md-6">
-                  <label className="form-label corporatelabel">Present Address</label>
-                  <input type="text" className="form-control corporateinput"
-                    name='emergency_address'
-                    value={corporateForm.emergency_address}
+                  {errorMessages.emergency_gender && (
+                    <Typography
+                      color="error"
+                      variant="caption"
+                      sx={{ mt: 0.5, fontSize: "0.75rem" }}
+                    >
+                      {errorMessages.emergency_gender}
+                    </Typography>
+                  )}
+                </FormControl>
+              </Grid>
+
+              <Grid item xs={12} sm={8}>
+                <TextField
+                  size="small"
+                  fullWidth
+                  label="Emergency Contact Number"
+                  name="emergency_contact"
+                  type="number"
+                  value={corporateForm.emergency_contact || ""}
+                  onChange={handleChange}
+                  onInput={(e) => {
+                    if (e.target.value < 0) e.target.value = 0;
+                    if (e.target.value.length > 10)
+                      e.target.value = e.target.value.slice(0, 10);
+                  }}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  size="small"
+                  fullWidth
+                  label="Email ID"
+                  name="emergency_email"
+                  type="email"
+                  value={corporateForm.emergency_email || ""}
+                  onChange={handleChange}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <FormControl
+                  fullWidth
+                  size="small"
+                  variant="outlined"
+                  error={!!errorMessages.relationship_with_employee}
+                >
+                  <InputLabel id="relationship-label">Relationship with Citizen</InputLabel>
+                  <Select
+                    sx={{
+                      "& .MuiInputBase-input.MuiSelect-select": {
+                        color: "#000 !important",
+                      },
+                      "& .MuiSvgIcon-root": {
+                        color: "#000",
+                      },
+                    }}
+                    labelId="relationship-label"
+                    name="relationship_with_employee"
+                    value={corporateForm.relationship_with_employee || ""}
                     onChange={handleChange}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
+                    label="Relationship with Employee"
+                  >
+                    <MenuItem value="">Select Relationship</MenuItem>
+                    <MenuItem value="father">Father</MenuItem>
+                    <MenuItem value="mother">Mother</MenuItem>
+                    <MenuItem value="brother">Brother</MenuItem>
+                    <MenuItem value="sister">Sister</MenuItem>
+                    <MenuItem value="spouse">Spouse</MenuItem>
+                    <MenuItem value="son">Son</MenuItem>
+                    <MenuItem value="daughter">Daughter</MenuItem>
+                  </Select>
 
-          <div className="col-md-6">
-            <div className="card card1corporate" style={{ height: '93%' }}>
+                  {errorMessages.relationship_with_employee && (
+                    <Typography
+                      color="error"
+                      variant="caption"
+                      sx={{ mt: 0.5, fontSize: "0.75rem" }}
+                    >
+                      {errorMessages.relationship_with_employee}
+                    </Typography>
+                  )}
+                </FormControl>
+              </Grid>
 
-              <div className="row">
-                <h5 className='employeetitle'>Growth Monitoring</h5>
-                <div className="elementemployee3"></div>
-              </div>
+              <Grid item xs={12}>
+                <TextField
+                  size="small"
+                  fullWidth
+                  label="Present Address"
+                  name="emergency_address"
+                  value={corporateForm.emergency_address || ""}
+                  onChange={handleChange}
+                />
+              </Grid>
+            </Grid>
+          </Card>
+        </Grid>
 
-              <div className="row formspaceemployee">
-                <div className="col-md-4">
-                  <label className="form-label corporatelabel">Height</label>
-                  <input type="number" className="form-control corporateinput"
-                    value={heightValue}
-                    onChange={handleHeightChange}
-                    name='height'
-                  />
-                </div>
+        <Grid item xs={12} md={6}>
+          <Card
+            sx={{
+              p: 2,
+              borderRadius: 3,
+              height: "100%",
+              boxShadow: 3,
+            }}
+          >
+            <Typography
+              variant="h6"
+              sx={{
+                mb: 2,
+                fontWeight: 500,
+                color: "#1A237E",
+                fontFamily: "Roboto",
+              }}
+            >
+              Growth Monitoring
+            </Typography>
 
-                <div className="col-md-4">
-                  <label className="form-label corporatelabel">Weight</label>
-                  <input type="number" className="form-control corporateinput"
-                    value={weightValue}
-                    onChange={handleWeightChange} name='weight'
-                  />
-                </div>
+            <Grid container spacing={2}>
+              <Grid item xs={12} sm={4}>
+                <TextField
+                  size="small"
+                  fullWidth
+                  label="Height"
+                  name="height"
+                  type="number"
+                  value={heightValue}
+                  onChange={handleHeightChange}
+                  inputProps={{ min: 0 }}
+                />
+              </Grid>
 
-                <div className="col-md-4">
-                  <label className="form-label corporatelabel">BMI</label>
-                  <input type="text" className="form-control corporateinput" value={bmi} readOnly
-                    style={{
+              <Grid item xs={12} sm={4}>
+                <TextField
+                  size="small"
+                  fullWidth
+                  label="Weight"
+                  name="weight"
+                  type="number"
+                  value={weightValue}
+                  onChange={handleWeightChange}
+                  inputProps={{ min: 0 }}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={4}>
+                <TextField
+                  size="small"
+                  fullWidth
+                  label="BMI"
+                  name="bmi"
+                  value={bmi ?? ""}
+                  InputProps={{
+                    readOnly: true,
+                    sx: {
                       backgroundColor:
-                        bmi === null ? 'white' :
-                          bmi < 18.5 ? 'orange' :
-                            bmi < 25 ? 'green' :
-                              bmi < 30 ? 'red' : 'darkred',
+                        bmi === null
+                          ? "white"
+                          : bmi < 18.5
+                            ? "orange"
+                            : bmi < 25
+                              ? "green"
+                              : bmi < 30
+                                ? "red"
+                                : "darkred",
                       color:
-                        bmi === null || bmi > 30 ? 'black' : 'white'
+                        bmi === null || bmi > 30
+                          ? "black"
+                          : "white",
+                    },
+                  }}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={8}>
+                <TextField
+                  size="small"
+                  fullWidth
+                  label="Symptoms (if any)"
+                  name="symptoms"
+                  value={corporateForm.symptoms || ""}
+                  onChange={handleChange}
+                  onInput={(e) => {
+                    e.target.value = e.target.value.replace(/[0-9]/g, "");
+                  }}
+                />
+              </Grid>
+            </Grid>
+          </Card>
+        </Grid>
+
+        <Grid item xs={12} md={6}>
+          <Card
+            sx={{
+              p: 2,
+              height: '100%',
+              borderRadius: 3,
+              boxShadow: 3,
+            }}
+          >
+            <Typography
+              variant="h6"
+              sx={{
+                fontWeight: 500,
+                mb: 2,
+                color: '#1A237E',
+                fontFamily: 'Roboto',
+              }}
+            >
+              Address
+            </Typography>
+
+            <Grid container spacing={2}>
+              <Grid item xs={12} sm={6}>
+                <FormControl fullWidth error={!!errorMessages.state}>
+                  <InputLabel>Select State</InputLabel>
+                  <Select
+                    sx={{
+                      "& .MuiInputBase-input.MuiSelect-select": {
+                        color: "#000 !important",
+                      },
+                      "& .MuiSvgIcon-root": {
+                        color: "#000",
+                      },
                     }}
-                  />
-                </div>
-
-                {/* <div className="col-md-4">
-                  <label className="form-label corporatelabel">Arm Size</label>
-                  <input type="number" className="form-control corporateinput"
-                    onInput={(e) => {
-                      if (e.target.value < 0) {
-                        e.target.value = 0;
-                      }
-
-                      if (e.target.value.length > 3) {
-                        e.target.value = e.target.value.slice(0, 3);
-                      }
+                    size="small"
+                    value={selectedStateId}
+                    onChange={handleStateChange}
+                    label="Select State"
+                    MenuProps={{
+                      disablePortal: true,
+                      PaperProps: {
+                        style: {
+                          maxHeight: 250,
+                          overflowY: "auto",
+                        },
+                      },
                     }}
-                    name='arm_size'
-                    value={corporateForm.arm_size}
-                    onChange={handleChange}
-                  />
-                </div> */}
-
-                <div className="col-md-8">
-                  <label className="form-label corporatelabel">Symptoms if any</label>
-                  <input type="text" className="form-control corporateinput"
-                    onInput={(e) => {
-                      e.target.value = e.target.value.replace(/[0-9]/, '');
-                    }}
-                    name='symptoms'
-                    value={corporateForm.symptoms}
-                    onChange={handleChange}
-                  />
-                </div>
-
-              </div>
-            </div>
-          </div>
-
-          <div className="col-md-6">
-            <div className="card card2corporate ml-3">
-
-              <div className="row">
-                <h5 className='employeetitle'>Address</h5>
-                <div className="elementemployee4"></div>
-              </div>
-
-              <div className="row formspaceemployee">
-                <div className="col-md-6">
-                  <label className="form-label corporatelabel">State</label>
-                  <select className="form-control corporateinput" value={selectedStateId} onChange={handleStateChange}>
-                    <option>Select State</option>
+                  >
+                    <MenuItem value="">Select State</MenuItem>
                     {sourceState.map((stateOption) => (
-                      <option key={stateOption.source_state} value={stateOption.source_state}>
+                      <MenuItem
+                        key={stateOption.source_state}
+                        value={stateOption.source_state}
+                      >
                         {stateOption.state_name}
-                      </option>
+                      </MenuItem>
                     ))}
-                  </select>
+                  </Select>
                   {errorMessages.state && (
-                    <label variant="caption" color="error" style={{ fontSize: '12px', color: 'red', fontWeight: 'normal' }}>
-                      {errorMessages.state}
-                    </label>
+                    <FormHelperText>{errorMessages.state}</FormHelperText>
                   )}
-                </div>
+                </FormControl>
+              </Grid>
 
-                <div className="col-md-6">
-                  <label className="form-label corporatelabel">District</label>
-                  <select className="form-control corporateinput" value={selectedDistrictId} onChange={handleDistrictChange}>
-                    <option>Select District</option>
-                    {district.map((districtOption) => (
-                      <option key={districtOption.source_district} value={districtOption.source_district}>
-                        {districtOption.dist_name}
-                      </option>
-                    ))}
-                  </select>
-                  {errorMessages.district && (
-                    <label variant="caption" color="error" style={{ fontSize: '12px', color: 'red', fontWeight: 'normal' }}>
-                      {errorMessages.district}
-                    </label>
-                  )}
-                </div>
-
-                <div className="col-md-6">
-                  <label className="form-label corporatelabel">Tehsil</label>
-                  <select className="form-control corporateinput" value={selectedTehsilId} onChange={handleTehsilChange}>
-                    <option>Select Tehsil</option>
-                    {tehsil.map((TehsilOption) => (
-                      <option key={TehsilOption.source_taluka} value={TehsilOption.source_taluka}>
-                        {TehsilOption.tahsil_name}
-                      </option>
-                    ))}
-                  </select>
-                  {errorMessages.district && (
-                    <label variant="caption" color="error" style={{ fontSize: '12px', color: 'red', fontWeight: 'normal' }}>
-                      {errorMessages.district}
-                    </label>
-                  )}
-                </div>
-
-                <div className="col-md-6">
-                  <label className="form-label corporatelabel">Source Name</label>
-                  <select className="form-control corporateinput" value={selectedNameId} onChange={handleSOurceNameChange}>
-                    <option>Select Source Name</option>
-                    {SourceName.map((NameOption) => (
-                      <option key={NameOption.source_pk_id} value={NameOption.source_pk_id}>
-                        {NameOption.source_names}
-                      </option>
-                    ))}
-                  </select>
-                  {errorMessages.source_name && (
-                    <label variant="caption" color="error" style={{ fontSize: '12px', color: 'red', fontWeight: 'normal' }}>
-                      {errorMessages.source_name}
-                    </label>
-                  )}
-                </div>
-
-                <div className="col-md-6">
-                  <label className="form-label corporatelabel">Residential Address</label>
-                  <input className="form-control corporateinput"
-                    name='address'
-                    value={corporateForm.address}
-                    onChange={handleChange}
-                  />
-                </div>
-
-                <div className="col-md-6">
-                  <label className="form-label corporatelabel">Permanent Address</label>
-                  <input className="form-control corporateinput"
-                    name='permanant_address'
-                    value={corporateForm.permanant_address}
-                    onChange={handleChange}
-                  />
-                </div>
-
-                <div className="col-md-6">
-                  <label className="form-label corporatelabel">Pincode</label>
-                  <input type="number" className="form-control corporateinput"
-                    onInput={(e) => {
-                      if (e.target.value < 0) {
-                        e.target.value = 0;
-                      }
-
-                      if (e.target.value.length > 6) {
-                        e.target.value = e.target.value.slice(0, 6);
-                      }
+              <Grid item xs={12} sm={6}>
+                <FormControl fullWidth error={!!errorMessages.district}>
+                  <InputLabel>Select District</InputLabel>
+                  <Select
+                    sx={{
+                      "& .MuiInputBase-input.MuiSelect-select": {
+                        color: "#000 !important",
+                      },
+                      "& .MuiSvgIcon-root": {
+                        color: "#000",
+                      },
                     }}
-                    name='pincode'
-                    value={corporateForm.pincode}
-                    onChange={handleChange}
-                  />
-                </div>
+                    size="small"
+                    value={selectedDistrictId}
+                    onChange={handleDistrictChange}
+                    label="Select District"
+                    MenuProps={{
+                      disablePortal: true,
+                      PaperProps: {
+                        style: {
+                          maxHeight: 250,
+                          overflowY: "auto",
+                        },
+                      },
+                    }}
+                  >
+                    <MenuItem value="">Select District</MenuItem>
+                    {district.map((districtOption) => (
+                      <MenuItem
+                        key={districtOption.source_district}
+                        value={districtOption.source_district}
+                      >
+                        {districtOption.dist_name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                  {errorMessages.district && (
+                    <FormHelperText>{errorMessages.district}</FormHelperText>
+                  )}
+                </FormControl>
+              </Grid>
 
-                <div className="col-md-6">
-                  <label className="form-label corporatelabel">Site Plant</label>
-                  <input type="text" className="form-control corporateinput"
-                    name='site_plant'
-                    onChange={handleChange}
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+              <Grid item xs={12} sm={6}>
+                <FormControl fullWidth error={!!errorMessages.tehsil}>
+                  <InputLabel>Select Tehsil</InputLabel>
+                  <Select
+                    sx={{
+                      "& .MuiInputBase-input.MuiSelect-select": {
+                        color: "#000 !important",
+                      },
+                      "& .MuiSvgIcon-root": {
+                        color: "#000",
+                      },
+                    }}
+                    size="small"
+                    value={selectedTehsilId}
+                    onChange={handleTehsilChange}
+                    label="Select Tehsil"
+                    MenuProps={{
+                      disablePortal: true,
+                      PaperProps: {
+                        style: {
+                          maxHeight: 250,
+                          overflowY: "auto",
+                        },
+                      },
+                    }}
+                  >
+                    <MenuItem value="">Select Tehsil</MenuItem>
+                    {tehsil.map((TehsilOption) => (
+                      <MenuItem
+                        key={TehsilOption.source_taluka}
+                        value={TehsilOption.source_taluka}
+                      >
+                        {TehsilOption.tahsil_name}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                  {errorMessages.tehsil && (
+                    <FormHelperText>{errorMessages.tehsil}</FormHelperText>
+                  )}
+                </FormControl>
+              </Grid>
 
-        <div className="row buttoncorporate">
-          <button type="submit" className="corporatesubmit">Submit</button>
-        </div>
-      </form>
-    </div>
+              <Grid item xs={12} sm={6}>
+                <FormControl
+                  fullWidth
+                  size="small"
+                  variant="outlined"
+                  error={!!errorMessages.source_name}
+                >
+                  <InputLabel id="source-name-label">Select Source Name</InputLabel>
+                  <Select
+                    sx={{
+                      "& .MuiInputBase-input.MuiSelect-select": {
+                        color: "#000 !important",
+                      },
+                      "& .MuiSvgIcon-root": {
+                        color: "#000",
+                      },
+                    }}
+                    labelId="source-name-label"
+                    value={selectedNameId || ""}
+                    onChange={handleSOurceNameChange} label="Select Source Name"
+                    MenuProps={{
+                      disablePortal: true,
+                      PaperProps: {
+                        style: {
+                          maxHeight: 250,
+                          overflowY: "auto",
+                        },
+                      },
+                    }}
+                  >
+                    <MenuItem value="">Select Source Name</MenuItem>
+                    {SourceName.map((nameOption) => (
+                      <MenuItem
+                        key={nameOption.source_pk_id}
+                        value={nameOption.source_pk_id}
+                      >
+                        {nameOption.source_names}
+                      </MenuItem>
+                    ))}
+                  </Select>
+
+                  {/* Error Message */}
+                  {errorMessages.source_name && (
+                    <Typography
+                      color="error"
+                      variant="caption"
+                      sx={{ mt: 0.5, fontSize: "0.75rem" }}
+                    >
+                      {errorMessages.source_name}
+                    </Typography>
+                  )}
+                </FormControl>
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  size="small"
+                  fullWidth
+                  label="Residential Address"
+                  name="address"
+                  value={corporateForm.address}
+                  onChange={handleChange}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  size="small"
+                  fullWidth
+                  label="Permanent Address"
+                  name="permanant_address"
+                  value={corporateForm.permanant_address}
+                  onChange={handleChange}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  size="small"
+                  fullWidth
+                  type="number"
+                  label="Pincode"
+                  name="pincode"
+                  value={corporateForm.pincode}
+                  onChange={handleChange}
+                  inputProps={{
+                    maxLength: 6,
+                    onInput: (e) => {
+                      if (e.target.value < 0) e.target.value = 0;
+                      if (e.target.value.length > 6)
+                        e.target.value = e.target.value.slice(0, 6);
+                    },
+                  }}
+                />
+              </Grid>
+
+              {/* <Grid item xs={12} sm={6}>
+                <TextField
+                  size="small"
+                  fullWidth
+                  label="Site Plant"
+                  name="site_plant"
+                  value={corporateForm.site_plant}
+                  onChange={handleChange}
+                />
+              </Grid> */}
+            </Grid>
+          </Card>
+        </Grid>
+
+        <Grid item xs={12}>
+          <Box textAlign="center" sx={{ mb: 2 }}>
+            <Button type="submit" variant="contained" color="primary" sx={{ px: 5, py: 1.2 }}>
+              Submit
+            </Button>
+          </Box>
+        </Grid>
+      </Grid>
+    </Box >
   );
 };
 

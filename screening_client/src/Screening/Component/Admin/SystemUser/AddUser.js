@@ -1,16 +1,36 @@
 import React, { useState, useEffect } from 'react'
-import Box from '@mui/material/Box';
-import MenuItem from '@mui/material/MenuItem';
-import TextField from '@mui/material/TextField';
 import { Link } from 'react-router-dom'
 import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
 import './AddUser.css'
-import DriveFileRenameOutlineOutlinedIcon from '@mui/icons-material/DriveFileRenameOutlineOutlined';
-import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined';
+import { DriveFileRenameOutlineOutlined, DeleteOutlineOutlined } from '@mui/icons-material';
 import axios from 'axios';
-import { Modal, Button } from 'react-bootstrap';
-import CircularProgress from '@mui/material/CircularProgress';
-import TablePagination from '@mui/material/TablePagination';
+import { Modal } from 'react-bootstrap';
+import {
+  Box,
+  Grid,
+  Card,
+  CardContent,
+  Typography,
+  TextField,
+  Select,
+  MenuItem,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  IconButton,
+  Table,
+  TableHead,
+  TableBody,
+  TableRow,
+  TableCell,
+  TablePagination,
+  CircularProgress,
+  FormControl,
+  InputLabel,
+  DeleteOutlineOutlinedIcon,
+} from '@mui/material';
 
 const AddUser = () => {
   //permission code start
@@ -888,639 +908,675 @@ const AddUser = () => {
 
   const handleChangeRowsPerPage = (event) => {
     setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0); // Reset to the first page when changing rows per page
+    setPage(0);
   };
 
-  ////// button condition
   const [formAction, setFormAction] = useState('');
 
   return (
-    <div className="backgrounduser">
-      <div class="content-wrapper">
-        <div class="content-header">
-          <div class="container-fluid">
-            <div className="card userlistcard">
-              <div class="row">
-                <div class="col">
-                  <h5 className='name'>User List</h5>
-                </div>
-              </div>
+    <Box sx={{ p: 2, m: "0em 0em 0 3.5em" }}>
+      <Card
+        sx={{
+          borderRadius: 3,
+          bgcolor: "#ffffff",
+        }}
+      >
+        <CardContent>
+          <Grid
+            container
+            alignItems="center"
+            justifyContent="space-between"
+          >
+            <Grid item>
+              <Typography
+                variant="h6"
+                sx={{ fontWeight: 500, color: '#1439A4', fontFamily: 'Roboto' }}
+              >
+                User List
+              </Typography>
+            </Grid>
 
-              <div className="dropdownall mb-3">
-                <Box>
-                  <div class="container text-center">
-                    <div class="row" style={{ display: 'flex', justifyContent: 'center' }}>
-                      <div class="col textfiledcol" style={{ color: 'white' }}>
-                        <TextField
-                          select
-                          className="Adduserformfieldssss"
-                          size="small"
-                          label="Source"
-                          id="select-small"
-                          variant="outlined"
-                          value={selectedSourceeNav}
-                          onChange={(e) => setSelectedSourceeNav(e.target.value)}
-                          InputLabelProps={{
-                            style: {
-                              fontWeight: '100',
-                              fontSize: '14px',
-                            },
-                          }}
-                          SelectProps={{
-                            MenuProps: {
-                              classes: {
-                                paper: 'custom-menu-paper',
-                              },
-                            },
-                          }}
-                        >
-                          <MenuItem value="">Select Source</MenuItem>
-                          {sourceOptionNav.map(drop => (
-                            <MenuItem key={drop.clg_source}
-                              value={drop.source_pk_id}
-                            >
-                              {drop.source}
-                            </MenuItem>
-                          ))}
-                        </TextField>
-                      </div>
+            {canAddUser && (
+              <Grid item>
+                <Link to="" style={{ textDecoration: "none" }}>
+                  <IconButton
+                    size="small"
+                    sx={{
+                      bgcolor: "#1976d2",
+                      color: "white",
+                      "&:hover": { bgcolor: "#1565c0" },
+                    }}
+                    onClick={() => {
+                      handleClickCombined();
+                      resetForm();
+                      setFormAction("add");
+                    }}
+                  >
+                    <PersonAddAltIcon />
+                  </IconButton>
+                </Link>
+              </Grid>
+            )}
+          </Grid>
 
-                      <div class="col textfiledcol" style={{ color: 'white' }}>
-                        <TextField
-                          select
-                          className="Adduserformfieldssss"
-                          size="small"
-                          label="Source State"
-                          id="select-small"
-                          variant="outlined"
-                          value={selectedStateNav}
-                          onChange={(e) => setSelectedStateNav(e.target.value)}
-                          InputLabelProps={{
-                            style: {
-                              fontWeight: '100',
-                              fontSize: '14px', // Set the desired font size for the label
-                            },
-                          }}
-                          SelectProps={{
-                            MenuProps: {
-                              classes: {
-                                paper: 'custom-menu-paper',
-                              },
-                            },
-                          }}
-                        >
-                          <MenuItem value="">Select State</MenuItem>
-                          {stateOptionsNav.map(drop => (
-                            <MenuItem key={drop.source_state}
-                              value={drop.source_state}
-                            >
-                              {drop.state_name}
-                            </MenuItem>
-                          ))}
-                        </TextField>
-                      </div>
+          <Grid container spacing={2} alignItems="center" justifyContent="center">
+            <Grid item xs={12} sm={6} md={2}>
+              <TextField
+                sx={{
+                  minWidth: 120,
+                  "& .MuiInputBase-input.MuiSelect-select": {
+                    color: "#000 !important",
+                  },
+                  "& .MuiSvgIcon-root": {
+                    color: "#000",
+                  },
+                }}
+                select
+                fullWidth
+                size="small"
+                label="Source"
+                value={selectedSourceeNav}
+                onChange={(e) => setSelectedSourceeNav(e.target.value)}
+              >
+                <MenuItem value="">Select Source</MenuItem>
+                {sourceOptionNav.map((drop) => (
+                  <MenuItem key={drop.clg_source} value={drop.source_pk_id}>
+                    {drop.source}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Grid>
 
-                      <div class="col textfiledcol" style={{ color: 'white' }}>
-                        <TextField
-                          select
-                          className="Adduserformfieldssss"
-                          size="small"
-                          label="Source District"
-                          id="select-small"
-                          variant="outlined"
-                          value={selectedDistrictNav}
-                          onChange={(e) => setSelectedDistrictNav(e.target.value)}
-                          InputLabelProps={{
-                            style: {
-                              fontWeight: '100',
-                              fontSize: '14px', // Set the desired font size for the label
-                            },
-                          }}
-                          SelectProps={{
-                            MenuProps: {
-                              classes: {
-                                paper: 'custom-menu-paper',
-                              },
-                            },
-                          }}
-                        >
-                          <MenuItem value="">Select District</MenuItem>
-                          {districtOptionsNav.map(drop => (
-                            <MenuItem key={drop.source_district}
-                              value={drop.source_district}
-                            >
-                              {drop.dist_name}
-                            </MenuItem>
-                          ))}
-                        </TextField>
-                      </div>
+            <Grid item xs={12} sm={6} md={2}>
+              <TextField
+                sx={{
+                  minWidth: 120,
+                  "& .MuiInputBase-input.MuiSelect-select": {
+                    color: "#000 !important",
+                  },
+                  "& .MuiSvgIcon-root": {
+                    color: "#000",
+                  },
+                }} select
+                fullWidth
+                size="small"
+                label="Source State"
+                value={selectedStateNav}
+                onChange={(e) => setSelectedStateNav(e.target.value)}
+              >
+                <MenuItem value="">Select State</MenuItem>
+                {stateOptionsNav.map((drop) => (
+                  <MenuItem key={drop.source_state} value={drop.source_state}>
+                    {drop.state_name}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Grid>
 
-                      <div class="col textfiledcol" style={{ color: 'white' }}>
-                        <TextField
-                          select
-                          className="Adduserformfieldssss"
-                          size="small"
-                          label="Select Tehsil"
-                          value={selectedTalukaNav}
-                          onChange={(e) => setSelectedTalukaNav(e.target.value)}
-                          id="select-small"
-                          variant="outlined"
-                          InputLabelProps={{
-                            style: {
-                              fontWeight: '100',
-                              fontSize: '14px', // Set the desired font size for the label
-                            },
-                          }}
-                          SelectProps={{
-                            MenuProps: {
-                              classes: {
-                                paper: 'custom-menu-paper',
-                              },
-                            },
-                          }}
-                        >
-                          <MenuItem value="">Select Tehsil</MenuItem>
-                          {talukaOptionsNav.map(drop => (
-                            <MenuItem key={drop.source_taluka}
-                              value={drop.source_taluka}
-                            >
-                              {drop.tahsil_name}
-                            </MenuItem>
-                          ))}
-                        </TextField>
+            <Grid item xs={12} sm={6} md={2}>
+              <TextField
+                sx={{
+                  minWidth: 120,
+                  "& .MuiInputBase-input.MuiSelect-select": {
+                    color: "#000 !important",
+                  },
+                  "& .MuiSvgIcon-root": {
+                    color: "#000",
+                  },
+                }} select
+                fullWidth
+                size="small"
+                label="Source District"
+                value={selectedDistrictNav}
+                onChange={(e) => setSelectedDistrictNav(e.target.value)}
+              >
+                <MenuItem value="">Select District</MenuItem>
+                {districtOptionsNav.map((drop) => (
+                  <MenuItem
+                    key={drop.source_district}
+                    value={drop.source_district}
+                  >
+                    {drop.dist_name}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Grid>
 
-                      </div>
+            <Grid item xs={12} sm={6} md={2}>
+              <TextField
+                sx={{
+                  minWidth: 120,
+                  "& .MuiInputBase-input.MuiSelect-select": {
+                    color: "#000 !important",
+                  },
+                  "& .MuiSvgIcon-root": {
+                    color: "#000",
+                  },
+                }} select
+                fullWidth
+                size="small"
+                label="Select Tehsil"
+                value={selectedTalukaNav}
+                onChange={(e) => setSelectedTalukaNav(e.target.value)}
+              >
+                <MenuItem value="">Select Tehsil</MenuItem>
+                {talukaOptionsNav.map((drop) => (
+                  <MenuItem
+                    key={drop.source_taluka}
+                    value={drop.source_taluka}
+                  >
+                    {drop.tahsil_name}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Grid>
 
-                      <div class="col textfiledcol" style={{ color: 'white' }}>
-                        <TextField
-                          select
-                          className="Adduserformfieldssss"
-                          value={selectedNameNav}
-                          onChange={(e) => setSelectedNameNav(e.target.value)}
-                          size="small"
-                          label="Source Name"
-                          id="select-small"
-                          variant="outlined"
-                          InputLabelProps={{
-                            style: {
-                              fontWeight: '100',
-                              fontSize: '14px', // Set the desired font size for the label
-                            },
-                          }}
-                          SelectProps={{
-                            MenuProps: {
-                              classes: {
-                                paper: 'custom-menu-paper',
-                              },
-                            },
-                          }}
-                        >
-                          <MenuItem value="">Select Source Name</MenuItem>
-                          {sourceNameOptionsNav.map(drop => (
-                            <MenuItem key={drop.source_pk_id}
-                              value={drop.source_pk_id}
-                            >
-                              {drop.source_names}
-                            </MenuItem>
-                          ))}
-                        </TextField>
+            <Grid item xs={12} sm={6} md={2}>
+              <TextField
+                sx={{
+                  minWidth: 120,
+                  "& .MuiInputBase-input.MuiSelect-select": {
+                    color: "#000 !important",
+                  },
+                  "& .MuiSvgIcon-root": {
+                    color: "#000",
+                  },
+                }}
+                select
+                fullWidth
+                size="small"
+                label="Source Name"
+                value={selectedNameNav}
+                onChange={(e) => setSelectedNameNav(e.target.value)}
+              >
+                <MenuItem value="">Select Source Name</MenuItem>
+                {sourceNameOptionsNav.map((drop) => (
+                  <MenuItem key={drop.source_pk_id} value={drop.source_pk_id}>
+                    {drop.source_names}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Grid>
 
-                      </div>
+            <Grid item xs={6} sm={3} md={1}>
+              <Button
+                variant="contained"
+                fullWidth
+                size="small"
+                sx={{
+                  textTransform: "none",
+                  fontWeight: 500,
+                  bgcolor: "#1976d2",
+                  "&:hover": { bgcolor: "#1565c0" },
+                }}
+                onClick={handleSearch}
+              >
+                Search
+              </Button>
+            </Grid>
+          </Grid>
+        </CardContent>
+      </Card>
 
-                      <div className='col'>
-                        <button
-                          type='button'
-                          className='btn btn-sm searchcitizen'
-                          onClick={handleSearch}
-                        >
-                          Search
-                        </button>
-                      </div>
-
-                      {canAddUser && <div>
-                        <Link to=''>
-                          <button type='button' className='btn addicon'>
-                            <PersonAddAltIcon className='personaddicon'
-                              // onClick={handleClickCombined}
-                              onClick={() => {
-                                handleClickCombined();
-                                resetForm();
-                                setFormAction('add');//// button 
-                              }}
-                            />
-                          </button>
-                        </Link>
-                      </div>
-                      }
-                    </div>
-                  </div>
-                </Box>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <div className="belowdrop">
-        <div class="container">
-          <div class="row">
-            <div className={`col ${showForm ? 'col-md-6' : 'd-none'}${transitioning ? ' sliding-out' : ''}`}>
-              <div className="card ml-3">
-                <form onSubmit={handleSubmit}>
-                  <div className="row">
-                    <h5 className='userheadername'>Register New User</h5>
-                    <div class="elementregisteruser"></div>
-
-                    <div className="ml-auto mr-3">
-                      <DriveFileRenameOutlineOutlinedIcon
-                        className={`editiconuser mr-2 ${updateSrc ? '' : 'disabled-icon'}`}
+      <Box sx={{ p: 1 }}>
+        <Grid container spacing={1}>
+          {showForm && (
+            <Grid
+              item
+              xs={12}
+              md={6}
+              className={transitioning ? 'sliding-out' : ''}
+            >
+              <Card elevation={4}>
+                <CardContent>
+                  <Box display="flex" justifyContent="space-between" alignItems="center" mb={1}>
+                    <Typography variant="h6" sx={{ fontWeight: 'bold', fontSize: "16px" }}>
+                      Register New User
+                    </Typography>
+                    <Box
+                      sx={{
+                        p: 2
+                      }}
+                    >
+                      <IconButton
+                        color="primary"
                         onClick={() => {
                           setUpdateSrc(true);
                           setFormEnabled(true);
-                          setFormAction('update'); //// button 
+                          setFormAction('update');
                         }}
-                        disabled={!formEnabled}
-                      />
-                      <DeleteOutlineOutlinedIcon
-                        className={`deleteiconuser ${formEnabled ? '' : 'disabled-icon'}`}
+                      >
+                        <DriveFileRenameOutlineOutlined />
+                      </IconButton>
+                      <IconButton
+                        color="error"
                         onClick={() => {
                           setDeleteSrc(false);
                           handleDelete();
                         }}
-                        disabled={!formEnabled}
-                      />
-                    </div>
-                  </div>
-
-                  {/* <div className="row form"> */}
-                  <div className="row form">
-                    <div className="col-md-6" style={{ marginTop: '2px' }}>
-                      <label htmlFor="select" class="visually-hidden labelnameuser">
-                        Source<span className="text-danger">*</span>
-                      </label>
-                      <select
-                        as="select"
-                        className={`form-control inputuser`}
-                        name="clg_source"
-                        id="outlined-select"
-                        onChange={handleChange}
-                        value={selectedSourcee}
                       >
-                        <option value="">{formData.clg_source_id ? formData.clg_source_id : 'Select Source'}</option>
-                        {sourceOption.map((source) => (
-                          <option key={source.source_pk_id} value={source.source_pk_id}>
-                            {source.source}
-                          </option>
-                        ))}
-                      </select>
-                      {errors.clg_source && <div className="invalid-feedback">{errors.clg_source}</div>}
-                    </div>
+                        <DeleteOutlineOutlined />
+                      </IconButton>
+                    </Box>
+                  </Box>
 
-                    <div className="col-md-6 mt-1">
-                      <label htmlFor="select" className={`visually-hidden labelnameuser`} id="newcal">
-                        Source State<span className="text-danger">*</span>
-                      </label>
-                      <select
-                        as="select"
-                        className={`form-control inputuser`}
-                        name="clg_state"
-                        id="outlined-select"
-                        onChange={handleChange}
-                        value={selectedState}
-                      >
-                        <option value="">{formData.clg_states_id ? formData.clg_states_id : 'Select State'}</option>
-                        {stateOptions.map((state) => (
-                          <option key={state.source_state} value={state.source_state}>
-                            {state.state_name}
-                          </option>
-                        ))}
-                      </select>
-                      {errors.clg_state && <div className="invalid-feedback">{errors.clg_state}</div>}
-                    </div>
-                  </div>
+                  <Box component="form" onSubmit={handleSubmit} noValidate>
+                    <Grid container spacing={2}>
+                      <Grid item xs={12} md={6}>
+                        <FormControl fullWidth>
+                          <InputLabel>Source</InputLabel>
+                          <Select
+                            sx={{
+                              minWidth: 120,
+                              "& .MuiInputBase-input.MuiSelect-select": {
+                                color: "#000 !important",
+                              },
+                              "& .MuiSvgIcon-root": {
+                                color: "#000",
+                              },
+                            }}
+                            size='small'
 
-                  <div className="row form">
-                    <div className="col-md-6">
-                      <label htmlFor="select" className={`visually-hidden labelnameuser`} id="newcal">
-                        Source District<span className="text-danger">*</span>
-                      </label>
-                      <select
-                        as='select'
-                        className={`form-control inputuser`}
-                        name='clg_district'
-                        id='outlined-select'
-                        onChange={handleChange}
-                        value={selectedDistrict}
-                      >
-                        <option value="">{formData.clg_district_id ? formData.clg_district_id : 'Select District'}</option>
-                        {districtOptions.map((district) => (
-                          <option key={district.source_district} value={district.source_district}>
-                            {district.dist_name}
-                          </option>
-                        ))}
-                      </select>
-                      {errors.clg_district && <div className="invalid-feedback">{errors.clg_district}</div>}
-                    </div>
+                            name="clg_source"
+                            value={selectedSourcee}
+                            onChange={handleChange}
+                            label="Source"
+                          >
+                            <MenuItem value="">
+                              {formData.clg_source_id || 'Select Source'}
+                            </MenuItem>
+                            {sourceOption.map((source) => (
+                              <MenuItem key={source.source_pk_id} value={source.source_pk_id}>
+                                {source.source}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                      </Grid>
 
-                    <div className="col-md-6">
-                      <label htmlFor="select"
-                        className={`visually-hidden labelnameuser`}
-                        id="newcal">Source Tehsil<span className="text-danger">*</span></label>
-                      <select
-                        as='select'
-                        className={`form-control inputuser`}
-                        name='clg_tahsil'
-                        id='outlined-select'
-                        onChange={handleChange}
-                        value={selectedTaluka}
-                      >
-                        <option value="">{formData.clg_tehsil_id ? formData.clg_tehsil_id : 'Select Tehsil'}</option>
-                        {talukaOptions.map((taluka) => (
-                          <option key={taluka.source_taluka} value={taluka.source_taluka}>
-                            {taluka.tahsil_name}
-                          </option>
-                        ))}
-                      </select>
-                      {errors.clg_tahsil && <div className="invalid-feedback">{errors.clg_tahsil}</div>}
-                    </div>
-                  </div>
+                      {/* State */}
+                      <Grid item xs={12} md={6}>
+                        <FormControl fullWidth>
+                          <InputLabel>Source State</InputLabel>
+                          <Select
+                            sx={{
+                              minWidth: 120,
+                              "& .MuiInputBase-input.MuiSelect-select": {
+                                color: "#000 !important",
+                              },
+                              "& .MuiSvgIcon-root": {
+                                color: "#000",
+                              },
+                            }}
+                            size='small'
+                            name="clg_state"
+                            value={selectedState}
+                            onChange={handleChange}
+                            label="Source State"
+                          >
+                            <MenuItem value="">
+                              {formData.clg_states_id || 'Select State'}
+                            </MenuItem>
+                            {stateOptions.map((state) => (
+                              <MenuItem key={state.source_state} value={state.source_state}>
+                                {state.state_name}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                      </Grid>
 
-                  <div className="row form">
-                    <div className="col-md-6">
-                      <label htmlFor="select"
-                        className={`visually-hidden labelnameuser`}
-                        id="newcal">Source Name<span className="text-danger">*</span></label>
-                      <select
-                        as='select'
-                        className={`form-control inputuser`}
-                        name='clg_source_name'
-                        id='outlined-select'
-                        onChange={handleChange}
-                        value={selectedName}
-                      >
-                        <option value="">{formData.clg_source_name_id ? formData.clg_source_name_id : 'Select Source Name'}</option>
-                        {sourceNameOptions.map((source) => (
-                          <option key={source.source_pk_id} value={source.source_pk_id}>
-                            {source.source_names}
-                          </option>
-                        ))}
-                      </select>
-                      {errors.clg_source_name && <div className="invalid-feedback">{errors.clg_source_name}</div>}
-                    </div>
+                      {/* District */}
+                      <Grid item xs={12} md={6}>
+                        <FormControl fullWidth>
+                          <InputLabel>Source District</InputLabel>
+                          <Select
+                            sx={{
+                              minWidth: 120,
+                              "& .MuiInputBase-input.MuiSelect-select": {
+                                color: "#000 !important",
+                              },
+                              "& .MuiSvgIcon-root": {
+                                color: "#000",
+                              },
+                            }}
+                            size='small'
+                            name="clg_district"
+                            value={selectedDistrict}
+                            onChange={handleChange}
+                            label="Source District"
+                          >
+                            <MenuItem value="">
+                              {formData.clg_district_id || 'Select District'}
+                            </MenuItem>
+                            {districtOptions.map((district) => (
+                              <MenuItem key={district.source_district} value={district.source_district}>
+                                {district.dist_name}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                      </Grid>
 
-                    <div className="col-md-6">
-                      <label htmlFor="select"
-                        className={`visually-hidden labelnameuser`}
-                        id="newcal">Role<span className="text-danger">*</span></label>
-                      <select
-                        as='select'
-                        className={`form-control inputuser`}
-                        name='grp_id'
-                        id='outlined-select'
-                        onChange={handleChange}
-                        value={selectedRole}
-                      >
-                        <option value="">{formData.clg_grppp_id ? formData.clg_grppp_id : 'Select Role'}</option>
-                        {roleForm.map((source) => (
-                          <option key={source.Group_id} value={source.Group_id}>
-                            {source.grp_name}
-                          </option>
-                        ))}
-                      </select>
-                      {errors.clg_source_name && <div className="invalid-feedback">{errors.clg_source_name}</div>}
-                    </div>
-                  </div>
+                      {/* Tehsil */}
+                      <Grid item xs={12} md={6}>
+                        <FormControl fullWidth>
+                          <InputLabel>Source Tehsil</InputLabel>
+                          <Select
+                            sx={{
+                              minWidth: 120,
+                              "& .MuiInputBase-input.MuiSelect-select": {
+                                color: "#000 !important",
+                              },
+                              "& .MuiSvgIcon-root": {
+                                color: "#000",
+                              },
+                            }}
+                            size='small'
+                            name="clg_tahsil"
+                            value={selectedTaluka}
+                            onChange={handleChange}
+                            label="Source Tehsil"
+                          >
+                            <MenuItem value="">
+                              {formData.clg_tehsil_id || 'Select Tehsil'}
+                            </MenuItem>
+                            {talukaOptions.map((taluka) => (
+                              <MenuItem key={taluka.source_taluka} value={taluka.source_taluka}>
+                                {taluka.tahsil_name}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                      </Grid>
 
-                  <div className="row form1">
-                    <div className="col-md-6">
-                      <label for="Name" class="visually-hidden labelnameuser">Name<span className="text-danger">*</span></label>
-                      <input type="text"
-                        className={`form-control inputuser`}
-                        placeholder="Enter Name"
-                        name="clg_ref_id"
-                        value={formData.clg_ref_id}
-                        onChange={handleChange}
-                        onInput={(e) => {
-                          e.target.value = e.target.value.replace(/[^0-9a-zA-Z]/g, '');
-                        }}
-                      />
-                      {errors.clg_ref_id && <span className="text-danger">{errors.clg_ref_id}</span>}
-                    </div>
+                      {/* Source Name */}
+                      <Grid item xs={12} md={6}>
+                        <FormControl fullWidth>
+                          <InputLabel>Source Name</InputLabel>
+                          <Select
+                            sx={{
+                              minWidth: 120,
+                              "& .MuiInputBase-input.MuiSelect-select": {
+                                color: "#000 !important",
+                              },
+                              "& .MuiSvgIcon-root": {
+                                color: "#000",
+                              },
+                            }}
+                            size='small'
+                            name="clg_source_name"
+                            value={selectedName}
+                            onChange={handleChange}
+                            label="Source Name"
+                          >
+                            <MenuItem value="">
+                              {formData.clg_source_name_id || 'Select Source Name'}
+                            </MenuItem>
+                            {sourceNameOptions.map((source) => (
+                              <MenuItem key={source.source_pk_id} value={source.source_pk_id}>
+                                {source.source_names}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                      </Grid>
 
-                    <div className="col-md-6">
-                      <label htmlFor="Gender" className="visually-hidden labelnameuser">Gender<span className="text-danger">*</span></label>
-                      <select className={`form-control inputuser ${errors.clg_gender ? 'is-invalid' : ''}`}
-                        aria-label="Default select example"
-                        value={formData.clg_gender}
-                        onChange={handleChange}
-                        name='clg_gender'
-                      >
-                        <option value="">{formData.clg_genderr_id ? formData.clg_genderr_id : 'Select Gender'}</option>
-                        {gender.map((dropdown) => (
-                          <option key={dropdown.gender_pk_id} value={dropdown.gender_pk_id}>
-                            {dropdown.gender}
-                          </option>
-                        ))}
-                      </select>
-                      {errors.clg_gender && <div className="invalid-feedback">{errors.clg_gender}</div>}
-                    </div>
-                  </div>
+                      {/* Role */}
+                      <Grid item xs={12} md={6}>
+                        <FormControl fullWidth>
+                          <InputLabel>Role</InputLabel>
+                          <Select
+                            sx={{
+                              minWidth: 120,
+                              "& .MuiInputBase-input.MuiSelect-select": {
+                                color: "#000 !important",
+                              },
+                              "& .MuiSvgIcon-root": {
+                                color: "#000",
+                              },
+                            }}
+                            size='small'
+                            name="grp_id"
+                            value={selectedRole}
+                            onChange={handleChange}
+                            label="Role"
+                          >
+                            <MenuItem value="">
+                              {formData.clg_grppp_id || 'Select Role'}
+                            </MenuItem>
+                            {roleForm.map((source) => (
+                              <MenuItem key={source.Group_id} value={source.Group_id}>
+                                {source.grp_name}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                      </Grid>
 
-                  <div className="row form1">
-                    <div className="col-md-6">
-                      <label for="Name" class="visually-hidden labelnameuser">DOB<span className="text-danger">*</span></label>
-                      <input type="date"
-                        className={`form-control inputuser`}
-                        placeholder="Enter Name"
-                        name="clg_Date_of_birth"
-                        value={formData.clg_Date_of_birth}
-                        onChange={handleChange}
-                        max={new Date().toISOString().split('T')[0]}
-                      />
-                      {errors.clg_Date_of_birth && <span className="text-danger">{errors.clg_Date_of_birth}</span>}
-                    </div>
+                      {/* Name */}
+                      <Grid item xs={12} md={6}>
+                        <TextField
+                          sx={{
+                            minWidth: 120,
+                            "& .MuiInputBase-input.MuiSelect-select": {
+                              color: "#000 !important",
+                            },
+                            "& .MuiSvgIcon-root": {
+                              color: "#000",
+                            },
+                          }}
+                          size='small'
+                          label="Name"
+                          name="clg_ref_id"
+                          value={formData.clg_ref_id}
+                          onChange={handleChange}
+                          fullWidth
+                        />
+                      </Grid>
 
-                    <div className="col-md-6">
-                      <label for="phone number" class="visually-hidden labelnameuser">Mobile Number<span className="text-danger">*</span></label>
-                      <input type="number"
-                        className={`form-control inputuser`}
-                        placeholder="Enter number"
-                        name="clg_mobile_no"
-                        value={formData.clg_mobile_no}
-                        onChange={handleChange}
-                        onInput={(e) => {
-                          let inputValue = e.target.value.replace(/[^0-9]/g, '');
-                          if (inputValue.length > 10) {
-                            inputValue = inputValue.slice(0, 10);
-                          }
-                          e.target.value = inputValue;
-                        }}
-                      />
-                      {errors.clg_mobile_no && errors.clg_mobile_no !== 'Verified' && (
-                        <span className="text-danger">{errors.clg_mobile_no}</span>
-                      )}
-                      {errors.clg_mobile_no === 'Verified' && (
-                        <span className="text-success">{errors.clg_mobile_no}</span>
-                      )}
-                    </div>
-                  </div>
+                      {/* Gender */}
+                      <Grid item xs={12} md={6}>
+                        <FormControl fullWidth>
+                          <InputLabel>Gender</InputLabel>
+                          <Select
+                            sx={{
+                              minWidth: 120,
+                              "& .MuiInputBase-input.MuiSelect-select": {
+                                color: "#000 !important",
+                              },
+                              "& .MuiSvgIcon-root": {
+                                color: "#000",
+                              },
+                            }}
+                            size='small'
+                            name="clg_gender"
+                            value={formData.clg_gender}
+                            onChange={handleChange}
+                            label="Gender"
+                          >
+                            <MenuItem value="">
+                              {formData.clg_genderr_id || 'Select Gender'}
+                            </MenuItem>
+                            {gender.map((g) => (
+                              <MenuItem key={g.gender_pk_id} value={g.gender_pk_id}>
+                                {g.gender}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                      </Grid>
 
-                  <div className="row form1 mb-3">
-                    <div className="col-md-6">
-                      <label for="mail" class="visually-hidden labelnameuser">Email ID<span className="text-danger">*</span></label>
-                      <input
-                        type="text"
-                        className={`form-control inputuser`}
-                        placeholder="Enter Email Id"
-                        name="clg_email"
-                        value={formData.clg_email}
-                        onChange={handleChange}
-                      />
-                      {errors.clg_email && <span className="text-danger">{errors.clg_email}</span>}
-                    </div>
+                      {/* DOB */}
+                      <Grid item xs={12} md={6}>
+                        <TextField
+                          sx={{
+                            minWidth: 120,
+                            "& .MuiInputBase-input.MuiSelect-select": {
+                              color: "#000 !important",
+                            },
+                            "& .MuiSvgIcon-root": {
+                              color: "#000",
+                            },
+                          }}
+                          size='small'
+                          label="DOB"
+                          name="clg_Date_of_birth"
+                          type="date"
+                          InputLabelProps={{ shrink: true }}
+                          value={formData.clg_Date_of_birth}
+                          onChange={handleChange}
+                          fullWidth
+                        />
+                      </Grid>
 
-                    <div className="col-md-6">
-                      <label for="Address" class="visually-hidden labelnameuser">Address<span className="text-danger">*</span></label>
-                      <input type="text"
-                        className={`form-control inputuser`}
-                        placeholder="Enter Address"
-                        name="clg_address"
-                        value={formData.clg_address}
-                        onChange={handleChange}
-                      />
-                      {errors.clg_address && <span className="text-danger">{errors.clg_address}</span>}
-                    </div>
-                  </div>
+                      {/* Mobile */}
+                      <Grid item xs={12} md={6}>
+                        <TextField
+                          sx={{
+                            minWidth: 120,
+                            "& .MuiInputBase-input.MuiSelect-select": {
+                              color: "#000 !important",
+                            },
+                            "& .MuiSvgIcon-root": {
+                              color: "#000",
+                            },
+                          }}
+                          size='small'
+                          label="Mobile Number"
+                          name="clg_mobile_no"
+                          value={formData.clg_mobile_no}
+                          onChange={handleChange}
+                          fullWidth
+                        />
+                      </Grid>
 
-                  {/* <div className="row">
-                    <button type="submit" className={`btn btn-sm useraddbtn`}>Submit</button>
-                  </div> */}
-                  <div className="row">
-                    {formAction === 'add' && (
-                      <button type="submit" className={`btn btn-sm useraddbtn`}>Submit</button>
-                    )}
-                    {formAction === 'update' && (
-                      <button type="submit" className={`btn btn-sm useraddbtn`}>Update</button>
-                    )}
-                    {formAction === 'view' && (
-                      null
-                    )}
-                  </div>
-                </form>
+                      {/* Email */}
+                      <Grid item xs={12} md={6}>
+                        <TextField
+                          sx={{
+                            minWidth: 120,
+                            "& .MuiInputBase-input.MuiSelect-select": {
+                              color: "#000 !important",
+                            },
+                            "& .MuiSvgIcon-root": {
+                              color: "#000",
+                            },
+                          }}
+                          size='small'
+                          label="Email ID"
+                          name="clg_email"
+                          value={formData.clg_email}
+                          onChange={handleChange}
+                          fullWidth
+                        />
+                      </Grid>
 
-                {/* regitered model */}
-                <Modal show={showModal} onHide={handleRegisterModel}>
-                  <Modal.Header>
-                    <Modal.Title></Modal.Title>
-                  </Modal.Header>
-                  <Modal.Body>
-                    User Registered successfully.
-                  </Modal.Body>
-                  <Modal.Footer>
-                    <Button variant="success" onClick={handleRegisterModel}>
-                      Close
-                    </Button>
-                  </Modal.Footer>
-                </Modal>
+                      {/* Address */}
+                      <Grid item xs={12} md={6}>
+                        <TextField
+                          sx={{
+                            minWidth: 120,
+                            "& .MuiInputBase-input.MuiSelect-select": {
+                              color: "#000 !important",
+                            },
+                            "& .MuiSvgIcon-root": {
+                              color: "#000",
+                            },
+                          }}
+                          size='small'
+                          label="Address"
+                          name="clg_address"
+                          value={formData.clg_address}
+                          onChange={handleChange}
+                          fullWidth
+                        />
+                      </Grid>
 
-                {/* delete model */}
-                <Modal show={deleteModel} onHide={handleDeleteModel}>
-                  <Modal.Header>
-                    <Modal.Title></Modal.Title>
-                  </Modal.Header>
-                  <Modal.Body>
-                    User Deleted Successfully
-                  </Modal.Body>
-                  <Modal.Footer>
-                    <Button variant="success" className="btn btn-sm" onClick={handleDeleteModel}>
-                      Close
-                    </Button>
-                  </Modal.Footer>
-                </Modal>
+                      {/* Submit Button */}
+                      <Grid item xs={12}>
+                        {formAction === 'add' && (
+                          <Button variant="contained" color="primary" type="submit">
+                            Submit
+                          </Button>
+                        )}
+                        {formAction === 'update' && (
+                          <Button variant="contained" color="success" type="submit">
+                            Update
+                          </Button>
+                        )}
+                      </Grid>
+                    </Grid>
+                  </Box>
+                </CardContent>
+              </Card>
+            </Grid>
+          )}
 
-                {/* mandotory model */}
-                <Modal show={mandotoryModel} onHide={handleMandotoryModel}>
-                  <Modal.Header>
-                    <Modal.Title></Modal.Title>
-                  </Modal.Header>
-                  <Modal.Body>
-                    Fill the Mandotory Fields
-                  </Modal.Body>
-                  <Modal.Footer>
-                    <Button variant="danger" className="btn btn-sm" onClick={handleMandotoryModel}>
-                      Close
-                    </Button>
-                  </Modal.Footer>
-                </Modal>
+          <Grid item xs={12} md={showForm ? 6 : 12}>
+            <Card elevation={4}>
+              <CardContent>
+                <Grid container spacing={2} alignItems="end" justifyContent="end" sx={{ mb: 1 }}>
+                  <Grid item xs={12} sm={12} md={2}>
+                    <TextField
+                      sx={{
+                        minWidth: 70,
+                        "& .MuiInputBase-input.MuiSelect-select": {
+                          color: "#000 !important",
+                        },
+                        "& .MuiSvgIcon-root": {
+                          color: "#000",
+                        },
+                      }}
+                      size="small"
+                      label="Search User"
+                      fullWidth
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                    />
+                  </Grid>
+                </Grid>
 
-                {/* update model */}
-                <Modal show={updateModel} onHide={handleUpdateModel}>
-                  <Modal.Header>
-                    <Modal.Title></Modal.Title>
-                  </Modal.Header>
-                  <Modal.Body>
-                    User Details Updated Successfully
-                  </Modal.Body>
-                  <Modal.Footer>
-                    <Button variant="success" className="btn btn-sm" onClick={handleUpdateModel}>
-                      Close
-                    </Button>
-                  </Modal.Footer>
-                </Modal>
+                {loading ? (
+                  <Box display="flex" justifyContent="center" alignItems="center" height="50vh">
+                    <CircularProgress />
+                  </Box>
+                ) : (
+                  <>
+                    <Table
+                      sx={{
+                        borderCollapse: "separate",
+                        borderSpacing: 0,
+                        borderRadius: "20px",
+                        overflow: "hidden",
+                      }}
+                    >
+                      <TableHead>
+                        <TableRow sx={{ bgcolor: "#4a7cf3ff" }}>
+                          {["Sr No", "User Name", "Mobile No", "Group", "Email ID"].map((header, i) => (
+                            <TableCell
+                              key={i}
+                              sx={{
+                                color: "#fff",
+                                fontWeight: "bold",
+                                textAlign: "center",
+                                fontSize: "12px",
+                              }}
+                            >
+                              {header}
+                            </TableCell>
+                          ))}
+                        </TableRow>
+                      </TableHead>
+                    </Table>
 
-                {/* exist model */}
-                <Modal show={existModel} onHide={handleExistModel}>
-                  <Modal.Header>
-                    <Modal.Title></Modal.Title>
-                  </Modal.Header>
-                  <Modal.Body>
-                    User Already Exist
-                  </Modal.Body>
-                  <Modal.Footer>
-                    <Button variant="danger" className="btn btn-sm" onClick={handleExistModel}>
-                      Close
-                    </Button>
-                  </Modal.Footer>
-                </Modal>
-              </div>
-            </div>
-
-            <div className={`col ${showForm ? 'col-md-6' : 'col-md-12'}`}>
-              <div className="row">
-                <div className='col-md-2 ml-3'>
-                  <input className="form-control newsearchuser"
-                    placeholder='Search User'
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                  />
-                </div>
-              </div>
-
-              <table className="table table-borderless">
-                <thead>
-                  <tr className="card cardheaduser11">
-                    <th className="col-md-1 haedtitle">Sr No</th>
-                    <th className="col-md-2 haedtitle">User Name</th>
-                    <th className="col-md-3 haedtitle">Mobile No</th>
-                    <th className="col-md-3 haedtitle">Group</th>
-                    <th className="col-md-2 haedtitle">Email Id</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {loading ? (
-                    <tr>
-                      <td colSpan="5" className="text-center">
-                        <CircularProgress className='circular-progress-containeruser' style={{ margin: 'auto' }} />
-                      </td>
-                    </tr>
-                  ) : (
-                    <>
+                    <Box mt={1}>
                       {tableData
                         .filter((data) =>
-                          Object.values(data).some((value) =>
-                            value !== null &&
-                            value !== undefined &&
-                            value.toString().toLowerCase().includes(searchQuery.toLowerCase())
+                          Object.values(data).some(
+                            (value) =>
+                              value &&
+                              value.toString().toLowerCase().includes(searchQuery.toLowerCase())
                           )
                         )
                         .slice(page * rowsPerPage, (page + 1) * rowsPerPage)
@@ -1529,49 +1585,108 @@ const AddUser = () => {
                           const isSelected = selectedRowIndex === item.pk;
 
                           return (
-                            <tr
+                            <Card
                               key={index}
-                              className={`card cardbodyuser22 ${isSelected ? 'selected-row' : ''}`}
-                              // onClick={() => handleTableRowClick(item.pk)}
+                              elevation={isSelected ? 6 : 2}
+                              sx={{
+                                mb: 1,
+                                cursor: "pointer",
+                                bgcolor: isSelected ? "#E3F2FD" : "#fff",
+                                transition: "all 0.2s ease-in-out",
+                                "&:hover": { boxShadow: 6 },
+                                borderRadius: "20px",
+                              }}
                               onClick={() => {
-                                handleTableRowClick(item.pk)
-                                setFormAction('view'); //// button 
+                                handleTableRowClick(item.pk);
+                                setFormAction("view");
                               }}
                             >
-                              <td className="col-md-1">{serialNumber}</td>
-                              <td className="col-md-2">{item.clg_ref_id}</td>
-                              <td className="col-md-3">{item.clg_mobile_no}</td>
-                              <td className="col-md-3">{item.grp_name}</td>
-                              <td className="col-md-2">{item.clg_email}</td>
-                            </tr>
+                              <CardContent sx={{ p: 1 }}>
+                                <Grid
+                                  container
+                                  alignItems="center"
+                                  justifyContent="space-between"
+                                  sx={{ textAlign: "center" }}
+                                >
+                                  <Grid item xs={2}>
+                                    <Typography sx={{ fontSize: "12px" }}>{serialNumber}</Typography>
+                                  </Grid>
+                                  <Grid item xs={2.5}>
+                                    <Typography sx={{ fontSize: "12px" }}>{item.clg_ref_id}</Typography>
+                                  </Grid>
+                                  <Grid item xs={2.5}>
+                                    <Typography sx={{ fontSize: "12px" }}>{item.clg_mobile_no}</Typography>
+                                  </Grid>
+                                  <Grid item xs={2.5}>
+                                    <Typography sx={{ fontSize: "12px" }}>{item.grp_name}</Typography>
+                                  </Grid>
+                                  <Grid item xs={2.5}>
+                                    <Typography sx={{ fontSize: "12px" }}>{item.clg_email}</Typography>
+                                  </Grid>
+                                </Grid>
+                              </CardContent>
+                            </Card>
                           );
                         })}
-                      {tableData.length === 0 && (
-                        <tr>
-                          <td colSpan="5">No data found</td>
-                        </tr>
-                      )}
-                    </>
-                  )}
-                </tbody>
-              </table>
+                    </Box>
 
-              <div className="userpaginationnn">
-                <TablePagination
-                  component="div"
-                  count={tableData.length}
-                  page={page}
-                  onPageChange={handleChangePage}
-                  rowsPerPage={rowsPerPage}
-                  onRowsPerPageChange={handleChangeRowsPerPage}
-                  rowsPerPageOptions={[5, 10, 20]}
-                />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+                    <TablePagination
+                      component="div"
+                      count={tableData.length}
+                      page={page}
+                      onPageChange={handleChangePage}
+                      rowsPerPage={rowsPerPage}
+                      onRowsPerPageChange={handleChangeRowsPerPage}
+                      rowsPerPageOptions={[5, 10, 20]}
+                    />
+                  </>
+                )}
+              </CardContent>
+            </Card>
+          </Grid>
+        </Grid>
+
+        {/* Success Dialogs */}
+        <Dialog open={showModal} onClose={handleRegisterModel}>
+          <DialogTitle>User Registered Successfully</DialogTitle>
+          <DialogActions>
+            <Button onClick={handleRegisterModel}>Close</Button>
+          </DialogActions>
+        </Dialog>
+
+        <Dialog open={deleteModel} onClose={handleDeleteModel}>
+          <DialogTitle>User Deleted Successfully</DialogTitle>
+          <DialogActions>
+            <Button onClick={handleDeleteModel}>Close</Button>
+          </DialogActions>
+        </Dialog>
+
+        <Dialog open={mandotoryModel} onClose={handleMandotoryModel}>
+          <DialogTitle>Fill the Mandatory Fields</DialogTitle>
+          <DialogActions>
+            <Button onClick={handleMandotoryModel} color="error">
+              Close
+            </Button>
+          </DialogActions>
+        </Dialog>
+
+        <Dialog open={updateModel} onClose={handleUpdateModel}>
+          <DialogTitle>User Details Updated Successfully</DialogTitle>
+          <DialogActions>
+            <Button onClick={handleUpdateModel}>Close</Button>
+          </DialogActions>
+        </Dialog>
+
+        <Dialog open={existModel} onClose={handleExistModel}>
+          <DialogTitle>User Already Exists</DialogTitle>
+          <DialogActions>
+            <Button onClick={handleExistModel} color="error">
+              Close
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </Box>
+    </Box>
   )
 }
 

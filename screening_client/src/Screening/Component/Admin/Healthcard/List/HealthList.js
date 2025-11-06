@@ -25,7 +25,7 @@ import CircularProgress from '@mui/material/CircularProgress';
 import defaultImage from '../../../../Images/Default Image.webp'
 import SignLogo from '../../../../Images/ImportedPhoto_1716285997519.jpg'
 import html2canvas from 'html2canvas';
-import { Grid, Card, CardContent, Typography } from '@mui/material';
+import { Grid, Button, Card, CardContent, Typography } from '@mui/material';
 import { saveAs } from 'file-saver';
 import html2PDF from 'jspdf-html2canvas';
 import CitizenInfoHealth from '../HealthcardVitals/CitizenInfoHealth';
@@ -871,297 +871,281 @@ const HealthList = () => {
     // }, []);
 
     return (
-        <div>
-            <div class="content-wrapper">
-                <div class="content-header fullscreen">
-                    <div class="container-fluid">
-                        <div className="card healthcard">
-                            <div className="row">
-                                <div className="col-md-12">
-                                    <h6 className="healthcardtitle">Healthcard Information List</h6>
+        <Box sx={{ m: "0.1em 1em 0 4.5em" }}>
+            <Card
+                sx={{
+                    p: 1,
+                    borderRadius: 3,
+                    backgroundColor: "#ffffffff", 
+                    boxShadow: 4
+                }}
+            >
+                <Typography
+                    variant="h6"
+                    sx={{
+                        mb: 2,
+                        fontWeight: 600,
+                        fontSize: "16px",
+                        textAlign: "left",
+                        color: "black",
+                    }}
+                >
+                    Healthcard Information List
+                </Typography>
 
-                                    <div className="dropdownall mb-3">
-                                        <Box>
-                                            <div class="container text-center">
-                                                <div class="row" style={{ display: 'flex' }}>
-                                                    <div class="col" style={{ color: 'white' }}>
-                                                        <TextField
-                                                            select
-                                                            className="healthcardlistdropdown"
-                                                            size="small"
-                                                            label="Source"
-                                                            id="select-small"
-                                                            variant="outlined"
-                                                            value={selectedSource}
-                                                            onChange={event => setSelectedSource(event.target.value)}
-                                                            InputLabelProps={{
-                                                                style: {
-                                                                    fontWeight: '100',
-                                                                    fontSize: '14px', // Set the desired font size for the label
-                                                                },
-                                                            }}
-                                                        >
-                                                            <MenuItem value="">Select Source</MenuItem>
-                                                            {sourceNav.map(drop => (
-                                                                <MenuItem key={drop.source_pk_id} value={drop.source_pk_id}>
-                                                                    {drop.source}
-                                                                </MenuItem>
-                                                            ))}
-                                                        </TextField>
+                <Box sx={{ flexGrow: 1 }}>
+                    <Grid container spacing={2}>
+                        <Grid item xs={12} sm={6} md={2.4}>
+                            <TextField
+                                select
+                                fullWidth
+                                size="small"
+                                label="Source"
+                                variant="outlined"
+                                value={selectedSource}
+                                onChange={(e) => setSelectedSource(e.target.value)}
+                                InputLabelProps={{
+                                    style: { fontWeight: 100, fontSize: "14px" }
+                                }}
+                            >
+                                <MenuItem value="">Select Source</MenuItem>
+                                {sourceNav.map((drop) => (
+                                    <MenuItem key={drop.source_pk_id} value={drop.source_pk_id}>
+                                        {drop.source}
+                                    </MenuItem>
+                                ))}
+                            </TextField>
+                        </Grid>
 
-                                                    </div>
+                        <Grid item xs={12} sm={4} md={2.4}>
+                            <TextField
+                                select
+                                fullWidth
+                                size="small"
+                                label="Source State"
+                                variant="outlined"
+                                value={selectedStateNav}
+                                onChange={(e) => setSelectedStateNav(e.target.value)}
+                                InputLabelProps={{
+                                    style: { fontWeight: 100, fontSize: "14px" }
+                                }}
+                            >
+                                <MenuItem value="">Select Source State</MenuItem>
+                                {sourceStateNav.map((drop) => (
+                                    <MenuItem key={drop.source_state} value={drop.source_state}>
+                                        {drop.state_name}
+                                    </MenuItem>
+                                ))}
+                            </TextField>
+                        </Grid>
 
-                                                    <div class="col" style={{ color: 'white' }}>
-                                                        <TextField
-                                                            select
-                                                            className="healthcardlistdropdown"
-                                                            size="small"
-                                                            label="Source State"
-                                                            id="select-small"
-                                                            variant="outlined"
-                                                            value={selectedStateNav}
-                                                            onChange={event => setSelectedStateNav(event.target.value)}
-                                                            InputLabelProps={{
-                                                                style: {
-                                                                    fontWeight: '100',
-                                                                    fontSize: '14px', // Set the desired font size for the label
-                                                                },
-                                                            }}
-                                                        >
-                                                            <MenuItem value="">Select Source State</MenuItem>
-                                                            {sourceStateNav.map(drop => (
-                                                                <MenuItem key={drop.source_state} value={drop.source_state}>
-                                                                    {drop.state_name}
-                                                                </MenuItem>
-                                                            ))}
-                                                        </TextField>
-                                                    </div>
+                        <Grid item xs={12} sm={4} md={2.4}>
+                            <TextField
+                                select
+                                fullWidth
+                                size="small"
+                                label="Source District"
+                                variant="outlined"
+                                value={selectedDistrictNav}
+                                onChange={(e) => setSelectedDistrictNav(e.target.value)}
+                                InputLabelProps={{
+                                    style: { fontWeight: 100, fontSize: "14px" }
+                                }}
+                            >
+                                <MenuItem value="">Select Source District</MenuItem>
+                                {sourceDistrictNav.map((drop) => (
+                                    <MenuItem key={drop.source_district} value={drop.source_district}>
+                                        {drop.dist_name}
+                                    </MenuItem>
+                                ))}
+                            </TextField>
+                        </Grid>
 
-                                                    <div class="col" style={{ color: 'white' }}>
-                                                        <TextField
-                                                            select
-                                                            className="healthcardlistdropdown"
-                                                            size="small"
-                                                            label="Source District"
-                                                            id="select-small"
-                                                            variant="outlined"
-                                                            value={selectedDistrictNav}
-                                                            onChange={event => setSelectedDistrictNav(event.target.value)}
-                                                            InputLabelProps={{
-                                                                style: {
-                                                                    fontWeight: '100',
-                                                                    fontSize: '14px', // Set the desired font size for the label
-                                                                },
-                                                            }}
-                                                        >
-                                                            <MenuItem value="">Select Source District</MenuItem>
-                                                            {sourceDistrictNav.map(drop => (
-                                                                <MenuItem key={drop.source_district} value={drop.source_district}>
-                                                                    {drop.dist_name}
-                                                                </MenuItem>
-                                                            ))}
-                                                        </TextField>
-                                                    </div>
+                        <Grid item xs={12} sm={4} md={2.4}>
+                            <TextField
+                                select
+                                fullWidth
+                                size="small"
+                                label="Source Tehsil"
+                                variant="outlined"
+                                value={selectedTehsilNav}
+                                onChange={(e) => setSelectedTehsilNav(e.target.value)}
+                                InputLabelProps={{
+                                    style: { fontWeight: 100, fontSize: "14px" }
+                                }}
+                            >
+                                <MenuItem value="">Select Source Tehsil</MenuItem>
+                                {sourceTehsilNav.map((drop) => (
+                                    <MenuItem key={drop.source_taluka} value={drop.source_taluka}>
+                                        {drop.tahsil_name}
+                                    </MenuItem>
+                                ))}
+                            </TextField>
+                        </Grid>
 
-                                                    <div class="col" style={{ color: 'white' }}>
-                                                        <TextField
-                                                            select
-                                                            className="healthcardlistdropdown"
-                                                            size="small"
-                                                            label="Source Tehsil"
-                                                            id="select-small"
-                                                            variant="outlined"
-                                                            value={selectedTehsilNav}
-                                                            onChange={event => setSelectedTehsilNav(event.target.value)}
-                                                            InputLabelProps={{
-                                                                style: {
-                                                                    fontWeight: '100',
-                                                                    fontSize: '14px', // Set the desired font size for the label
-                                                                },
-                                                            }}
-                                                        >
-                                                            <MenuItem value="">Select Source Tehsil</MenuItem>
-                                                            {sourceTehsilNav.map(drop => (
-                                                                <MenuItem key={drop.source_taluka} value={drop.source_taluka}>
-                                                                    {drop.tahsil_name}
-                                                                </MenuItem>
-                                                            ))}
-                                                        </TextField>
-                                                    </div>
+                        <Grid item xs={12} sm={4} md={2.4}>
+                            <TextField
+                                select
+                                fullWidth
+                                size="small"
+                                label="Source Name"
+                                variant="outlined"
+                                value={selectedName}
+                                onChange={(e) => setSelectedName(e.target.value)}
+                                InputLabelProps={{
+                                    style: { fontWeight: 100, fontSize: "14px" }
+                                }}
+                            >
+                                <MenuItem value="">Select Source Name</MenuItem>
+                                {sourceName.map((drop) => (
+                                    <MenuItem key={drop.source_pk_id} value={drop.source_pk_id}>
+                                        {drop.source_names}
+                                    </MenuItem>
+                                ))}
+                            </TextField>
+                        </Grid>
 
-                                                    <div class="col" style={{ color: 'white' }}>
-                                                        <TextField
-                                                            select
-                                                            className="healthcardlistdropdown"
-                                                            size="small"
-                                                            label="Source Name"
-                                                            id="select-small"
-                                                            variant="outlined"
-                                                            value={selectedName}
-                                                            onChange={event => setSelectedName(event.target.value)}
-                                                            InputLabelProps={{
-                                                                style: {
-                                                                    fontWeight: '100',
-                                                                    fontSize: '14px', // Set the desired font size for the label
-                                                                },
-                                                            }}
-                                                        >
-                                                            <MenuItem value="">Select Source Name</MenuItem>
-                                                            {sourceName.map(drop => (
-                                                                <MenuItem key={drop.source_pk_id} value={drop.source_pk_id}>
-                                                                    {drop.source_names}
-                                                                </MenuItem>
-                                                            ))}
-                                                        </TextField>
-                                                    </div>
+                        <Grid item xs={12} sm={4} md={1.5} display="flex" alignItems="center">
+                            <Button
+                                variant="contained"
+                                size="small"
+                                onClick={handlesubmit}
+                                sx={{
+                                    backgroundColor: "#4CAF50",
+                                    "&:hover": { backgroundColor: "#45A049" },
+                                    color: "#fff",
+                                    px: 3
+                                }}
+                            >
+                                Search
+                            </Button>
+                        </Grid>
+                    </Grid>
+                </Box>
+            </Card>
 
-                                                    <div className='col'>
-                                                        <button
-                                                            type='button'
-                                                            className='btn btn-sm searchhealth'
-                                                            onClick={handlesubmit} // Call the handleSearch function when the button is clicked
-                                                        >
-                                                            Search
-                                                        </button>
-                                                    </div>
+            <div className="row">
+                <div className="col-md-4">
+                    <input
+                        className='form-control mb-3'
+                        placeholder="Search Citizen..."
+                        value={searchQuery}
+                        onChange={handleSearchChange}
+                    />
+                    <table className="table table-borderless">
+                        <thead className="">
+                            <tr className="card cardheadhealthcard">
+                                <th className="col">Citizen Name</th>
+                                <th className="col">Aadhar ID</th>
+                                <th className="col">Action</th>
+                            </tr>
+                        </thead>
 
-                                                    {/* <div className='col'>
-                                                        <input className="form-control searchhealthid"
-                                                            placeholder='Search Citizen'
-                                                        />
-                                                        <SearchIcon className="searchiconhealthid" />
-                                                    </div> */}
+                        <tbody>
+                            {loading ? (
+                                <tr>
+                                    <td colSpan="3" className="text-center">
+                                        <CircularProgress className='circular-progress-containerscreeninglist' style={{ margin: 'auto' }} />
+                                    </td>
+                                </tr>
+                            ) : filteredResults.length === 0 ? (
+                                <tr>
+                                    <td className="nodatafounddddd" colSpan="3">No data found</td>
+                                </tr>
+                            ) : (
+                                slicedResults.map((result, index) => (
+                                    <tr
+                                        key={index}
+                                        className={`card cardbodyhealthcard ${result.citizen_id === 'selectedCitizenId' ? 'hovered' : ''}`}
+                                        onClick={() => handleEyeClick(result.citizen_id)}
+                                    >
+                                        <td className="col">{result.name.toLowerCase().charAt(0).toUpperCase() + result.name.toLowerCase().slice(1)}</td>
+                                        <td className="col">{result.aadhar_id}</td>
+                                        <td className="col">
+                                            <RemoveRedEyeOutlinedIcon />
+                                        </td>
+                                    </tr>
+                                ))
+                            )}
+                        </tbody>
 
-                                                </div>
-                                            </div>
-                                        </Box>
+                        <tfoot>
+                            <tr>
+                                <td colSpan="3">
+                                    <div className="paginationnew" style={{ marginTop: '0%' }}>
+                                        <TablePagination
+                                            component="div"
+                                            count={filteredResults.length}
+                                            page={page}
+                                            onPageChange={handleChangePage}
+                                            rowsPerPage={rowsPerPage}
+                                            onRowsPerPageChange={handleChangeRowsPerPage}
+                                            rowsPerPageOptions={[5, 10, 20]} // Adjust options based on your requirements
+                                        />
                                     </div>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+
+                <div className="col-md-8">
+                    <div className={`card ${isDataFetched ? 'data-fetched' : ''}`}>
+                        <div className="row">
+                            <div className="col-md-6">
+                                <div className="row">
+                                    <div className="col-md-4 titlehealth">Citizen Name : </div>
+                                    <div className="col-md-7 healthresponsetitle">{scheduleData.Citizen_info?.[0]?.name}</div>
+
+                                    <div className="col-md-4 titlehealth1">Citizen ID : </div>
+                                    <div className="col-md-7 healthresponsetitle1">{scheduleData.Citizen_info?.[0]?.citizen_id}</div>
+                                </div>
+                                <hr className="hrline" />
+                                <div className="row cardhealth">
+                                    <div className='col-md-3 ealthcardtitle'>Gender</div>
+                                    <div className='col-md-4 ealthcardtitle'>DOB</div>
+                                    <div className='col-md-4 ealthcardtitle'>Age</div>
+
+                                    <div className='col-md-3 ealthcardtitle1'>{scheduleData.Citizen_info?.[0]?.gender}</div>
+                                    <div className='col-md-4 ealthcardtitle1'>{scheduleData.Citizen_info?.[0]?.dob}</div>
+                                    <div className='col-md-4 ealthcardtitle1'>{scheduleData.Citizen_info?.[0]?.year}</div>
+                                </div>
+                            </div>
+
+                            <div className="col-md-6">
+                                <div className="row">
+                                    <div className="col-md-8">
+                                        <label className="visually-hidden screenid">Screening Count</label>
+                                        <select className="form-control from-control-sm screedropdown"
+                                            onChange={(e) => {
+                                                fetchCitizenVital(e.target.value);
+                                                setSelectedScheduleCount(e.target.value);
+                                            }}>
+                                            <option>Select</option>
+                                            {totalCount.map((option) => (
+                                                <option key={option} value={option}>
+                                                    {option}
+                                                </option>
+                                            ))}
+                                        </select>
+                                    </div>
+
+                                    <div className="col-md-4">
+                                        <button className="downloadhealthcardddddddddddddddddddddddddddd" onClick={handleDownload}>
+                                            Healthcard
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div className="row">
+                                    <div className="col-md-3 idddddddd">Schedule ID-</div>
+                                    <div className="col-md-6 scheduledidhealthcard" style={{ marginTop: '3px', marginLeft: '-15px' }}>{scheduleId}</div>
                                 </div>
                             </div>
                         </div>
+                    </div>
 
-                        <div className="row">
-                            <div className="col-md-4">
-                                <input
-                                    className='form-control mb-3'
-                                    placeholder="Search Citizen..."
-                                    value={searchQuery}
-                                    onChange={handleSearchChange}
-                                />
-                                <table className="table table-borderless">
-                                    <thead className="">
-                                        <tr className="card cardheadhealthcard">
-                                            <th className="col">Citizen Name</th>
-                                            <th className="col">Aadhar ID</th>
-                                            <th className="col">Action</th>
-                                        </tr>
-                                    </thead>
-
-                                    <tbody>
-                                        {loading ? (
-                                            <tr>
-                                                <td colSpan="3" className="text-center">
-                                                    <CircularProgress className='circular-progress-containerscreeninglist' style={{ margin: 'auto' }} />
-                                                </td>
-                                            </tr>
-                                        ) : filteredResults.length === 0 ? (
-                                            <tr>
-                                                <td className="nodatafounddddd" colSpan="3">No data found</td>
-                                            </tr>
-                                        ) : (
-                                            slicedResults.map((result, index) => (
-                                                <tr
-                                                    key={index}
-                                                    className={`card cardbodyhealthcard ${result.citizen_id === 'selectedCitizenId' ? 'hovered' : ''}`}
-                                                    onClick={() => handleEyeClick(result.citizen_id)}
-                                                >
-                                                    <td className="col">{result.name.toLowerCase().charAt(0).toUpperCase() + result.name.toLowerCase().slice(1)}</td>
-                                                    <td className="col">{result.aadhar_id}</td>
-                                                    <td className="col">
-                                                        <RemoveRedEyeOutlinedIcon />
-                                                    </td>
-                                                </tr>
-                                            ))
-                                        )}
-                                    </tbody>
-
-                                    <tfoot>
-                                        <tr>
-                                            <td colSpan="3">
-                                                <div className="paginationnew" style={{ marginTop: '0%' }}>
-                                                    <TablePagination
-                                                        component="div"
-                                                        count={filteredResults.length}
-                                                        page={page}
-                                                        onPageChange={handleChangePage}
-                                                        rowsPerPage={rowsPerPage}
-                                                        onRowsPerPageChange={handleChangeRowsPerPage}
-                                                        rowsPerPageOptions={[5, 10, 20]} // Adjust options based on your requirements
-                                                    />
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    </tfoot>
-                                </table>
-                            </div>
-
-                            <div className="col-md-8">
-                                <div className={`card ${isDataFetched ? 'data-fetched' : ''}`}>
-                                    <div className="row">
-                                        <div className="col-md-6">
-                                            <div className="row">
-                                                <div className="col-md-4 titlehealth">Citizen Name : </div>
-                                                <div className="col-md-7 healthresponsetitle">{scheduleData.Citizen_info?.[0]?.name}</div>
-
-                                                <div className="col-md-4 titlehealth1">Citizen ID : </div>
-                                                <div className="col-md-7 healthresponsetitle1">{scheduleData.Citizen_info?.[0]?.citizen_id}</div>
-                                            </div>
-                                            <hr className="hrline" />
-                                            <div className="row cardhealth">
-                                                <div className='col-md-3 ealthcardtitle'>Gender</div>
-                                                <div className='col-md-4 ealthcardtitle'>DOB</div>
-                                                <div className='col-md-4 ealthcardtitle'>Age</div>
-
-                                                <div className='col-md-3 ealthcardtitle1'>{scheduleData.Citizen_info?.[0]?.gender}</div>
-                                                <div className='col-md-4 ealthcardtitle1'>{scheduleData.Citizen_info?.[0]?.dob}</div>
-                                                <div className='col-md-4 ealthcardtitle1'>{scheduleData.Citizen_info?.[0]?.year}</div>
-                                            </div>
-                                        </div>
-
-                                        <div className="col-md-6">
-                                            <div className="row">
-                                                <div className="col-md-8">
-                                                    <label className="visually-hidden screenid">Screening Count</label>
-                                                    <select className="form-control from-control-sm screedropdown"
-                                                        onChange={(e) => {
-                                                            fetchCitizenVital(e.target.value);
-                                                            setSelectedScheduleCount(e.target.value);
-                                                        }}>
-                                                        <option>Select</option>
-                                                        {totalCount.map((option) => (
-                                                            <option key={option} value={option}>
-                                                                {option}
-                                                            </option>
-                                                        ))}
-                                                    </select>
-                                                </div>
-
-                                                <div className="col-md-4">
-                                                    <button className="downloadhealthcardddddddddddddddddddddddddddd" onClick={handleDownload}>
-                                                        Healthcard
-                                                    </button>
-                                                </div>
-                                            </div>
-
-                                            <div className="row">
-                                                <div className="col-md-3 idddddddd">Schedule ID-</div>
-                                                <div className="col-md-6 scheduledidhealthcard" style={{ marginTop: '3px', marginLeft: '-15px' }}>{scheduleId}</div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* <div className="row form-tabs">
+                    {/* <div className="row form-tabs">
                                                 <div className={`col healthvitalname ${selectedForm === 'bmiform' ? 'selected-tab' : ''}`} onClick={() => handleFormClick('bmiform')}>BMI & Symptoms</div>
                                                 <div className={`col-md-1 healthvitalname ${selectedForm === 'vitalform' ? 'selected-tab' : ''}`} onClick={() => handleFormClick('vitalform')}>Vital</div>
                                                 <div className={`col healthvitalname ${selectedForm === 'basicscreenform' ? 'selected-tab' : ''}`} onClick={() => handleFormClick('basicscreenform')}>Basic Screening</div>
@@ -1171,480 +1155,480 @@ const HealthList = () => {
                                                 <div className={`col-md-1 healthvitalname ${selectedForm === 'visionform' ? 'selected-tab' : ''}`} onClick={() => handleFormClick('visionform')}>Vision</div>
                                                 <div className={`col healthvitalname ${selectedForm === 'psychologicalform' ? 'selected-tab' : ''}`} onClick={() => handleFormClick('psychologicalform')}>Psychological</div>
                                             </div> */}
-                                <div className="row">
-                                    <div className="col-md-12">
-                                        <div className="card">
-                                            <div
-                                                className="row form-tabs"
+                    <div className="row">
+                        <div className="col-md-12">
+                            <div className="card">
+                                <div
+                                    className="row form-tabs"
+                                    style={{
+                                        display: 'flex',
+                                        overflowX: 'auto',
+                                        height: '4em',
+                                    }}
+                                >
+                                    {fetchVitalForm.length > 0 ?
+                                        (
+                                            fetchVitalForm
+                                                .filter(form =>
+                                                    form.screening_list !== 'Investigation' && form.screening_list !== 'Immunisation '
+                                                )
+                                                .map((form, index) => (
+                                                    <div
+                                                        key={index}
+                                                        style={{
+                                                            display: 'inline-flex',
+                                                            alignItems: 'center',
+                                                            justifyContent: 'center',
+                                                            cursor: 'pointer',
+                                                            backgroundColor: selectedForm === form.screening_vitals ? '#ddd' : 'transparent',
+                                                            borderRadius: '4px',
+                                                            '&:hover': {
+                                                                backgroundColor: '#f0f0f0',
+                                                            },
+                                                        }}
+                                                        className={`col healthvitalname ${selectedForm === form.screening_vitals ? 'selected-tab' : ''}`}
+                                                        onClick={() => handleFormClick(form.screening_list)}
+                                                    >
+                                                        {form.screening_list}
+                                                    </div>
+                                                ))
+                                        ) :
+                                        (
+                                            <div className="row form-tabs"
                                                 style={{
                                                     display: 'flex',
                                                     overflowX: 'auto',
                                                     height: '4em',
+                                                    marginLeft: '2em'
                                                 }}
                                             >
-                                                {fetchVitalForm.length > 0 ?
-                                                    (
-                                                        fetchVitalForm
-                                                            .filter(form =>
-                                                                form.screening_list !== 'Investigation' && form.screening_list !== 'Immunisation '
-                                                            )
-                                                            .map((form, index) => (
-                                                                <div
-                                                                    key={index}
-                                                                    style={{
-                                                                        display: 'inline-flex',
-                                                                        alignItems: 'center',
-                                                                        justifyContent: 'center',
-                                                                        cursor: 'pointer',
-                                                                        backgroundColor: selectedForm === form.screening_vitals ? '#ddd' : 'transparent',
-                                                                        borderRadius: '4px',
-                                                                        '&:hover': {
-                                                                            backgroundColor: '#f0f0f0',
-                                                                        },
-                                                                    }}
-                                                                    className={`col healthvitalname ${selectedForm === form.screening_vitals ? 'selected-tab' : ''}`}
-                                                                    onClick={() => handleFormClick(form.screening_list)}
-                                                                >
-                                                                    {form.screening_list}
-                                                                </div>
-                                                            ))
-                                                    ) :
-                                                    (
-                                                        <div className="row form-tabs"
-                                                            style={{
-                                                                display: 'flex',
-                                                                overflowX: 'auto',
-                                                                height: '4em',
-                                                                marginLeft: '2em'
-                                                            }}
-                                                        >
-                                                            No screening forms available.
-                                                        </div>
-                                                    )
-                                                }
+                                                No screening forms available.
                                             </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="row">
-                                    <div className="col-md-4">
-                                        {isGenderAvailable && (
-                                            <>
-                                                {scheduleData.Citizen_info[0].gender === 'Male' ? (
-                                                    <img className="malepiccc" src={malepic} alt="Male" />
-                                                ) : (
-                                                    <img className="femalepiccc" src={femalePic} alt="Female" />
-                                                )}
-                                            </>
-                                        )}
-                                    </div>
-
-                                    <div className="col-md-8">
-                                        <div className="card cardhealthcardallvitalscomponenet">
-                                            {selectedForm === 'Basic Information' && <CitizenInfoHealth citizenData={citizen} />}
-                                            {selectedForm === 'Emergency Details' && <FamilyInfo family={family} />}
-                                            {selectedForm === 'BMI & Symptoms' && <BmiHealth bmiData={bmiData} />}
-                                            {selectedForm === 'Vital' && <Vitalhealth vitalsData={vitalsData} />}
-                                            {selectedForm === 'Basic Screening' && <BasicScreenVital basicScreenData={basicScreenData} />}
-                                            {selectedForm === 'Auditory' && <AuditoryHealth auditoryData={auditoryData} auditory={auditory} />}
-                                            {selectedForm === 'Dental Check Up' && <DentalHealth dentalData={dentalData} />}
-                                            {selectedForm === 'Vision' && <VisionHealth visionData={visionData} vision={vision} />}
-                                            {selectedForm === 'Medical History' && <Medicalhistory medical={medical} />}
-                                            {selectedForm === 'immunizationform' && <ImmunisationHealth immunizationData={immunizationData} />}
-                                            {selectedForm === 'Psychological Screening' && <PsychologicalHealth psychoData={psychoData} />}
-                                            {selectedForm === 'Pulmonary Function Tests' && <PftHealth pft={pft} />}
-                                        </div>
-                                    </div>
+                                        )
+                                    }
                                 </div>
                             </div>
                         </div>
+                    </div>
 
-                        <div
-                            ref={dashboardRef}
-                            id="dashboard-content"
-                            style={{
-                                width: '210mm',
-                                flex: 1,
-                            }}
-                        >
-                            <div
-                                ref={healthCardRef}
-                                id="healthCard"
-                                style={{
-                                    // backgroundImage: `url(${backgroundImage})`,
-                                    backgroundSize: 'contain',
-                                    width: '100%',
-                                    // height: '100%',
-                                    padding: '2em',
-                                    boxSizing: 'border-box',
-                                    display: 'none'
-                                }}
+                    <div className="row">
+                        <div className="col-md-4">
+                            {isGenderAvailable && (
+                                <>
+                                    {scheduleData.Citizen_info[0].gender === 'Male' ? (
+                                        <img className="malepiccc" src={malepic} alt="Male" />
+                                    ) : (
+                                        <img className="femalepiccc" src={femalePic} alt="Female" />
+                                    )}
+                                </>
+                            )}
+                        </div>
+
+                        <div className="col-md-8">
+                            <div className="card cardhealthcardallvitalscomponenet">
+                                {selectedForm === 'Basic Information' && <CitizenInfoHealth citizenData={citizen} />}
+                                {selectedForm === 'Emergency Details' && <FamilyInfo family={family} />}
+                                {selectedForm === 'BMI & Symptoms' && <BmiHealth bmiData={bmiData} />}
+                                {selectedForm === 'Vital' && <Vitalhealth vitalsData={vitalsData} />}
+                                {selectedForm === 'Basic Screening' && <BasicScreenVital basicScreenData={basicScreenData} />}
+                                {selectedForm === 'Auditory' && <AuditoryHealth auditoryData={auditoryData} auditory={auditory} />}
+                                {selectedForm === 'Dental Check Up' && <DentalHealth dentalData={dentalData} />}
+                                {selectedForm === 'Vision' && <VisionHealth visionData={visionData} vision={vision} />}
+                                {selectedForm === 'Medical History' && <Medicalhistory medical={medical} />}
+                                {selectedForm === 'immunizationform' && <ImmunisationHealth immunizationData={immunizationData} />}
+                                {selectedForm === 'Psychological Screening' && <PsychologicalHealth psychoData={psychoData} />}
+                                {selectedForm === 'Pulmonary Function Tests' && <PftHealth pft={pft} />}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div
+                ref={dashboardRef}
+                id="dashboard-content"
+                style={{
+                    width: '210mm',
+                    flex: 1,
+                }}
+            >
+                <div
+                    ref={healthCardRef}
+                    id="healthCard"
+                    style={{
+                        // backgroundImage: `url(${backgroundImage})`,
+                        backgroundSize: 'contain',
+                        width: '100%',
+                        // height: '100%',
+                        padding: '2em',
+                        boxSizing: 'border-box',
+                        display: 'none'
+                    }}
+                >
+                    <div>
+                        <Grid container spacing={2}>
+                            <Grid container spacing={2}
+                                style={{ height: 'auto', backgroundColor: '#313774', marginLeft: '1em', borderRadius: '0.5em', marginTop: '0.3em' }}
                             >
-                                <div>
-                                    <Grid container spacing={2}>
-                                        <Grid container spacing={2}
-                                            style={{ height: 'auto', backgroundColor: '#313774', marginLeft: '1em', borderRadius: '0.5em', marginTop: '0.3em' }}
-                                        >
-                                            <Grid item xs={12} md={9} style={{ paddingRight: '1em', marginBottom: '1em' }}>
-                                                <Typography color="white" style={{ fontSize: '25px', marginLeft: '2em' }}>
-                                                    {sourceNameFetched || 'No Citizen Name Available'}
-                                                </Typography>
+                                <Grid item xs={12} md={9} style={{ paddingRight: '1em', marginBottom: '1em' }}>
+                                    <Typography color="white" style={{ fontSize: '25px', marginLeft: '2em' }}>
+                                        {sourceNameFetched || 'No Citizen Name Available'}
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={12} md={3} style={{ paddingRight: '1em', marginBottom: '1em' }}>
+                                    <img
+                                        src={sperologo}
+                                        alt="Logo"
+                                        style={{ width: '90px', height: '60px', marginLeft: '2em' }}
+                                    />
+                                </Grid>
+                                <Grid item xs={12} md={3} style={{ paddingRight: '1em', marginBottom: '1em', marginTop: '-2.5em' }}>
+                                    {/* <Typography variant="h1" color="white">Column 1</Typography> */}
+                                    {/* <img src={imageShows} /> */}
+                                    <img src={imageShows} alt="Image description" style={{ width: '5em', height: '4em' }} />
+                                </Grid>
+                                <Grid item xs={12} md={4} style={{ marginBottom: '1em', fontSize: '12px' }}>
+                                    <Typography color="white" style={{ fontSize: '13px' }}>
+                                        Citizen Name:  {citizenName || 'No Citizen Name Available'}
+                                    </Typography>
+                                    <Typography color="white" style={{ fontSize: '13px' }}>
+                                        Gender:{gender || 'No Citizen Name Available'}
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={12} md={5} style={{ marginBottom: '1em', fontSize: '12px' }}>
+                                    <Typography style={{ fontSize: '13px' }} color="white">
+                                        Screening ID:  {scheduleIDD || 'No Citizen Name Available'}
+                                    </Typography>
+                                    <Typography style={{ fontSize: '13px' }} color="white">
+                                        CitizenID:{citizenID || 'No Citizen Name Available'}
+                                    </Typography>
+                                </Grid>
+                            </Grid>
+
+                            {/* GROWTH MONITORING */}
+                            {fetchedData?.bmi_info?.length > 0 && (
+                                <Grid item xs={12} md={6} style={{ paddingRight: '1em', marginBottom: '0.5em', marginTop: '0.2em' }}>
+                                    <Card
+                                        sx={{
+                                            boxShadow: 3,
+                                            borderRadius: '1.2em',
+                                            backgroundColor: '#F4F5FA',
+                                            height: 'auto',
+                                        }}
+                                    >
+                                        <CardContent style={{ marginBottom: '1.3em' }}>
+                                            <Typography variant="h5" align="left" color="#313774"
+                                                style={{
+                                                    fontFamily: 'Poppins',
+                                                    fontSize: '18px',
+                                                    marginBottom: '18px'
+                                                }}
+                                            >
+                                                GROWTH MONITORING
+                                            </Typography>
+
+                                            <Grid container spacing={2}>
+                                                <Grid item xs={12} md={7}
+                                                    style={{
+                                                        fontFamily: 'Poppins',
+                                                        fontSize: '17px',
+                                                    }}
+                                                >
+                                                    Height:
+                                                </Grid>
+
+                                                <Grid item xs={12}
+                                                    md={5}
+                                                    style={{
+                                                        fontWeight: 'bold',
+                                                        marginTop: '-5px'
+                                                    }}
+                                                >
+                                                    {fetchedData?.bmi_info[0]?.height || 'N/A'}
+                                                </Grid>
                                             </Grid>
-                                            <Grid item xs={12} md={3} style={{ paddingRight: '1em', marginBottom: '1em' }}>
-                                                <img
-                                                    src={sperologo}
-                                                    alt="Logo"
-                                                    style={{ width: '90px', height: '60px', marginLeft: '2em' }}
-                                                />
+
+                                            <Grid container spacing={2}>
+                                                <Grid item xs={12} md={7} style={{
+                                                    fontFamily: 'Poppins',
+                                                    fontSize: '17px',
+                                                }}>
+                                                    Weight:
+                                                </Grid>
+                                                <Grid item xs={12}
+                                                    md={5}
+                                                    style={{
+                                                        fontWeight: 'bold',
+                                                        marginTop: '-5px'
+                                                    }}>
+                                                    {fetchedData?.bmi_info[0]?.weight || 'N/A'}
+                                                </Grid>
                                             </Grid>
-                                            <Grid item xs={12} md={3} style={{ paddingRight: '1em', marginBottom: '1em', marginTop: '-2.5em' }}>
-                                                {/* <Typography variant="h1" color="white">Column 1</Typography> */}
-                                                {/* <img src={imageShows} /> */}
-                                                <img src={imageShows} alt="Image description" style={{ width: '5em', height: '4em' }} />
+
+                                            <Grid container spacing={2}>
+                                                <Grid item xs={12} md={7} style={{
+                                                    fontFamily: 'Poppins',
+                                                    fontSize: '17px',
+                                                }}>
+                                                    Weight for Age:
+                                                </Grid>
+                                                <Grid item xs={12}
+                                                    md={5}
+                                                    style={{
+                                                        fontWeight: 'bold',
+                                                        marginTop: '-5px'
+                                                    }}>
+                                                    {fetchedData?.bmi_info[0]?.weight_for_age || 'N/A'}
+                                                </Grid>
                                             </Grid>
-                                            <Grid item xs={12} md={4} style={{ marginBottom: '1em', fontSize: '12px' }}>
-                                                <Typography color="white" style={{ fontSize: '13px' }}>
-                                                    Citizen Name:  {citizenName || 'No Citizen Name Available'}
-                                                </Typography>
-                                                <Typography color="white" style={{ fontSize: '13px' }}>
-                                                    Gender:{gender || 'No Citizen Name Available'}
-                                                </Typography>
+
+                                            <Grid container spacing={2}>
+                                                <Grid item xs={12} md={7} style={{
+                                                    fontFamily: 'Poppins',
+                                                    fontSize: '17px',
+                                                }}>
+                                                    Height for Age:
+                                                </Grid>
+                                                <Grid item xs={12}
+                                                    md={5}
+                                                    style={{
+                                                        fontWeight: 'bold',
+                                                        marginTop: '-5px'
+                                                    }}>
+                                                    {fetchedData?.bmi_info[0]?.height_for_age || 'N/A'}
+                                                </Grid>
                                             </Grid>
-                                            <Grid item xs={12} md={5} style={{ marginBottom: '1em', fontSize: '12px' }}>
-                                                <Typography style={{ fontSize: '13px' }} color="white">
-                                                    Screening ID:  {scheduleIDD || 'No Citizen Name Available'}
-                                                </Typography>
-                                                <Typography style={{ fontSize: '13px' }} color="white">
-                                                    CitizenID:{citizenID || 'No Citizen Name Available'}
-                                                </Typography>
+
+                                            <Grid container spacing={2}>
+                                                <Grid item xs={12} md={7} style={{
+                                                    fontFamily: 'Poppins',
+                                                    fontSize: '17px',
+                                                }}>
+                                                    Weight for Height:
+                                                </Grid>
+                                                <Grid item xs={12}
+                                                    md={5}
+                                                    style={{
+                                                        fontWeight: 'bold',
+                                                        marginTop: '-5px'
+                                                    }}>
+                                                    {fetchedData?.bmi_info[0]?.weight_for_height || 'N/A'}
+                                                </Grid>
+                                            </Grid>
+
+                                            <Grid container spacing={2}>
+                                                <Grid item xs={12} md={7} style={{
+                                                    fontFamily: 'Poppins',
+                                                    fontSize: '17px',
+                                                }}>
+                                                    BMI:
+                                                </Grid>
+                                                <Grid item xs={12}
+                                                    md={5}
+                                                    style={{
+                                                        fontWeight: 'bold',
+                                                        marginTop: '-5px'
+                                                    }}>
+                                                    {fetchedData?.bmi_info[0]?.bmi || 'N/A'}
+                                                </Grid>
+                                            </Grid>
+                                        </CardContent>
+                                    </Card>
+                                </Grid>
+                            )}
+
+                            {/* VITALS */}
+                            {fetchedData?.vital_info?.length > 0 && (
+                                <Grid item xs={12} md={6} style={{ paddingRight: '2em', marginBottom: '0.5em', marginTop: '0.2em' }}>
+                                    <Card
+                                        sx={{
+                                            boxShadow: 3,
+                                            borderRadius: '1.2em',
+                                            backgroundColor: '#F4F5FA',
+                                            height: 'auto',
+                                        }}
+                                    >
+                                        <CardContent style={{ marginBottom: '1.3em' }}>
+                                            <Typography variant="h5" align="left" color="#313774"
+                                                style={{
+                                                    fontFamily: 'Poppins',
+                                                    fontSize: '18px',
+                                                    marginBottom: '18px',
+                                                }}
+                                            >
+                                                VITALS
+                                            </Typography>
+
+                                            <Grid container spacing={2}>
+                                                <Grid item xs={12} md={7}
+                                                    style={{
+                                                        fontFamily: 'Poppins',
+                                                        fontSize: '17px',
+                                                    }}
+                                                >
+                                                    Pulse:
+                                                </Grid>
+                                                <Grid item xs={12}
+                                                    md={5}
+                                                    style={{
+                                                        fontWeight: 'bold',
+                                                        marginTop: '-5px'
+                                                    }}>
+                                                    {fetchedData?.vital_info[0]?.pulse || 'N/A'}
+                                                </Grid>
+                                            </Grid>
+
+                                            <Grid container spacing={2}>
+                                                <Grid item xs={12} md={7} style={{
+                                                    fontFamily: 'Poppins',
+                                                    fontSize: '17px',
+                                                }}>
+                                                    Sys(mm):
+                                                </Grid>
+                                                <Grid item xs={12}
+                                                    md={5}
+                                                    style={{
+                                                        fontWeight: 'bold',
+                                                        marginTop: '-5px'
+                                                    }}>
+                                                    {fetchedData?.vital_info[0]?.sys_mm || 'N/A'}
+                                                </Grid>
+                                            </Grid>
+
+                                            <Grid container spacing={2}>
+                                                <Grid item xs={12} md={7} style={{
+                                                    fontFamily: 'Poppins',
+                                                    fontSize: '17px',
+                                                }}>
+                                                    Dys(mm):
+                                                </Grid>
+                                                <Grid item xs={12}
+                                                    md={5}
+                                                    style={{
+                                                        fontWeight: 'bold',
+                                                        marginTop: '-5px'
+                                                    }}>
+                                                    {fetchedData?.vital_info[0]?.dys_mm || 'N/A'}
+                                                </Grid>
+                                            </Grid>
+
+                                            <Grid container spacing={2}>
+                                                <Grid item xs={12} md={7} style={{
+                                                    fontFamily: 'Poppins',
+                                                    fontSize: '17px',
+                                                }}>
+                                                    O2:
+                                                </Grid>
+                                                <Grid item xs={12}
+                                                    md={5}
+                                                    style={{
+                                                        fontWeight: 'bold',
+                                                        marginTop: '-5px'
+                                                    }}>
+                                                    {fetchedData?.vital_info[0]?.oxygen_saturation || 'N/A'}
+                                                </Grid>
+                                            </Grid>
+
+                                            <Grid container spacing={2}>
+                                                <Grid item xs={12} md={7} style={{
+                                                    fontFamily: 'Poppins',
+                                                    fontSize: '17px',
+                                                }}>
+                                                    RR :
+                                                </Grid>
+                                                <Grid item xs={12}
+                                                    md={5}
+                                                    style={{
+                                                        fontWeight: 'bold',
+                                                        marginTop: '-5px'
+                                                    }}>
+                                                    {fetchedData?.vital_info[0]?.rr || 'N/A'}
+                                                </Grid>
+                                            </Grid>
+
+                                            <Grid container spacing={2}>
+                                                <Grid item xs={12} md={7} style={{
+                                                    fontFamily: 'Poppins',
+                                                    fontSize: '17px',
+                                                }}>
+                                                    Temperature :
+                                                </Grid>
+                                                <Grid item xs={12}
+                                                    md={5}
+                                                    style={{
+                                                        fontWeight: 'bold',
+                                                        marginTop: '-5px'
+                                                    }}>
+                                                    {fetchedData?.vital_info[0]?.temp || 'N/A'}
+                                                </Grid>
+                                            </Grid>
+                                        </CardContent>
+                                    </Card>
+                                </Grid>
+                            )}
+
+                            {/* GENERAL EXAMINATION */}
+                            {basicInfo2Data.map((item, index) => (
+                                <Grid item xs={12} md={6} style={{ paddingRight: '1em', marginBottom: '0.5em' }}>
+                                    <Card
+                                        sx={{
+                                            boxShadow: 3,
+                                            borderRadius: '1.2em',
+                                            backgroundColor: '#F4F5FA',
+                                            height: 'auto',
+                                        }}
+                                    >
+                                        <CardContent style={{ marginBottom: '0.5em' }}>
+                                            <Typography variant="h5" align="left" color="#313774"
+                                                style={{
+                                                    fontFamily: 'Poppins',
+                                                    fontSize: '18px',
+                                                    marginBottom: '18px',
+                                                }}
+                                            >
+                                                GENERAL EXAMINATION
+                                            </Typography>
+                                        </CardContent>
+
+                                        <Grid container spacing={2}>
+                                            {/* {basicInfo2Data.map((item, index) => ( */}
+                                            <Grid container spacing={2} key={index} style={{ marginBottom: '2em' }}>
+                                                {Object.entries(item).map(([key, value]) => (
+                                                    <React.Fragment key={key}>
+                                                        <Grid
+                                                            item
+                                                            xs={12}
+                                                            md={5}
+                                                            style={{
+                                                                fontFamily: 'Poppins',
+                                                                fontSize: '17px',
+                                                                marginLeft: '2.3em',
+                                                                marginBottom: '-1em',
+                                                            }}
+                                                        >
+                                                            {`${key}:`}
+                                                        </Grid>
+                                                        <Grid
+                                                            item
+                                                            xs={12}
+                                                            md={5}
+                                                            style={{
+                                                                fontWeight: 'bold',
+                                                                marginTop: '-5px',
+                                                                marginBottom: '-1em',
+                                                            }}
+                                                        >
+                                                            {value || 'NAD'}
+                                                        </Grid>
+                                                    </React.Fragment>
+                                                ))}
                                             </Grid>
                                         </Grid>
+                                    </Card>
+                                </Grid>
+                            ))}
 
-                                        {/* GROWTH MONITORING */}
-                                        {fetchedData?.bmi_info?.length > 0 && (
-                                            <Grid item xs={12} md={6} style={{ paddingRight: '1em', marginBottom: '0.5em', marginTop: '0.2em' }}>
-                                                <Card
-                                                    sx={{
-                                                        boxShadow: 3,
-                                                        borderRadius: '1.2em',
-                                                        backgroundColor: '#F4F5FA',
-                                                        height: 'auto',
-                                                    }}
-                                                >
-                                                    <CardContent style={{ marginBottom: '1.3em' }}>
-                                                        <Typography variant="h5" align="left" color="#313774"
-                                                            style={{
-                                                                fontFamily: 'Poppins',
-                                                                fontSize: '18px',
-                                                                marginBottom: '18px'
-                                                            }}
-                                                        >
-                                                            GROWTH MONITORING
-                                                        </Typography>
-
-                                                        <Grid container spacing={2}>
-                                                            <Grid item xs={12} md={7}
-                                                                style={{
-                                                                    fontFamily: 'Poppins',
-                                                                    fontSize: '17px',
-                                                                }}
-                                                            >
-                                                                Height:
-                                                            </Grid>
-
-                                                            <Grid item xs={12}
-                                                                md={5}
-                                                                style={{
-                                                                    fontWeight: 'bold',
-                                                                    marginTop: '-5px'
-                                                                }}
-                                                            >
-                                                                {fetchedData?.bmi_info[0]?.height || 'N/A'}
-                                                            </Grid>
-                                                        </Grid>
-
-                                                        <Grid container spacing={2}>
-                                                            <Grid item xs={12} md={7} style={{
-                                                                fontFamily: 'Poppins',
-                                                                fontSize: '17px',
-                                                            }}>
-                                                                Weight:
-                                                            </Grid>
-                                                            <Grid item xs={12}
-                                                                md={5}
-                                                                style={{
-                                                                    fontWeight: 'bold',
-                                                                    marginTop: '-5px'
-                                                                }}>
-                                                                {fetchedData?.bmi_info[0]?.weight || 'N/A'}
-                                                            </Grid>
-                                                        </Grid>
-
-                                                        <Grid container spacing={2}>
-                                                            <Grid item xs={12} md={7} style={{
-                                                                fontFamily: 'Poppins',
-                                                                fontSize: '17px',
-                                                            }}>
-                                                                Weight for Age:
-                                                            </Grid>
-                                                            <Grid item xs={12}
-                                                                md={5}
-                                                                style={{
-                                                                    fontWeight: 'bold',
-                                                                    marginTop: '-5px'
-                                                                }}>
-                                                                {fetchedData?.bmi_info[0]?.weight_for_age || 'N/A'}
-                                                            </Grid>
-                                                        </Grid>
-
-                                                        <Grid container spacing={2}>
-                                                            <Grid item xs={12} md={7} style={{
-                                                                fontFamily: 'Poppins',
-                                                                fontSize: '17px',
-                                                            }}>
-                                                                Height for Age:
-                                                            </Grid>
-                                                            <Grid item xs={12}
-                                                                md={5}
-                                                                style={{
-                                                                    fontWeight: 'bold',
-                                                                    marginTop: '-5px'
-                                                                }}>
-                                                                {fetchedData?.bmi_info[0]?.height_for_age || 'N/A'}
-                                                            </Grid>
-                                                        </Grid>
-
-                                                        <Grid container spacing={2}>
-                                                            <Grid item xs={12} md={7} style={{
-                                                                fontFamily: 'Poppins',
-                                                                fontSize: '17px',
-                                                            }}>
-                                                                Weight for Height:
-                                                            </Grid>
-                                                            <Grid item xs={12}
-                                                                md={5}
-                                                                style={{
-                                                                    fontWeight: 'bold',
-                                                                    marginTop: '-5px'
-                                                                }}>
-                                                                {fetchedData?.bmi_info[0]?.weight_for_height || 'N/A'}
-                                                            </Grid>
-                                                        </Grid>
-
-                                                        <Grid container spacing={2}>
-                                                            <Grid item xs={12} md={7} style={{
-                                                                fontFamily: 'Poppins',
-                                                                fontSize: '17px',
-                                                            }}>
-                                                                BMI:
-                                                            </Grid>
-                                                            <Grid item xs={12}
-                                                                md={5}
-                                                                style={{
-                                                                    fontWeight: 'bold',
-                                                                    marginTop: '-5px'
-                                                                }}>
-                                                                {fetchedData?.bmi_info[0]?.bmi || 'N/A'}
-                                                            </Grid>
-                                                        </Grid>
-                                                    </CardContent>
-                                                </Card>
-                                            </Grid>
-                                        )}
-
-                                        {/* VITALS */}
-                                        {fetchedData?.vital_info?.length > 0 && (
-                                            <Grid item xs={12} md={6} style={{ paddingRight: '2em', marginBottom: '0.5em', marginTop: '0.2em' }}>
-                                                <Card
-                                                    sx={{
-                                                        boxShadow: 3,
-                                                        borderRadius: '1.2em',
-                                                        backgroundColor: '#F4F5FA',
-                                                        height: 'auto',
-                                                    }}
-                                                >
-                                                    <CardContent style={{ marginBottom: '1.3em' }}>
-                                                        <Typography variant="h5" align="left" color="#313774"
-                                                            style={{
-                                                                fontFamily: 'Poppins',
-                                                                fontSize: '18px',
-                                                                marginBottom: '18px',
-                                                            }}
-                                                        >
-                                                            VITALS
-                                                        </Typography>
-
-                                                        <Grid container spacing={2}>
-                                                            <Grid item xs={12} md={7}
-                                                                style={{
-                                                                    fontFamily: 'Poppins',
-                                                                    fontSize: '17px',
-                                                                }}
-                                                            >
-                                                                Pulse:
-                                                            </Grid>
-                                                            <Grid item xs={12}
-                                                                md={5}
-                                                                style={{
-                                                                    fontWeight: 'bold',
-                                                                    marginTop: '-5px'
-                                                                }}>
-                                                                {fetchedData?.vital_info[0]?.pulse || 'N/A'}
-                                                            </Grid>
-                                                        </Grid>
-
-                                                        <Grid container spacing={2}>
-                                                            <Grid item xs={12} md={7} style={{
-                                                                fontFamily: 'Poppins',
-                                                                fontSize: '17px',
-                                                            }}>
-                                                                Sys(mm):
-                                                            </Grid>
-                                                            <Grid item xs={12}
-                                                                md={5}
-                                                                style={{
-                                                                    fontWeight: 'bold',
-                                                                    marginTop: '-5px'
-                                                                }}>
-                                                                {fetchedData?.vital_info[0]?.sys_mm || 'N/A'}
-                                                            </Grid>
-                                                        </Grid>
-
-                                                        <Grid container spacing={2}>
-                                                            <Grid item xs={12} md={7} style={{
-                                                                fontFamily: 'Poppins',
-                                                                fontSize: '17px',
-                                                            }}>
-                                                                Dys(mm):
-                                                            </Grid>
-                                                            <Grid item xs={12}
-                                                                md={5}
-                                                                style={{
-                                                                    fontWeight: 'bold',
-                                                                    marginTop: '-5px'
-                                                                }}>
-                                                                {fetchedData?.vital_info[0]?.dys_mm || 'N/A'}
-                                                            </Grid>
-                                                        </Grid>
-
-                                                        <Grid container spacing={2}>
-                                                            <Grid item xs={12} md={7} style={{
-                                                                fontFamily: 'Poppins',
-                                                                fontSize: '17px',
-                                                            }}>
-                                                                O2:
-                                                            </Grid>
-                                                            <Grid item xs={12}
-                                                                md={5}
-                                                                style={{
-                                                                    fontWeight: 'bold',
-                                                                    marginTop: '-5px'
-                                                                }}>
-                                                                {fetchedData?.vital_info[0]?.oxygen_saturation || 'N/A'}
-                                                            </Grid>
-                                                        </Grid>
-
-                                                        <Grid container spacing={2}>
-                                                            <Grid item xs={12} md={7} style={{
-                                                                fontFamily: 'Poppins',
-                                                                fontSize: '17px',
-                                                            }}>
-                                                                RR :
-                                                            </Grid>
-                                                            <Grid item xs={12}
-                                                                md={5}
-                                                                style={{
-                                                                    fontWeight: 'bold',
-                                                                    marginTop: '-5px'
-                                                                }}>
-                                                                {fetchedData?.vital_info[0]?.rr || 'N/A'}
-                                                            </Grid>
-                                                        </Grid>
-
-                                                        <Grid container spacing={2}>
-                                                            <Grid item xs={12} md={7} style={{
-                                                                fontFamily: 'Poppins',
-                                                                fontSize: '17px',
-                                                            }}>
-                                                                Temperature :
-                                                            </Grid>
-                                                            <Grid item xs={12}
-                                                                md={5}
-                                                                style={{
-                                                                    fontWeight: 'bold',
-                                                                    marginTop: '-5px'
-                                                                }}>
-                                                                {fetchedData?.vital_info[0]?.temp || 'N/A'}
-                                                            </Grid>
-                                                        </Grid>
-                                                    </CardContent>
-                                                </Card>
-                                            </Grid>
-                                        )}
-
-                                        {/* GENERAL EXAMINATION */}
-                                        {basicInfo2Data.map((item, index) => (
-                                            <Grid item xs={12} md={6} style={{ paddingRight: '1em', marginBottom: '0.5em' }}>
-                                                <Card
-                                                    sx={{
-                                                        boxShadow: 3,
-                                                        borderRadius: '1.2em',
-                                                        backgroundColor: '#F4F5FA',
-                                                        height: 'auto',
-                                                    }}
-                                                >
-                                                    <CardContent style={{ marginBottom: '0.5em' }}>
-                                                        <Typography variant="h5" align="left" color="#313774"
-                                                            style={{
-                                                                fontFamily: 'Poppins',
-                                                                fontSize: '18px',
-                                                                marginBottom: '18px',
-                                                            }}
-                                                        >
-                                                            GENERAL EXAMINATION
-                                                        </Typography>
-                                                    </CardContent>
-
-                                                    <Grid container spacing={2}>
-                                                        {/* {basicInfo2Data.map((item, index) => ( */}
-                                                        <Grid container spacing={2} key={index} style={{ marginBottom: '2em' }}>
-                                                            {Object.entries(item).map(([key, value]) => (
-                                                                <React.Fragment key={key}>
-                                                                    <Grid
-                                                                        item
-                                                                        xs={12}
-                                                                        md={5}
-                                                                        style={{
-                                                                            fontFamily: 'Poppins',
-                                                                            fontSize: '17px',
-                                                                            marginLeft: '2.3em',
-                                                                            marginBottom: '-1em',
-                                                                        }}
-                                                                    >
-                                                                        {`${key}:`}
-                                                                    </Grid>
-                                                                    <Grid
-                                                                        item
-                                                                        xs={12}
-                                                                        md={5}
-                                                                        style={{
-                                                                            fontWeight: 'bold',
-                                                                            marginTop: '-5px',
-                                                                            marginBottom: '-1em',
-                                                                        }}
-                                                                    >
-                                                                        {value || 'NAD'}
-                                                                    </Grid>
-                                                                </React.Fragment>
-                                                            ))}
-                                                        </Grid>
-                                                    </Grid>
-                                                </Card>
-                                            </Grid>
-                                        ))}
-
-                                        {/* {fetchedData?.basic_info?.length > 0 && (
+                            {/* {fetchedData?.basic_info?.length > 0 && (
                                             <Grid item xs={12} md={6} style={{ paddingRight: '1em', marginBottom: '0.5em' }}>
                                                 <Card
                                                     sx={{
@@ -1971,7 +1955,7 @@ const HealthList = () => {
                                             </Grid>
                                         )} */}
 
-                                        {/* {fetchedData?.basic_info2?.length > 0 && (
+                            {/* {fetchedData?.basic_info2?.length > 0 && (
                                             <Grid item xs={12} md={6} style={{ paddingRight: '1em', marginBottom: '0.5em' }}>
                                                 <Card
                                                     sx={{
@@ -2023,359 +2007,359 @@ const HealthList = () => {
                                             </Grid>
                                         )} */}
 
-                                        {/*DENTAL*/}
-                                        {fetchedData?.dental_info?.length > 0 && (
-                                            <Grid item xs={12} md={6} style={{ paddingRight: '2em', marginBottom: '1em' }}>
-                                                <Card
-                                                    sx={{
-                                                        boxShadow: 3,
-                                                        borderRadius: '1.2em',
-                                                        backgroundColor: '#F4F5FA',
-                                                        height: 'auto',
+                            {/*DENTAL*/}
+                            {fetchedData?.dental_info?.length > 0 && (
+                                <Grid item xs={12} md={6} style={{ paddingRight: '2em', marginBottom: '1em' }}>
+                                    <Card
+                                        sx={{
+                                            boxShadow: 3,
+                                            borderRadius: '1.2em',
+                                            backgroundColor: '#F4F5FA',
+                                            height: 'auto',
+                                        }}
+                                    >
+                                        <CardContent style={{ marginBottom: '1em' }}>
+                                            <Typography variant="h5" align="left" color="#313774"
+                                                style={{
+                                                    fontFamily: 'Poppins',
+                                                    fontSize: '18px',
+                                                    marginBottom: '18px',
+                                                }}
+                                            >
+                                                Dental
+                                            </Typography>
+
+                                            <Grid container spacing={2}>
+                                                <Grid item xs={12} md={7}
+                                                    style={{
+                                                        fontFamily: 'Poppins',
+                                                        fontSize: '17px',
                                                     }}
                                                 >
-                                                    <CardContent style={{ marginBottom: '1em' }}>
-                                                        <Typography variant="h5" align="left" color="#313774"
-                                                            style={{
-                                                                fontFamily: 'Poppins',
-                                                                fontSize: '18px',
-                                                                marginBottom: '18px',
-                                                            }}
-                                                        >
-                                                            Dental
-                                                        </Typography>
-
-                                                        <Grid container spacing={2}>
-                                                            <Grid item xs={12} md={7}
-                                                                style={{
-                                                                    fontFamily: 'Poppins',
-                                                                    fontSize: '17px',
-                                                                }}
-                                                            >
-                                                                Oral Hygiene:
-                                                            </Grid>
-                                                            <Grid item xs={12}
-                                                                md={5}
-                                                                style={{
-                                                                    fontWeight: 'bold',
-                                                                    marginTop: '-5px'
-                                                                }}>
-                                                                {/* {fetchedData?.dental_info?.[0]?.oral_hygiene || 'N/A'} */}
-                                                                {fetchedData?.dental_info?.[0]?.oral_hygiene ? (
-                                                                    fetchedData.dental_info[0].oral_hygiene === "1" ? "Good" :
-                                                                        fetchedData.dental_info[0].oral_hygiene === "2" ? "Fair" :
-                                                                            fetchedData.dental_info[0].oral_hygiene === "3" ? "Poor" :
-                                                                                "N/A"
-                                                                ) : "N/A"}
-                                                            </Grid>
-                                                        </Grid>
-
-                                                        <Grid container spacing={2}>
-                                                            <Grid item xs={12} md={7}
-                                                                style={{
-                                                                    fontFamily: 'Poppins',
-                                                                    fontSize: '17px',
-                                                                }}
-                                                            >
-                                                                Gum Condition:
-                                                            </Grid>
-                                                            <Grid item xs={12}
-                                                                md={5}
-                                                                style={{
-                                                                    fontWeight: 'bold',
-                                                                    marginTop: '-5px'
-                                                                }}>
-                                                                {fetchedData?.dental_info?.[0]?.gum_condition ? (
-                                                                    fetchedData.dental_info[0].gum_condition === "1" ? "Good" :
-                                                                        fetchedData.dental_info[0].gum_condition === "2" ? "Fair" :
-                                                                            fetchedData.dental_info[0].gum_condition === "3" ? "Poor" :
-                                                                                "N/A"
-                                                                ) : "N/A"}
-                                                            </Grid>
-                                                        </Grid>
-
-                                                        <Grid container spacing={2}>
-                                                            <Grid item xs={12} md={7}
-                                                                style={{
-                                                                    fontFamily: 'Poppins',
-                                                                    fontSize: '17px',
-                                                                }}
-                                                            >
-                                                                Oral Ulcer:
-                                                            </Grid>
-                                                            <Grid item xs={12}
-                                                                md={5}
-                                                                style={{
-                                                                    fontWeight: 'bold',
-                                                                    marginTop: '-5px'
-                                                                }}>
-                                                                {fetchedData?.dental_info?.[0]?.oral_ulcers ? (
-                                                                    fetchedData.dental_info[0].oral_ulcers === "1" ? "No" :
-                                                                        fetchedData.dental_info[0].oral_ulcers === "2" ? "Yes" :
-                                                                            "N/A"
-                                                                ) : "N/A"}
-                                                            </Grid>
-                                                        </Grid>
-
-                                                        <Grid container spacing={2}>
-                                                            <Grid item xs={12} md={7}
-                                                                style={{
-                                                                    fontFamily: 'Poppins',
-                                                                    fontSize: '17px',
-                                                                }}
-                                                            >
-                                                                Gum Bleeding:
-                                                            </Grid>
-                                                            <Grid item xs={12}
-                                                                md={5}
-                                                                style={{
-                                                                    fontWeight: 'bold',
-                                                                    marginTop: '-5px'
-                                                                }}>
-                                                                {fetchedData?.dental_info?.[0]?.gum_bleeding ? (
-                                                                    fetchedData.dental_info[0].gum_bleeding === "1" ? "No" :
-                                                                        fetchedData.dental_info[0].gum_bleeding === "2" ? "Yes" :
-                                                                            "N/A"
-                                                                ) : "N/A"}
-                                                            </Grid>
-                                                        </Grid>
-
-                                                        <Grid container spacing={2}>
-                                                            <Grid item xs={12} md={7}
-                                                                style={{
-                                                                    fontFamily: 'Poppins',
-                                                                    fontSize: '17px',
-                                                                }}
-                                                            >
-                                                                Discoloration of teeth:
-                                                            </Grid>
-                                                            <Grid item xs={12}
-                                                                md={5}
-                                                                style={{
-                                                                    fontWeight: 'bold',
-                                                                    marginTop: '-5px'
-                                                                }}>
-                                                                {fetchedData?.dental_info?.[0]?.discoloration_of_teeth ? (
-                                                                    fetchedData.dental_info[0].discoloration_of_teeth === "1" ? "No" :
-                                                                        fetchedData.dental_info[0].discoloration_of_teeth === "2" ? "Yes" :
-                                                                            "N/A"
-                                                                ) : "N/A"}
-                                                            </Grid>
-                                                        </Grid>
-
-                                                        <Grid container spacing={2}>
-                                                            <Grid item xs={12} md={7}
-                                                                style={{
-                                                                    fontFamily: 'Poppins',
-                                                                    fontSize: '17px',
-                                                                }}
-                                                            >
-                                                                Food Impaction:
-                                                            </Grid>
-                                                            <Grid item xs={12}
-                                                                md={5}
-                                                                style={{
-                                                                    fontWeight: 'bold',
-                                                                    marginTop: '-5px'
-                                                                }}>
-                                                                {fetchedData?.dental_info?.[0]?.food_impaction ? (
-                                                                    fetchedData.dental_info[0].food_impaction === "1" ? "No" :
-                                                                        fetchedData.dental_info[0].food_impaction === "2" ? "Yes" :
-                                                                            "N/A"
-                                                                ) : "N/A"}
-                                                            </Grid>
-                                                        </Grid>
-
-                                                        <Grid container spacing={2}>
-                                                            <Grid item xs={12} md={7}
-                                                                style={{
-                                                                    fontFamily: 'Poppins',
-                                                                    fontSize: '17px',
-                                                                }}
-                                                            >
-                                                                Carious teeth:
-                                                            </Grid>
-                                                            <Grid item xs={12}
-                                                                md={5}
-                                                                style={{
-                                                                    fontWeight: 'bold',
-                                                                    marginTop: '-5px'
-                                                                }}>
-                                                                {fetchedData?.dental_info?.[0]?.carious_teeth ? (
-                                                                    fetchedData.dental_info[0].carious_teeth === "1" ? "No" :
-                                                                        fetchedData.dental_info[0].carious_teeth === "2" ? "Yes" :
-                                                                            "N/A"
-                                                                ) : "N/A"}
-                                                            </Grid>
-                                                        </Grid>
-
-                                                        <Grid container spacing={2}>
-                                                            <Grid item xs={12} md={7}
-                                                                style={{
-                                                                    fontFamily: 'Poppins',
-                                                                    fontSize: '17px',
-                                                                }}
-                                                            >
-                                                                Carious Teeth:
-                                                            </Grid>
-                                                            <Grid item xs={12}
-                                                                md={5}
-                                                                style={{
-                                                                    fontWeight: 'bold',
-                                                                    marginTop: '-5px'
-                                                                }}>
-                                                                {fetchedData?.dental_info?.[0]?.carious_teeth ? (
-                                                                    fetchedData.dental_info[0].carious_teeth === "1" ? "No" :
-                                                                        fetchedData.dental_info[0].carious_teeth === "2" ? "Yes" :
-                                                                            "N/A"
-                                                                ) : "N/A"}
-                                                            </Grid>
-                                                        </Grid>
-
-                                                        <Grid container spacing={2}>
-                                                            <Grid item xs={12} md={7}
-                                                                style={{
-                                                                    fontFamily: 'Poppins',
-                                                                    fontSize: '17px',
-                                                                }}
-                                                            >
-                                                                Extraction Done:
-                                                            </Grid>
-                                                            <Grid item xs={12}
-                                                                md={5}
-                                                                style={{
-                                                                    fontWeight: 'bold',
-                                                                    marginTop: '-5px'
-                                                                }}>
-                                                                {fetchedData?.dental_info?.[0]?.extraction_done ? (
-                                                                    fetchedData.dental_info[0].extraction_done === "1" ? "No" :
-                                                                        fetchedData.dental_info[0].extraction_done === "2" ? "Yes" :
-                                                                            "N/A"
-                                                                ) : "N/A"}
-                                                            </Grid>
-                                                        </Grid>
-
-                                                        <Grid container spacing={2}>
-                                                            <Grid item xs={12} md={7}
-                                                                style={{
-                                                                    fontFamily: 'Poppins',
-                                                                    fontSize: '17px',
-                                                                }}
-                                                            >
-                                                                Oral Hygiene:
-                                                            </Grid>
-                                                            <Grid item xs={12}
-                                                                md={5}
-                                                                style={{
-                                                                    fontWeight: 'bold',
-                                                                    marginTop: '-5px'
-                                                                }}>
-                                                                {fetchedData?.dental_info?.[0]?.fluorosis ? (
-                                                                    fetchedData.dental_info[0].fluorosis === "1" ? "No" :
-                                                                        fetchedData.dental_info[0].fluorosis === "2" ? "Yes" :
-                                                                            "N/A"
-                                                                ) : "N/A"}
-                                                            </Grid>
-                                                        </Grid>
-
-                                                        <Grid container spacing={2}>
-                                                            <Grid item xs={12} md={7}
-                                                                style={{
-                                                                    fontFamily: 'Poppins',
-                                                                    fontSize: '17px',
-                                                                }}
-                                                            >
-                                                                Tooth Brushing:
-                                                            </Grid>
-                                                            <Grid item xs={12}
-                                                                md={5}
-                                                                style={{
-                                                                    fontWeight: 'bold',
-                                                                    marginTop: '-5px'
-                                                                }}>
-                                                                {fetchedData?.dental_info?.[0]?.tooth_brushing_frequency ? (
-                                                                    fetchedData.dental_info[0].tooth_brushing_frequency === "1" ? "<1 Day" :
-                                                                        fetchedData.dental_info[0].tooth_brushing_frequency === "2" ? "2/day" :
-                                                                            fetchedData.dental_info[0].tooth_brushing_frequency === "3" ? "1/day" :
-                                                                                "N/A"
-                                                                ) : "N/A"}
-                                                            </Grid>
-                                                        </Grid>
-
-                                                        <Grid container spacing={2}>
-                                                            <Grid item xs={12} md={7}
-                                                                style={{
-                                                                    fontFamily: 'Poppins',
-                                                                    fontSize: '17px',
-                                                                }}
-                                                            >
-                                                                Sensitive Teeth:
-                                                            </Grid>
-                                                            <Grid item xs={12}
-                                                                md={5}
-                                                                style={{
-                                                                    fontWeight: 'bold',
-                                                                    marginTop: '-5px'
-                                                                }}>
-                                                                {fetchedData?.dental_info?.[0]?.sensitive_teeth ? (
-                                                                    fetchedData.dental_info[0].sensitive_teeth === "1" ? "No" :
-                                                                        fetchedData.dental_info[0].sensitive_teeth === "2" ? "Yes" :
-                                                                            "N/A"
-                                                                ) : "N/A"}
-                                                            </Grid>
-                                                        </Grid>
-
-                                                        <Grid container spacing={2}>
-                                                            <Grid item xs={12} md={7}
-                                                                style={{
-                                                                    fontFamily: 'Poppins',
-                                                                    fontSize: '17px',
-                                                                }}
-                                                            >
-                                                                Malalignment:
-                                                            </Grid>
-                                                            <Grid item xs={12}
-                                                                md={5}
-                                                                style={{
-                                                                    fontWeight: 'bold',
-                                                                    marginTop: '-5px'
-                                                                }}>
-                                                                {fetchedData?.dental_info?.[0]?.malalignment ? (
-                                                                    fetchedData.dental_info[0].malalignment === "1" ? "No" :
-                                                                        fetchedData.dental_info[0].malalignment === "2" ? "Yes" :
-                                                                            "N/A"
-                                                                ) : "N/A"}
-                                                            </Grid>
-                                                        </Grid>
-
-                                                        <Grid container spacing={2}>
-                                                            <Grid item xs={12} md={7}
-                                                                style={{
-                                                                    fontFamily: 'Poppins',
-                                                                    fontSize: '17px',
-                                                                }}
-                                                            >
-                                                                Orthodontic Treatment:
-                                                            </Grid>
-                                                            <Grid item xs={12}
-                                                                md={5}
-                                                                style={{
-                                                                    fontWeight: 'bold',
-                                                                    marginTop: '-5px'
-                                                                }}>
-                                                                {fetchedData?.dental_info?.[0]?.orthodontic_treatment ? (
-                                                                    fetchedData.dental_info[0].orthodontic_treatment === "1" ? "No" :
-                                                                        fetchedData.dental_info[0].orthodontic_treatment === "2" ? "Yes" :
-                                                                            "N/A"
-                                                                ) : "N/A"}
-                                                            </Grid>
-                                                        </Grid>
-                                                    </CardContent>
-                                                </Card>
+                                                    Oral Hygiene:
+                                                </Grid>
+                                                <Grid item xs={12}
+                                                    md={5}
+                                                    style={{
+                                                        fontWeight: 'bold',
+                                                        marginTop: '-5px'
+                                                    }}>
+                                                    {/* {fetchedData?.dental_info?.[0]?.oral_hygiene || 'N/A'} */}
+                                                    {fetchedData?.dental_info?.[0]?.oral_hygiene ? (
+                                                        fetchedData.dental_info[0].oral_hygiene === "1" ? "Good" :
+                                                            fetchedData.dental_info[0].oral_hygiene === "2" ? "Fair" :
+                                                                fetchedData.dental_info[0].oral_hygiene === "3" ? "Poor" :
+                                                                    "N/A"
+                                                    ) : "N/A"}
+                                                </Grid>
                                             </Grid>
-                                        )}
 
-                                        {/* <footer style={{
+                                            <Grid container spacing={2}>
+                                                <Grid item xs={12} md={7}
+                                                    style={{
+                                                        fontFamily: 'Poppins',
+                                                        fontSize: '17px',
+                                                    }}
+                                                >
+                                                    Gum Condition:
+                                                </Grid>
+                                                <Grid item xs={12}
+                                                    md={5}
+                                                    style={{
+                                                        fontWeight: 'bold',
+                                                        marginTop: '-5px'
+                                                    }}>
+                                                    {fetchedData?.dental_info?.[0]?.gum_condition ? (
+                                                        fetchedData.dental_info[0].gum_condition === "1" ? "Good" :
+                                                            fetchedData.dental_info[0].gum_condition === "2" ? "Fair" :
+                                                                fetchedData.dental_info[0].gum_condition === "3" ? "Poor" :
+                                                                    "N/A"
+                                                    ) : "N/A"}
+                                                </Grid>
+                                            </Grid>
+
+                                            <Grid container spacing={2}>
+                                                <Grid item xs={12} md={7}
+                                                    style={{
+                                                        fontFamily: 'Poppins',
+                                                        fontSize: '17px',
+                                                    }}
+                                                >
+                                                    Oral Ulcer:
+                                                </Grid>
+                                                <Grid item xs={12}
+                                                    md={5}
+                                                    style={{
+                                                        fontWeight: 'bold',
+                                                        marginTop: '-5px'
+                                                    }}>
+                                                    {fetchedData?.dental_info?.[0]?.oral_ulcers ? (
+                                                        fetchedData.dental_info[0].oral_ulcers === "1" ? "No" :
+                                                            fetchedData.dental_info[0].oral_ulcers === "2" ? "Yes" :
+                                                                "N/A"
+                                                    ) : "N/A"}
+                                                </Grid>
+                                            </Grid>
+
+                                            <Grid container spacing={2}>
+                                                <Grid item xs={12} md={7}
+                                                    style={{
+                                                        fontFamily: 'Poppins',
+                                                        fontSize: '17px',
+                                                    }}
+                                                >
+                                                    Gum Bleeding:
+                                                </Grid>
+                                                <Grid item xs={12}
+                                                    md={5}
+                                                    style={{
+                                                        fontWeight: 'bold',
+                                                        marginTop: '-5px'
+                                                    }}>
+                                                    {fetchedData?.dental_info?.[0]?.gum_bleeding ? (
+                                                        fetchedData.dental_info[0].gum_bleeding === "1" ? "No" :
+                                                            fetchedData.dental_info[0].gum_bleeding === "2" ? "Yes" :
+                                                                "N/A"
+                                                    ) : "N/A"}
+                                                </Grid>
+                                            </Grid>
+
+                                            <Grid container spacing={2}>
+                                                <Grid item xs={12} md={7}
+                                                    style={{
+                                                        fontFamily: 'Poppins',
+                                                        fontSize: '17px',
+                                                    }}
+                                                >
+                                                    Discoloration of teeth:
+                                                </Grid>
+                                                <Grid item xs={12}
+                                                    md={5}
+                                                    style={{
+                                                        fontWeight: 'bold',
+                                                        marginTop: '-5px'
+                                                    }}>
+                                                    {fetchedData?.dental_info?.[0]?.discoloration_of_teeth ? (
+                                                        fetchedData.dental_info[0].discoloration_of_teeth === "1" ? "No" :
+                                                            fetchedData.dental_info[0].discoloration_of_teeth === "2" ? "Yes" :
+                                                                "N/A"
+                                                    ) : "N/A"}
+                                                </Grid>
+                                            </Grid>
+
+                                            <Grid container spacing={2}>
+                                                <Grid item xs={12} md={7}
+                                                    style={{
+                                                        fontFamily: 'Poppins',
+                                                        fontSize: '17px',
+                                                    }}
+                                                >
+                                                    Food Impaction:
+                                                </Grid>
+                                                <Grid item xs={12}
+                                                    md={5}
+                                                    style={{
+                                                        fontWeight: 'bold',
+                                                        marginTop: '-5px'
+                                                    }}>
+                                                    {fetchedData?.dental_info?.[0]?.food_impaction ? (
+                                                        fetchedData.dental_info[0].food_impaction === "1" ? "No" :
+                                                            fetchedData.dental_info[0].food_impaction === "2" ? "Yes" :
+                                                                "N/A"
+                                                    ) : "N/A"}
+                                                </Grid>
+                                            </Grid>
+
+                                            <Grid container spacing={2}>
+                                                <Grid item xs={12} md={7}
+                                                    style={{
+                                                        fontFamily: 'Poppins',
+                                                        fontSize: '17px',
+                                                    }}
+                                                >
+                                                    Carious teeth:
+                                                </Grid>
+                                                <Grid item xs={12}
+                                                    md={5}
+                                                    style={{
+                                                        fontWeight: 'bold',
+                                                        marginTop: '-5px'
+                                                    }}>
+                                                    {fetchedData?.dental_info?.[0]?.carious_teeth ? (
+                                                        fetchedData.dental_info[0].carious_teeth === "1" ? "No" :
+                                                            fetchedData.dental_info[0].carious_teeth === "2" ? "Yes" :
+                                                                "N/A"
+                                                    ) : "N/A"}
+                                                </Grid>
+                                            </Grid>
+
+                                            <Grid container spacing={2}>
+                                                <Grid item xs={12} md={7}
+                                                    style={{
+                                                        fontFamily: 'Poppins',
+                                                        fontSize: '17px',
+                                                    }}
+                                                >
+                                                    Carious Teeth:
+                                                </Grid>
+                                                <Grid item xs={12}
+                                                    md={5}
+                                                    style={{
+                                                        fontWeight: 'bold',
+                                                        marginTop: '-5px'
+                                                    }}>
+                                                    {fetchedData?.dental_info?.[0]?.carious_teeth ? (
+                                                        fetchedData.dental_info[0].carious_teeth === "1" ? "No" :
+                                                            fetchedData.dental_info[0].carious_teeth === "2" ? "Yes" :
+                                                                "N/A"
+                                                    ) : "N/A"}
+                                                </Grid>
+                                            </Grid>
+
+                                            <Grid container spacing={2}>
+                                                <Grid item xs={12} md={7}
+                                                    style={{
+                                                        fontFamily: 'Poppins',
+                                                        fontSize: '17px',
+                                                    }}
+                                                >
+                                                    Extraction Done:
+                                                </Grid>
+                                                <Grid item xs={12}
+                                                    md={5}
+                                                    style={{
+                                                        fontWeight: 'bold',
+                                                        marginTop: '-5px'
+                                                    }}>
+                                                    {fetchedData?.dental_info?.[0]?.extraction_done ? (
+                                                        fetchedData.dental_info[0].extraction_done === "1" ? "No" :
+                                                            fetchedData.dental_info[0].extraction_done === "2" ? "Yes" :
+                                                                "N/A"
+                                                    ) : "N/A"}
+                                                </Grid>
+                                            </Grid>
+
+                                            <Grid container spacing={2}>
+                                                <Grid item xs={12} md={7}
+                                                    style={{
+                                                        fontFamily: 'Poppins',
+                                                        fontSize: '17px',
+                                                    }}
+                                                >
+                                                    Oral Hygiene:
+                                                </Grid>
+                                                <Grid item xs={12}
+                                                    md={5}
+                                                    style={{
+                                                        fontWeight: 'bold',
+                                                        marginTop: '-5px'
+                                                    }}>
+                                                    {fetchedData?.dental_info?.[0]?.fluorosis ? (
+                                                        fetchedData.dental_info[0].fluorosis === "1" ? "No" :
+                                                            fetchedData.dental_info[0].fluorosis === "2" ? "Yes" :
+                                                                "N/A"
+                                                    ) : "N/A"}
+                                                </Grid>
+                                            </Grid>
+
+                                            <Grid container spacing={2}>
+                                                <Grid item xs={12} md={7}
+                                                    style={{
+                                                        fontFamily: 'Poppins',
+                                                        fontSize: '17px',
+                                                    }}
+                                                >
+                                                    Tooth Brushing:
+                                                </Grid>
+                                                <Grid item xs={12}
+                                                    md={5}
+                                                    style={{
+                                                        fontWeight: 'bold',
+                                                        marginTop: '-5px'
+                                                    }}>
+                                                    {fetchedData?.dental_info?.[0]?.tooth_brushing_frequency ? (
+                                                        fetchedData.dental_info[0].tooth_brushing_frequency === "1" ? "<1 Day" :
+                                                            fetchedData.dental_info[0].tooth_brushing_frequency === "2" ? "2/day" :
+                                                                fetchedData.dental_info[0].tooth_brushing_frequency === "3" ? "1/day" :
+                                                                    "N/A"
+                                                    ) : "N/A"}
+                                                </Grid>
+                                            </Grid>
+
+                                            <Grid container spacing={2}>
+                                                <Grid item xs={12} md={7}
+                                                    style={{
+                                                        fontFamily: 'Poppins',
+                                                        fontSize: '17px',
+                                                    }}
+                                                >
+                                                    Sensitive Teeth:
+                                                </Grid>
+                                                <Grid item xs={12}
+                                                    md={5}
+                                                    style={{
+                                                        fontWeight: 'bold',
+                                                        marginTop: '-5px'
+                                                    }}>
+                                                    {fetchedData?.dental_info?.[0]?.sensitive_teeth ? (
+                                                        fetchedData.dental_info[0].sensitive_teeth === "1" ? "No" :
+                                                            fetchedData.dental_info[0].sensitive_teeth === "2" ? "Yes" :
+                                                                "N/A"
+                                                    ) : "N/A"}
+                                                </Grid>
+                                            </Grid>
+
+                                            <Grid container spacing={2}>
+                                                <Grid item xs={12} md={7}
+                                                    style={{
+                                                        fontFamily: 'Poppins',
+                                                        fontSize: '17px',
+                                                    }}
+                                                >
+                                                    Malalignment:
+                                                </Grid>
+                                                <Grid item xs={12}
+                                                    md={5}
+                                                    style={{
+                                                        fontWeight: 'bold',
+                                                        marginTop: '-5px'
+                                                    }}>
+                                                    {fetchedData?.dental_info?.[0]?.malalignment ? (
+                                                        fetchedData.dental_info[0].malalignment === "1" ? "No" :
+                                                            fetchedData.dental_info[0].malalignment === "2" ? "Yes" :
+                                                                "N/A"
+                                                    ) : "N/A"}
+                                                </Grid>
+                                            </Grid>
+
+                                            <Grid container spacing={2}>
+                                                <Grid item xs={12} md={7}
+                                                    style={{
+                                                        fontFamily: 'Poppins',
+                                                        fontSize: '17px',
+                                                    }}
+                                                >
+                                                    Orthodontic Treatment:
+                                                </Grid>
+                                                <Grid item xs={12}
+                                                    md={5}
+                                                    style={{
+                                                        fontWeight: 'bold',
+                                                        marginTop: '-5px'
+                                                    }}>
+                                                    {fetchedData?.dental_info?.[0]?.orthodontic_treatment ? (
+                                                        fetchedData.dental_info[0].orthodontic_treatment === "1" ? "No" :
+                                                            fetchedData.dental_info[0].orthodontic_treatment === "2" ? "Yes" :
+                                                                "N/A"
+                                                    ) : "N/A"}
+                                                </Grid>
+                                            </Grid>
+                                        </CardContent>
+                                    </Card>
+                                </Grid>
+                            )}
+
+                            {/* <footer style={{
                                             backgroundColor: '#313774',
                                             textAlign: 'center',
                                             borderTop: '1px solid #ddd',
@@ -2400,611 +2384,611 @@ const HealthList = () => {
                                             </div>
                                         </footer> */}
 
-                                        {/* AUDIOMETRY */}
-                                        {fetchedData?.audit_info?.length > 0 && (
-                                            <Grid item xs={12} md={6} style={{ paddingRight: '1em', marginBottom: '1.6em', marginTop: '2.5em' }}>
-                                                <Card
-                                                    sx={{
-                                                        boxShadow: 3,
-                                                        borderRadius: '1.2em',
-                                                        backgroundColor: '#F4F5FA',
-                                                        height: 'auto',
+                            {/* AUDIOMETRY */}
+                            {fetchedData?.audit_info?.length > 0 && (
+                                <Grid item xs={12} md={6} style={{ paddingRight: '1em', marginBottom: '1.6em', marginTop: '2.5em' }}>
+                                    <Card
+                                        sx={{
+                                            boxShadow: 3,
+                                            borderRadius: '1.2em',
+                                            backgroundColor: '#F4F5FA',
+                                            height: 'auto',
+                                        }}
+                                    >
+                                        <CardContent style={{ marginBottom: '1.3em' }}>
+                                            <Typography variant="h5" align="left" color="#313774"
+                                                style={{
+                                                    fontFamily: 'Poppins',
+                                                    fontSize: '18px',
+                                                    marginBottom: '28px'
+                                                }}
+                                            >
+                                                AUDIOMETRY
+                                            </Typography>
+
+                                            <Grid container spacing={2}>
+                                                <Grid item xs={12} md={7}
+                                                    style={{
+                                                        fontFamily: 'Poppins',
+                                                        fontSize: '17px',
                                                     }}
                                                 >
-                                                    <CardContent style={{ marginBottom: '1.3em' }}>
-                                                        <Typography variant="h5" align="left" color="#313774"
-                                                            style={{
-                                                                fontFamily: 'Poppins',
-                                                                fontSize: '18px',
-                                                                marginBottom: '28px'
-                                                            }}
-                                                        >
-                                                            AUDIOMETRY
-                                                        </Typography>
-
-                                                        <Grid container spacing={2}>
-                                                            <Grid item xs={12} md={7}
-                                                                style={{
-                                                                    fontFamily: 'Poppins',
-                                                                    fontSize: '17px',
-                                                                }}
-                                                            >
-                                                                Right:
-                                                            </Grid>
-                                                            <Grid item xs={12}
-                                                                md={5}
-                                                                style={{
-                                                                    fontWeight: 'bold',
-                                                                    marginTop: '-5px'
-                                                                }}>
-                                                                {fetchedData?.vital_info[0]?.pulse || 'N/A'}
-                                                            </Grid>
-                                                        </Grid>
-
-                                                        <Grid container spacing={2}>
-                                                            <Grid item xs={12} md={7} style={{
-                                                                fontFamily: 'Poppins',
-                                                                fontSize: '17px',
-                                                            }}>
-                                                                Left:
-                                                            </Grid>
-                                                            <Grid item xs={12}
-                                                                md={5}
-                                                                style={{
-                                                                    fontWeight: 'bold',
-                                                                    marginTop: '-5px'
-                                                                }}>
-                                                                {fetchedData?.vital_info[0]?.pulse || 'N/A'}
-                                                            </Grid>
-                                                        </Grid>
-
-                                                        <Grid container spacing={2}>
-                                                            <Grid item xs={12} md={7} style={{
-                                                                fontFamily: 'Poppins',
-                                                                fontSize: '17px',
-                                                            }}>
-                                                                Observation:
-                                                            </Grid>
-                                                            <Grid item xs={12}
-                                                                md={5}
-                                                                style={{
-                                                                    fontWeight: 'bold',
-                                                                    marginTop: '-5px'
-                                                                }}>
-                                                                {fetchedData?.vital_info[0]?.pulse || 'N/A'}
-                                                            </Grid>
-                                                        </Grid>
-
-                                                        <Grid container spacing={2}>
-                                                            <Grid item xs={12} md={7} style={{
-                                                                fontFamily: 'Poppins',
-                                                                fontSize: '17px',
-                                                            }}>
-                                                                Remark:
-                                                            </Grid>
-                                                            <Grid item xs={12}
-                                                                md={5}
-                                                                style={{
-                                                                    fontWeight: 'bold',
-                                                                    marginTop: '-5px'
-                                                                }}>
-                                                                {fetchedData?.vital_info[0]?.pulse || 'N/A'}
-                                                            </Grid>
-                                                        </Grid>
-                                                    </CardContent>
-                                                </Card>
+                                                    Right:
+                                                </Grid>
+                                                <Grid item xs={12}
+                                                    md={5}
+                                                    style={{
+                                                        fontWeight: 'bold',
+                                                        marginTop: '-5px'
+                                                    }}>
+                                                    {fetchedData?.vital_info[0]?.pulse || 'N/A'}
+                                                </Grid>
                                             </Grid>
-                                        )}
 
-                                        {/* VISION */}
-                                        {fetchedData?.vision_info?.length > 0 && (
-                                            <Grid item xs={12} md={6} style={{ paddingRight: '1em', marginBottom: '1.6em', marginTop: '2.5em' }}>
-                                                <Card
-                                                    sx={{
-                                                        boxShadow: 3,
-                                                        borderRadius: '1.2em',
-                                                        backgroundColor: '#F4F5FA',
-                                                        height: 'auto',
+                                            <Grid container spacing={2}>
+                                                <Grid item xs={12} md={7} style={{
+                                                    fontFamily: 'Poppins',
+                                                    fontSize: '17px',
+                                                }}>
+                                                    Left:
+                                                </Grid>
+                                                <Grid item xs={12}
+                                                    md={5}
+                                                    style={{
+                                                        fontWeight: 'bold',
+                                                        marginTop: '-5px'
+                                                    }}>
+                                                    {fetchedData?.vital_info[0]?.pulse || 'N/A'}
+                                                </Grid>
+                                            </Grid>
+
+                                            <Grid container spacing={2}>
+                                                <Grid item xs={12} md={7} style={{
+                                                    fontFamily: 'Poppins',
+                                                    fontSize: '17px',
+                                                }}>
+                                                    Observation:
+                                                </Grid>
+                                                <Grid item xs={12}
+                                                    md={5}
+                                                    style={{
+                                                        fontWeight: 'bold',
+                                                        marginTop: '-5px'
+                                                    }}>
+                                                    {fetchedData?.vital_info[0]?.pulse || 'N/A'}
+                                                </Grid>
+                                            </Grid>
+
+                                            <Grid container spacing={2}>
+                                                <Grid item xs={12} md={7} style={{
+                                                    fontFamily: 'Poppins',
+                                                    fontSize: '17px',
+                                                }}>
+                                                    Remark:
+                                                </Grid>
+                                                <Grid item xs={12}
+                                                    md={5}
+                                                    style={{
+                                                        fontWeight: 'bold',
+                                                        marginTop: '-5px'
+                                                    }}>
+                                                    {fetchedData?.vital_info[0]?.pulse || 'N/A'}
+                                                </Grid>
+                                            </Grid>
+                                        </CardContent>
+                                    </Card>
+                                </Grid>
+                            )}
+
+                            {/* VISION */}
+                            {fetchedData?.vision_info?.length > 0 && (
+                                <Grid item xs={12} md={6} style={{ paddingRight: '1em', marginBottom: '1.6em', marginTop: '2.5em' }}>
+                                    <Card
+                                        sx={{
+                                            boxShadow: 3,
+                                            borderRadius: '1.2em',
+                                            backgroundColor: '#F4F5FA',
+                                            height: 'auto',
+                                        }}
+                                    >
+                                        <CardContent style={{ marginBottom: '1.3em' }}>
+                                            <Typography variant="h5" align="left" color="#313774"
+                                                style={{
+                                                    fontFamily: 'Poppins',
+                                                    fontSize: '18px',
+                                                    marginBottom: '28px'
+                                                }}
+                                            >
+                                                VISION
+                                            </Typography>
+
+                                            <Grid container spacing={2}>
+                                                <Grid item xs={12} md={12}>
+                                                    <Typography variant="h6" align="left" color="black"
+                                                        style={{
+                                                            fontFamily: 'Poppins',
+                                                            fontSize: '17px',
+                                                            fontWeight: 'bold'
+                                                        }}
+                                                    >
+                                                        Vision Without Glasses
+
+                                                    </Typography>
+                                                </Grid>
+
+                                                <Grid item xs={12} md={4}
+                                                    style={{
+                                                        fontFamily: 'Poppins',
+                                                        fontSize: '17px',
                                                     }}
                                                 >
-                                                    <CardContent style={{ marginBottom: '1.3em' }}>
-                                                        <Typography variant="h5" align="left" color="#313774"
-                                                            style={{
-                                                                fontFamily: 'Poppins',
-                                                                fontSize: '18px',
-                                                                marginBottom: '28px'
-                                                            }}
-                                                        >
-                                                            VISION
-                                                        </Typography>
+                                                    Near:
+                                                </Grid>
 
-                                                        <Grid container spacing={2}>
-                                                            <Grid item xs={12} md={12}>
-                                                                <Typography variant="h6" align="left" color="black"
-                                                                    style={{
-                                                                        fontFamily: 'Poppins',
-                                                                        fontSize: '17px',
-                                                                        fontWeight: 'bold'
-                                                                    }}
-                                                                >
-                                                                    Vision Without Glasses
+                                                <Grid item xs={12} md={4}
+                                                    style={{
+                                                        marginTop: '-5px'
+                                                    }}>
+                                                    Right:{fetchedData?.vision_info[0]?.le_near_without_glasses || 'N/A'}
+                                                </Grid>
 
-                                                                </Typography>
-                                                            </Grid>
+                                                <Grid item xs={12} md={4}
+                                                    style={{
+                                                        marginTop: '-5px'
+                                                    }}>
+                                                    Left:{fetchedData?.vision_info[0]?.re_near_without_glasses || 'N/A'}
+                                                </Grid>
 
-                                                            <Grid item xs={12} md={4}
-                                                                style={{
-                                                                    fontFamily: 'Poppins',
-                                                                    fontSize: '17px',
-                                                                }}
-                                                            >
-                                                                Near:
-                                                            </Grid>
-
-                                                            <Grid item xs={12} md={4}
-                                                                style={{
-                                                                    marginTop: '-5px'
-                                                                }}>
-                                                                Right:{fetchedData?.vision_info[0]?.le_near_without_glasses || 'N/A'}
-                                                            </Grid>
-
-                                                            <Grid item xs={12} md={4}
-                                                                style={{
-                                                                    marginTop: '-5px'
-                                                                }}>
-                                                                Left:{fetchedData?.vision_info[0]?.re_near_without_glasses || 'N/A'}
-                                                            </Grid>
-
-                                                            <Grid item xs={12} md={4}
-                                                                style={{
-                                                                    fontFamily: 'Poppins',
-                                                                    fontSize: '17px',
-                                                                }}
-                                                            >
-                                                                FAR:
-                                                            </Grid>
-
-                                                            <Grid item xs={12} md={4}
-                                                                style={{
-                                                                    marginTop: '-5px'
-                                                                }}>
-                                                                Right:{fetchedData?.vision_info[0]?.le_far_without_glasses || 'N/A'}
-                                                            </Grid>
-
-                                                            <Grid item xs={12} md={4}
-                                                                style={{
-                                                                    marginTop: '-5px'
-                                                                }}>
-                                                                Left:{fetchedData?.vision_info[0]?.re_far_without_glasses || 'N/A'}
-                                                            </Grid>
-                                                        </Grid>
-
-                                                        <Grid container spacing={2}>
-                                                            <Grid item xs={12} md={12}>
-                                                                <Typography variant="h6" align="left" color="black"
-                                                                    style={{
-                                                                        fontFamily: 'Poppins',
-                                                                        fontSize: '17px',
-                                                                        marginTop: '15px',
-                                                                        fontWeight: 'bold'
-                                                                    }}
-                                                                >
-                                                                    Vision With Glasses
-
-                                                                </Typography>
-                                                            </Grid>
-
-                                                            <Grid item xs={12} md={4}
-                                                                style={{
-                                                                    fontFamily: 'Poppins',
-                                                                    fontSize: '17px',
-                                                                }}
-                                                            >
-                                                                Near:
-                                                            </Grid>
-
-                                                            <Grid item xs={12} md={4}
-                                                                style={{
-                                                                    marginTop: '-5px'
-                                                                }}>
-                                                                Right:{fetchedData?.vision_info[0]?.le_near_without_glasses || 'N/A'}
-                                                            </Grid>
-
-                                                            <Grid item xs={12} md={4}
-                                                                style={{
-                                                                    marginTop: '-5px'
-                                                                }}>
-                                                                Left:{fetchedData?.vision_info[0]?.re_near_without_glasses || 'N/A'}
-                                                            </Grid>
-
-                                                            <Grid item xs={12} md={4}
-                                                                style={{
-                                                                    fontFamily: 'Poppins',
-                                                                    fontSize: '17px',
-                                                                }}
-                                                            >
-                                                                FAR:
-                                                            </Grid>
-
-                                                            <Grid item xs={12} md={4}
-                                                                style={{
-                                                                    marginTop: '-5px'
-                                                                }}>
-                                                                Right:{fetchedData?.vision_info[0]?.le_far_without_glasses || 'N/A'}
-                                                            </Grid>
-
-                                                            <Grid item xs={12} md={4}
-                                                                style={{
-                                                                    marginTop: '-5px'
-                                                                }}>
-                                                                Left:{fetchedData?.vision_info[0]?.re_far_without_glasses || 'N/A'}
-                                                            </Grid>
-                                                        </Grid>
-
-                                                    </CardContent>
-                                                </Card>
-                                            </Grid>
-                                        )}
-
-                                        {/* Immunisattion */}
-                                        {fetchedData?.immunization_info?.length > 0 && (
-                                            <Grid item xs={12} md={6} style={{ paddingRight: '1em', marginBottom: '1.6em', marginTop: '0.5em' }}>
-                                                <Card
-                                                    sx={{
-                                                        boxShadow: 3,
-                                                        borderRadius: '1.2em',
-                                                        backgroundColor: '#F4F5FA',
-                                                        height: 'auto',
+                                                <Grid item xs={12} md={4}
+                                                    style={{
+                                                        fontFamily: 'Poppins',
+                                                        fontSize: '17px',
                                                     }}
                                                 >
-                                                    <CardContent style={{ marginBottom: '1.3em' }}>
-                                                        <Typography variant="h5" align="left" color="#313774"
-                                                            style={{
-                                                                fontFamily: 'Poppins',
-                                                                fontSize: '18px',
-                                                                marginBottom: '28px'
-                                                            }}
-                                                        >
-                                                            Immunisattion
-                                                        </Typography>
+                                                    FAR:
+                                                </Grid>
 
-                                                        <Grid container spacing={2}>
-                                                            <Grid item xs={12} md={7}
-                                                                style={{
-                                                                    fontFamily: 'Poppins',
-                                                                    fontSize: '17px',
-                                                                }}
-                                                            >
-                                                                Height:
-                                                            </Grid>
-                                                            <Grid item xs={12}
-                                                                md={5}
-                                                                style={{
-                                                                    fontWeight: 'bold',
-                                                                    marginTop: '-5px'
-                                                                }}>
-                                                                {fetchedData?.vital_info[0]?.pulse || 'N/A'}
-                                                            </Grid>
-                                                        </Grid>
+                                                <Grid item xs={12} md={4}
+                                                    style={{
+                                                        marginTop: '-5px'
+                                                    }}>
+                                                    Right:{fetchedData?.vision_info[0]?.le_far_without_glasses || 'N/A'}
+                                                </Grid>
 
-                                                        <Grid container spacing={2}>
-                                                            <Grid item xs={12} md={7} style={{
-                                                                fontFamily: 'Poppins',
-                                                                fontSize: '17px',
-                                                            }}>
-                                                                Weight:
-                                                            </Grid>
-                                                            <Grid item xs={12}
-                                                                md={5}
-                                                                style={{
-                                                                    fontWeight: 'bold',
-                                                                    marginTop: '-5px'
-                                                                }}>
-                                                                {fetchedData?.vital_info[0]?.pulse || 'N/A'}
-                                                            </Grid>
-                                                        </Grid>
-
-                                                        <Grid container spacing={2}>
-                                                            <Grid item xs={12} md={7} style={{
-                                                                fontFamily: 'Poppins',
-                                                                fontSize: '17px',
-                                                            }}>
-                                                                Weight for Age:
-                                                            </Grid>
-                                                            <Grid item xs={12}
-                                                                md={5}
-                                                                style={{
-                                                                    fontWeight: 'bold',
-                                                                    marginTop: '-5px'
-                                                                }}>
-                                                                {fetchedData?.vital_info[0]?.pulse || 'N/A'}
-                                                            </Grid>
-                                                        </Grid>
-
-                                                        <Grid container spacing={2}>
-                                                            <Grid item xs={12} md={7} style={{
-                                                                fontFamily: 'Poppins',
-                                                                fontSize: '17px',
-                                                            }}>
-                                                                Height for Age:
-                                                            </Grid>
-                                                            <Grid item xs={12}
-                                                                md={5}
-                                                                style={{
-                                                                    fontWeight: 'bold',
-                                                                    marginTop: '-5px'
-                                                                }}>
-                                                                {fetchedData?.vital_info[0]?.pulse || 'N/A'}
-                                                            </Grid>
-                                                        </Grid>
-
-                                                        <Grid container spacing={2}>
-                                                            <Grid item xs={12} md={7} style={{
-                                                                fontFamily: 'Poppins',
-                                                                fontSize: '17px',
-                                                            }}>
-                                                                Weight for Height:
-                                                            </Grid>
-                                                            <Grid item xs={12}
-                                                                md={5}
-                                                                style={{
-                                                                    fontWeight: 'bold',
-                                                                    marginTop: '-5px'
-                                                                }}>
-                                                                {fetchedData?.vital_info[0]?.pulse || 'N/A'}
-                                                            </Grid>
-                                                        </Grid>
-
-                                                        <Grid container spacing={2}>
-                                                            <Grid item xs={12} md={7} style={{
-                                                                fontFamily: 'Poppins',
-                                                                fontSize: '17px',
-                                                            }}>
-                                                                BMI:
-                                                            </Grid>
-                                                            <Grid item xs={12}
-                                                                md={5}
-                                                                style={{
-                                                                    fontWeight: 'bold',
-                                                                    marginTop: '-5px'
-                                                                }}>
-                                                                {fetchedData?.vital_info[0]?.pulse || 'N/A'}
-                                                            </Grid>
-                                                        </Grid>
-                                                    </CardContent>
-                                                </Card>
+                                                <Grid item xs={12} md={4}
+                                                    style={{
+                                                        marginTop: '-5px'
+                                                    }}>
+                                                    Left:{fetchedData?.vision_info[0]?.re_far_without_glasses || 'N/A'}
+                                                </Grid>
                                             </Grid>
-                                        )}
 
-                                        {/* Psychological */}
-                                        {fetchedData?.immunization_info?.length > 0 && (
-                                            <Grid item xs={12} md={6} style={{ paddingRight: '1em', marginBottom: '1.6em', marginTop: '0.5em' }}>
-                                                <Card
-                                                    sx={{
-                                                        boxShadow: 3,
-                                                        borderRadius: '1.2em',
-                                                        backgroundColor: '#F4F5FA',
-                                                        height: 'auto',
+                                            <Grid container spacing={2}>
+                                                <Grid item xs={12} md={12}>
+                                                    <Typography variant="h6" align="left" color="black"
+                                                        style={{
+                                                            fontFamily: 'Poppins',
+                                                            fontSize: '17px',
+                                                            marginTop: '15px',
+                                                            fontWeight: 'bold'
+                                                        }}
+                                                    >
+                                                        Vision With Glasses
+
+                                                    </Typography>
+                                                </Grid>
+
+                                                <Grid item xs={12} md={4}
+                                                    style={{
+                                                        fontFamily: 'Poppins',
+                                                        fontSize: '17px',
                                                     }}
                                                 >
-                                                    <CardContent style={{ marginBottom: '1.3em' }}>
-                                                        <Typography variant="h5" align="left" color="#313774"
-                                                            style={{
-                                                                fontFamily: 'Poppins',
-                                                                fontSize: '18px',
-                                                                marginBottom: '28px'
-                                                            }}
-                                                        >
-                                                            Psychological
-                                                        </Typography>
+                                                    Near:
+                                                </Grid>
 
-                                                        <Grid container spacing={2}>
-                                                            <Grid item xs={12} md={7}
-                                                                style={{
-                                                                    fontFamily: 'Poppins',
-                                                                    fontSize: '17px',
-                                                                }}
-                                                            >
-                                                                Height:
-                                                            </Grid>
-                                                            <Grid item xs={12}
-                                                                md={5}
-                                                                style={{
-                                                                    fontWeight: 'bold',
-                                                                    marginTop: '-5px'
-                                                                }}>
-                                                                {fetchedData?.vital_info[0]?.pulse || 'N/A'}
-                                                            </Grid>
-                                                        </Grid>
+                                                <Grid item xs={12} md={4}
+                                                    style={{
+                                                        marginTop: '-5px'
+                                                    }}>
+                                                    Right:{fetchedData?.vision_info[0]?.le_near_without_glasses || 'N/A'}
+                                                </Grid>
 
-                                                        <Grid container spacing={2}>
-                                                            <Grid item xs={12} md={7} style={{
-                                                                fontFamily: 'Poppins',
-                                                                fontSize: '17px',
-                                                            }}>
-                                                                Weight:
-                                                            </Grid>
-                                                            <Grid item xs={12}
-                                                                md={5}
-                                                                style={{
-                                                                    fontWeight: 'bold',
-                                                                    marginTop: '-5px'
-                                                                }}>
-                                                                {fetchedData?.vital_info[0]?.pulse || 'N/A'}
-                                                            </Grid>
-                                                        </Grid>
+                                                <Grid item xs={12} md={4}
+                                                    style={{
+                                                        marginTop: '-5px'
+                                                    }}>
+                                                    Left:{fetchedData?.vision_info[0]?.re_near_without_glasses || 'N/A'}
+                                                </Grid>
 
-                                                        <Grid container spacing={2}>
-                                                            <Grid item xs={12} md={7} style={{
-                                                                fontFamily: 'Poppins',
-                                                                fontSize: '17px',
-                                                            }}>
-                                                                Weight for Age:
-                                                            </Grid>
-                                                            <Grid item xs={12}
-                                                                md={5}
-                                                                style={{
-                                                                    fontWeight: 'bold',
-                                                                    marginTop: '-5px'
-                                                                }}>
-                                                                {fetchedData?.vital_info[0]?.pulse || 'N/A'}
-                                                            </Grid>
-                                                        </Grid>
-
-                                                        <Grid container spacing={2}>
-                                                            <Grid item xs={12} md={7} style={{
-                                                                fontFamily: 'Poppins',
-                                                                fontSize: '17px',
-                                                            }}>
-                                                                Height for Age:
-                                                            </Grid>
-                                                            <Grid item xs={12}
-                                                                md={5}
-                                                                style={{
-                                                                    fontWeight: 'bold',
-                                                                    marginTop: '-5px'
-                                                                }}>
-                                                                {fetchedData?.vital_info[0]?.pulse || 'N/A'}
-                                                            </Grid>
-                                                        </Grid>
-
-                                                        <Grid container spacing={2}>
-                                                            <Grid item xs={12} md={7} style={{
-                                                                fontFamily: 'Poppins',
-                                                                fontSize: '17px',
-                                                            }}>
-                                                                Weight for Height:
-                                                            </Grid>
-                                                            <Grid item xs={12}
-                                                                md={5}
-                                                                style={{
-                                                                    fontWeight: 'bold',
-                                                                    marginTop: '-5px'
-                                                                }}>
-                                                                {fetchedData?.vital_info[0]?.pulse || 'N/A'}
-                                                            </Grid>
-                                                        </Grid>
-
-                                                        <Grid container spacing={2}>
-                                                            <Grid item xs={12} md={7} style={{
-                                                                fontFamily: 'Poppins',
-                                                                fontSize: '17px',
-                                                            }}>
-                                                                BMI:
-                                                            </Grid>
-                                                            <Grid item xs={12}
-                                                                md={5}
-                                                                style={{
-                                                                    fontWeight: 'bold',
-                                                                    marginTop: '-5px'
-                                                                }}>
-                                                                {fetchedData?.vital_info[0]?.pulse || 'N/A'}
-                                                            </Grid>
-                                                        </Grid>
-                                                    </CardContent>
-                                                </Card>
-                                            </Grid>
-                                        )}
-
-                                        {/* GENERAL REMARK */}
-                                        {fetchedData?.basic_info?.length > 0 && fetchedData?.vital_info[0]?.observation && (
-                                            <Grid item xs={12} md={6} style={{ paddingRight: '1em', marginBottom: '1.6em' }}>
-                                                <Card
-                                                    sx={{
-                                                        boxShadow: 3,
-                                                        borderRadius: '1.2em',
-                                                        backgroundColor: '#F4F5FA',
-                                                        height: 'auto',
+                                                <Grid item xs={12} md={4}
+                                                    style={{
+                                                        fontFamily: 'Poppins',
+                                                        fontSize: '17px',
                                                     }}
                                                 >
-                                                    <CardContent style={{ marginBottom: '1.3em' }}>
-                                                        <Typography variant="h5" align="left" color="#313774"
-                                                            style={{
-                                                                fontFamily: 'Poppins',
-                                                                fontSize: '18px',
-                                                                marginBottom: '28px'
-                                                            }}
-                                                        >
-                                                            General Remark
-                                                        </Typography>
+                                                    FAR:
+                                                </Grid>
 
-                                                        <Grid container spacing={2}>
-                                                            <Grid item xs={12} md={12}
-                                                                style={{
-                                                                    fontWeight: 'bold',
-                                                                    marginTop: '-5px'
-                                                                }}>
-                                                                {fetchedData?.vital_info[0]?.observation}
-                                                            </Grid>
-                                                        </Grid>
-                                                    </CardContent>
-                                                </Card>
+                                                <Grid item xs={12} md={4}
+                                                    style={{
+                                                        marginTop: '-5px'
+                                                    }}>
+                                                    Right:{fetchedData?.vision_info[0]?.le_far_without_glasses || 'N/A'}
+                                                </Grid>
+
+                                                <Grid item xs={12} md={4}
+                                                    style={{
+                                                        marginTop: '-5px'
+                                                    }}>
+                                                    Left:{fetchedData?.vision_info[0]?.re_far_without_glasses || 'N/A'}
+                                                </Grid>
                                             </Grid>
-                                        )}
 
-                                        {fetchedData ? (
-                                            <Grid item xs={12} md={6} style={{ paddingRight: '2em', marginBottom: '1em', marginTop: '0.3em' }}>
-                                                <Card
-                                                    sx={{
-                                                        boxShadow: 3,
-                                                        borderRadius: '1.2em',
-                                                        backgroundColor: '#F4F5FA',
-                                                        height: 'auto',
+                                        </CardContent>
+                                    </Card>
+                                </Grid>
+                            )}
+
+                            {/* Immunisattion */}
+                            {fetchedData?.immunization_info?.length > 0 && (
+                                <Grid item xs={12} md={6} style={{ paddingRight: '1em', marginBottom: '1.6em', marginTop: '0.5em' }}>
+                                    <Card
+                                        sx={{
+                                            boxShadow: 3,
+                                            borderRadius: '1.2em',
+                                            backgroundColor: '#F4F5FA',
+                                            height: 'auto',
+                                        }}
+                                    >
+                                        <CardContent style={{ marginBottom: '1.3em' }}>
+                                            <Typography variant="h5" align="left" color="#313774"
+                                                style={{
+                                                    fontFamily: 'Poppins',
+                                                    fontSize: '18px',
+                                                    marginBottom: '28px'
+                                                }}
+                                            >
+                                                Immunisattion
+                                            </Typography>
+
+                                            <Grid container spacing={2}>
+                                                <Grid item xs={12} md={7}
+                                                    style={{
+                                                        fontFamily: 'Poppins',
+                                                        fontSize: '17px',
                                                     }}
                                                 >
-                                                    <CardContent style={{ marginBottom: '1.3em' }}>
-                                                        <Typography variant="h5" align="left" color="#313774"
-                                                            style={{
-                                                                fontFamily: 'Poppins',
-                                                                fontSize: '18px',
-                                                                marginBottom: '18px',
-                                                            }}
-                                                        >
-                                                            PFT
-                                                        </Typography>
-
-                                                        <Grid container spacing={2}>
-                                                            <Grid item xs={12} md={7}
-                                                                style={{
-                                                                    fontFamily: 'Poppins',
-                                                                    fontSize: '17px',
-                                                                }}
-                                                            >
-                                                                Reading:
-                                                            </Grid>
-                                                            <Grid item xs={12}
-                                                                md={5}
-                                                                style={{
-                                                                    fontWeight: 'bold',
-                                                                    marginTop: '-5px'
-                                                                }}>
-                                                                {fetchedData?.pft_info[0]?.pft_reading || 'N/A'}
-                                                            </Grid>
-                                                        </Grid>
-
-                                                        <Grid container spacing={2}>
-                                                            <Grid item xs={12} md={7} style={{
-                                                                fontFamily: 'Poppins',
-                                                                fontSize: '17px',
-                                                            }}>
-                                                                Observation:
-                                                            </Grid>
-                                                            <Grid item xs={12}
-                                                                md={5}
-                                                                style={{
-                                                                    fontWeight: 'bold',
-                                                                    marginTop: '-5px'
-                                                                }}>
-                                                                {fetchedData?.pft_info[0]?.observations || 'N/A'}
-                                                            </Grid>
-                                                        </Grid>
-                                                    </CardContent>
-                                                </Card>
+                                                    Height:
+                                                </Grid>
+                                                <Grid item xs={12}
+                                                    md={5}
+                                                    style={{
+                                                        fontWeight: 'bold',
+                                                        marginTop: '-5px'
+                                                    }}>
+                                                    {fetchedData?.vital_info[0]?.pulse || 'N/A'}
+                                                </Grid>
                                             </Grid>
-                                        ) : (
-                                            <p>No data fetched yet.</p>
-                                        )}
-                                        {/* <footer style={{
+
+                                            <Grid container spacing={2}>
+                                                <Grid item xs={12} md={7} style={{
+                                                    fontFamily: 'Poppins',
+                                                    fontSize: '17px',
+                                                }}>
+                                                    Weight:
+                                                </Grid>
+                                                <Grid item xs={12}
+                                                    md={5}
+                                                    style={{
+                                                        fontWeight: 'bold',
+                                                        marginTop: '-5px'
+                                                    }}>
+                                                    {fetchedData?.vital_info[0]?.pulse || 'N/A'}
+                                                </Grid>
+                                            </Grid>
+
+                                            <Grid container spacing={2}>
+                                                <Grid item xs={12} md={7} style={{
+                                                    fontFamily: 'Poppins',
+                                                    fontSize: '17px',
+                                                }}>
+                                                    Weight for Age:
+                                                </Grid>
+                                                <Grid item xs={12}
+                                                    md={5}
+                                                    style={{
+                                                        fontWeight: 'bold',
+                                                        marginTop: '-5px'
+                                                    }}>
+                                                    {fetchedData?.vital_info[0]?.pulse || 'N/A'}
+                                                </Grid>
+                                            </Grid>
+
+                                            <Grid container spacing={2}>
+                                                <Grid item xs={12} md={7} style={{
+                                                    fontFamily: 'Poppins',
+                                                    fontSize: '17px',
+                                                }}>
+                                                    Height for Age:
+                                                </Grid>
+                                                <Grid item xs={12}
+                                                    md={5}
+                                                    style={{
+                                                        fontWeight: 'bold',
+                                                        marginTop: '-5px'
+                                                    }}>
+                                                    {fetchedData?.vital_info[0]?.pulse || 'N/A'}
+                                                </Grid>
+                                            </Grid>
+
+                                            <Grid container spacing={2}>
+                                                <Grid item xs={12} md={7} style={{
+                                                    fontFamily: 'Poppins',
+                                                    fontSize: '17px',
+                                                }}>
+                                                    Weight for Height:
+                                                </Grid>
+                                                <Grid item xs={12}
+                                                    md={5}
+                                                    style={{
+                                                        fontWeight: 'bold',
+                                                        marginTop: '-5px'
+                                                    }}>
+                                                    {fetchedData?.vital_info[0]?.pulse || 'N/A'}
+                                                </Grid>
+                                            </Grid>
+
+                                            <Grid container spacing={2}>
+                                                <Grid item xs={12} md={7} style={{
+                                                    fontFamily: 'Poppins',
+                                                    fontSize: '17px',
+                                                }}>
+                                                    BMI:
+                                                </Grid>
+                                                <Grid item xs={12}
+                                                    md={5}
+                                                    style={{
+                                                        fontWeight: 'bold',
+                                                        marginTop: '-5px'
+                                                    }}>
+                                                    {fetchedData?.vital_info[0]?.pulse || 'N/A'}
+                                                </Grid>
+                                            </Grid>
+                                        </CardContent>
+                                    </Card>
+                                </Grid>
+                            )}
+
+                            {/* Psychological */}
+                            {fetchedData?.immunization_info?.length > 0 && (
+                                <Grid item xs={12} md={6} style={{ paddingRight: '1em', marginBottom: '1.6em', marginTop: '0.5em' }}>
+                                    <Card
+                                        sx={{
+                                            boxShadow: 3,
+                                            borderRadius: '1.2em',
+                                            backgroundColor: '#F4F5FA',
+                                            height: 'auto',
+                                        }}
+                                    >
+                                        <CardContent style={{ marginBottom: '1.3em' }}>
+                                            <Typography variant="h5" align="left" color="#313774"
+                                                style={{
+                                                    fontFamily: 'Poppins',
+                                                    fontSize: '18px',
+                                                    marginBottom: '28px'
+                                                }}
+                                            >
+                                                Psychological
+                                            </Typography>
+
+                                            <Grid container spacing={2}>
+                                                <Grid item xs={12} md={7}
+                                                    style={{
+                                                        fontFamily: 'Poppins',
+                                                        fontSize: '17px',
+                                                    }}
+                                                >
+                                                    Height:
+                                                </Grid>
+                                                <Grid item xs={12}
+                                                    md={5}
+                                                    style={{
+                                                        fontWeight: 'bold',
+                                                        marginTop: '-5px'
+                                                    }}>
+                                                    {fetchedData?.vital_info[0]?.pulse || 'N/A'}
+                                                </Grid>
+                                            </Grid>
+
+                                            <Grid container spacing={2}>
+                                                <Grid item xs={12} md={7} style={{
+                                                    fontFamily: 'Poppins',
+                                                    fontSize: '17px',
+                                                }}>
+                                                    Weight:
+                                                </Grid>
+                                                <Grid item xs={12}
+                                                    md={5}
+                                                    style={{
+                                                        fontWeight: 'bold',
+                                                        marginTop: '-5px'
+                                                    }}>
+                                                    {fetchedData?.vital_info[0]?.pulse || 'N/A'}
+                                                </Grid>
+                                            </Grid>
+
+                                            <Grid container spacing={2}>
+                                                <Grid item xs={12} md={7} style={{
+                                                    fontFamily: 'Poppins',
+                                                    fontSize: '17px',
+                                                }}>
+                                                    Weight for Age:
+                                                </Grid>
+                                                <Grid item xs={12}
+                                                    md={5}
+                                                    style={{
+                                                        fontWeight: 'bold',
+                                                        marginTop: '-5px'
+                                                    }}>
+                                                    {fetchedData?.vital_info[0]?.pulse || 'N/A'}
+                                                </Grid>
+                                            </Grid>
+
+                                            <Grid container spacing={2}>
+                                                <Grid item xs={12} md={7} style={{
+                                                    fontFamily: 'Poppins',
+                                                    fontSize: '17px',
+                                                }}>
+                                                    Height for Age:
+                                                </Grid>
+                                                <Grid item xs={12}
+                                                    md={5}
+                                                    style={{
+                                                        fontWeight: 'bold',
+                                                        marginTop: '-5px'
+                                                    }}>
+                                                    {fetchedData?.vital_info[0]?.pulse || 'N/A'}
+                                                </Grid>
+                                            </Grid>
+
+                                            <Grid container spacing={2}>
+                                                <Grid item xs={12} md={7} style={{
+                                                    fontFamily: 'Poppins',
+                                                    fontSize: '17px',
+                                                }}>
+                                                    Weight for Height:
+                                                </Grid>
+                                                <Grid item xs={12}
+                                                    md={5}
+                                                    style={{
+                                                        fontWeight: 'bold',
+                                                        marginTop: '-5px'
+                                                    }}>
+                                                    {fetchedData?.vital_info[0]?.pulse || 'N/A'}
+                                                </Grid>
+                                            </Grid>
+
+                                            <Grid container spacing={2}>
+                                                <Grid item xs={12} md={7} style={{
+                                                    fontFamily: 'Poppins',
+                                                    fontSize: '17px',
+                                                }}>
+                                                    BMI:
+                                                </Grid>
+                                                <Grid item xs={12}
+                                                    md={5}
+                                                    style={{
+                                                        fontWeight: 'bold',
+                                                        marginTop: '-5px'
+                                                    }}>
+                                                    {fetchedData?.vital_info[0]?.pulse || 'N/A'}
+                                                </Grid>
+                                            </Grid>
+                                        </CardContent>
+                                    </Card>
+                                </Grid>
+                            )}
+
+                            {/* GENERAL REMARK */}
+                            {fetchedData?.basic_info?.length > 0 && fetchedData?.vital_info[0]?.observation && (
+                                <Grid item xs={12} md={6} style={{ paddingRight: '1em', marginBottom: '1.6em' }}>
+                                    <Card
+                                        sx={{
+                                            boxShadow: 3,
+                                            borderRadius: '1.2em',
+                                            backgroundColor: '#F4F5FA',
+                                            height: 'auto',
+                                        }}
+                                    >
+                                        <CardContent style={{ marginBottom: '1.3em' }}>
+                                            <Typography variant="h5" align="left" color="#313774"
+                                                style={{
+                                                    fontFamily: 'Poppins',
+                                                    fontSize: '18px',
+                                                    marginBottom: '28px'
+                                                }}
+                                            >
+                                                General Remark
+                                            </Typography>
+
+                                            <Grid container spacing={2}>
+                                                <Grid item xs={12} md={12}
+                                                    style={{
+                                                        fontWeight: 'bold',
+                                                        marginTop: '-5px'
+                                                    }}>
+                                                    {fetchedData?.vital_info[0]?.observation}
+                                                </Grid>
+                                            </Grid>
+                                        </CardContent>
+                                    </Card>
+                                </Grid>
+                            )}
+
+                            {fetchedData ? (
+                                <Grid item xs={12} md={6} style={{ paddingRight: '2em', marginBottom: '1em', marginTop: '0.3em' }}>
+                                    <Card
+                                        sx={{
+                                            boxShadow: 3,
+                                            borderRadius: '1.2em',
+                                            backgroundColor: '#F4F5FA',
+                                            height: 'auto',
+                                        }}
+                                    >
+                                        <CardContent style={{ marginBottom: '1.3em' }}>
+                                            <Typography variant="h5" align="left" color="#313774"
+                                                style={{
+                                                    fontFamily: 'Poppins',
+                                                    fontSize: '18px',
+                                                    marginBottom: '18px',
+                                                }}
+                                            >
+                                                PFT
+                                            </Typography>
+
+                                            <Grid container spacing={2}>
+                                                <Grid item xs={12} md={7}
+                                                    style={{
+                                                        fontFamily: 'Poppins',
+                                                        fontSize: '17px',
+                                                    }}
+                                                >
+                                                    Reading:
+                                                </Grid>
+                                                <Grid item xs={12}
+                                                    md={5}
+                                                    style={{
+                                                        fontWeight: 'bold',
+                                                        marginTop: '-5px'
+                                                    }}>
+                                                    {fetchedData?.pft_info[0]?.pft_reading || 'N/A'}
+                                                </Grid>
+                                            </Grid>
+
+                                            <Grid container spacing={2}>
+                                                <Grid item xs={12} md={7} style={{
+                                                    fontFamily: 'Poppins',
+                                                    fontSize: '17px',
+                                                }}>
+                                                    Observation:
+                                                </Grid>
+                                                <Grid item xs={12}
+                                                    md={5}
+                                                    style={{
+                                                        fontWeight: 'bold',
+                                                        marginTop: '-5px'
+                                                    }}>
+                                                    {fetchedData?.pft_info[0]?.observations || 'N/A'}
+                                                </Grid>
+                                            </Grid>
+                                        </CardContent>
+                                    </Card>
+                                </Grid>
+                            ) : (
+                                <p>No data fetched yet.</p>
+                            )}
+                            {/* <footer style={{
                                             backgroundColor: '#313774',
                                             textAlign: 'center',
                                             borderTop: '1px solid #ddd',
@@ -3028,8 +3012,8 @@ const HealthList = () => {
                                                 <p>sperohealthcare.in</p>
                                             </div>
                                         </footer> */}
-                                        {/* Fitness*/}
-                                        {/* <Grid item xs={12} md={12} style={{ paddingRight: '1em', marginBottom: '1.6em', marginTop: '12em' }}>
+                            {/* Fitness*/}
+                            {/* <Grid item xs={12} md={12} style={{ paddingRight: '1em', marginBottom: '1.6em', marginTop: '12em' }}>
                                             <Card
                                                 sx={{
                                                     boxShadow: 3,
@@ -3070,14 +3054,11 @@ const HealthList = () => {
                                                 </CardContent>
                                             </Card>
                                         </Grid> */}
-                                    </Grid>
-                                </div>
-                            </div>
-                        </div>
+                        </Grid>
                     </div>
                 </div>
             </div>
-        </div>
+        </Box>
     )
 }
 

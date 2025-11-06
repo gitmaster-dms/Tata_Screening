@@ -300,92 +300,90 @@ const Body = () => {
   }, []);
 
   return (
-    <div className='backgroundbody'>
-      <div className="content-wrapper">
-        <div className="content-header">
-          <div className="container-fluid">
-            <div className="row ">
-              <div className="col-md-4 backbodydesignnnnn">
-                <div>
-                  <div style={{ marginBottom: "-22px" }}>
-                    <Link to="/mainscreen/Screening">
-                      <ArrowBackIosIcon />
-                    </Link>
+    <div className="content-wrapper">
+      <div className="container-fluid">
+        <div className="row ">
+          <div className="col-md-4">
+            <div>
+              <div style={{ marginBottom: "-22px" }}>
+                <Link to="/mainscreen/Screening">
+                  <ArrowBackIosIcon />
+                </Link>
+              </div>
+              <h6 className="screeninfonamevital">Screening Information</h6>
+              <div className='screningstatusinfo'>
+                <MenuIcon className='menuiconinfo' onClick={handleMenuIconClick} style={{ cursor: 'pointer' }} />Screening Status
+              </div>
+            </div>
+
+            <div className="row">
+              {/* ////////// Scale for cm */}
+              <div className="col-md-1 vertical-input-container">
+                {openedPart === 'BMI & Symptoms' ? (
+                  <div>
+                    <input
+                      type="range"
+                      min="0"
+                      max="100"
+                      value={progress}
+                      onChange={handleProgressChange}
+                    />
+                    <div className="scale vertical-scale">
+                      <span class="horizontal-span">{calculateHeightInFeet(0)}cm</span>
+                      <span class="horizontal-span">{calculateHeightInFeet(14.3)}cm</span>
+                      <span class="horizontal-span">{calculateHeightInFeet(28.56)}cm</span>
+                      <span class="horizontal-span">{calculateHeightInFeet(42.86)}cm</span>
+                      <span class="horizontal-span">{calculateHeightInFeet(57.12)}cm</span>
+                      <span class="horizontal-span">{calculateHeightInFeet(71.3)}cm</span>
+                      <span class="horizontal-span">{calculateHeightInFeet(85.5)}cm</span>
+                      <span class="horizontal-span">{calculateHeightInFeet(100)}cm</span>
+                    </div>
                   </div>
-                  <h6 className="screeninfonamevital">Screening Information</h6>
-                  <div className='screningstatusinfo'>
-                    <MenuIcon className='menuiconinfo' onClick={handleMenuIconClick} style={{ cursor: 'pointer' }} />Screening Status
+                ) :
+                  (
+                    <div className="disabled-scale">
+                      <span className="disabled-text"></span>
+                    </div>
+                  )
+                }
+              </div>
+
+              {/* //////// Body Points */}
+              <div className="col-md-2">
+                <div className="image-container">
+                  <img className={`${getBodyImageClass()}`} src={getBodyImage()} alt="Body" />
+                  <div className={`circle ${isClicked ? 'clicked' : ''}`} onClick={handleClick}>
+                    <MonitorWeightIcon className="movable-button" />
+                    {isClicked && (
+                      <div className="card cardWeightdatainput" onClick={handleModalClick}>
+                        <input
+                          type="text"
+                          placeholder="Enter Weight"
+                          value={inputValue}
+                          onChange={handleChange}
+                        />
+                      </div>
+                    )}
                   </div>
                 </div>
 
-                <div className="row">
-                  {/* ////////// Scale for cm */}
-                  <div className="col-md-1 vertical-input-container">
-                    {openedPart === 'BMI & Symptoms' ? (
-                      <div>
-                        <input
-                          type="range"
-                          min="0"
-                          max="100"
-                          value={progress}
-                          onChange={handleProgressChange}
-                        />
-                        <div className="scale vertical-scale">
-                          <span class="horizontal-span">{calculateHeightInFeet(0)}cm</span>
-                          <span class="horizontal-span">{calculateHeightInFeet(14.3)}cm</span>
-                          <span class="horizontal-span">{calculateHeightInFeet(28.56)}cm</span>
-                          <span class="horizontal-span">{calculateHeightInFeet(42.86)}cm</span>
-                          <span class="horizontal-span">{calculateHeightInFeet(57.12)}cm</span>
-                          <span class="horizontal-span">{calculateHeightInFeet(71.3)}cm</span>
-                          <span class="horizontal-span">{calculateHeightInFeet(85.5)}cm</span>
-                          <span class="horizontal-span">{calculateHeightInFeet(100)}cm</span>
-                        </div>
-                      </div>
-                    ) :
-                      (
-                        <div className="disabled-scale">
-                          <span className="disabled-text"></span>
-                        </div>
-                      )
-                    }
-                  </div>
+                <div className="clickable-point-11" onClick={() => handlePointClick('Vitals')}></div>
+                <div className="clickable-point-22" onClick={() => handlePointClick('Basic Screening')}></div>
+                <div className="clickable-point-33" onClick={() => handlePointClick('BMI & Symptoms')}></div>
+                <div className="clickable-point-44" onClick={() => handlePointClick('Immunisation')}></div>
+                <div className="clickable-point-55" onClick={() => handlePointClick('Auditory')}></div>
+                <div className="clickable-point-66" onClick={() => handlePointClick('Dental')}></div>
+                <div className="clickable-point-77" onClick={() => handlePointClick('Vision')}></div>
+                <div className="clickable-point-88" onClick={() => handlePointClick('Psychological')}></div>
+                <div className="clickable-point-89" onClick={() => handlePointClick('Investigation')}></div>
+              </div>
 
-                  {/* //////// Body Points */}
-                  <div className="col-md-2">
-                    <div className="image-container">
-                      <img className={`${getBodyImageClass()}`} src={getBodyImage()} alt="Body" />
-                      <div className={`circle ${isClicked ? 'clicked' : ''}`} onClick={handleClick}>
-                        <MonitorWeightIcon className="movable-button" />
-                        {isClicked && (
-                          <div className="card cardWeightdatainput" onClick={handleModalClick}>
-                            <input
-                              type="text"
-                              placeholder="Enter Weight"
-                              value={inputValue}
-                              onChange={handleChange}
-                            />
-                          </div>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="clickable-point-11" onClick={() => handlePointClick('Vitals')}></div>
-                    <div className="clickable-point-22" onClick={() => handlePointClick('Basic Screening')}></div>
-                    <div className="clickable-point-33" onClick={() => handlePointClick('BMI & Symptoms')}></div>
-                    <div className="clickable-point-44" onClick={() => handlePointClick('Immunisation')}></div>
-                    <div className="clickable-point-55" onClick={() => handlePointClick('Auditory')}></div>
-                    <div className="clickable-point-66" onClick={() => handlePointClick('Dental')}></div>
-                    <div className="clickable-point-77" onClick={() => handlePointClick('Vision')}></div>
-                    <div className="clickable-point-88" onClick={() => handlePointClick('Psychological')}></div>
-                    <div className="clickable-point-89" onClick={() => handlePointClick('Investigation')}></div>
-                  </div>
-
-                  {/* ///////  Menu click Vital Name  /////// */}
-                  <div className='col-md-5 popup-container'>
-                    {isPopupVisible && (
-                      <div className="card cardshiftment popup-content">
-                        <div className="row">
-                          {/* <div className="col">
+              {/* ///////  Menu click Vital Name  /////// */}
+              <div className='col-md-5 popup-container'>
+                {isPopupVisible && (
+                  <div className="card cardshiftment popup-content">
+                    <div className="row">
+                      {/* <div className="col">
                             {Array.isArray(fetchVital) && fetchVital.map((item) => (
                               <div key={item.screening_vitals} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                                 <h6
@@ -408,178 +406,176 @@ const Body = () => {
                               </div>
                             ))}
                           </div> */}
-                          <div className="col">
-                            {Array.isArray(fetchVital) && fetchVital.length > 0 ? (
-                              fetchVital.map((item) => (
-                                <div
-                                  key={item.screening_vitals}
-                                  style={{
-                                    display: 'flex',
-                                    justifyContent: 'space-between',
-                                    alignItems: 'center',
-                                  }}
-                                >
-                                  <h6
-                                    style={{
-                                      fontSize: '13px',
-                                      margin: '0.2em 0em 0.4em 0.3em',
-                                      fontFamily: 'Roboto',
-                                      fontWeight: 'bold',
-                                      cursor: 'pointer',
-                                    }}
-                                    onClick={() => {
-                                      setOpenedPart(item.screening_list);  // Set the opened part based on the fetched value
-                                      setSelectedId(item.screening_vitals); // Store the selected ID
-                                      setSelectedName(item.screening_list); // Store the name of the clicked item
-                                    }}
-                                  >
-                                    {item.screening_list}
-                                  </h6>
-                                  {/* <CheckCircleIcon style={{ fontSize: '20px', color: 'green' }} /> */}
-                                </div>
-                              ))
-                            ) : (
-                              <p style={{ fontFamily: 'Roboto', fontSize: '13px', fontWeight: 'bold', color: 'gray', margin: '0.5em 0' }}>
-                                No vitals found
-                              </p>
-                            )}
-                          </div>
-
-                        </div>
+                      <div className="col">
+                        {Array.isArray(fetchVital) && fetchVital.length > 0 ? (
+                          fetchVital.map((item) => (
+                            <div
+                              key={item.screening_vitals}
+                              style={{
+                                display: 'flex',
+                                justifyContent: 'space-between',
+                                alignItems: 'center',
+                              }}
+                            >
+                              <h6
+                                style={{
+                                  fontSize: '13px',
+                                  margin: '0.2em 0em 0.4em 0.3em',
+                                  fontFamily: 'Roboto',
+                                  fontWeight: 'bold',
+                                  cursor: 'pointer',
+                                }}
+                                onClick={() => {
+                                  setOpenedPart(item.screening_list);  // Set the opened part based on the fetched value
+                                  setSelectedId(item.screening_vitals); // Store the selected ID
+                                  setSelectedName(item.screening_list); // Store the name of the clicked item
+                                }}
+                              >
+                                {item.screening_list}
+                              </h6>
+                              {/* <CheckCircleIcon style={{ fontSize: '20px', color: 'green' }} /> */}
+                            </div>
+                          ))
+                        ) : (
+                          <p style={{ fontFamily: 'Roboto', fontSize: '13px', fontWeight: 'bold', color: 'gray', margin: '0.5em 0' }}>
+                            No vitals found
+                          </p>
+                        )}
                       </div>
-                    )}
+
+                    </div>
                   </div>
-                </div>
-              </div>
-
-              <div className="col-md-8 backdesign">
-                {openedPart === 'Basic Information' && (
-                  <Childvital citizensPkId={citizensPkId}
-                    pkid={pkid} citizenidddddddd={citizenidddddddd} sourceID={sourceID}
-                    selectedId={selectedId} fetchVital={fetchVital}
-                    selectedName={openedPart}
-                    onAcceptClick={handleAcceptClick}
-                  />
                 )}
-
-                {openedPart === 'Emergency Details' && (
-                  <FamilyInfo
-                    citizensPkId={citizensPkId}
-                    pkid={pkid}
-                    citizenidddddddd={citizenidddddddd}
-                    sourceID={sourceID}
-                    selectedId={selectedId}
-                    selectedName={openedPart}
-                    fetchVital={fetchVital}
-                    onAcceptClick={handleAcceptClick}
-                  />
-                )}
-
-                {openedPart === 'BMI & Symptoms' && (
-                  <BmiVital
-                    citizenidddddddd={citizenidddddddd} citizensPkId={citizensPkId}
-                    pkid={pkid} calculatedHeight={calculatedHeight}
-                    enteredWeight={inputValue} gender={gender} scheduleID={scheduleID}
-                    selectedName={openedPart}
-                    fetchVital={fetchVital}
-                    onAcceptClick={handleAcceptClick}
-                  />
-                )}
-
-                {openedPart === 'Vital' &&
-                  <Vital citizensPkId={citizensPkId} pkid={pkid} year={year}
-                    gender={gender} selectedId={selectedId}
-                    selectedName={openedPart}
-                    fetchVital={fetchVital}
-                    onAcceptClick={handleAcceptClick}
-                  />
-                }
-
-                {openedPart === 'Basic Screening' &&
-                  <BasicScreen
-                    pkid={pkid} citizensPkId={citizensPkId} gender={gender}
-                    scheduleID={scheduleID} citizenidddddddd={citizenidddddddd}
-                    selectedId={selectedId}
-                    selectedName={openedPart}
-                    fetchVital={fetchVital}
-                    onAcceptClick={handleAcceptClick}
-                  />
-                }
-
-                {openedPart === 'Auditory' &&
-                  <Auditory
-                    pkid={pkid} citizensPkId={citizensPkId}
-                    lastview={preCheckbox} recall={fetchData1}
-                    selectedName={openedPart}
-                    fetchVital={fetchVital}
-                    onAcceptClick={handleAcceptClick}
-                  />
-                }
-
-                {openedPart === 'Dental Check Up' &&
-                  <Dental
-                    pkid={pkid} citizensPkId={citizensPkId}
-                    selectedName={openedPart}
-                    fetchVital={fetchVital}
-                    scheduleID={scheduleID}
-                    citizenId={citizenId}
-                    onAcceptClick={handleAcceptClick}
-                  />
-                }
-
-                {openedPart === 'Vision' &&
-                  <Vision
-                    pkid={pkid} citizensPkId={citizensPkId}
-                    selectedName={openedPart}
-                    fetchVital={fetchVital}
-                    onAcceptClick={handleAcceptClick}
-                  />
-                }
-
-                {/* Roshni Code */}
-                {openedPart === 'Medical History' &&
-                  <MedicalInfo
-                    citizensPkId={citizensPkId} pkid={pkid} citizenidddddddd={citizenidddddddd}
-                    sourceID={sourceID} selectedId={selectedId}
-                    fetchVital={fetchVital}
-                    selectedName={openedPart}
-                    onAcceptClick={handleAcceptClick}
-                  />}
-
-                {openedPart === 'Investigation' &&
-                  <InvestigationInfo
-                    pkid={pkid} citizensPkId={citizensPkId}
-                    selectedName={openedPart}
-                    fetchVital={fetchVital}
-                    onAcceptClick={handleAcceptClick}
-                  />
-                }
-
-                {openedPart === 'Pulmonary Function Tests' &&
-                  <Pft
-                    pkid={pkid} citizensPkId={citizensPkId}
-                    fetchVital={fetchVital}
-                    selectedName={openedPart}
-                    onAcceptClick={handleAcceptClick}
-                  />
-                }
-
-                {openedPart === 'Psychological Screening' &&
-                  <Psychological
-                    toggleFormVisibility={setOpenedPart} pkid={pkid} citizensPkId={citizensPkId}
-                    selectedName={openedPart}
-                    fetchVital={fetchVital}
-                    onAcceptClick={handleAcceptClick}
-                  />
-                }
-
-                {openedPart === 'Immunisation ' &&
-                  <Immunisation pkid={pkid} citizensPkId={citizensPkId} dob={dob}
-                    fetchVital={fetchVital} selectedName={selectedName}
-                    onAcceptClick={handleAcceptClick}
-                  />}
               </div>
             </div>
+          </div>
+
+          <div className="col-md-8 backdesign">
+            {openedPart === 'Basic Information' && (
+              <Childvital citizensPkId={citizensPkId}
+                pkid={pkid} citizenidddddddd={citizenidddddddd} sourceID={sourceID}
+                selectedId={selectedId} fetchVital={fetchVital}
+                selectedName={openedPart}
+                onAcceptClick={handleAcceptClick}
+              />
+            )}
+
+            {openedPart === 'Emergency Details' && (
+              <FamilyInfo
+                citizensPkId={citizensPkId}
+                pkid={pkid}
+                citizenidddddddd={citizenidddddddd}
+                sourceID={sourceID}
+                selectedId={selectedId}
+                selectedName={openedPart}
+                fetchVital={fetchVital}
+                onAcceptClick={handleAcceptClick}
+              />
+            )}
+
+            {openedPart === 'BMI & Symptoms' && (
+              <BmiVital
+                citizenidddddddd={citizenidddddddd} citizensPkId={citizensPkId}
+                pkid={pkid} calculatedHeight={calculatedHeight}
+                enteredWeight={inputValue} gender={gender} scheduleID={scheduleID}
+                selectedName={openedPart}
+                fetchVital={fetchVital}
+                onAcceptClick={handleAcceptClick}
+              />
+            )}
+
+            {openedPart === 'Vital' &&
+              <Vital citizensPkId={citizensPkId} pkid={pkid} year={year}
+                gender={gender} selectedId={selectedId}
+                selectedName={openedPart}
+                fetchVital={fetchVital}
+                onAcceptClick={handleAcceptClick}
+              />
+            }
+
+            {openedPart === 'Basic Screening' &&
+              <BasicScreen
+                pkid={pkid} citizensPkId={citizensPkId} gender={gender}
+                scheduleID={scheduleID} citizenidddddddd={citizenidddddddd}
+                selectedId={selectedId}
+                selectedName={openedPart}
+                fetchVital={fetchVital}
+                onAcceptClick={handleAcceptClick}
+              />
+            }
+
+            {openedPart === 'Auditory' &&
+              <Auditory
+                pkid={pkid} citizensPkId={citizensPkId}
+                lastview={preCheckbox} recall={fetchData1}
+                selectedName={openedPart}
+                fetchVital={fetchVital}
+                onAcceptClick={handleAcceptClick}
+              />
+            }
+
+            {openedPart === 'Dental Check Up' &&
+              <Dental
+                pkid={pkid} citizensPkId={citizensPkId}
+                selectedName={openedPart}
+                fetchVital={fetchVital}
+                scheduleID={scheduleID}
+                citizenId={citizenId}
+                onAcceptClick={handleAcceptClick}
+              />
+            }
+
+            {openedPart === 'Vision' &&
+              <Vision
+                pkid={pkid} citizensPkId={citizensPkId}
+                selectedName={openedPart}
+                fetchVital={fetchVital}
+                onAcceptClick={handleAcceptClick}
+              />
+            }
+
+            {/* Roshni Code */}
+            {openedPart === 'Medical History' &&
+              <MedicalInfo
+                citizensPkId={citizensPkId} pkid={pkid} citizenidddddddd={citizenidddddddd}
+                sourceID={sourceID} selectedId={selectedId}
+                fetchVital={fetchVital}
+                selectedName={openedPart}
+                onAcceptClick={handleAcceptClick}
+              />}
+
+            {openedPart === 'Investigation' &&
+              <InvestigationInfo
+                pkid={pkid} citizensPkId={citizensPkId}
+                selectedName={openedPart}
+                fetchVital={fetchVital}
+                onAcceptClick={handleAcceptClick}
+              />
+            }
+
+            {openedPart === 'Pulmonary Function Tests' &&
+              <Pft
+                pkid={pkid} citizensPkId={citizensPkId}
+                fetchVital={fetchVital}
+                selectedName={openedPart}
+                onAcceptClick={handleAcceptClick}
+              />
+            }
+
+            {openedPart === 'Psychological Screening' &&
+              <Psychological
+                toggleFormVisibility={setOpenedPart} pkid={pkid} citizensPkId={citizensPkId}
+                selectedName={openedPart}
+                fetchVital={fetchVital}
+                onAcceptClick={handleAcceptClick}
+              />
+            }
+
+            {openedPart === 'Immunisation ' &&
+              <Immunisation pkid={pkid} citizensPkId={citizensPkId} dob={dob}
+                fetchVital={fetchVital} selectedName={selectedName}
+                onAcceptClick={handleAcceptClick}
+              />}
           </div>
         </div>
       </div>

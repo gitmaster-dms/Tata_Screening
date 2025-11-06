@@ -1,124 +1,138 @@
-import React, { useState, useEffect } from 'react'
-import axios from 'axios'
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import {
+    Box,
+    Grid,
+    Typography,
+    Checkbox as MUICheckbox,
+    FormControlLabel,
+    Button,
+    Paper,
+} from "@mui/material";
 
-const Diagnosis = ({ pkid, Diagnosis, onAcceptClick, citizensPkId, onMoveToImmunisation, selectedTab, subVitalList }) => {
+const Diagnosis = ({
+    pkid,
+    onAcceptClick,
+    citizensPkId,
+    selectedTab,
+    subVitalList,
+}) => {
+    const [nextName, setNextName] = useState("");
+    const [diagnosis, setDiagnosis] = useState([]);
+    const [formData, setFormData] = useState({
+        checkboxes: [],
+        selectedNames: [],
+        citizen_pk_id: citizensPkId,
+        modify_by: localStorage.getItem("userID"),
+    });
 
-    //_________________________________START
-    console.log(selectedTab, 'Present name');
-    console.log(subVitalList, 'Overall GET API');
-    const [nextName, setNextName] = useState('');
+    const Port = process.env.REACT_APP_API_KEY;
+    const accessToken = localStorage.getItem("token");
+    const userID = localStorage.getItem("userID");
+    const basicScreeningPkId = localStorage.getItem("basicScreeningId");
 
+    // ---------------- FIND NEXT TAB NAME ----------------
     useEffect(() => {
         if (subVitalList && selectedTab) {
-            const currentIndex = subVitalList.findIndex(item => item.screening_list === selectedTab);
-
-            console.log('Current Index:', currentIndex);
+            const currentIndex = subVitalList.findIndex(
+                (item) => item.screening_list === selectedTab
+            );
 
             if (currentIndex !== -1 && currentIndex < subVitalList.length - 1) {
                 const nextItem = subVitalList[currentIndex + 1];
-                const nextName = nextItem.screening_list;
-                setNextName(nextName);
-                console.log('Next Name Set:', nextName);
+                setNextName(nextItem.screening_list);
             } else {
-                setNextName('');
-                console.log('No next item or selectedTab not found');
+                setNextName("");
             }
         }
     }, [selectedTab, subVitalList]);
-    //_________________________________END
 
-    const [diagnosis, setDiagnosis] = useState([])
-    const Port = process.env.REACT_APP_API_KEY;
-    // console.log('Diagnosis :', basicScreeningPkId);
-    const basicScreeningPkId = localStorage.getItem('basicScreeningId');
-    console.log('Retrieved Basic Id from Local Storage:', basicScreeningPkId);
-    const accessToken = localStorage.getItem('token');
-
-    const userID = localStorage.getItem('userID');
-    console.log(userID);
-
+    // ---------------- FETCH DIAGNOSIS DATA ----------------
     useEffect(() => {
-        const fetchdiagnosisData = async () => {
+        const fetchDiagnosisData = async () => {
             try {
                 const response = await axios.get(`${Port}/Screening/diagnosis/`, {
                     headers: {
                         Authorization: `Bearer ${accessToken}`,
-                        'Content-Type': 'application/json',
+                        "Content-Type": "application/json",
                     },
                 });
                 setDiagnosis(response.data);
+                setFormData((prev) => ({
+                    ...prev,
+                    checkboxes: new Array(response.data.length).fill(false),
+                }));
             } catch (error) {
-                console.error('Error fetching data:', error);
+                console.error("Error fetching diagnosis data:", error);
             }
         };
 
-        fetchdiagnosisData();
+        fetchDiagnosisData();
     }, []);
 
-    const [formData, setFormData] = useState({
-        checkboxes: new Array(diagnosis.length).fill(0),
-        selectedNames: [],
-        citizen_pk_id: citizensPkId,
-        modify_by: userID
-    });
-
-    const handleCheckboxChange = (index) => {
-        const updatedCheckboxes = [...formData.checkboxes];
-        updatedCheckboxes[index] = !updatedCheckboxes[index];
-
-        const selectedNames = diagnosis
-            .filter((item, i) => updatedCheckboxes[i])
-            .map((item) => item.diagnosis);
-
-        setFormData({
-            ...formData,
-            checkboxes: updatedCheckboxes,
-            selectedNames: selectedNames, // Add this line to store selected names in formData
-        });
-    };
-
+    // ---------------- FETCH DATA BY ID ----------------
     useEffect(() => {
-        const fetchDataById = async (pkid) => {
+        const fetchDataById = async () => {
             try {
-                const response = await fetch(`${Port}/Screening/citizen_basic_screening_info_get/${pkid}/`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        Authorization: `Bearer ${accessToken}`,
-                    },
-                });
+                const response = await fetch(
+                    `${Port}/Screening/citizen_basic_screening_info_get/${pkid}/`,
+                    {
+                        method: "GET",
+                        headers: {
+                            "Content-Type": "application/json",
+                            Authorization: `Bearer ${accessToken}`,
+                        },
+                    }
+                );
 
                 if (response.ok) {
                     const data = await response.json();
-                    console.log(data);
-
                     if (Array.isArray(data) && data.length > 0) {
                         const screeningInfo = data[0];
-                        const diagnoSis = screeningInfo.diagnosis || [];
+                        const selectedDiagnosis = screeningInfo.diagnosis || [];
 
-                        const initialCheckboxes = diagnosis.map(item =>
-                            diagnoSis.includes(item.diagnosis)
+                        const initialCheckboxes = diagnosis.map((item) =>
+                            selectedDiagnosis.includes(item.diagnosis)
                         );
 
                         setFormData((prevState) => ({
                             ...prevState,
                             checkboxes: initialCheckboxes,
-                            selectedNames: diagnoSis,
+                            selectedNames: selectedDiagnosis,
                         }));
                     } else {
-                        console.error('Empty or invalid data array.');
+                        console.error("Empty or invalid data array.");
                     }
                 } else {
-                    console.error('Server Error:', response.status, response.statusText);
+                    console.error("Server Error:", response.status, response.statusText);
                 }
             } catch (error) {
-                console.error('Error fetching data:', error.message);
+                console.error("Error fetching diagnosis info:", error.message);
             }
         };
 
-        fetchDataById(pkid);
+        if (pkid && diagnosis.length > 0) {
+            fetchDataById();
+        }
     }, [pkid, diagnosis]);
 
+    // ---------------- HANDLE CHECKBOX CHANGE ----------------
+    const handleCheckboxChange = (index) => {
+        const updatedCheckboxes = [...formData.checkboxes];
+        updatedCheckboxes[index] = !updatedCheckboxes[index];
+
+        const selectedNames = diagnosis
+            .filter((_, i) => updatedCheckboxes[i])
+            .map((item) => item.diagnosis);
+
+        setFormData({
+            ...formData,
+            checkboxes: updatedCheckboxes,
+            selectedNames,
+        });
+    };
+
+    // ---------------- SUBMIT HANDLER ----------------
     const handleSubmit = async (e) => {
         e.preventDefault();
         const postData = {
@@ -126,74 +140,90 @@ const Diagnosis = ({ pkid, Diagnosis, onAcceptClick, citizensPkId, onMoveToImmun
         };
 
         try {
-            const accessToken = localStorage.getItem('token');
-
             const response = await axios.put(
                 `${Port}/Screening/diagnosis/${basicScreeningPkId}/`,
                 postData,
                 {
                     headers: {
                         Authorization: `Bearer ${accessToken}`,
-                        'Content-Type': 'application/json',
+                        "Content-Type": "application/json",
                     },
                 }
             );
 
-            if (window.confirm('Submit Diagnosis Form') && response.status === 200) {
-                console.log('Submission successful!');
-                onAcceptClick(nextName, basicScreeningPkId);
-            } else if (response.status === 400) {
-                console.error('Bad Request:', response.data);
+            if (response.status === 200) {
+                if (window.confirm("Submit Diagnosis Form")) {
+                    console.log("Diagnosis Form Submitted Successfully");
+                    onAcceptClick(nextName, basicScreeningPkId);
+                }
             } else {
-                console.error('Unhandled Status Code:', response.status);
+                console.error("Unexpected status:", response.status);
             }
         } catch (error) {
-            console.error('Error posting data:', error);
+            console.error("Error posting diagnosis data:", error);
         }
     };
 
     return (
-        <div>
-            <h5 className="vitaltitlebasicscreen">Diagnosis</h5>
-            <div className="elementvital"></div>
+        <Box >
+            <Typography
+                variant="h6"
+                sx={{
+                    fontWeight: 600,
+                    color: "#004d40",
+                    mb: 1,
+                    fontFamily: "Playfair Display",
+                }}
+            >
+                Diagnosis
+            </Typography>
+
             <form onSubmit={handleSubmit}>
-                <div className="row ml-1">
-                    {/* {
-                    diagnosis.map((item) => (
-                        <div key={item.id} className="col-md-4">
-                            <div className="form-check">
-                                <input className="form-check-input mt-2" type="checkbox" value={item.value} id={`flexCheck-${item.diagnosis_id}`} />
-                                <label className="form-check-label basicscreeenlabel" htmlFor={`flexCheck-${item.diagnosis_id}`}>
-                                    {item.diagnosis}
-                                </label>
-                            </div>
-                        </div>
-                    ))
-                } */}
-
+                <Grid container>
                     {diagnosis.map((item, index) => (
-                        <div key={item.id} className="col-md-4">
-                            <div className="form-check">
-                                <input
-                                    className="form-check-input"
-                                    type="checkbox"
-                                    checked={formData.checkboxes[index]}
-                                    onChange={() => handleCheckboxChange(index)}
-                                />
-                                <label className="form-check-label basicscreeenlabel" htmlFor={`flexCheck-${item.diagnosis_id}`}>
-                                    {item.diagnosis}
-                                </label>
-                            </div>
-                        </div>
+                        <Grid item xs={12} sm={6} md={4} key={item.id}>
+                            <FormControlLabel
+                                control={
+                                    <MUICheckbox
+                                        checked={formData.checkboxes[index] || false}
+                                        onChange={() => handleCheckboxChange(index)}
+                                        sx={{
+                                            color: '#1976d2',
+                                            '&.Mui-checked': {
+                                                color: '#1976d2',
+                                            },
+                                        }}
+                                    />
+                                }
+                                label={
+                                    <Typography
+                                        sx={{
+                                            color: "#000",
+                                            fontSize: "0.9rem",
+                                            fontFamily: "Playfair Display",
+                                        }}
+                                    >
+                                        {item.diagnosis}
+                                    </Typography>
+                                }
+                            />
+                        </Grid>
                     ))}
-                </div>
+                </Grid>
 
-                <div>
-                    <button type="submit" className="btn btn-sm generalexambutton" >Submit</button>
-                </div>
+                <Box textAlign="center" mt={1} mb={2}>
+                    <Button
+                        variant="contained"
+                        size="small"
+                        sx={{ bgcolor: "#1439A4", textTransform: "none" }}
+                        onClick={handleSubmit}
+                    >
+                        Submit
+                    </Button>
+                </Box>
             </form>
-        </div>
-    )
-}
+        </Box>
+    );
+};
 
-export default Diagnosis
+export default Diagnosis;
