@@ -59,8 +59,8 @@ const Header = () => {
     const { setSelectedScheduleType } = useSourceContext();
     const [screeningForError, setScreeningForError] = useState('');
 
-    console.log(selectedGender,selectedScheduleType,'mmmmmmmmmmmmmmmmmm');
-    
+    console.log(selectedGender, selectedScheduleType, 'mmmmmmmmmmmmmmmmmm');
+
     const handleScheduleTypeChange = (event) => {
         const scheduleId = event.target.value;
         setSelectedScheduleLocal(scheduleId);
@@ -105,7 +105,7 @@ const Header = () => {
         // setSourceError(errors.source);
         setScreeningForError(errors.screeningFor);
 
-        if ( !errors.gender && !errors.screeningFor) {
+        if (!errors.gender && !errors.screeningFor) {
             // setAgeError('');
             setGenderError('');
             // setSourceError('');
@@ -128,12 +128,12 @@ const Header = () => {
                 // '7_2_5_3': 'corporate',
                 // '8_1_5_3': 'corporate',
                 // '8_2_5_3': 'corporate',
-                '1_5': 'corporate',
-                '1_3': 'corporate',
-                '2_3': 'corporate',
-                '2_5': 'corporate',
-                '3_3': 'corporate',
-                '3_5': 'corporate',
+                '1_1': 'corporate',
+                '1_2': 'corporate',
+                '2_1': 'corporate',
+                '2_2': 'corporate',
+                '3_1': 'corporate',
+                '3_2': 'corporate',
                 default: 'AnotherForm',
             };
 
@@ -204,18 +204,23 @@ const Header = () => {
     }, []);
 
     useEffect(() => {
-        if (selectedSource) {
-            axios
-                .get(`${Port}/Screening/screening_for_type_get/${selectedSource}`, {
+        const fetchCategories = async () => {
+            try {
+                const response = await axios.get(`${Port}/Screening/Category_Get/`, {
                     headers: {
                         Authorization: `Bearer ${accessToken}`,
-                        'Content-Type': 'application/json',
+                        "Content-Type": "application/json",
                     },
-                })
-                .then((response) => setScreeningFor(response.data))
-                .catch((error) => console.error('Error fetching data:', error));
-        }
-    }, [selectedSource]);
+                });
+                setScreeningFor(response.data);
+                console.log("Fetched Categories:", response.data);
+            } catch (error) {
+                console.error("Error fetching categories:", error);
+            }
+        };
+
+        fetchCategories();
+    }, [Port, accessToken]);
 
     useEffect(() => {
         const fetchDiseaseDropdown = async () => {
@@ -244,7 +249,7 @@ const Header = () => {
                         </Link>
                     </Grid>
                     <Grid item>
-                        <Typography variant="h6" sx={{ fontWeight: 500, color: '#1439A4',fontFamily: 'Roboto'}}>
+                        <Typography variant="h6" sx={{ fontWeight: 500, color: '#1439A4', fontFamily: 'Roboto' }}>
                             Add New Citizen
                         </Typography>
                     </Grid>
@@ -357,8 +362,8 @@ const Header = () => {
                         >
                             <MenuItem>Select The Type</MenuItem>
                             {screeningFor.map((drop) => (
-                                <MenuItem key={drop.type_id} value={drop.type_id}>
-                                    {drop.type}
+                                <MenuItem key={drop.pk_id} value={drop.pk_id}>
+                                    {drop.category}
                                 </MenuItem>
                             ))}
                         </TextField>

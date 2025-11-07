@@ -351,23 +351,23 @@ const Citizenlist = () => {
 
     ////// Screening For ///////
     useEffect(() => {
-        if (selectedSource) {
-            axios
-                .get(`${Port}/Screening/screening_for_type_get/${selectedSource}`, {
+        const fetchCategories = async () => {
+            try {
+                const response = await axios.get(`${Port}/Screening/Category_Get/`, {
                     headers: {
-                        'Authorization': `Bearer ${accessToken}`,
-                        'Content-Type': 'application/json'
-                    }
-                })
-                .then((response) => {
-                    setScreeningFor(response.data);
-                })
-                .catch((error) => {
-                    console.error('Error fetching data:', error);
+                        Authorization: `Bearer ${accessToken}`,
+                        "Content-Type": "application/json",
+                    },
                 });
-        }
-    }, [selectedSource]);
+                setScreeningFor(response.data);
+                console.log("Fetched Categories:", response.data);
+            } catch (error) {
+                console.error("Error fetching categories:", error);
+            }
+        };
 
+        fetchCategories();
+    }, [Port, accessToken]);
     /////// Class GET API 
     useEffect(() => {
         const fetchClass = async () => {
@@ -572,9 +572,10 @@ const Citizenlist = () => {
                             }}
                         >
                             <MenuItem value="">Select Category</MenuItem>
+
                             {screeningFor.map((drop) => (
-                                <MenuItem key={drop.type_id} value={drop.type_id}>
-                                    {drop.type}
+                                <MenuItem key={drop.pk_id} value={drop.pk_id}>
+                                    {drop.category}
                                 </MenuItem>
                             ))}
                         </TextField>
