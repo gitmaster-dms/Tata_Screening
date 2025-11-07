@@ -128,7 +128,7 @@ urlpatterns = [
 
     path('followupdropdown_get/', views.followup_dropdown_get.as_view(), name='followup_get'),
     path('followupfor_get/', views.followup_for_get.as_view(), name='followupfor_get'),
-    path('Workshop_name_get/', views.Workshop_get_APi.as_view(), name='Workshop_name_get'),
+    path('Workshop_name_get/', views.Workshop_get_APi2.as_view(), name='Workshop_name_get'),
     # path('follow_up_refer_citizen/', views.follow_up_refer_citizen.as_view(), name='follow_up_refer_citizen_get'),
     # path('follow_up_get_citizen/<str:citizen_id>/', views.follow_up_get_citizen.as_view(), name='follow_up_get_citizen'),
     path('follow_up_status_citizen/', views.follow_up_status_citizen.as_view(), name='follow_up_status_citizen'),
@@ -229,6 +229,7 @@ urlpatterns = [
     
     path('Workshop_Post/', Workshop_Post_Api.as_view(), name='Workshop_Post'),
     path('Workshop_Get/', Workshop_Get_Api.as_view(), name='Workshop_Get'),
+    path('Workshop_Update/<int:ws_pk_id>/', Workshop_Update_API.as_view(), name='Workshop_Get'),
     path('Category_Get/', Category_Get_Api.as_view(), name='Category_Get'),
     
     

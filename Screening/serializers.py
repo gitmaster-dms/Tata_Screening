@@ -1516,6 +1516,23 @@ class Workshop_Get_Serializer(serializers.ModelSerializer):
         model = Workshop
         # fields = ['ws_pk_id','Workshop_name']
         fields = '__all__'
+        
+        
+class Workshop_Id_Wise_Get_Serializer(serializers.ModelSerializer):
+    ws_state_name = serializers.CharField(source='ws_state.state_name', allow_null=True)
+    ws_district_name = serializers.CharField(source='ws_district.dist_name', allow_null=True)
+    ws_taluka_name = serializers.CharField(source='ws_taluka.tahsil_name', allow_null=True)
+    source_name = serializers.CharField(source='source.source',allow_null=True)
+    
+    class Meta:
+        model = Workshop
+        fields = '__all__'
+        
+class Workshop_Update_Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = Workshop
+        fields = '__all__'
+        
 
 class Category_Get_Serializer(serializers.ModelSerializer):
     class Meta:

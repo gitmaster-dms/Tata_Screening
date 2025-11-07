@@ -1373,13 +1373,14 @@ class followup_for_get(APIView):
         snippets = agg_sc_followup_for.objects.all()
         serializer = Followup_for_infoSerializer(snippets, many=True)
         return Response(serializer.data)
+    
 
-
-class Workshop_get_APi(APIView):
+class Workshop_get_APi2(APIView):
     def get(self, request):
         snippets = Workshop.objects.all()
         serializer = Workshop_Get_Serializer(snippets, many=True)
         return Response(serializer.data)
+
 
 
 # class follow_up_refer_citizen(APIView):
@@ -3854,6 +3855,31 @@ class Workshop_Get_Api(APIView):
         snippet = Workshop.objects.all()
         serializers = Workshop_Get_Serializer(snippet, many=True)
         return Response(serializers.data, status=status.HTTP_200_OK)
+    
+
+class Workshop_Update_API(APIView):
+    def get(self, request, ws_pk_id):
+        try:
+            workshop = Workshop.objects.get(ws_pk_id=ws_pk_id, is_deleted=False)
+            serializer = Workshop_Id_Wise_Get_Serializer(workshop)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        except Workshop.DoesNotExist:
+            return Response({'error': 'Workshop not found'}, status=status.HTTP_404_NOT_FOUND)
+
+    def put(self, request, ws_pk_id):
+        try:
+            workshop = Workshop.objects.get(ws_pk_id=ws_pk_id, is_deleted=False)
+        except Workshop.DoesNotExist:
+            return Response({'error': 'Workshop not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = Workshop_Update_Serializer(workshop, data=request.data, partial=True)  # partial=True allows partial update
+        if serializer.is_valid():
+            serializer.save(modify_by=request.user.username if request.user.is_authenticated else "system")
+            return Response({'message': 'Workshop updated successfully', 'data': serializer.data}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)    
+    
+    
+
     
 class Citizen_Get_Api(APIView):
     def get(self, request):
