@@ -23,6 +23,7 @@ pipeline {
         stage('Deploy Code to Server Directory') {
             steps {
                 sh """
+                set -euxo pipefail
                 echo "🚀 Deploying latest code to ${PROJECT_DIR}"
                 sudo rm -rf ${PROJECT_DIR}
                 sudo mkdir -p ${PROJECT_DIR}
@@ -37,6 +38,7 @@ pipeline {
         stage('Ensure Node.js') {
             steps {
                 sh '''
+                set -euxo pipefail
                 if ! command -v node >/dev/null 2>&1 || [ "$(node -v | cut -d. -f1 | tr -d v)" -lt 20 ]; then
                     echo "⚙️ Installing Node.js 20..."
                     curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
@@ -53,6 +55,7 @@ pipeline {
             steps {
                 dir("${DJANGO_DIR}") {
                     sh """
+                    set -euxo pipefail
                     if [ ! -d "venv" ]; then
                         ${PYTHON} -m venv venv
                     fi
@@ -70,6 +73,7 @@ pipeline {
             steps {
                 dir("${REACT_DIR}") {
                     sh '''
+                    set -euxo pipefail
                     echo "⚙️ Setting permissions..."
                     sudo chown -R $USER:$USER ${REACT_DIR}
                     sudo chmod -R 775 ${REACT_DIR}
@@ -89,6 +93,7 @@ pipeline {
             steps {
                 dir("${DJANGO_DIR}") {
                     sh """
+                    set -euxo pipefail
                     . venv/bin/activate
                     python manage.py collectstatic --noinput
                     """
@@ -101,6 +106,7 @@ pipeline {
             steps {
                 dir("${DJANGO_DIR}") {
                     sh """
+                    set -euxo pipefail
                     . venv/bin/activate
                     echo "🔄 Restarting Gunicorn on port ${GUNICORN_PORT}"
                     pkill gunicorn || true
@@ -114,10 +120,10 @@ pipeline {
         stage('Configure Nginx') {
             steps {
                 sh """
-                    sudo nginx -t
-                    sudo systemctl restart gunicorn_tata
-                    sudo systemctl restart nginx
-                   
+                set -euxo pipefail
+                sudo nginx -t
+                sudo systemctl restart gunicorn_tata
+                sudo systemctl restart nginx
                 """
             }
         }
