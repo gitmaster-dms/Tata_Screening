@@ -657,9 +657,10 @@ class Workshop_Get_Serializer(serializers.ModelSerializer):
         fields = ['ws_pk_id','Workshop_name','registration_no']
         
 class Citizen_Get_Serializer(serializers.ModelSerializer):
+    category_name = serializers.CharField(source='category.category',allow_null=True)
     class Meta:
         model = Citizen
-        fields = ['citizens_pk_id','citizen_id','prefix','name','aadhar_id','mobile_no']
+        fields = ['citizens_pk_id','citizen_id','prefix','name','aadhar_id','mobile_no','category','category_name','added_by','modify_by']
         
 class Citizen_idwise_data_Get_Serializer(serializers.ModelSerializer):
     gender_name = serializers.CharField(source='gender.gender',allow_null=True)
@@ -1516,8 +1517,30 @@ class Workshop_Get_Serializer(serializers.ModelSerializer):
         model = Workshop
         # fields = ['ws_pk_id','Workshop_name']
         fields = '__all__'
+        
+        
+class Workshop_Id_Wise_Get_Serializer(serializers.ModelSerializer):
+    ws_state_name = serializers.CharField(source='ws_state.state_name', allow_null=True)
+    ws_district_name = serializers.CharField(source='ws_district.dist_name', allow_null=True)
+    ws_taluka_name = serializers.CharField(source='ws_taluka.tahsil_name', allow_null=True)
+    source_name = serializers.CharField(source='source.source',allow_null=True)
+    
+    class Meta:
+        model = Workshop
+        fields = '__all__'
+        
+class Workshop_Update_Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = Workshop
+        fields = '__all__'
+        
 
 class Category_Get_Serializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = ['pk_id','category']
+
+class Workshop_delete_Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = Workshop
+        fields = ['Workshop','is_deleted']

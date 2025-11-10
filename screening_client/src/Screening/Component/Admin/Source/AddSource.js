@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import axios from 'axios'
 import './AddSource.css'
 import {
@@ -27,8 +27,20 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import { Checkbox } from '@mui/material';
 import { DriveFileRenameOutlineOutlined, DeleteOutlineOutlined } from "@mui/icons-material";
+import { useJsApiLoader, Autocomplete } from "@react-google-maps/api";
+import { Snackbar, Alert } from "@mui/material";
+
+const libraries = ["places"];
 
 const AddSource = () => {
+
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState("");
+    const [snackbarSeverity, setSnackbarSeverity] = useState("info");
+
+    const handleCloseSnackbar = () => {
+        setSnackbarOpen(false);
+    };
 
     const userID = localStorage.getItem('userID');
     console.log(userID);
@@ -132,6 +144,46 @@ const AddSource = () => {
     console.log(selectedSubVitals, 'selected sub vitals name');
     const [selectedVitalId, setSelectedVitalId] = useState(null);
 
+    //// GIS Address
+    const { isLoaded } = useJsApiLoader({
+        googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
+        libraries: libraries,
+    });
+
+    const [gisAddress, setGisAddress] = useState("");
+    const [lat, setLat] = useState(null);
+    const [long, setLong] = useState(null);
+    console.log(gisAddress, lat, long, 'GIS Address details');
+
+    const addressRef = useRef();
+
+    const handlePlaceChanged = () => {
+        console.log("place select function hitting...");
+        if (addressRef.current) {
+            const place = addressRef.current.getPlace();
+            console.log("place object", place);
+
+            if (!place.geometry || !place.geometry.location) {
+                console.warn("No geometry found for the selected place");
+                return;
+            }
+
+            const lat = place.geometry.location.lat();
+            const lng = place.geometry.location.lng();
+
+            const formattedLat = parseFloat(lat.toFixed(6));
+            const formattedLng = parseFloat(lng.toFixed(6));
+
+            // Set the full formatted address
+            setGisAddress(place.formatted_address);
+            setLat(formattedLat);
+            setLong(formattedLng);
+
+            console.log("Selected Address:", place.formatted_address);
+            console.log("Latitude:", formattedLat);
+            console.log("Longitude:", formattedLng);
+        }
+    };
     // Fetching screening vitals
     useEffect(() => {
         const fetchScreeningVitals = async () => {
@@ -209,16 +261,15 @@ const AddSource = () => {
 
     const [errors, setErrors] = useState({
         source: '',
-        source_names: '',
+        Workshop_name: '',
         registration_no: '',
         mobile_no: '',
         email_id: '',
-        // Registration_details: '',
-        source_pincode: '',
-        source_address: '',
-        // source_state: '',
-        // source_district: '',
-        // source_taluka: '',
+        ws_pincode: '',
+        ws_address: '',
+        ws_state: '',
+        ws_district: '',
+        ws_taluka: '',
     });
 
     const validateForm = () => {
@@ -274,24 +325,22 @@ const AddSource = () => {
     };
 
     const handleChange = (e) => {
-        const { name, value, files } = e.target;
+        const { name, value } = e.target;
 
         if (name === 'screening_vitals') {
             setSelectedVitals(e.target.value);
         }
-        if (name === 'sub_screening_vitals') {
+        else if (name === 'sub_screening_vitals') {
             setSelectedSubVitals(e.target.value);
         }
-
-        if (name === 'Registration_details') {
-            setSelectedFile(files.length > 0 ? files[0] : null);
-        }
         else {
+            console.log(`Updating field ${name} with value:`, value);
             setSelectData((prevData) => ({
                 ...prevData,
                 [name]: value,
             }));
         }
+        console.log('Updated selectData:', selectData);
     };
 
     const resetForm = () => {
@@ -345,111 +394,126 @@ const AddSource = () => {
 
         if (isValid) {
             if (selectData.mobile_no.length < 10) {
-                console.log('Contact number must be at least 10 characters long.');
-                alert("Contact number must be at least 10 digits long.");
+                setSnackbarMessage("Contact number must be at least 10 digits long.");
+                setSnackbarSeverity("error");
+                setSnackbarOpen(true);
                 return;
             }
 
             const formData = new FormData();
-            formData.append('source', selectData.source || '');
-            formData.append('Workshop_name', selectData.source_names || '');
-            formData.append('registration_no', selectData.registration_no || '');
-            formData.append('mobile_no', selectData.mobile_no || '');
-            formData.append('email_id', selectData.email_id || '');
+            formData.append("source", selectData.source || "");
+            formData.append("Workshop_name", selectData.Workshop_name || "");
+            formData.append("registration_no", selectData.registration_no || "");
+            formData.append("mobile_no", selectData.mobile_no || "");
+            formData.append("email_id", selectData.email_id || "");
+            formData.append("ws_pincode", selectData.ws_pincode || "");
+            formData.append("ws_address", gisAddress || "");
+            formData.append("pk_id", selectData.pk_id || "");
 
-            // if (selectedFile) {
-            //     formData.append('Registration_details', selectedFile);
-            // }
+            if (selectedState) formData.append("ws_state", selectedState);
+            if (selectedDistrict) formData.append("ws_district", selectedDistrict);
+            if (selectedTahsil) formData.append("ws_taluka", selectedTahsil);
 
-            formData.append('ws_pincode', selectData.source_pincode || '');
-            formData.append('ws_address', selectData.source_address || '');
-            formData.append('pk_id', selectData.pk_id || '');
+            formData.append("screening_vitals", JSON.stringify(selectedVitals) || "[]");
+            formData.append("sub_screening_vitals", JSON.stringify(selectedSubVitals) || "[]");
 
-            // Check for null values before appending
-            if (selectedState) {
-                formData.append('ws_state', selectedState);
-            }
-            if (selectedDistrict) {
-                formData.append('ws_district', selectedDistrict);
-            }
-            if (selectedTahsil) {
-                formData.append('ws_taluka', selectedTahsil);
-            }
-
-            // Append selected vitals
-            formData.append('screening_vitals', JSON.stringify(selectedVitals) || '[]');
-            formData.append('sub_screening_vitals', JSON.stringify(selectedSubVitals) || '[]');
-
-            const userID = localStorage.getItem('userID');
-            console.log('UserID:', userID);
+            const userID = localStorage.getItem("userID");
 
             if (updateSrc) {
                 try {
-                    formData.append('added_by', userID);
+                    formData.append("added_by", userID);
 
                     const response = await fetch(`${Port}/Screening/Workshop_Post/`, {
-                        method: 'POST',
+                        method: "POST",
                         body: formData,
-                        headers: {
-                            'Authorization': `Bearer ${accessToken}`,
-                        },
+                        headers: { Authorization: `Bearer ${accessToken}` },
                     });
 
                     if (response.status === 201) {
                         const data = await response.json();
                         setShowModal(true);
                         setTableInfo([...tableinfo, data]);
-                        console.log('Data sent successfully:', data);
+                        setSnackbarMessage("Data sent successfully!");
+                        setSnackbarSeverity("success");
+                        setSnackbarOpen(true);
                         resetForm();
                         setSelectData({
                             source: "",
-                            source_names: "",
+                            Workshop_name: "",
                             registration_no: "",
                             mobile_no: "",
                             email_id: "",
                             Registration_details: "",
-                            source_pincode: "",
-                            source_address: "",
-                            source_state: "",
-                            source_district: "",
-                            source_taluka: "",
+                            ws_pincode: "",
+                            ws_address: "",
+                            ws_state: "",
+                            ws_district: "",
+                            ws_taluka: "",
                         });
                     } else if (response.status === 400) {
                         setShowModalMissing(true);
+                        setSnackbarMessage("Missing required fields.");
+                        setSnackbarSeverity("warning");
+                        setSnackbarOpen(true);
                     } else if (response.status === 409) {
                         setShowModalExist(true);
+                        setSnackbarMessage("This record already exists!");
+                        setSnackbarSeverity("error");
+                        setSnackbarOpen(true);
                     } else {
-                        console.error('Error sending data. Unexpected response:', response);
+                        setSnackbarMessage("Unexpected response from server.");
+                        setSnackbarSeverity("error");
+                        setSnackbarOpen(true);
                     }
                 } catch (error) {
-                    console.error('Error sending data:', error);
+                    setSnackbarMessage("Error sending data!");
+                    setSnackbarSeverity("error");
+                    setSnackbarOpen(true);
                 }
             } else {
                 try {
-                    formData.append('modify_by', userID);
+                    formData.append("modify_by", userID);
 
-                    const response = await fetch(`${Port}/Screening/add_new_source_PUT/${selectData.pk_id}/`, {
-                        method: 'PUT',
+                    const response = await fetch(`${Port}/Screening/Workshop_Update/${selectData.ws_pk_id}/`, {
+                        method: "PUT",
                         body: formData,
-                        headers: {
-                            'Authorization': `Bearer ${accessToken}`,
-                        },
+                        headers: { Authorization: `Bearer ${accessToken}` },
                     });
 
                     if (response.status === 200) {
-                        console.log('Source updated successfully:', response);
-                        setUpdateModel(true);
+                        setSnackbarMessage("Source updated successfully!");
+                        setSnackbarSeverity("success");
+                        setSnackbarOpen(true);
+                        setSelectData({
+                            source: "",
+                            Workshop_name: "",
+                            registration_no: "",
+                            mobile_no: "",
+                            email_id: "",
+                            Registration_details: "",
+                            ws_pincode: "",
+                            ws_address: "",
+                            ws_state: "",
+                            ws_district: "",
+                            ws_taluka: "",
+                        });
                         setTableInfo([...tableinfo]);
                         resetForm();
                     } else {
-                        console.error(`Error updating source. Status: ${response.status}`);
+                        setSnackbarMessage(`Error updating source. Status: ${response.status}`);
+                        setSnackbarSeverity("error");
+                        setSnackbarOpen(true);
                     }
                 } catch (error) {
-                    console.error('Error updating source:', error);
+                    setSnackbarMessage("Error updating source!");
+                    setSnackbarSeverity("error");
+                    setSnackbarOpen(true);
                 }
             }
         } else {
-            console.log('Form has errors, please correct them.');
+            setSnackbarMessage("Form has errors. Please correct them.");
+            setSnackbarSeverity("warning");
+            setSnackbarOpen(true);
         }
     };
 
@@ -482,7 +546,7 @@ const AddSource = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch(`${Port}/Screening/add_new_source_GET/?source=${SourceUrlId}`, {
+                const response = await fetch(`${Port}/Screening/Workshop_Get/`, {
                     headers: {
                         'Authorization': `Bearer ${accessToken}`,
                     },
@@ -743,8 +807,11 @@ const AddSource = () => {
     const [selectedRow, setSelectedRow] = useState(null);
 
     const handleTableRowClick = (info) => {
-        setSelectedSourceId(info.source_pk_id);
-        setSelectedRow(info.source_pk_id);
+        setSelectedSourceId(info.ws_pk_id);
+        setSelectedRow(info.ws_pk_id);
+        // Reset form validation errors when selecting a new row
+        setErrors({});
+        setFormEnabled(false);
     };
 
     useEffect(() => {
@@ -753,8 +820,8 @@ const AddSource = () => {
 
     const fetchData1 = async () => {
         try {
-            if (selectedSourceId !== '') {
-                const response = await fetch(`${Port}/Screening/add_new_source_GET_ID_WISE/${selectedSourceId}/`, {
+            if (selectedRow !== '') {
+                const response = await fetch(`${Port}/Screening/Workshop_Update/${selectedRow}/`, {
                     headers: {
                         'Authorization': `Bearer ${accessToken}`,
                     },
@@ -764,49 +831,53 @@ const AddSource = () => {
                 const data = await response.json();
                 console.log("JSON data from API:", data);
 
-                const fullImageURL = `${Port}${data.Registration_details}`;
-                console.log("Full Image URL:", fullImageURL);
+                // Set selected values for dropdowns
+                setSelectedState(data.ws_state);
+                setSelectedDistrict(data.ws_district);
+                setSelectedTahsil(data.ws_taluka);
+                setSelectedVitals(data.screening_vitals || []);
+                setSelectedSubVitals(data.sub_screening_vitals || []);
 
-                console.log('source_pk_id:', data.source.source_pk_id);
-                console.log('Source Name:', data.source_names);
+                // Set GIS address data if available
+                if (data.latitude && data.longitude) {
+                    setLat(data.latitude);
+                    setLong(data.longitude);
+                    setGisAddress(data.ws_address);
+                }
+
+                console.log('Workshop ID:', data.ws_pk_id);
+                console.log('Workshop Name:', data.Workshop_name);
                 console.log('Registration No:', data.registration_no);
                 console.log('Mobile No:', data.mobile_no);
                 console.log('Email ID:', data.email_id);
-                console.log('Source State:', data.source_state.state_name);
-                console.log('Source District:', data.source_district.dist_name);
-                console.log('Source Taluka:', data.source_taluka.tahsil_name);
-                console.log('Source Pincode:', data.source_pincode);
-                console.log('Source Address:', data.source_address);
-                console.log('Vitals :', data.screening_vitals);
-                console.log('Sub Vitals :', data.sub_screening_vitals);
+                console.log('State:', data.ws_state_name);
+                console.log('District:', data.ws_district_name);
+                console.log('Taluka:', data.ws_taluka_name);
+                console.log('Pincode:', data.ws_pincode);
+                console.log('Address:', data.ws_address);
+                console.log('Vitals:', data.screening_vitals);
+                console.log('Sub Vitals:', data.sub_screening_vitals);
 
-                console.log('source_pk_id:', data.source.source_pk_id);
+                console.log('Workshop ID:', data.ws_pk_id);
 
                 if (response.headers.get('content-type') === 'application/json') {
                     console.log("Handling JSON response");
                     setSelectData(prevState => ({
-                        add_source_id: data.source?.source || '',
-                        source: data.source?.source_pk_id || '',
-
-                        add_state_id: data.source_state?.state_name || '',
-                        source_state: data.source_state?.state_id || '',
-
-                        add_district_id: data.source_district?.dist_name || '',
-                        source_district: data.source_district?.dist_id || '',
-                        add_tehsil_id: data.source_taluka?.tahsil_name || '',
-
-                        source_taluka: data.source_taluka?.tal_id || '',
-                        source_names: data.source_names || '',
-
+                        source: data.source || '',
+                        Workshop_name: data.Workshop_name || '',
                         registration_no: data.registration_no || '',
                         mobile_no: data.mobile_no || '',
                         email_id: data.email_id || '',
-                        source_pincode: data.source_pincode || '',
-                        source_address: data.source_address || '',
+                        ws_pincode: data.ws_pincode || '',
+                        ws_address: data.ws_address || '',
+                        source_state: data.ws_state || '',
+                        source_district: data.ws_district || '',
+                        source_taluka: data.ws_taluka || '',
                         screening_vitals: data.screening_vitals || [],
                         sub_screening_vitals: data.sub_screening_vitals || [],
-                        pk_id: data.source_pk_id || '',
-                        Registration_details: fullImageURL,
+                        ws_pk_id: data.ws_pk_id || '',
+                        pk_id: data.ws_pk_id || '',
+                        Registration_details: data.logo,
 
                     }));
                     console.log("Registration Details (Image URL):", selectData.Registration_details);
@@ -815,12 +886,11 @@ const AddSource = () => {
                     const fileResponse = await fetch(`${Port}/Screening/add_new_source_PUT/${selectedSourceId}/`, {
                         method: 'GET',
                         headers: {
-                            'Content-Type': 'application/json', // Adjust content type as needed
+                            'Content-Type': 'application/json',
                             'Authorization': `Bearer ${accessToken}`,
                         },
                     });
 
-                    // Assuming the file is a blob, you can set it in the state
                     const fileBlob = await fileResponse.blob();
 
                     setSelectData(prevState => ({
@@ -843,8 +913,6 @@ const AddSource = () => {
                         pk_id: data.source_pk_id || '',
                         Registration_details: fileBlob,
                     }));
-                    // Set the selectedVitals and selectedSubVitals based on the API response
-
                     setSelectedVitals(data.screening_vitals || []);
                     setSelectedSubVitals(data.sub_screening_vitals || []);
                 }
@@ -856,10 +924,26 @@ const AddSource = () => {
 
     useEffect(() => {
         fetchData1();
-    }, [selectedSourceId]);
+    }, [selectedRow]);
 
     return (
         <div>
+            <Snackbar
+                open={snackbarOpen}
+                autoHideDuration={3000}
+                onClose={handleCloseSnackbar}
+                anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+            >
+                <Alert
+                    onClose={handleCloseSnackbar}
+                    severity={snackbarSeverity}
+                    variant="filled"
+                    sx={{ width: "100%" }}
+                >
+                    {snackbarMessage}
+                </Alert>
+            </Snackbar>
+
             <Card
                 sx={{
                     p: 1,
@@ -1386,18 +1470,30 @@ const AddSource = () => {
                                         />
                                     </Grid>
 
+
                                     <Grid item xs={12} sm={6}>
-                                        <TextField
-                                            fullWidth
-                                            label="Address *"
-                                            name="ws_address"
-                                            value={selectData.ws_address}
-                                            onChange={handleChange}
-                                            size="small"
-                                            disabled={!isFormEnabled}
-                                            error={!!errors.ws_address}
-                                            helperText={errors.ws_address}
-                                        />
+                                        {isLoaded && (
+                                            <Autocomplete
+                                                onLoad={(autocomplete) =>
+                                                    (addressRef.current = autocomplete)
+                                                }
+                                                onPlaceChanged={handlePlaceChanged}
+                                            >
+                                                <TextField
+                                                    fullWidth
+                                                    label="Address *"
+                                                    name="ws_address"
+                                                    value={gisAddress}
+                                                    onChange={(e) => setGisAddress(e.target.value)}
+                                                    // value={selectData.ws_address}
+                                                    // onChange={handleChange}
+                                                    size="small"
+                                                    disabled={!isFormEnabled}
+                                                    error={!!errors.ws_address}
+                                                    helperText={errors.ws_address}
+                                                />
+                                            </Autocomplete>
+                                        )}
                                     </Grid>
 
                                     <Grid item xs={12}>
@@ -1529,38 +1625,33 @@ const AddSource = () => {
                                             .slice(page * rowsPerPage, (page + 1) * rowsPerPage)
                                             .map((info, index) => {
                                                 const serialNumber = index + 1 + page * rowsPerPage;
+
                                                 return (
                                                     <Card
-                                                        key={info.source_pk_id}
+                                                        key={info.ws_pk_id}
                                                         onClick={() => handleTableRowClick(info)}
                                                         elevation={0}
                                                         sx={{
                                                             mb: 1,
+                                                            display: "flex",
                                                             borderRadius: "20px",
                                                             border: "none",
-                                                            boxShadow: "none", 
+                                                            boxShadow: "none",
                                                             cursor: "pointer",
                                                             transition: "0.3s",
+                                                            p: 1.5,
+                                                            borderRadiusTopleft: selectedRow === info.ws_pk_id ? "2px solid red" : "0px",
                                                             backgroundColor:
-                                                                selectedRow === info.source_pk_id ? "#E3F2FD" : "white",
+                                                                selectedRow === info.ws_pk_id ? "white" : "white",
                                                             "&:hover": {
-                                                                backgroundColor: "#F9FAFB",
+                                                                backgroundColor:
+                                                                    selectedRow === info.ws_pk_id ? "#d7d7d7ff" : "#F9FAFB",
                                                             },
                                                         }}
                                                     >
-                                                        <Box
-                                                            sx={{
-                                                                display: "flex",
-                                                                justifyContent: "space-between",
-                                                                alignItems: "center",
-                                                                p: 1.5,
-                                                                fontFamily: "Roboto",
-                                                            }}
-                                                        >
-                                                            <Box sx={{ flex: 0.8 }}>{serialNumber}</Box>
-                                                            <Box sx={{ flex: 2 }}>{info.source_names}</Box>
-                                                            <Box sx={{ flex: 1 }}>{info.registration_no}</Box>
-                                                        </Box>
+                                                        <Box sx={{ flex: 0.8 }}>{serialNumber}</Box>
+                                                        <Box sx={{ flex: 2 }}>{info.Workshop_name}</Box>
+                                                        <Box sx={{ flex: 1 }}>{info.registration_no}</Box>
                                                     </Card>
                                                 );
                                             })}
@@ -1568,6 +1659,7 @@ const AddSource = () => {
                                 </Box>
                             )}
 
+                            {/* Pagination */}
                             <TablePagination
                                 component="div"
                                 count={displayedData.length}
