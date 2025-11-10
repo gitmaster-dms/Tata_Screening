@@ -11,7 +11,7 @@ from django.http import JsonResponse
 from datetime import timedelta
 from django.shortcuts import get_object_or_404
 from django.db.models import Count
-
+from django.utils.timezone import now
 
 # ---------------------Login -----------------------------------------
 from django.contrib.auth import authenticate
@@ -5842,29 +5842,58 @@ class Investigation_Info_Get_API(APIView):
 class TotalDriverReg_Dashboard_API(APIView):
     def get(self, request):
         try:
+            dt = request.query_params.get('dt')
             total_driver_screened = 0
             total_driver_not_screened = 0
 
-            # total_drivers = Citizen.objects.filter(category=1, is_deleted=False).order_by('citizens_pk_id')
-            # total_others = Citizen.objects.filter(category=2, is_deleted=False).order_by('citizens_pk_id')
+            today = now()
 
-            citizens = Citizen.objects.filter(is_deleted=False).order_by('citizens_pk_id')
+            common_filters = {"is_deleted": False}
+
+            if dt == "1":
+                common_filters["added_date__date"] = today.date()
+            elif dt == "2":
+                common_filters["added_date__month"] = today.month
+
+            citizens = Citizen.objects.filter(**common_filters).order_by("citizens_pk_id")
+            citizen_ids = citizens.values_list("citizens_pk_id", flat=True)
 
             total_drivers = citizens.filter(category=1)
             total_others = citizens.filter(category=2)
             print("Total Others Fetched:", total_others.count())
 
-            referral_count = follow_up.objects.filter(citizen_pk_id__in=citizens.values_list('citizens_pk_id', flat=True),is_deleted=False).count()
+            referral_count = follow_up.objects.filter(citizen_pk_id__in=citizen_ids,**common_filters).count()
             print("Total Referral Count:", referral_count)
 
-            follow_up_count = followup_save.objects.filter(citizen_pk_id__in=citizens.values_list('citizens_pk_id', flat=True),is_deleted=False).distinct('citizen_pk_id').count()
+            follow_up_count = followup_save.objects.filter(citizen_pk_id__in=citizen_ids,**common_filters).distinct("citizen_pk_id").count()
             print("Total Follow-up Count:", follow_up_count)
 
-            colleagues = agg_com_colleague.objects.filter(is_deleted=False, grp_id=10)
 
-            avail_colleague_ids = colleagues.filter(clg_is_login=False).count()
-            notavail_colleague_ids = colleagues.filter(clg_is_login=True).count()
-            
+            colleagues_filters = {"is_deleted": False, "grp_id": 10}
+            print("1")
+            if dt == "1":
+                colleagues_filters["clg_added_date__date"] = today.date()
+                print("2", colleagues_filters["clg_added_date__date"])
+            elif dt == "2":
+                colleagues_filters["clg_added_date__month"] = today.month
+                print("3")
+            print("4")
+            try:
+                colleagues = agg_com_colleague.objects.filter(**colleagues_filters)
+                print("Total Colleagues Fetched:", colleagues.count())
+                avail_colleague_ids = colleagues.filter(clg_is_login=False).count()
+                notavail_colleague_ids = colleagues.filter(clg_is_login=True).count()
+            except Exception as e:
+                print("Error fetching colleagues:", str(e))
+                avail_colleague_ids = 0
+                notavail_colleague_ids = 0
+
+            date_filter = {}
+            if dt == "today":
+                date_filter["added_date__date"] = today.date()
+            elif dt == "this_month":
+                date_filter["added_date__month"] = today.month
+
             for driver in total_drivers:
                 citizen_id = driver.citizens_pk_id
 
@@ -5897,7 +5926,7 @@ class TotalDriverReg_Dashboard_API(APIView):
                 all_have_records = True  # assume all have records initially
 
                 for model in tables:
-                    count = model.objects.filter(citizen_pk_id=citizen_id, form_submit=False).count()
+                    count = model.objects.filter(citizen_pk_id=citizen_id, form_submit=False, **date_filter).count()
                     # print(f"{model.__name__} count:", count)
                     if count == 0:
                         all_have_records = False
@@ -5937,6 +5966,16 @@ class Health_Score_API(APIView):
 
     def get(self, request):
         try:
+            dt = request.query_params.get('dt')
+            today = now()
+
+            common_filters = {"is_deleted": False}
+
+            if dt == "1":
+                common_filters["added_date__date"] = today.date()
+            elif dt == "2":
+                common_filters["added_date__month"] = today.month
+
             # Define custom order
             ordered_categories = [
                 'Underweight',
@@ -5947,12 +5986,12 @@ class Health_Score_API(APIView):
             ]
 
             # Total valid records
-            total_records = growth_monitoring_info.objects.filter(is_deleted=False).count()
+            total_records = growth_monitoring_info.objects.filter(**common_filters).count()
 
             # Group by category
             health_scores = (
                 growth_monitoring_info.objects
-                .filter(is_deleted=False, weight_for_height__in=ordered_categories)
+                .filter(**common_filters, weight_for_height__in=ordered_categories)
                 .values('weight_for_height')
                 .annotate(count=Count('growth_pk_id'))
             )
@@ -5982,34 +6021,45 @@ class Health_Score_API(APIView):
 class BMI_Vitals_dashboard_API(APIView):
     def get(self, request):
         try:
-            citizens = Citizen.objects.filter(is_deleted=False).order_by('citizens_pk_id')
+            dt = request.query_params.get('dt')
+            today = now()
+
+            common_filters = {"is_deleted": False}
+
+            if dt == "1":
+                common_filters["added_date__date"] = today.date()
+            elif dt == "2":
+                common_filters["added_date__month"] = today.month
+
+                
+            citizens = Citizen.objects.filter(**common_filters).order_by('citizens_pk_id')
             print("Total Citizens Fetched:", citizens.count())
 
-            bmi_count = growth_monitoring_info.objects.filter(citizen_pk_id__in=citizens, is_deleted=False).count()
+            bmi_count = growth_monitoring_info.objects.filter(citizen_pk_id__in=citizens, **common_filters).count()
             print("Total BMI Records Fetched:", bmi_count)
 
-            vital_count = vital_info.objects.filter(citizen_pk_id__in=citizens, is_deleted=False).count()
+            vital_count = vital_info.objects.filter(citizen_pk_id__in=citizens, **common_filters).count()
             print("Total Vitals Records Fetched:", vital_count)
 
-            auditory_count = auditory_info.objects.filter(citizen_pk_id__in=citizens, is_deleted=False).count()
+            auditory_count = auditory_info.objects.filter(citizen_pk_id__in=citizens, **common_filters).count()
             print("Total Auditory Records Fetched:", auditory_count)
 
-            dental_count = dental_info.objects.filter(citizen_pk_id__in=citizens, is_deleted=False).count()
+            dental_count = dental_info.objects.filter(citizen_pk_id__in=citizens, **common_filters).count()
             print("Total Dental Records Fetched:", dental_count)
 
-            vital_info_count = vision_info.objects.filter(citizen_pk_id__in=citizens, is_deleted=False).count()
+            vital_info_count = vision_info.objects.filter(citizen_pk_id__in=citizens, **common_filters).count()
             print("Total Vision Records Fetched:", vital_info_count)
 
-            medical_history_count = medical_history_info.objects.filter(citizen_pk_id__in=citizens, is_deleted=False).count()
+            medical_history_count = medical_history_info.objects.filter(citizen_pk_id__in=citizens, **common_filters).count()
             print("Total Medical History Records Fetched:", medical_history_count)
 
-            investigation_info_count = investigation_info.objects.filter(citizen_pk_id__in=citizens, is_deleted=False).count()
+            investigation_info_count = investigation_info.objects.filter(citizen_pk_id__in=citizens, **common_filters).count()
             print("Total Investigation Records Fetched:", investigation_info_count)
 
-            pft_info_count = pft_info.objects.filter(citizen_pk_id__in=citizens, is_deleted=False).count()
+            pft_info_count = pft_info.objects.filter(citizen_pk_id__in=citizens, **common_filters).count()
             print("Total PFT Records Fetched:", pft_info_count)
 
-            immunisation_info_count = immunisation_info.objects.filter(citizen_pk_id__in=citizens, is_deleted=False).count()
+            immunisation_info_count = immunisation_info.objects.filter(citizen_pk_id__in=citizens, **common_filters).count()
             print("Total Immunisation Records Fetched:", immunisation_info_count)
 
             count_obj = {
@@ -6028,6 +6078,8 @@ class BMI_Vitals_dashboard_API(APIView):
             return Response(count_obj, status=status.HTTP_200_OK)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
 
 
 class Healthcard_Citizen_List(APIView):
