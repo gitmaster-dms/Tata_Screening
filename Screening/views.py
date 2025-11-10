@@ -3878,7 +3878,17 @@ class Workshop_Update_API(APIView):
             return Response({'message': 'Workshop updated successfully', 'data': serializer.data}, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)    
     
-    
+
+class Workshop_Delete_API(APIView):
+    def delete(self, request, ws_pk_id):
+        snippet = Workshop.objects.filter(ws_pk_id=ws_pk_id).first()
+        if snippet:
+            snippet.is_deleted = True
+            snippet.save()
+            return Response({'message': 'Workshop deleted successfully'}, status=status.HTTP_200_OK)
+        
+
+
 
     
 class Citizen_Get_Api(APIView):

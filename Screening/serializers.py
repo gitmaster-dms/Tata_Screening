@@ -657,9 +657,10 @@ class Workshop_Get_Serializer(serializers.ModelSerializer):
         fields = ['ws_pk_id','Workshop_name','registration_no']
         
 class Citizen_Get_Serializer(serializers.ModelSerializer):
+    category_name = serializers.CharField(source='category.category',allow_null=True)
     class Meta:
         model = Citizen
-        fields = ['citizens_pk_id','citizen_id','prefix','name','aadhar_id','mobile_no']
+        fields = ['citizens_pk_id','citizen_id','prefix','name','aadhar_id','mobile_no','category','category_name','added_by','modify_by']
         
 class Citizen_idwise_data_Get_Serializer(serializers.ModelSerializer):
     gender_name = serializers.CharField(source='gender.gender',allow_null=True)
@@ -1538,3 +1539,8 @@ class Category_Get_Serializer(serializers.ModelSerializer):
     class Meta:
         model = Category
         fields = ['pk_id','category']
+
+class Workshop_delete_Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = Workshop
+        fields = ['Workshop','is_deleted']
