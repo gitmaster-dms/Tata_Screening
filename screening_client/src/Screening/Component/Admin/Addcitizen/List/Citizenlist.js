@@ -9,6 +9,7 @@ import DeleteOutlineOutlinedIcon from '@mui/icons-material/DeleteOutlineOutlined
 import {
     Box,
     Grid,
+    Modal,
     Card,
     Typography,
     Button,
@@ -27,7 +28,9 @@ import {
     MenuItem,
     CardContent,
     ListItemText,
-    ListItemIcon
+    ListItemIcon,
+    Snackbar,
+    Alert
 } from "@mui/material";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import ReplayOutlinedIcon from "@mui/icons-material/ReplayOutlined";
@@ -179,11 +182,12 @@ const Citizenlist = () => {
 
     //today till filter
     const handleActive = async (type) => {
-        setLoading(true); // Set loading to true when starting the data fetching
+        setLoading(true);
 
         try {
-            const accessToken = localStorage.getItem('token'); // Retrieve access token
-            const response = await axios.get(`${Port}/Screening/filter-citizens/?date_filter=${type}&source=${SourceUrlId}&source_name=${SourceNameUrlId}`, {
+            const accessToken = localStorage.getItem('token');
+            // const response = await axios.get(`${Port}/Screening/filter-citizens/?date_filter=${type}&source=${SourceUrlId}&source_name=${SourceNameUrlId}`, {
+            const response = await axios.get(`${Port}/Screening/Citizen_Get/`, {
                 headers: {
                     'Authorization': `Bearer ${accessToken}`,
                     'Content-Type': 'application/json'
@@ -407,19 +411,109 @@ const Citizenlist = () => {
     }, [])
 
     const [anchorEl, setAnchorEl] = useState(null);
+    const [selectedCitizen, setSelectedCitizen] = useState(null);
+    const [openModal, setOpenModal] = useState(false);
+    const [openModalStart, setOpenModalStart] = useState(false);
+    const [loadingPrevious, setLoadingPrevious] = useState(false);
+    const [previousData, setPreviousData] = useState(null);
     const open = Boolean(anchorEl);
+    const [snackbar, setSnackbar] = useState({ open: false, message: "", severity: "success" });
 
-    const handleMenuOpen = (event) => {
+    const handleMenuOpen = (event, citizen) => {
         setAnchorEl(event.currentTarget);
+        setSelectedCitizen(citizen);
     };
+
     const handleMenuClose = () => {
         setAnchorEl(null);
     };
 
-    // const handleDeleteClick = (citizenId) => {
-    //     console.log("Delete citizen:", citizenId);
-    //     handleMenuClose();
-    // };
+    const handlePreviousClick = async () => {
+        if (!selectedCitizen) return;
+        handleMenuClose();
+        setOpenModal(true);
+        setLoadingPrevious(true);
+
+        try {
+            const response = await fetch(
+                `${Port}/Screening/Start_Screening/${selectedCitizen.citizens_pk_id}/`
+            );
+            const data = await response.json();
+            console.log("Fetched Screening Data:", data);
+            setPreviousData(data);
+        } catch (error) {
+            console.error("Error fetching previous screening:", error);
+            setPreviousData({ error: true });
+        } finally {
+            setLoadingPrevious(false);
+        }
+    };
+
+    const handleStartScreening = async () => {
+        if (!selectedCitizen) return;
+        handleMenuClose();
+        setOpenModalStart(true);
+        setLoadingPrevious(true);
+
+        try {
+            const response = await fetch(
+                `${Port}/Screening/Start_Screening/${selectedCitizen.citizens_pk_id}/`
+            );
+            const data = await response.json();
+            console.log("Fetched Screening Data:", data);
+            setPreviousData(data);
+        } catch (error) {
+            console.error("Error fetching previous screening:", error);
+            setPreviousData({ error: true });
+        } finally {
+            setLoadingPrevious(false);
+        }
+    };
+
+    const handleStartNewScreening = async () => {
+        if (!selectedCitizen?.citizens_pk_id) {
+            setSnackbar({
+                open: true,
+                message: "Invalid citizen data.",
+                severity: "error",
+            });
+            return;
+        }
+
+        try {
+            const response = await axios.post(
+                `${Port}/Screening/Start_Screening/${selectedCitizen.citizens_pk_id}/`,
+                {
+                    citizen_id: selectedCitizen.citizens_pk_id,
+                },
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+                    },
+                }
+            );
+
+            if (response.status === 200 || response.status === 201) {
+                setSnackbar({
+                    open: true,
+                    message: "New screening started successfully!",
+                    severity: "success",
+                });
+
+                setOpenModalStart(false);
+            } else {
+                throw new Error("Failed to start new screening.");
+            }
+        } catch (error) {
+            console.error("Error starting new screening:", error);
+            setSnackbar({
+                open: true,
+                message: "Failed to start new screening. Please try again.",
+                severity: "error",
+            });
+        }
+    };
 
     return (
         <div>
@@ -746,8 +840,8 @@ const Citizenlist = () => {
                             >
                                 <TableCell sx={{ flex: 0.5 }}>Sr No.</TableCell>
                                 <TableCell sx={{ flex: 2 }}>Citizen Name</TableCell>
-                                <TableCell sx={{ flex: 1 }}>Age</TableCell>
-                                <TableCell sx={{ flex: 2 }}>Workshop Name</TableCell>
+                                <TableCell sx={{ flex: 1 }}>Mobile Number</TableCell>
+                                <TableCell sx={{ flex: 2 }}>Adhar Number</TableCell>
                                 <TableCell sx={{ flex: 1.5 }}>Added By</TableCell>
                                 <TableCell sx={{ flex: 1 }}>Action</TableCell>
                             </TableRow>
@@ -803,15 +897,11 @@ const Citizenlist = () => {
                                                         >
                                                             <Box sx={{ flex: 0.5 }}>{serialNumber}</Box>
                                                             <Box sx={{ flex: 2 }}>{data.name || "-"}</Box>
-                                                            <Box sx={{ flex: 1 }}>
-                                                                {data.year ? `${data.year} Year` : "-"}
-                                                            </Box>
-                                                            <Box sx={{ flex: 2 }}>{data.source_name_name || "-"}</Box>
-                                                            <Box sx={{ flex: 1.5 }}>
-                                                                {data.added_by ? data.added_by.clg_ref_id : "-"}
-                                                            </Box>
+                                                            <Box sx={{ flex: 1 }}> {data.mobile_no || "-"}</Box>
+                                                            <Box sx={{ flex: 2 }}>{data.aadhar_id || "-"}</Box>
+                                                            <Box sx={{ flex: 1.5 }}> {data.added_by || "-"}</Box>
                                                             <Box sx={{ flex: 1, display: "flex", justifyContent: "center" }}>
-                                                                <IconButton onClick={handleMenuOpen}>
+                                                                <IconButton onClick={(e) => handleMenuOpen(e, data)}>
                                                                     <MoreVertIcon sx={{ color: "#1565C0" }} />
                                                                 </IconButton>
 
@@ -870,11 +960,7 @@ const Citizenlist = () => {
                                                                         </MenuItem>
                                                                     )}
 
-                                                                    <MenuItem
-                                                                        component={Link}
-                                                                        to={`/mainscreen/previousscreening/${data.citizens_pk_id}/${data.source}`}
-                                                                        onClick={handleMenuClose}
-                                                                    >
+                                                                    <MenuItem onClick={handlePreviousClick}>
                                                                         <ListItemIcon>
                                                                             <ReplayOutlinedIcon sx={{ color: "#00796B" }} />
                                                                         </ListItemIcon>
@@ -883,9 +969,7 @@ const Citizenlist = () => {
 
                                                                     <MenuItem
                                                                         component={Link}
-                                                                        // to={`/mainscreen/body/${data.citizens_pk_id}/${data.source}`}
-                                                                        to={`/mainscreen/body`}
-                                                                        onClick={handleMenuClose}
+                                                                        onClick={handleStartScreening}
                                                                     >
                                                                         <ListItemIcon>
                                                                             <PlayArrowOutlinedIcon sx={{ color: "#2E7D32" }} />
@@ -912,6 +996,263 @@ const Citizenlist = () => {
                         </TableBody>
                     </Table>
                 </TableContainer>
+
+                <Modal
+                    open={openModal}
+                    onClose={() => setOpenModal(false)}
+                    aria-labelledby="previous-screening-modal"
+                >
+                    <Box
+                        sx={{
+                            position: "absolute",
+                            top: "50%",
+                            left: "50%",
+                            transform: "translate(-50%, -50%)",
+                            width: { xs: "90%", sm: 450 },
+                            bgcolor: "background.paper",
+                            borderRadius: 3,
+                            boxShadow: 24,
+                            p: 4,
+                        }}
+                    >
+                        <Typography
+                            id="previous-screening-modal"
+                            variant="h6"
+                            textAlign="center"
+                            fontWeight={600}
+                            sx={{ mb: 3, fontFamily: "Roboto" }}
+                        >
+                            Previous Screening Details
+                        </Typography>
+
+                        {loadingPrevious ? (
+                            <Box display="flex" justifyContent="center" alignItems="center" height="120px">
+                                <CircularProgress sx={{ color: "#1439A4" }} />
+                            </Box>
+                        ) : previousData ? (
+                            previousData.error ? (
+                                <Typography color="error" textAlign="center">
+                                    Failed to load data.
+                                </Typography>
+                            ) : previousData.citizen_exists ? (
+                                <Box>
+                                    <Box
+                                        sx={{
+                                            display: "flex",
+                                            flexDirection: "column",
+                                            gap: 1.2,
+                                            bgcolor: "#F9FAFB",
+                                            borderRadius: 2,
+                                            p: 2,
+                                            mb: 3,
+                                            fontFamily: "Roboto",
+                                        }}
+                                    >
+                                        <Typography><b>Citizen ID:</b> {previousData.latest_screening.citizen_id}</Typography>
+                                        <Typography><b>Screening Count:</b> {previousData.latest_screening.screening_count}</Typography>
+                                        <Typography><b>Added By:</b> {previousData.latest_screening.added_by}</Typography>
+                                        <Typography>
+                                            <b>Added Date:</b>{" "}
+                                            {new Date(previousData.latest_screening.added_date).toLocaleString()}
+                                        </Typography>
+                                    </Box>
+
+                                    <Box
+                                        sx={{
+                                            display: "flex",
+                                            flexDirection: { xs: "column", sm: "row" },
+                                            justifyContent: "center",
+                                            alignItems: "center",
+                                            gap: 2,
+                                        }}
+                                    >
+                                        <Button
+                                            fullWidth={false}
+                                            variant="contained"
+                                            sx={{
+                                                textTransform: "none",
+                                                bgcolor: "#2E7D32",
+                                                "&:hover": { bgcolor: "#2E7D32" },
+                                                minWidth: 180,
+                                            }}
+                                            onClick={() => {
+                                                console.log(
+                                                    "Continuing screening for citizen:",
+                                                    previousData.latest_screening.citizen_pk_id
+                                                );
+                                                setOpenModal(false);
+                                                // navigate(`/mainscreen/body/${previousData.latest_screening.citizen_pk_id}`);
+                                            }}
+                                        >
+                                            Continue Previous Screening
+                                        </Button>
+
+                                        {/* <Button
+                                            fullWidth={false}
+                                            variant="contained"
+                                            sx={{
+                                                textTransform: "none",
+                                                bgcolor: "#1565C0",
+                                                "&:hover": { bgcolor: "#1565C0" },
+                                                minWidth: 180,
+                                            }}
+                                            onClick={() => {
+                                                console.log("Starting new screening for:", selectedCitizen.citizens_pk_id);
+                                                setOpenModal(false);
+                                                // navigate(`/mainscreen/body/${selectedCitizen.citizens_pk_id}`);
+                                            }}
+                                        >
+                                            Start New Screening
+                                        </Button> */}
+                                    </Box>
+                                </Box>
+                            ) : (
+                                <Box textAlign="center">
+                                    <Typography color="error" sx={{ mb: 3 }}>
+                                        No previous screening found.
+                                    </Typography>
+                                    <Button
+                                        variant="contained"
+                                        sx={{
+                                            bgcolor: "#1565C0",
+                                            "&:hover": { bgcolor: "#1565C0" },
+                                            px: 4,
+                                        }}
+                                        onClick={() => {
+                                            console.log("Starting new screening for:", selectedCitizen.citizens_pk_id);
+                                            setOpenModal(false);
+                                            handleStartNewScreening();
+                                            // navigate(`/mainscreen/body/${selectedCitizen.citizens_pk_id}`);
+                                        }}
+                                    >
+                                        Start New Screening
+                                    </Button>
+                                </Box>
+                            )
+                        ) : (
+                            <Typography color="text.secondary" textAlign="center">
+                                No data available
+                            </Typography>
+                        )}
+                    </Box>
+                </Modal>
+
+                <Modal
+                    open={openModalStart}
+                    onClose={() => setOpenModalStart(false)}
+                    aria-labelledby="previous-screening-modal"
+                >
+                    <Box
+                        sx={{
+                            position: "absolute",
+                            top: "50%",
+                            left: "50%",
+                            transform: "translate(-50%, -50%)",
+                            width: { xs: "90%", sm: 450 },
+                            bgcolor: "background.paper",
+                            borderRadius: 3,
+                            boxShadow: 24,
+                            p: 4,
+                            width: "auto"
+                        }}
+                    >
+                        {loadingPrevious ? (
+                            <Box display="flex" justifyContent="center" alignItems="center" height="120px">
+                                <CircularProgress sx={{ color: "#1439A4" }} />
+                            </Box>
+                        ) : previousData ? (
+                            previousData.error ? (
+                                <Typography color="error" textAlign="center">
+                                    Failed to load data.
+                                </Typography>
+                            ) : previousData.citizen_exists ? (
+                                <Box>
+                                    <Typography
+                                        id="previous-screening-modal"
+                                        variant="h6"
+                                        textAlign="center"
+                                        fontWeight={600}
+                                        sx={{ mb: 3, fontFamily: "Roboto" }}
+                                    >
+                                        Starting a new screening will close the Previous one.
+                                    </Typography>
+
+                                    <Box
+                                        sx={{
+                                            display: "flex",
+                                            flexDirection: { xs: "column", sm: "row" },
+                                            justifyContent: "center",
+                                            alignItems: "center",
+                                            gap: 2,
+                                        }}
+                                    >
+                                        <Button
+                                            fullWidth={false}
+                                            variant="contained"
+                                            sx={{
+                                                textTransform: "none",
+                                                bgcolor: "#1565C0",
+                                                "&:hover": { bgcolor: "#1565C0" },
+                                                minWidth: 180,
+                                            }}
+                                            onClick={() => {
+                                                console.log("Starting new screening for:", selectedCitizen.citizens_pk_id);
+                                                setOpenModal(false);
+                                                handleStartNewScreening();
+                                                // navigate(`/mainscreen/body/${selectedCitizen.citizens_pk_id}`);
+                                            }}
+                                        >
+                                            Start New Screening
+                                        </Button>
+                                    </Box>
+                                </Box>
+                            ) : (
+                                <Box textAlign="center">
+                                    <Typography
+                                        id="previous-screening-modal"
+                                        variant="h6"
+                                        textAlign="center"
+                                        fontWeight={600}
+                                        sx={{ mb: 3, fontFamily: "Roboto", }}
+                                    >
+                                        No previous screening found.
+                                    </Typography>
+                                    <Button
+                                        variant="contained"
+                                        sx={{
+                                            textTransform: "none",
+                                            bgcolor: "#1565C0",
+                                            "&:hover": { bgcolor: "#1565C0" },
+                                            px: 4,
+                                        }}
+                                        onClick={() => {
+                                            console.log("Starting new screening for:", selectedCitizen.citizens_pk_id);
+                                            setOpenModal(false);
+                                            // navigate(`/mainscreen/body/${selectedCitizen.citizens_pk_id}`);
+                                        }}
+                                    >
+                                        Start New Screening
+                                    </Button>
+                                </Box>
+                            )
+                        ) : (
+                            <Typography color="text.secondary" textAlign="center">
+                                No data available
+                            </Typography>
+                        )}
+                    </Box>
+                </Modal>
+
+                <Snackbar
+                    open={snackbar.open}
+                    autoHideDuration={4000}
+                    onClose={() => setSnackbar({ ...snackbar, open: false })}
+                    anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+                >
+                    <Alert severity={snackbar.severity} sx={{ width: "100%" }}>
+                        {snackbar.message}
+                    </Alert>
+                </Snackbar>
 
                 <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 1 }}>
                     <TablePagination
