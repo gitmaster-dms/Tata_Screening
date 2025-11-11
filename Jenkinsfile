@@ -145,7 +145,11 @@
 
 pipeline {
     agent any
- 
+
+    options {
+        skipDefaultCheckout(true)
+    }
+
     environment {
         PROJECT_DIR = "/var/www/html/Tata_Screening"
         DJANGO_DIR = "${PROJECT_DIR}/"
@@ -259,10 +263,15 @@ pipeline {
         stage('Configure Nginx') {
             steps {
                 sh """
+                    echo "🔧 Testing Nginx configuration..."
                     sudo nginx -t
-                    sudo systemctl restart gunicorn_tata
+                    
+                    echo "🔄 Restarting Nginx..."
                     sudo systemctl restart nginx
-                   
+                    
+                    echo "✅ Verifying services..."
+                    sudo systemctl status nginx --no-pager | head -10
+                    sudo systemctl status gunicorn_tata --no-pager | head -10 || echo "Gunicorn running in background"
                 """
             }
         }
