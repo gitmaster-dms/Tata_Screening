@@ -145,7 +145,11 @@
 
 pipeline {
     agent any
- 
+
+    options {
+        skipDefaultCheckout(true)
+    }
+
     environment {
         PROJECT_DIR = "/var/www/html/Tata_Screening"
         DJANGO_DIR = "${PROJECT_DIR}/"
@@ -169,9 +173,7 @@ pipeline {
             steps {
                 sh """
                 echo "🚀 Deploying latest code to ${PROJECT_DIR}"
-                sudo rm -rf ${PROJECT_DIR}
-                sudo mkdir -p ${PROJECT_DIR}
-                sudo cp -r * ${PROJECT_DIR}/
+                sudo rsync -av --delete --exclude '.git' --exclude 'venv' ./ ${PROJECT_DIR}/
                 sudo chown -R jenkins:jenkins ${PROJECT_DIR}
                 sudo chmod -R 775 ${PROJECT_DIR}
                 """
@@ -248,8 +250,7 @@ pipeline {
                     sh """
                     . venv/bin/activate
                     echo "🔄 Restarting Gunicorn on port ${GUNICORN_PORT}"
-                    pkill gunicorn || true
-                    nohup gunicorn Tata_Screening.wsgi:application --bind 0.0.0.0:${GUNICORN_PORT} --daemon
+                    sudo systemctl restart gunicorn_tata
                     """
                 }
             }
@@ -259,10 +260,15 @@ pipeline {
         stage('Configure Nginx') {
             steps {
                 sh """
+                    echo "🔧 Testing Nginx configuration..."
                     sudo nginx -t
-                    sudo systemctl restart gunicorn_tata
+                    
+                    echo "🔄 Restarting Nginx..."
                     sudo systemctl restart nginx
-                   
+                    
+                    echo "✅ Verifying services..."
+                    sudo systemctl status nginx --no-pager | head -10
+                    sudo systemctl status gunicorn_tata --no-pager | head -10 || echo "Gunicorn running in background"
                 """
             }
         }
