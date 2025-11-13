@@ -321,6 +321,7 @@ urlpatterns = [
     path('total_driver_count/', TotalDriverReg_Dashboard_API.as_view(), name='TotalDriverReg_Dashboard_API'),
     path('health_score_count/', Health_Score_API.as_view(), name='Health_Score_API'),
     path('bmi_vitals_count/', BMI_Vitals_dashboard_API.as_view(), name='BMI_Vitals_dashboard_API'),
+    path('workshop_count/', workshop_dashboard_API.as_view(), name='workshop_dashboard_API'),
 
     
     path('healthcard_citizen_list/', Healthcard_Citizen_List.as_view(), name='healthcard_citizen_list'),

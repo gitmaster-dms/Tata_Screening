@@ -6003,6 +6003,7 @@ class Health_Score_API(APIView):
     def get(self, request):
         try:
             dt = request.query_params.get('dt')
+            state = request.query_params.get('state')
             today = now()
 
             common_filters = {"is_deleted": False}
@@ -6022,15 +6023,29 @@ class Health_Score_API(APIView):
             ]
 
             # Total valid records
-            total_records = growth_monitoring_info.objects.filter(**common_filters).count()
+            if state:
+                total_records = growth_monitoring_info.objects.filter(**common_filters, citizen_pk_id__state = state).count()
+                print("Total Records with state filter:", total_records)
+                # Group by category
+                health_scores = (
+                    growth_monitoring_info.objects
+                    .filter(**common_filters, weight_for_height__in=ordered_categories, citizen_pk_id__state = state)
+                    .values('weight_for_height')
+                    .annotate(count=Count('growth_pk_id'))
+                )
+                print("Health Scores with state filter:", health_scores)
+            else:
+                total_records = growth_monitoring_info.objects.filter(**common_filters).count()
 
-            # Group by category
-            health_scores = (
-                growth_monitoring_info.objects
-                .filter(**common_filters, weight_for_height__in=ordered_categories)
-                .values('weight_for_height')
-                .annotate(count=Count('growth_pk_id'))
-            )
+                # Group by category
+                health_scores = (
+                    growth_monitoring_info.objects
+                    .filter(**common_filters, weight_for_height__in=ordered_categories)
+                    .values('weight_for_height')
+                    .annotate(count=Count('growth_pk_id'))
+                )
+
+            
 
             # Convert to dict for quick lookup
             category_count_map = {item['weight_for_height']: item['count'] for item in health_scores}
@@ -6058,6 +6073,7 @@ class BMI_Vitals_dashboard_API(APIView):
     def get(self, request):
         try:
             dt = request.query_params.get('dt')
+            state = request.query_params.get('state')
             today = now()
 
             common_filters = {"is_deleted": False}
@@ -6067,9 +6083,11 @@ class BMI_Vitals_dashboard_API(APIView):
             elif dt == "2":
                 common_filters["added_date__month"] = today.month
 
-                
-            citizens = Citizen.objects.filter(**common_filters).order_by('citizens_pk_id')
-            print("Total Citizens Fetched:", citizens.count())
+
+            if state:
+                citizens = Citizen.objects.filter(**common_filters, state=state).order_by('citizens_pk_id')
+            else:
+                citizens = Citizen.objects.filter(**common_filters).order_by('citizens_pk_id')
 
             bmi_count = growth_monitoring_info.objects.filter(citizen_pk_id__in=citizens, **common_filters).count()
             print("Total BMI Records Fetched:", bmi_count)
@@ -6116,6 +6134,31 @@ class BMI_Vitals_dashboard_API(APIView):
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
+class workshop_dashboard_API(APIView):
+    def get(self, request):
+        try:
+            dt = request.query_params.get('dt')
+            state = request.query_params.get('state')
+            today = now()
+
+            common_filters = {"is_deleted": False, "ws_state": state} if state else {"is_deleted": False}
+
+            if dt == "1":
+                common_filters["added_date__date"] = today.date()
+            elif dt == "2":
+                common_filters["added_date__month"] = today.month
+
+            workshops = Workshop.objects.filter(**common_filters)
+            print("Total Workshops Fetched:", workshops.count())
+            serializer = Workshop_Get_Serializer(workshops, many=True)
+            obj = {
+                "total_workshop_count": workshops.count(),
+                "workshop_data": serializer.data
+            }
+
+            return Response(obj, status=status.HTTP_200_OK)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 class Healthcard_Citizen_List(APIView):
