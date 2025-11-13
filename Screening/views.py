@@ -5904,6 +5904,16 @@ class TotalDriverReg_Dashboard_API(APIView):
             follow_up_count = followup_save.objects.filter(citizen_pk_id__in=citizen_ids,**common_filters).distinct("citizen_pk_id").count()
             print("Total Follow-up Count:", follow_up_count)
 
+            followup_done_count = follow_up.objects.filter(follow_up=1,citizen_pk_id__in=citizen_ids,**common_filters).distinct("citizen_pk_id").count()
+
+            followup_inprogress_count = follow_up.objects.filter(follow_up=2,citizen_pk_id__in=citizen_ids,**common_filters).distinct("citizen_pk_id").count()
+
+            followup_pending_count = follow_up.objects.filter(follow_up=3,citizen_pk_id__in=citizen_ids,**common_filters).distinct("citizen_pk_id").count()
+
+            total_followup = (followup_done_count + followup_inprogress_count + followup_pending_count)
+
+            print("Follow-ups- Done:", followup_done_count,"In Progress:", followup_inprogress_count,"Pending:", followup_pending_count,"Total:", total_followup)
+
 
             colleagues_filters = {"is_deleted": False, "grp_id": 10}
             print("1")
@@ -5981,6 +5991,10 @@ class TotalDriverReg_Dashboard_API(APIView):
                 "Total_Drivers_Added": total_drivers.count(),
                 "Total_Others_Added": total_others.count(),
                 "Total_Referrals_Made": referral_count,
+                "Followups_Done": followup_done_count,
+                "Followups_InProgress": followup_inprogress_count,
+                "Followups_Pending": followup_pending_count,
+                "Total_Followups": total_followup,
                 "Total_Drivers_Screened": total_driver_screened,
                 "Drivers_Pending_Screening": total_driver_not_screened,
                 "Total_Followups_Made": follow_up_count,
