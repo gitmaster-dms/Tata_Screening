@@ -5998,6 +5998,7 @@ class TotalDriverReg_Dashboard_API(APIView):
                 "Total_Drivers_Screened": total_driver_screened,
                 "Drivers_Pending_Screening": total_driver_not_screened,
                 "Total_Followups_Made": follow_up_count,
+                "Total_Medical_Staff": colleagues.count(),
                 "Medical_staff_Available": avail_colleague_ids,
                 "Medical_staff_NotAvailable": notavail_colleague_ids,
             }
