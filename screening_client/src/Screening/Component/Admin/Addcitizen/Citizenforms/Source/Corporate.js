@@ -1,7 +1,7 @@
-import { useState, useEffect, useRef } from 'react';
-import './Corporate.css'
-import { useSourceContext } from '../../../../../../../src/contexts/SourceContext';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect, useRef } from "react";
+import "./Corporate.css";
+import { useSourceContext } from "../../../../../../../src/contexts/SourceContext";
+import { useNavigate } from "react-router-dom";
 import {
   Box,
   Grid,
@@ -13,21 +13,21 @@ import {
   Typography,
   Button,
   Card,
-  FormHelperText
+  FormHelperText,
 } from "@mui/material";
+import axios from "axios";
 
 const Corporate = (props) => {
-
   const Port = process.env.REACT_APP_API_KEY;
-  const userID = localStorage.getItem('userID');
+  const userID = localStorage.getItem("userID");
   console.log(userID);
   const navigate = useNavigate();
-  const accessToken = localStorage.getItem('token');
+  const accessToken = localStorage.getItem("token");
 
   /// State District Tehsil
-  const State = localStorage.getItem('StateLogin');
-  const District = localStorage.getItem('DistrictLogin');
-  const Tehsil = localStorage.getItem('TehsilLogin');
+  const State = localStorage.getItem("StateLogin");
+  const District = localStorage.getItem("DistrictLogin");
+  const Tehsil = localStorage.getItem("TehsilLogin");
 
   /////////// image capturing
   const webcamRef = useRef(null);
@@ -40,7 +40,7 @@ const Corporate = (props) => {
 
   const handleClose = () => {
     setOpen(false);
-    setImageSrc(null);  // Reset imageSrc if modal is closed without saving
+    setImageSrc(null); // Reset imageSrc if modal is closed without saving
   };
 
   const capture = () => {
@@ -50,25 +50,51 @@ const Corporate = (props) => {
   /////////// image capturing end
 
   //// access the source from local storage
-  const SourceUrlId = localStorage.getItem('loginSource');
+  const SourceUrlId = localStorage.getItem("loginSource");
 
   //// access the source name from local storage
-  const SourceNameUrlId = localStorage.getItem('SourceNameFetched');
+  const SourceNameUrlId = localStorage.getItem("SourceNameFetched");
 
-  const [maritalStatus, setMaritalStatus] = useState('');
-  const { sourceState, district, tehsil, SourceName, height,
-    setHeight, weight, setWeight, age, setAge, bmi, gender,
-    selectedScheduleType, selectedSource, selectedAge, selectedDisease } = useSourceContext();
+  const [maritalStatus, setMaritalStatus] = useState("");
+  const {
+    sourceState,
+    district,
+    tehsil,
+    SourceName,
+    height,
+    setHeight,
+    weight,
+    setWeight,
+    age,
+    setAge,
+    bmi,
+    gender,
+    selectedScheduleType,
+    selectedSource,
+    selectedAge,
+    selectedDisease,
+  } = useSourceContext();
 
   const [department, setDepartment] = useState([]);
-  const [selectedDepartment, setSelectedDepartment] = useState('');
-  const [selectedDesignation, setSelectedDesignation] = useState('');
+  const [selectedDepartment, setSelectedDepartment] = useState("");
+  const [selectedDesignation, setSelectedDesignation] = useState("");
   const [designation, setDesignation] = useState([]);
   const [siblingsCount, setSiblingsCount] = useState("");
   const [childrenCount, setChildrenCount] = useState("");
-  const [dob, setDOB] = useState('');
+  const [dob, setDOB] = useState("");
 
-  console.log(selectedAge, 'Fetched Age for Corporate');
+  const [dropdownSource, setDropdownSource] = useState([]);
+
+  const [stateOptions, setStateOptions] = useState([]);
+  const [selectedState, setSelectedState] = useState("");
+
+  const [districtOptions, setDistrictOptions] = useState([]);
+  const [selectedDistrict, setSelectedDistrict] = useState("");
+
+  const [talukaOptions, setTalukaOptions] = useState([]);
+  const [selectedTahsil, setSelectedTahsil] = useState("");
+
+  console.log(selectedAge, "Fetched Age for Corporate");
 
   const handleSiblingsCountChange = (e) => {
     setSiblingsCount(e.target.value);
@@ -79,80 +105,153 @@ const Corporate = (props) => {
   };
 
   //////////// depeendency Mapping
-  const { selectedState, setSelectedState } = useSourceContext();
-  const [selectedStateId, setSelectedStateId] = useState(State || '');
+  useEffect(() => {
+    const fetchStateOptions = async () => {
+      try {
+        const response = await axios.get(`${Port}/Screening/State_Get/`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+        const options = response.data;
+        setStateOptions(options);
+      } catch (error) {
+        console.log("Error While Fetching Data", error);
+      }
+    };
+    fetchStateOptions();
+  }, []);
 
-  const handleStateChange = (event) => {
-    const stateId = event.target.value;
-    setSelectedState(stateId);
-    setSelectedStateId(stateId);
+  useEffect(() => {
+    const fetchDistrictOptions = async () => {
+      if (selectedState) {
+        try {
+          const res = await fetch(
+            `${Port}/Screening/District_Get/${selectedState}/`,
+            {
+              headers: {
+                Authorization: `Bearer ${accessToken}`,
+              },
+            }
+          );
+          const data = await res.json();
+          setDistrictOptions(data);
+        } catch (error) {
+          console.error("Error fetching District data:", error);
+        }
+      }
+    };
+    fetchDistrictOptions();
+  }, [selectedState]);
 
-    // Clear error message for state if it exists
-    if (errorMessages.state) {
-      setErrorMessages((prevErrors) => ({
-        ...prevErrors,
-        state: '',
-      }));
-    }
-  };
+  useEffect(() => {
+    const fetchTalukaOptions = async () => {
+      if (selectedDistrict) {
+        try {
+          const res = await fetch(
+            `${Port}/Screening/Tehsil_Get/${selectedDistrict}/`,
+            {
+              headers: {
+                Authorization: `Bearer ${accessToken}`,
+              },
+            }
+          );
+          const data = await res.json();
+          setTalukaOptions(data);
+        } catch (error) {
+          console.error("Error fetching Taluka data:", error);
+        }
+      }
+    };
+    fetchTalukaOptions();
+  }, [selectedDistrict]);
+
+  useEffect(() => {
+    const fetchSource = async () => {
+      try {
+        const response = await axios.get(`${Port}/Screening/source_GET/`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+        const options = response.data;
+        setDropdownSource(options);
+      } catch (error) {
+        console.log("Error While Fetching Data", error);
+      }
+    };
+    fetchSource();
+  }, []);
+
+  // const handleStateChange = (event) => {
+  //   const stateId = event.target.value;
+  //   setSelectedState(stateId);
+  //   setSelectedStateId(stateId);
+
+  //   // Clear error message for state if it exists
+  //   if (errorMessages.state) {
+  //     setErrorMessages((prevErrors) => ({
+  //       ...prevErrors,
+  //       state: '',
+  //     }));
+  //   }
+  // };
 
   ///// district
-  const { selectedDistrict, setSelectedDistrict } = useSourceContext();
-  const [selectedDistrictId, setSelectedDistrictId] = useState(District || '');
+  // const { selectedDistrict, setSelectedDistrict } = useSourceContext();
+  // const [selectedDistrictId, setSelectedDistrictId] = useState(District || '');
 
-  const handleDistrictChange = (event) => {
-    const districtId = event.target.value;
-    setSelectedDistrict(districtId);
-    setSelectedDistrictId(districtId);
+  // const handleDistrictChange = (event) => {
+  //   const districtId = event.target.value;
+  //   setSelectedDistrict(districtId);
+  //   setSelectedDistrictId(districtId);
 
-    // Clear error message for state if it exists
-    if (errorMessages.district) {
-      setErrorMessages((prevErrors) => ({
-        ...prevErrors,
-        district: '',
-      }));
-    }
-  }
+  //   // Clear error message for state if it exists
+  //   if (errorMessages.district) {
+  //     setErrorMessages((prevErrors) => ({
+  //       ...prevErrors,
+  //       district: '',
+  //     }));
+  //   }
+  // }
 
-  ///// tehsil
-  const { selectedTehsil, setSelectedTehsil } = useSourceContext();
-  const [selectedTehsilId, setSelectedTehsilId] = useState(Tehsil || '');
+  // ///// tehsil
+  // const { selectedTehsil, setSelectedTehsil } = useSourceContext();
+  // const [selectedTehsilId, setSelectedTehsilId] = useState(Tehsil || '');
 
-  const handleTehsilChange = (event) => {
-    const tehsilId = event.target.value;
-    setSelectedTehsil(tehsilId);
-    setSelectedTehsilId(tehsilId);
+  // const handleTehsilChange = (event) => {
+  //   const tehsilId = event.target.value;
+  //   setSelectedTehsil(tehsilId);
+  //   setSelectedTehsilId(tehsilId);
 
-    // Clear error message for state if it exists
-    if (errorMessages.tehsil) {
-      setErrorMessages((prevErrors) => ({
-        ...prevErrors,
-        tehsil: '',
-      }));
-    }
-  }
+  //   // Clear error message for state if it exists
+  //   if (errorMessages.tehsil) {
+  //     setErrorMessages((prevErrors) => ({
+  //       ...prevErrors,
+  //       tehsil: '',
+  //     }));
+  //   }
+  // }
 
-  //////// source Name 
+  //////// source Name
   const { selectedName, setSelectedName } = useSourceContext();
-  const [selectedNameId, setSelectedNameId] = useState('');
+  const [selectedNameId, setSelectedNameId] = useState("");
 
-  const handleSOurceNameChange = (event) => {
-    const nameId = event.target.value;
-    setSelectedName(nameId);
-    setSelectedNameId(nameId);
+const handleSourceChange = (e) => {
+  const selectedId = e.target.value;
+  const selectedOption = dropdownSource.find(opt => opt.source_pk_id === selectedId);
 
-    // Clear error message for state if it exists
-    if (errorMessages.source_name) {
-      setErrorMessages((prevErrors) => ({
-        ...prevErrors,
-        source_name: '',
-      }));
-    }
-  }
+  setCorporateForm((prev) => ({
+    ...prev,
+    source: selectedId,
+    source_name: selectedOption ? selectedOption.source : "",
+  }));
+};
+
 
   ////////// BMI
-  const [heightValue, setHeightValue] = useState('');
-  const [weightValue, setWeightValue] = useState('');
+  const [heightValue, setHeightValue] = useState("");
+  const [weightValue, setWeightValue] = useState("");
 
   const handleHeightChange = (event) => {
     const { value } = event.target;
@@ -168,24 +267,29 @@ const Corporate = (props) => {
 
   const handlestatus = (event) => {
     setMaritalStatus(event.target.value);
-  }
+  };
 
   const calculateAge = (selectedDOB) => {
     if (!selectedDOB) {
       // Clear age values when DOB is null or undefined
-      setAge({ year: '', months: '', days: '' });
+      setAge({ year: "", months: "", days: "" });
       return;
     }
 
     const currentDate = new Date();
     const ageInMilliseconds = currentDate - selectedDOB;
 
-    const years = Math.floor(ageInMilliseconds / (365.25 * 24 * 60 * 60 * 1000));
+    const years = Math.floor(
+      ageInMilliseconds / (365.25 * 24 * 60 * 60 * 1000)
+    );
     const months = Math.floor(
-      (ageInMilliseconds % (365.25 * 24 * 60 * 60 * 1000)) / (30.44 * 24 * 60 * 60 * 1000)
+      (ageInMilliseconds % (365.25 * 24 * 60 * 60 * 1000)) /
+        (30.44 * 24 * 60 * 60 * 1000)
     );
     const days = Math.floor(
-      ((ageInMilliseconds % (365.25 * 24 * 60 * 60 * 1000)) % (30.44 * 24 * 60 * 60 * 1000)) / (24 * 60 * 60 * 1000)
+      ((ageInMilliseconds % (365.25 * 24 * 60 * 60 * 1000)) %
+        (30.44 * 24 * 60 * 60 * 1000)) /
+        (24 * 60 * 60 * 1000)
     );
 
     setAge({ year: years, months: months, days: days });
@@ -205,7 +309,7 @@ const Corporate = (props) => {
       if (props.age === 2 && selectedDate >= minAllowedDate) {
         setErrorMessages((prevErrors) => ({
           ...prevErrors,
-          dob: 'Invalid date. Please select a date outside the last 19 years.',
+          dob: "Invalid date. Please select a date outside the last 19 years.",
         }));
         return;
       }
@@ -217,7 +321,7 @@ const Corporate = (props) => {
     // Clear error message
     setErrorMessages((prevErrors) => ({
       ...prevErrors,
-      dob: '',
+      dob: "",
     }));
   };
 
@@ -232,19 +336,21 @@ const Corporate = (props) => {
   useEffect(() => {
     const fetchDepartment = async () => {
       try {
-        const response = await fetch(`${Port}/Screening/get_department/${SourceUrlId}/${SourceNameUrlId}/`, {
-          headers: {
-            'Authorization': `Bearer ${accessToken}`,
-            'Content-Type': 'application/json'
+        const response = await fetch(
+          `${Port}/Screening/get_department/${SourceUrlId}/${SourceNameUrlId}/`,
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+              "Content-Type": "application/json",
+            },
           }
-        });
+        );
         const data = await response.json();
         setDepartment(data);
+      } catch (error) {
+        console.log("Error Fetching Data");
       }
-      catch (error) {
-        console.log('Error Fetching Data');
-      }
-    }
+    };
     fetchDepartment();
   }, []);
 
@@ -255,10 +361,10 @@ const Corporate = (props) => {
     if (errorMessages.department) {
       setErrorMessages((prevErrors) => ({
         ...prevErrors,
-        department: '',
+        department: "",
       }));
     }
-  }
+  };
 
   const handleDesignationChange = (e) => {
     setSelectedDesignation(e.target.value);
@@ -267,7 +373,7 @@ const Corporate = (props) => {
     if (errorMessages.designation) {
       setErrorMessages((prevErrors) => ({
         ...prevErrors,
-        designation: '',
+        designation: "",
       }));
     }
   };
@@ -276,25 +382,26 @@ const Corporate = (props) => {
     const fetchDesignation = async () => {
       if (selectedDepartment) {
         try {
-          const response = await fetch(`${Port}/Screening/get_designation/${selectedDepartment}/${SourceUrlId}/${SourceNameUrlId}/`, {
-            headers: {
-              'Authorization': `Bearer ${accessToken}`,
-              'Content-Type': 'application/json'
+          const response = await fetch(
+            `${Port}/Screening/get_designation/${selectedDepartment}/${SourceUrlId}/${SourceNameUrlId}/`,
+            {
+              headers: {
+                Authorization: `Bearer ${accessToken}`,
+                "Content-Type": "application/json",
+              },
             }
-          });
+          );
           const data = await response.json();
           setDesignation(data);
+        } catch (error) {
+          console.log("Error Fetching Data");
         }
-        catch (error) {
-          console.log('Error Fetching Data');
-        }
+      } else {
+        console.log("Error Fetching Data");
       }
-      else {
-        console.log('Error Fetching Data');
-      }
-    }
-    fetchDesignation()
-  }, [selectedDepartment])
+    };
+    fetchDesignation();
+  }, [selectedDepartment]);
 
   ////////////// POST API
   // const [corporateForm, setCorporateForm] = useState({
@@ -416,73 +523,66 @@ const Corporate = (props) => {
   // };
 
   const [errorMessages, setErrorMessages] = useState({
-    prefix: '',
-    name: '',
-    blood_groups: '',
-    employee_id: '',
-    emp_mobile_no: '',
-    state: '',
-    district: '',
-    tehsil: '',
-    source_name: '',
-    department: '',
-    designation: ''
+    prefix: "",
+    name: "",
+    blood_groups: "",
+    employee_id: "",
+    mobile_no: "",
+    state: "",
+    district: "",
+    tehsil: "",
+    source: "",
+    // department: "",
+    designation: "",
   });
 
-  const [corporateForm, setCorporateForm] = useState({
-    name: '',
-    blood_groups: '',
-    aadhar_id: null,
-    email_id: '',
-    emp_mobile_no: '',
-    employee_id: '',
-    father_name: '',
-    mother_name: '',
-    occupation_of_father: '',
-    occupation_of_mother: '',
-    parents_mobile: '',
-    spouse_name: '',
-    arm_size: null,
-    symptoms: '',
-    pincode: '',
-    address: '',
-    prefix: '',
-    permanant_address: '',
-    photo: null,
+ const [corporateForm, setCorporateForm] = useState({
+  prefix: "",
+  name: "",
+  vehicle_number: "",
+  blood_groups: "",
+  aadhar_id: "",
+  mobile_no: "",
+  category: "",
+  employee_id: "",
 
-    source: selectedSource,
-    state: selectedStateId,
-    district: selectedDistrictId,
-    tehsil: selectedTehsilId,
-    source_name: selectedName,
-    gender: gender,
-    type: selectedScheduleType,
-    age: selectedAge,
-    added_by: userID,
+  pincode: "",
+  address: "",
+  arm_size: "",
+  symptoms: "",
 
-    // Newly added fields for corporate 
-    emergency_prefix: '',
-    emergency_fullname: '',
-    emergency_gender: '',
-    emergency_contact: '',
-    emergency_email: '',
-    relationship_with_employee: '',
-    emergency_address: '',
-    doj: '',
-    site_plant: '',
-  });
+  source: selectedSource || "",   // source ID
+  source_name: selectedName || "", // source label
+  state: selectedState || "",
+  district: selectedDistrict || "",
+  tehsil: selectedTahsil || "",
+  gender: gender || "",
+  added_by: userID,
+  modify_by: userID,
+
+  emergency_prefix: "",
+  emergency_fullname: "",
+  emergency_gender: "",
+  emergency_contact: "",
+  relationship_with_employee: "",
+  emergency_address: "",
+
+  site_plant: "",
+  doj: "",
+});
+
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
-    if (name === 'photo') {
+    if (name === "photo") {
       setCorporateForm((prevState) => ({
         ...prevState,
-        [name]: files[0]
+        [name]: files[0],
       }));
     } else {
       setCorporateForm((prevState) => ({
         ...prevState,
-        [name]: value
+        [name]: value,
       }));
     }
 
@@ -490,15 +590,17 @@ const Corporate = (props) => {
     if (errorMessages[name]) {
       setErrorMessages((prevErrors) => ({
         ...prevErrors,
-        [name]: '',
+        [name]: "",
       }));
     }
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+     e.preventDefault();
 
-    const confirmed = window.confirm('Are you sure you want to submit the form?');
+    const confirmed = window.confirm(
+      "Are you sure you want to submit the form?"
+    );
 
     if (confirmed) {
       const formData = new FormData();
@@ -510,108 +612,115 @@ const Corporate = (props) => {
         }
       });
 
-      formData.append('year', age.year);
-      formData.append('months', age.months);
-      formData.append('days', age.days);
-      formData.append('department', selectedDepartment);
-      formData.append('designation', selectedDesignation);
-      formData.append('marital_status', maritalStatus);
-      formData.append('sibling_count', siblingsCount);
-      formData.append('state', selectedStateId);
-      formData.append('district', selectedDistrictId);
-      formData.append('tehsil', selectedTehsilId);
-      formData.append('source_name', selectedName);
-      formData.append('gender', gender);
-      formData.append('type', selectedScheduleType);
-      formData.append('source', selectedSource);
-      formData.append('age', selectedAge);
-      formData.append('disease', selectedDisease);
-      formData.append('added_by', userID);
+      formData.append("year", age.year);
+      formData.append("months", age.months);
+      formData.append("days", age.days);
+      formData.append("department", selectedDepartment);
+      formData.append("designation", selectedDesignation);
+      formData.append("marital_status", maritalStatus);
+      formData.append("sibling_count", siblingsCount);
+      formData.append("state", selectedState);
+      formData.append("district", selectedDistrict);
+      formData.append("tehsil", selectedTahsil);
+      formData.append("source_name", selectedName);
+      formData.append("gender", gender);
+      formData.append("type", selectedScheduleType);
+      formData.append("source", selectedSource);
+      formData.append("age", selectedAge);
+      formData.append("disease", selectedDisease);
+      formData.append("added_by", userID);
 
-      formData.append('height', heightValue);
-      formData.append('weight', weight);
-      formData.append('dob', dob);
-      formData.append('bmi', bmi !== null ? bmi : '');
-      formData.append('child_count', (maritalStatus === 'Widow' || maritalStatus === 'Married') ? childrenCount : null);
+      formData.append("height", heightValue);
+      formData.append("weight", weight);
+      formData.append("dob", dob);
+      formData.append("bmi", bmi !== null ? bmi : "");
+      formData.append(
+        "child_count",
+        maritalStatus === "Widow" || maritalStatus === "Married"
+          ? childrenCount
+          : null
+      );
 
       const newErrorMessages = {};
 
-      if (!corporateForm.prefix || corporateForm.prefix === 'Select') {
-        newErrorMessages.prefix = 'Prefix is required.';
+      if (!corporateForm.prefix || corporateForm.prefix === "Select") {
+        newErrorMessages.prefix = "Prefix is required.";
       }
 
       if (!corporateForm.name) {
-        newErrorMessages.name = 'Name is required.';
+        newErrorMessages.name = "Name is required.";
       }
 
       if (!corporateForm.blood_groups) {
-        newErrorMessages.blood_groups = 'Blood Group is required.';
+        newErrorMessages.blood_groups = "Blood Group is required.";
       }
 
-      if (!corporateForm.employee_id) {
-        newErrorMessages.employee_id = 'ID is required.';
-      }
+      // if (!corporateForm.employee_id) {
+      //   newErrorMessages.employee_id = "ID is required.";
+      // }
 
-      if (!corporateForm.emp_mobile_no) {
-        newErrorMessages.emp_mobile_no = 'Mobile Number is required.';
+      if (!corporateForm.mobile_no) {
+        newErrorMessages.mobile_no = "Mobile Number is required.";
       }
 
       if (!dob) {
-        newErrorMessages.dob = 'Date of Birth is required.';
+        newErrorMessages.dob = "Date of Birth is required.";
       }
 
-      if (!selectedStateId) {
-        newErrorMessages.state = 'State is required.';
+      if (!selectedState) {
+        newErrorMessages.state = "State is required.";
       }
 
-      if (!selectedDistrictId) {
-        newErrorMessages.district = 'District is required.';
+      if (!selectedDistrict) {
+        newErrorMessages.district = "District is required.";
       }
 
-      if (!selectedTehsilId) {
-        newErrorMessages.tehsil = 'Tehsil is required.';
+      if (!selectedTahsil) {
+        newErrorMessages.tehsil = "Tehsil is required.";
       }
 
-      if (!selectedNameId) {
-        newErrorMessages.source_name = 'Source Name is required.';
-      }
+     if (!corporateForm.source) {
+  newErrorMessages.source = "Source Name is required.";
+}
 
-      if (!selectedDepartment) {
-        newErrorMessages.department = 'Department is required.';
-      }
+      // if (!selectedDepartment) {
+      //   newErrorMessages.department = "Department is required.";
+      // }
 
-      if (!selectedDesignation) {
-        newErrorMessages.designation = 'Designation is required.';
-      }
+      // if (!selectedDesignation) {
+      //   newErrorMessages.designation = "Designation is required.";
+      // }
 
       if (Object.keys(newErrorMessages).length > 0) {
+         console.log("❌ Validation errors:", newErrorMessages);
         setErrorMessages(newErrorMessages);
         return;
       }
+      console.log("Validation passed, calling API...");
 
       try {
-        const response = await fetch(`${Port}/Screening/add_employee_post/`, {
-          method: 'POST',
+        const response = await fetch(`${Port}/Screening/Citizen_Post/`, {
+          method: "POST",
           headers: {
-            'Authorization': `Bearer ${accessToken}`
+            Authorization: `Bearer ${accessToken}`,
           },
-          body: formData // Sending formData with all fields
+          body: formData, // Sending formData with all fields
         });
 
         if (response.status === 201) {
-          navigate('/mainscreen/Citizen');
+          navigate("/mainscreen/Citizen");
         } else if (response.status === 400) {
-          alert('Error Submitting the Form');
+          alert("Error Submitting the Form");
         } else if (response.status === 409) {
-          alert('Employee already exists with the given employee ID.');
+          alert("Employee already exists with the given employee ID.");
         } else {
-          alert('Unexpected error occurred.');
+          alert("Unexpected error occurred.");
         }
       } catch (error) {
-        console.error('Error:', error);
+        console.error("Error:", error);
       }
     } else {
-      console.log('Form submission cancelled.');
+      console.log("Form submission cancelled.");
     }
   };
 
@@ -779,11 +888,13 @@ const Corporate = (props) => {
                     label="Blood Group"
                   >
                     <MenuItem value="">Select Group</MenuItem>
-                    {["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"].map((grp) => (
-                      <MenuItem key={grp} value={grp}>
-                        {grp}
-                      </MenuItem>
-                    ))}
+                    {["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"].map(
+                      (grp) => (
+                        <MenuItem key={grp} value={grp}>
+                          {grp}
+                        </MenuItem>
+                      )
+                    )}
                   </Select>
 
                   {/* Error message display */}
@@ -884,16 +995,16 @@ const Corporate = (props) => {
                   fullWidth
                   label="Mobile Number"
                   type="number"
-                  name="emp_mobile_no"
-                  value={corporateForm.emp_mobile_no}
+                  name="mobile_no"
+                  value={corporateForm.mobile_no}
                   onChange={handleChange}
                   onInput={(e) => {
                     if (e.target.value < 0) e.target.value = 0;
                     if (e.target.value.length > 10)
                       e.target.value = e.target.value.slice(0, 10);
                   }}
-                  error={!!errorMessages.emp_mobile_no}
-                  helperText={errorMessages.emp_mobile_no}
+                  error={!!errorMessages.mobile_no}
+                  helperText={errorMessages.mobile_no}
                 />
               </Grid>
 
@@ -1016,7 +1127,12 @@ const Corporate = (props) => {
                   }}
                 >
                   Upload Photo
-                  <input type="file" hidden name="photo" onChange={handleChange} />
+                  <input
+                    type="file"
+                    hidden
+                    name="photo"
+                    onChange={handleChange}
+                  />
                 </Button>
               </Grid>
 
@@ -1195,7 +1311,9 @@ const Corporate = (props) => {
                   variant="outlined"
                   error={!!errorMessages.relationship_with_employee}
                 >
-                  <InputLabel id="relationship-label">Relationship with Citizen</InputLabel>
+                  <InputLabel id="relationship-label">
+                    Relationship with Citizen
+                  </InputLabel>
                   <Select
                     sx={{
                       "& .MuiInputBase-input.MuiSelect-select": {
@@ -1309,16 +1427,13 @@ const Corporate = (props) => {
                         bmi === null
                           ? "white"
                           : bmi < 18.5
-                            ? "orange"
-                            : bmi < 25
-                              ? "green"
-                              : bmi < 30
-                                ? "red"
-                                : "darkred",
-                      color:
-                        bmi === null || bmi > 30
-                          ? "black"
-                          : "white",
+                          ? "orange"
+                          : bmi < 25
+                          ? "green"
+                          : bmi < 30
+                          ? "red"
+                          : "darkred",
+                      color: bmi === null || bmi > 30 ? "black" : "white",
                     },
                   }}
                 />
@@ -1345,7 +1460,7 @@ const Corporate = (props) => {
           <Card
             sx={{
               p: 2,
-              height: '100%',
+              height: "100%",
               borderRadius: 3,
               boxShadow: 3,
             }}
@@ -1355,8 +1470,8 @@ const Corporate = (props) => {
               sx={{
                 fontWeight: 500,
                 mb: 2,
-                color: '#1A237E',
-                fontFamily: 'Roboto',
+                color: "#1A237E",
+                fontFamily: "Roboto",
               }}
             >
               Address
@@ -1364,9 +1479,10 @@ const Corporate = (props) => {
 
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
-                <FormControl fullWidth error={!!errorMessages.state}>
-                  <InputLabel>Select State</InputLabel>
+                <FormControl fullWidth size="small">
+                  <InputLabel>State *</InputLabel>
                   <Select
+                    onChange={(e) => setSelectedState(e.target.value)}
                     sx={{
                       "& .MuiInputBase-input.MuiSelect-select": {
                         color: "#000 !important",
@@ -1375,40 +1491,24 @@ const Corporate = (props) => {
                         color: "#000",
                       },
                     }}
-                    size="small"
-                    value={selectedStateId}
-                    onChange={handleStateChange}
-                    label="Select State"
-                    MenuProps={{
-                      disablePortal: true,
-                      PaperProps: {
-                        style: {
-                          maxHeight: 250,
-                          overflowY: "auto",
-                        },
-                      },
-                    }}
                   >
-                    <MenuItem value="">Select State</MenuItem>
-                    {sourceState.map((stateOption) => (
-                      <MenuItem
-                        key={stateOption.source_state}
-                        value={stateOption.source_state}
-                      >
-                        {stateOption.state_name}
+                    <MenuItem value="">
+                      {corporateForm.state || "Select State"}
+                    </MenuItem>
+                    {stateOptions.map((state) => (
+                      <MenuItem key={state.state_id} value={state.state_id}>
+                        {state.state_name}
                       </MenuItem>
                     ))}
                   </Select>
-                  {errorMessages.state && (
-                    <FormHelperText>{errorMessages.state}</FormHelperText>
-                  )}
                 </FormControl>
               </Grid>
 
               <Grid item xs={12} sm={6}>
-                <FormControl fullWidth error={!!errorMessages.district}>
-                  <InputLabel>Select District</InputLabel>
+                <FormControl fullWidth size="small">
+                  <InputLabel>District *</InputLabel>
                   <Select
+                    onChange={(e) => setSelectedDistrict(e.target.value)}
                     sx={{
                       "& .MuiInputBase-input.MuiSelect-select": {
                         color: "#000 !important",
@@ -1417,40 +1517,24 @@ const Corporate = (props) => {
                         color: "#000",
                       },
                     }}
-                    size="small"
-                    value={selectedDistrictId}
-                    onChange={handleDistrictChange}
-                    label="Select District"
-                    MenuProps={{
-                      disablePortal: true,
-                      PaperProps: {
-                        style: {
-                          maxHeight: 250,
-                          overflowY: "auto",
-                        },
-                      },
-                    }}
                   >
-                    <MenuItem value="">Select District</MenuItem>
-                    {district.map((districtOption) => (
-                      <MenuItem
-                        key={districtOption.source_district}
-                        value={districtOption.source_district}
-                      >
-                        {districtOption.dist_name}
+                    <MenuItem value="">
+                      {corporateForm.district || "Select District"}
+                    </MenuItem>
+                    {districtOptions.map((district) => (
+                      <MenuItem key={district.dist_id} value={district.dist_id}>
+                        {district.dist_name}
                       </MenuItem>
                     ))}
                   </Select>
-                  {errorMessages.district && (
-                    <FormHelperText>{errorMessages.district}</FormHelperText>
-                  )}
                 </FormControl>
               </Grid>
 
               <Grid item xs={12} sm={6}>
-                <FormControl fullWidth error={!!errorMessages.tehsil}>
-                  <InputLabel>Select Tehsil</InputLabel>
+                <FormControl fullWidth size="small">
+                  <InputLabel>Tehsil *</InputLabel>
                   <Select
+                    onChange={(e) => setSelectedTahsil(e.target.value)}
                     sx={{
                       "& .MuiInputBase-input.MuiSelect-select": {
                         color: "#000 !important",
@@ -1459,88 +1543,40 @@ const Corporate = (props) => {
                         color: "#000",
                       },
                     }}
-                    size="small"
-                    value={selectedTehsilId}
-                    onChange={handleTehsilChange}
-                    label="Select Tehsil"
-                    MenuProps={{
-                      disablePortal: true,
-                      PaperProps: {
-                        style: {
-                          maxHeight: 250,
-                          overflowY: "auto",
-                        },
-                      },
-                    }}
                   >
-                    <MenuItem value="">Select Tehsil</MenuItem>
-                    {tehsil.map((TehsilOption) => (
-                      <MenuItem
-                        key={TehsilOption.source_taluka}
-                        value={TehsilOption.source_taluka}
-                      >
-                        {TehsilOption.tahsil_name}
+                    <MenuItem value="">
+                      {corporateForm.tehsil || "Select Tehsil"}
+                    </MenuItem>
+                    {talukaOptions.map((taluka) => (
+                      <MenuItem key={taluka.tal_id} value={taluka.tal_id}>
+                        {taluka.tahsil_name}
                       </MenuItem>
                     ))}
                   </Select>
-                  {errorMessages.tehsil && (
-                    <FormHelperText>{errorMessages.tehsil}</FormHelperText>
-                  )}
                 </FormControl>
               </Grid>
-
               <Grid item xs={12} sm={6}>
-                <FormControl
-                  fullWidth
-                  size="small"
-                  variant="outlined"
-                  error={!!errorMessages.source_name}
-                >
-                  <InputLabel id="source-name-label">Select Source Name</InputLabel>
-                  <Select
-                    sx={{
-                      "& .MuiInputBase-input.MuiSelect-select": {
-                        color: "#000 !important",
-                      },
-                      "& .MuiSvgIcon-root": {
-                        color: "#000",
-                      },
-                    }}
-                    labelId="source-name-label"
-                    value={selectedNameId || ""}
-                    onChange={handleSOurceNameChange} label="Select Source Name"
-                    MenuProps={{
-                      disablePortal: true,
-                      PaperProps: {
-                        style: {
-                          maxHeight: 250,
-                          overflowY: "auto",
-                        },
-                      },
-                    }}
-                  >
-                    <MenuItem value="">Select Source Name</MenuItem>
-                    {SourceName.map((nameOption) => (
-                      <MenuItem
-                        key={nameOption.source_pk_id}
-                        value={nameOption.source_pk_id}
-                      >
-                        {nameOption.source_names}
-                      </MenuItem>
-                    ))}
-                  </Select>
+              <FormControl fullWidth size="small" error={!!errorMessages.source}>
+  <InputLabel>Source *</InputLabel>
+  <Select
+    name="source"
+    value={corporateForm.source}
+    onChange={handleSourceChange}
+    label="Source"
+    sx={{
+      "& .MuiInputBase-input.MuiSelect-select": { color: "#000 !important" },
+      "& .MuiSvgIcon-root": { color: "#000" },
+    }}
+  >
+    <MenuItem value="">Select Source</MenuItem>
+    {dropdownSource.map((option) => (
+      <MenuItem key={option.source_pk_id} value={option.source_pk_id}>
+        {option.source}
+      </MenuItem>
+    ))}
+  </Select>
+</FormControl>
 
-                  {/* Error Message */}
-                  {errorMessages.source_name && (
-                    <Typography
-                      color="error"
-                      variant="caption"
-                      sx={{ mt: 0.5, fontSize: "0.75rem" }}
-                    >
-                      {errorMessages.source_name}
-                    </Typography>
-                  )}
-                </FormControl>
               </Grid>
 
               <Grid item xs={12} sm={6}>
@@ -1601,13 +1637,19 @@ const Corporate = (props) => {
 
         <Grid item xs={12}>
           <Box textAlign="center" sx={{ mb: 2 }}>
-            <Button type="submit" variant="contained" color="primary" sx={{ px: 5, py: 1.2 }}>
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              sx={{ px: 5, py: 1.2 }}
+              on
+            >
               Submit
             </Button>
           </Box>
         </Grid>
       </Grid>
-    </Box >
+    </Box>
   );
 };
 
