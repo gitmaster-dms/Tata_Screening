@@ -1,6 +1,7 @@
 import React from 'react'
-import Dashboard from './DashboardAdmin/Dashboard'
+// import Dashboard from './DashboardAdmin/Dashboard'
 import Sidebarnew from './Sidebar'
+import Dashboard from './Dashboard/Dashboard'
 
 const Main = () => {
   return (
