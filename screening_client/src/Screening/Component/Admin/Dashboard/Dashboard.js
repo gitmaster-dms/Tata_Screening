@@ -18,9 +18,7 @@ import VitalsCard from "./Vitals";
 import axios from "axios";
 import { CircularProgress } from "@mui/material";
 import dashbordbg from "../../../Images/DashboardIcons/bgimagedashboard.png";
-import TabContext from "@mui/lab/TabContext";
-import TabList from "@mui/lab/TabList";
-import TabPanel from "@mui/lab/TabPanel";
+
 const Dashboard = () => {
   const port = process.env.REACT_APP_API_KEY;
   const accessToken = localStorage.getItem("accessToken");
