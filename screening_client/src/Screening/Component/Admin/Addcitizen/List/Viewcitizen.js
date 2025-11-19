@@ -24,9 +24,9 @@ const Viewcitizen = () => {
         let apiUrl = "";
 
         if (sourceId === "School") {
-            apiUrl = `${Port}/Screening/add_citizen_get/${id}/`;
+            apiUrl = `${Port}/Screening/Citizen_Get_Idwise/${id}/`;
         } else if (sourceId === "Corporate") {
-            apiUrl = `${Port}/Screening/add_employee_get/${id}/`;
+            apiUrl = `${Port}/Screening/Citizen_Get_Idwise/${id}/`;
         }
 
         if (apiUrl) {

@@ -70,7 +70,7 @@ const Corporate = (props) => {
     bmi,
     gender,
     selectedScheduleType,
-    selectedSource,
+
     selectedAge,
     selectedDisease,
   } = useSourceContext();
@@ -236,16 +236,22 @@ const Corporate = (props) => {
   //////// source Name
   const { selectedName, setSelectedName } = useSourceContext();
   const [selectedNameId, setSelectedNameId] = useState("");
+  const { selectedSource, setSelectedSource } = useSourceContext();
 
 const handleSourceChange = (e) => {
   const selectedId = e.target.value;
-  const selectedOption = dropdownSource.find(opt => opt.source_pk_id === selectedId);
+  const selectedOption = dropdownSource.find(
+    (opt) => opt.source_pk_id === selectedId
+  );
 
   setCorporateForm((prev) => ({
     ...prev,
     source: selectedId,
-    source_name: selectedOption ? selectedOption.source : "",
+    source_name: selectedOption?.source || "",
   }));
+
+  setSelectedSource(selectedId);
+  setSelectedName(selectedOption?.source || "");
 };
 
 
@@ -536,41 +542,40 @@ const handleSourceChange = (e) => {
     designation: "",
   });
 
- const [corporateForm, setCorporateForm] = useState({
-  prefix: "",
-  name: "",
-  vehicle_number: "",
-  blood_groups: "",
-  aadhar_id: "",
-  mobile_no: "",
-  category: "",
-  employee_id: "",
+  const [corporateForm, setCorporateForm] = useState({
+    prefix: "",
+    name: "",
+    vehicle_number: "",
+    blood_groups: "",
+    aadhar_id: "",
+    mobile_no: "",
+    category: "",
+    employee_id: "",
 
-  pincode: "",
-  address: "",
-  arm_size: "",
-  symptoms: "",
+    pincode: "",
+    address: "",
+    arm_size: "",
+    symptoms: "",
 
-  source: selectedSource || "",   // source ID
-  source_name: selectedName || "", // source label
-  state: selectedState || "",
-  district: selectedDistrict || "",
-  tehsil: selectedTahsil || "",
-  gender: gender || "",
-  added_by: userID,
-  modify_by: userID,
+    source: selectedSource || "", // source ID
+    source_name: selectedName || "", // source label
+    state: selectedState || "",
+    district: selectedDistrict || "",
+    tehsil: selectedTahsil || "",
+    gender: gender || "",
+    added_by: userID,
+    modify_by: userID,
 
-  emergency_prefix: "",
-  emergency_fullname: "",
-  emergency_gender: "",
-  emergency_contact: "",
-  relationship_with_employee: "",
-  emergency_address: "",
+    emergency_prefix: "",
+    emergency_fullname: "",
+    emergency_gender: "",
+    emergency_contact: "",
+    relationship_with_employee: "",
+    emergency_address: "",
 
-  site_plant: "",
-  doj: "",
-});
-
+    site_plant: "",
+    doj: "",
+  });
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -596,7 +601,7 @@ const handleSourceChange = (e) => {
   };
 
   const handleSubmit = async (e) => {
-     e.preventDefault();
+    e.preventDefault();
 
     const confirmed = window.confirm(
       "Are you sure you want to submit the form?"
@@ -678,9 +683,8 @@ const handleSourceChange = (e) => {
       if (!selectedTahsil) {
         newErrorMessages.tehsil = "Tehsil is required.";
       }
-
-     if (!corporateForm.source) {
-  newErrorMessages.source = "Source Name is required.";
+if (!corporateForm.source || !corporateForm.source_name) {
+  newErrorMessages.source = "Source and Source Name are required.";
 }
 
       // if (!selectedDepartment) {
@@ -692,7 +696,7 @@ const handleSourceChange = (e) => {
       // }
 
       if (Object.keys(newErrorMessages).length > 0) {
-         console.log("❌ Validation errors:", newErrorMessages);
+        console.log("❌ Validation errors:", newErrorMessages);
         setErrorMessages(newErrorMessages);
         return;
       }
@@ -1556,27 +1560,35 @@ const handleSourceChange = (e) => {
                 </FormControl>
               </Grid>
               <Grid item xs={12} sm={6}>
-              <FormControl fullWidth size="small" error={!!errorMessages.source}>
-  <InputLabel>Source *</InputLabel>
-  <Select
-    name="source"
-    value={corporateForm.source}
-    onChange={handleSourceChange}
-    label="Source"
-    sx={{
-      "& .MuiInputBase-input.MuiSelect-select": { color: "#000 !important" },
-      "& .MuiSvgIcon-root": { color: "#000" },
-    }}
-  >
-    <MenuItem value="">Select Source</MenuItem>
-    {dropdownSource.map((option) => (
-      <MenuItem key={option.source_pk_id} value={option.source_pk_id}>
-        {option.source}
-      </MenuItem>
-    ))}
-  </Select>
-</FormControl>
-
+                <FormControl
+                  fullWidth
+                  size="small"
+                  error={!!errorMessages.source}
+                >
+                  <InputLabel>Source *</InputLabel>
+                  <Select
+                    name="source"
+                    value={corporateForm.source}
+                    onChange={handleSourceChange}
+                    label="Source"
+                    sx={{
+                      "& .MuiInputBase-input.MuiSelect-select": {
+                        color: "#000 !important",
+                      },
+                      "& .MuiSvgIcon-root": { color: "#000" },
+                    }}
+                  >
+                    <MenuItem value="">Select Source</MenuItem>
+                    {dropdownSource.map((option) => (
+                      <MenuItem
+                        key={option.source_pk_id}
+                        value={option.source_pk_id}
+                      >
+                        {option.source}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
               </Grid>
 
               <Grid item xs={12} sm={6}>

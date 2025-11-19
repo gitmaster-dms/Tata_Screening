@@ -169,7 +169,7 @@ const CorporateUpdate = (props) => {
                     modify_by: userID
                 };
 
-                const response = await axios.put(`${Port}/Screening/add_employee_put/${corporateData.citizens_pk_id}/`, updatedDataWithDepartment, {
+                const response = await axios.put(`${Port}/Screening/Citizen_Put_api/${corporateData.citizens_pk_id}/`, updatedDataWithDepartment, {
                     headers: {
                         'Authorization': `Bearer ${accessToken}`,
                         'Content-Type': 'application/json'
