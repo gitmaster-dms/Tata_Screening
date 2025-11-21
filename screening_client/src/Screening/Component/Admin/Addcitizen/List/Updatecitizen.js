@@ -1,179 +1,221 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import {
-    Box,
-    Grid,
-    Typography,
-    TextField,
-    MenuItem,
-    IconButton,
-    Paper,
-} from '@mui/material';
-import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import { Link, useParams } from 'react-router-dom';
-import Childupdate from './Childupdate';
-import CorporateUpdate from './CorporateUpdate';
+  Box,
+  Grid,
+  Typography,
+  TextField,
+  MenuItem,
+  IconButton,
+  Paper,
+} from "@mui/material";
+import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
+import { Link, useParams } from "react-router-dom";
+import Childupdate from "./Childupdate";
+import CorporateUpdate from "./CorporateUpdate";
 
 const Updatecitizen = () => {
-    const accessToken = localStorage.getItem('token');
-    const Port = process.env.REACT_APP_API_KEY;
+  const accessToken = localStorage.getItem("token");
+  const Port = process.env.REACT_APP_API_KEY;
 
-    const { id, sourceId } = useParams();
-    const [data1, setData1] = useState([]);
-    const [sourceStateNav, setSourceStateNav] = useState([]);
+  const { id, sourceId } = useParams();
+  const [data1, setData1] = useState([]);
+  const [sourceStateNav, setSourceStateNav] = useState([]);
 
-    const [selectedAge1, setSelectedAge1] = useState({
-        age: { id: '', name: '' },
-        gender: { id: '', name: '' },
-        source: { id: '', name: '' },
-        type: { id: '', name: '' },
-        disease: { id: '', name: '' },
-    });
+  const [selectedAge1, setSelectedAge1] = useState({
+    age: { id: "", name: "" },
+    gender: { id: "", name: "" },
+    source: { id: "", name: "" },
+    type: { id: "", name: "" },
+    disease: { id: "", name: "" },
+  });
 
-    const [AgeNav, setAgeNav] = useState([]);
-    const [GenderNav, setGenderNav] = useState([]);
-    const [SourceNav, setSourceNav] = useState([]);
-    const [screeningFor, setScreeningFor] = useState([]);
-    const [DiseaseNav, setDiseaseNav] = useState([]);
+  const [AgeNav, setAgeNav] = useState([]);
+  const [GenderNav, setGenderNav] = useState([]);
+  const [SourceNav, setSourceNav] = useState([]);
+  const [screeningFor, setScreeningFor] = useState([]);
+  const [DiseaseNav, setDiseaseNav] = useState([]);
 
-    const [ageError, setAgeError] = useState('');
-    const [genderError, setGenderError] = useState('');
-    const [sourceError, setSourceError] = useState('');
+  const [ageError, setAgeError] = useState("");
+  const [genderError, setGenderError] = useState("");
+  const [sourceError, setSourceError] = useState("");
 
-    // ------------------ FETCH DATA ------------------ //
-    useEffect(() => {
-        let apiUrl;
-        if (sourceId === 'School') {
-            apiUrl = `${Port}/Screening/add_citizen_get/${id}/`;
-        } else if (sourceId === 'Corporate') {
-            apiUrl = `${Port}/Screening/add_employee_get/${id}/`;
-        } else {
-            return;
-        }
+  // ------------------ FETCH DATA ------------------ //
+  useEffect(() => {
+    let apiUrl;
+    if (sourceId === "School") {
+      apiUrl = `${Port}/Screening/add_citizen_get/${id}/`;
+    } else if (sourceId === "Corporate") {
+      apiUrl = `${Port}/Screening/add_employee_get/${id}/`;
+    } else {
+      return;
+    }
+
+    axios
+      .get(apiUrl, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+      })
+      .then((response) => {
+        setData1(response.data);
+        setSelectedAge1({
+          age: {
+            id: response.data.age || "",
+            name: response.data.age_name || "",
+          },
+          gender: {
+            id: response.data.gender || "",
+            name: response.data.gender_name || "",
+          },
+          source: {
+            id: response.data.source || "",
+            name: response.data.source_id_name || "",
+          },
+          type: {
+            id: response.data.type || "",
+            name: response.data.type_name || "",
+          },
+          disease: {
+            id: response.data.disease || "",
+            name: response.data.disease_name || "",
+          },
+        });
 
         axios
-            .get(apiUrl, {
-                headers: {
-                    Authorization: `Bearer ${accessToken}`,
-                    'Content-Type': 'application/json',
-                },
-            })
-            .then((response) => {
-                setData1(response.data);
-                setSelectedAge1({
-                    age: { id: response.data.age || '', name: response.data.age_name || '' },
-                    gender: { id: response.data.gender || '', name: response.data.gender_name || '' },
-                    source: { id: response.data.source || '', name: response.data.source_id_name || '' },
-                    type: { id: response.data.type || '', name: response.data.type_name || '' },
-                    disease: { id: response.data.disease || '', name: response.data.disease_name || '' },
-                });
-
-                axios
-                    .get(`${Port}/Screening/source_and_pass_state_Get/${response.data.source}`, {
-                        headers: {
-                            Authorization: `Bearer ${accessToken}`,
-                            'Content-Type': 'application/json',
-                        },
-                    })
-                    .then((res) => setSourceStateNav(res.data))
-                    .catch((err) => console.error('Error second API:', err));
-            })
-            .catch((error) => console.error('Error:', error));
-    }, [Port, accessToken, id, sourceId]);
-
-    useEffect(() => {
-        const fetchDropdown = async (url, setFn) => {
-            try {
-                const res = await axios.get(url, {
-                    headers: {
-                        Authorization: `Bearer ${accessToken}`,
-                        'Content-Type': 'application/json',
-                    },
-                });
-                setFn(res.data);
-            } catch (err) {
-                console.error('Error fetching:', err);
+          .get(
+            `${Port}/Screening/source_and_pass_state_Get/${response.data.source}`,
+            {
+              headers: {
+                Authorization: `Bearer ${accessToken}`,
+                "Content-Type": "application/json",
+              },
             }
-        };
+          )
+          .then((res) => setSourceStateNav(res.data))
+          .catch((err) => console.error("Error second API:", err));
+      })
+      .catch((error) => console.error("Error:", error));
+  }, [Port, accessToken, id, sourceId]);
 
-        fetchDropdown(`${Port}/Screening/Age_GET/`, setAgeNav);
-        fetchDropdown(`${Port}/Screening/Gender_GET/`, setGenderNav);
-        fetchDropdown(`${Port}/Screening/source_GET/`, setSourceNav);
-        fetchDropdown(`${Port}/Screening/child_disease_info_get/`, setDiseaseNav);
-    }, [Port, accessToken]);
-
-    useEffect(() => {
-        if (data1.source) {
-            axios
-                .get(`${Port}/Screening/screening_for_type_get/${data1.source}`, {
-                    headers: {
-                        Authorization: `Bearer ${accessToken}`,
-                        'Content-Type': 'application/json',
-                    },
-                })
-                .then((res) => setScreeningFor(res.data))
-                .catch((err) => console.error('Error fetching type:', err));
-        }
-    }, [data1.source, Port, accessToken]);
-
-    // ------------------ HANDLE CHANGE ------------------ //
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        const selectedOption = { id: '', name: value };
-
-        switch (name) {
-            case 'age':
-                selectedOption.id = AgeNav.find((opt) => opt.age === value)?.age_pk_id || '';
-                break;
-            case 'gender':
-                selectedOption.id = GenderNav.find((opt) => opt.gender === value)?.gender_pk_id || '';
-                break;
-            case 'source':
-                selectedOption.id = SourceNav.find((opt) => opt.source === value)?.source_pk_id || '';
-                break;
-            case 'type':
-                selectedOption.id = screeningFor.find((opt) => opt.type === value)?.type_id || '';
-                break;
-            case 'disease':
-                selectedOption.id = DiseaseNav.find((opt) => opt.disease === value)?.disease_pk_id || '';
-                break;
-            default:
-                break;
-        }
-
-        setSelectedAge1((prev) => ({
-            ...prev,
-            [name]: selectedOption,
-        }));
-
-        if (name === 'source') {
-            axios
-                .get(`${Port}/Screening/screening_for_type_get/${selectedOption.id}`)
-                .then((res) => setScreeningFor(res.data))
-                .catch((err) => console.error('Error fetching type:', err));
-        }
+  useEffect(() => {
+    const fetchDropdown = async (url, setFn) => {
+      try {
+        const res = await axios.get(url, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+          },
+        });
+        setFn(res.data);
+      } catch (err) {
+        console.error("Error fetching:", err);
+      }
     };
 
-    return (
-        <Box sx={{ p: 3, minHeight: '100vh', m: "0.1em 0em 0em 3em", }}>
-            <Paper elevation={2} sx={{ p: 1, borderRadius: 3 }}>
-                <Grid container alignItems="center" spacing={1} sx={{ mb: 2 }}>
-                    <Grid item>
-                        <Link to="/mainscreen/Citizen" style={{ textDecoration: 'none', color: 'inherit' }}>
-                            <IconButton>
-                                <ArrowBackIosIcon sx={{ color: '#1A237E' }} />
-                            </IconButton>
-                        </Link>
-                    </Grid>
-                    <Grid item>
-                        <Typography variant="h6" fontWeight="bold" color="#1A237E">
-                            Update Citizen
-                        </Typography>
-                    </Grid>
-                </Grid>
+    fetchDropdown(`${Port}/Screening/Age_GET/`, setAgeNav);
+    fetchDropdown(`${Port}/Screening/Gender_GET/`, setGenderNav);
+    fetchDropdown(`${Port}/Screening/source_GET/`, setSourceNav);
+    fetchDropdown(`${Port}/Screening/child_disease_info_get/`, setDiseaseNav);
+  }, [Port, accessToken]);
 
-                <Grid container spacing={2}>
-                    {/* <Grid item xs={12} sm={4} md={2.4}>
+  useEffect(() => {
+    if (data1.source) {
+      axios
+        .get(`${Port}/Screening/screening_for_type_get/${data1.source}`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+          },
+        })
+        .then((res) => setScreeningFor(res.data))
+        .catch((err) => console.error("Error fetching type:", err));
+    }
+  }, [data1.source, Port, accessToken]);
+
+  // ------------------ HANDLE CHANGE ------------------ //
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    const selectedOption = { id: "", name: value };
+
+    switch (name) {
+      case "age":
+        selectedOption.id =
+          AgeNav.find((opt) => opt.age === value)?.age_pk_id || "";
+        break;
+      case "gender":
+        selectedOption.id =
+          GenderNav.find((opt) => opt.gender === value)?.gender_pk_id || "";
+        break;
+      case "source":
+        selectedOption.id =
+          SourceNav.find((opt) => opt.source === value)?.source_pk_id || "";
+        break;
+      case "type":
+        selectedOption.id =
+          screeningFor.find((opt) => opt.type === value)?.type_id || "";
+        break;
+      case "disease":
+        selectedOption.id =
+          DiseaseNav.find((opt) => opt.disease === value)?.disease_pk_id || "";
+        break;
+      default:
+        break;
+    }
+
+    setSelectedAge1((prev) => ({
+      ...prev,
+      [name]: selectedOption,
+    }));
+
+    if (name === "source") {
+      axios
+        .get(`${Port}/Screening/screening_for_type_get/${selectedOption.id}`)
+        .then((res) => setScreeningFor(res.data))
+        .catch((err) => console.error("Error fetching type:", err));
+    }
+  };
+
+  const [citizenData, setCitizenData] = useState(null);
+
+  const fetchCitizen = async () => {
+    try {
+      const response = await fetch(`${Port}/Screening/Citizen_Put_api/${id}/`);
+      const data = await response.json();
+      console.log("Edit Citizen Data:", data);
+      setCitizenData(data);
+    } catch (error) {
+      console.error("Failed to fetch citizen:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchCitizen();
+  }, [id]);
+  return (
+    <Box sx={{ p: 3, minHeight: "100vh", m: "0.1em 0em 0em 3em" }}>
+      <Paper elevation={2} sx={{ p: 1, borderRadius: 3 }}>
+        <Grid container alignItems="center" spacing={1} sx={{ mb: 2 }}>
+          <Grid item>
+            <Link
+              to="/mainscreen/Citizen"
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
+              <IconButton>
+                <ArrowBackIosIcon sx={{ color: "#1A237E" }} />
+              </IconButton>
+            </Link>
+          </Grid>
+          <Grid item>
+            <Typography variant="h6" fontWeight="bold" color="#1A237E">
+              Update Citizen
+            </Typography>
+          </Grid>
+        </Grid>
+
+        <Grid container spacing={2}>
+          {/* <Grid item xs={12} sm={4} md={2.4}>
                         <TextField
                             select
                             name="age"
@@ -197,39 +239,39 @@ const Updatecitizen = () => {
                         </TextField>
                     </Grid> */}
 
-                    <Grid item xs={12} sm={4} md={2.4}>
-                        <TextField
-                            select
-                            name="gender"
-                            value={selectedAge1.gender.name}
-                            onChange={handleChange}
-                            size="small"
-                            fullWidth
-                            error={!!genderError}
-                            helperText={genderError}
-                            label={
-                                <span>
-                                    Gender<span style={{ color: 'red' }}>*</span>
-                                </span>
-                            }
-                            sx={{
-                                "& .MuiInputBase-input.MuiSelect-select": {
-                                    color: "#000 !important",
-                                },
-                                "& .MuiSvgIcon-root": {
-                                    color: "#000",
-                                },
-                            }}
-                        >
-                            {GenderNav.map((drop) => (
-                                <MenuItem key={drop.gender_pk_id} value={drop.gender}>
-                                    {drop.gender}
-                                </MenuItem>
-                            ))}
-                        </TextField>
-                    </Grid>
+          <Grid item xs={12} sm={4} md={2.4}>
+            <TextField
+              select
+              name="gender"
+              value={citizenData?.gender.name}
+              onChange={handleChange}
+              size="small"
+              fullWidth
+              error={!!genderError}
+              helperText={genderError}
+              label={
+                <span>
+                  Gender<span style={{ color: "red" }}>*</span>
+                </span>
+              }
+              sx={{
+                "& .MuiInputBase-input.MuiSelect-select": {
+                  color: "#000 !important",
+                },
+                "& .MuiSvgIcon-root": {
+                  color: "#000",
+                },
+              }}
+            >
+              {GenderNav.map((drop) => (
+                <MenuItem key={drop.gender_pk_id} value={drop.gender}>
+                  {drop.gender}
+                </MenuItem>
+              ))}
+            </TextField>
+          </Grid>
 
-                    {/* <Grid item xs={12} sm={4} md={2.4}>
+          {/* <Grid item xs={12} sm={4} md={2.4}>
                         <TextField
                             select
                             name="source"
@@ -253,37 +295,37 @@ const Updatecitizen = () => {
                         </TextField>
                     </Grid> */}
 
-                    <Grid item xs={12} sm={4} md={2.4}>
-                        <TextField
-                            select
-                            name="type"
-                            value={selectedAge1.type.name}
-                            onChange={handleChange}
-                            size="small"
-                            fullWidth
-                            label={
-                                <span>
-                                    Type<span style={{ color: 'red' }}>*</span>
-                                </span>
-                            }
-                            sx={{
-                                "& .MuiInputBase-input.MuiSelect-select": {
-                                    color: "#000 !important",
-                                },
-                                "& .MuiSvgIcon-root": {
-                                    color: "#000",
-                                },
-                            }}
-                        >
-                            {screeningFor.map((drop) => (
-                                <MenuItem key={drop.type_id} value={drop.type}>
-                                    {drop.type}
-                                </MenuItem>
-                            ))}
-                        </TextField>
-                    </Grid>
+          <Grid item xs={12} sm={4} md={2.4}>
+            <TextField
+              select
+              name="type"
+              value={selectedAge1.type.name}
+              onChange={handleChange}
+              size="small"
+              fullWidth
+              label={
+                <span>
+                  Type<span style={{ color: "red" }}>*</span>
+                </span>
+              }
+              sx={{
+                "& .MuiInputBase-input.MuiSelect-select": {
+                  color: "#000 !important",
+                },
+                "& .MuiSvgIcon-root": {
+                  color: "#000",
+                },
+              }}
+            >
+              {screeningFor.map((drop) => (
+                <MenuItem key={drop.type_id} value={drop.type}>
+                  {drop.type}
+                </MenuItem>
+              ))}
+            </TextField>
+          </Grid>
 
-                    {/* <Grid item xs={12} sm={4} md={2.4}>
+          {/* <Grid item xs={12} sm={4} md={2.4}>
                         <TextField
                             select
                             name="disease"
@@ -304,19 +346,27 @@ const Updatecitizen = () => {
                             ))}
                         </TextField>
                     </Grid> */}
-                </Grid>
-            </Paper>
+        </Grid>
+      </Paper>
 
-            <Box mt={2}>
-                {sourceId === 'School' && (
-                    <Childupdate data={data1} main={selectedAge1} state={sourceStateNav} />
-                )}
-                {sourceId === 'Corporate' && (
-                    <CorporateUpdate data={data1} main={selectedAge1} state={sourceStateNav} />
-                )}
-            </Box>
-        </Box>
-    );
+      <Box mt={2}>
+        {sourceId === "School" && (
+          <Childupdate
+            data={data1}
+            main={selectedAge1}
+            state={sourceStateNav}
+          />
+        )}
+        {sourceId === "Corporate" && (
+          <CorporateUpdate
+            data={data1}
+            main={selectedAge1}
+            state={sourceStateNav}
+          />
+        )}
+      </Box>
+    </Box>
+  );
 };
 
 export default Updatecitizen;
