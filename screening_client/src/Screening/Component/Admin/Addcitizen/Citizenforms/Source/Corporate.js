@@ -627,7 +627,7 @@ const handleSourceChange = (e) => {
       formData.append("state", selectedState);
       formData.append("district", selectedDistrict);
       formData.append("tehsil", selectedTahsil);
-      formData.append("source_name", selectedName);
+      formData.append("source_name", SourceName);
       formData.append("gender", gender);
       formData.append("type", selectedScheduleType);
       formData.append("source", selectedSource);
