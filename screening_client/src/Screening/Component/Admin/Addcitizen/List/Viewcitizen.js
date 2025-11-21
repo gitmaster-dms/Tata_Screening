@@ -73,7 +73,7 @@ const Viewcitizen = () => {
       <Box sx={{ p: 3 }}>
         <Typography>Loading...</Typography>
       </Box>
-    );
+    );   
   }
 
   return (

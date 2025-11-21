@@ -282,7 +282,7 @@ console.log("Idddddddd", sourceName, source);
     const userID = localStorage.getItem("userID");
     console.log(userID);
 
-    fetch(`${Port}/Screening/add_citizen_delete/${citizenID}/${userID}/`, {
+    fetch(`${Port}/Screening/Citizen_delete/${citizenID}/`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -1081,6 +1081,7 @@ console.log("Idddddddd", sourceName, source);
                                         navigate("/mainscreen/Body", {
                                           state: {
                                             citizens_pk_id: data.citizens_pk_id,
+
                                           },
                                         });
                                       }
