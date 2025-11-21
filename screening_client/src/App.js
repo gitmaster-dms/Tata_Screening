@@ -1,5 +1,5 @@
 import React, { Suspense, lazy, useState } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { SourceProvider } from "../src/contexts/SourceContext";
 import Navbar from "./Screening/Component/Admin/Navbar";
 import Sidebar from "./Screening/Component/Admin/Sidebar";
@@ -16,6 +16,7 @@ import Desk from "./Screening/Component/Followup/Desk";
 import ViewFollowup from "./Screening/Component/Followup/FolloupForms/ViewFollowup";
 import AddFollowUp from "./Screening/Component/Followup/FolloupForms/AddFollowUp";
 import DentalAssesment from "./Screening/Component/Admin/Screening/StartScreening/Vitals/AI/DentalAssesment";
+import { useParams } from "react-router-dom";
 
 // Lazy imports
 const Citizenlist = lazy(() => import("./Screening/Component/Admin/Addcitizen/List/Citizenlist"));
@@ -31,12 +32,13 @@ const Login = lazy(() => import("./Screening/Component/Admin/Login/Login"));
 const Viewcitizen = lazy(() => import("./Screening/Component/Admin/Addcitizen/List/Viewcitizen"));
 const Updatecitizen = lazy(() => import("./Screening/Component/Admin/Addcitizen/List/Updatecitizen"));
 const Main = lazy(() => import("./Screening/Component/Admin/Main"));
-
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(
     localStorage.getItem("isLoggedIn") === "true"
   );
 
+  const { citizens_pk_id } = useParams();
+console.log("1111111", citizens_pk_id);
   const handleLogin = () => {
     setIsLoggedIn(true);
     localStorage.setItem("isLoggedIn", "true");
