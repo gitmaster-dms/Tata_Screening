@@ -1006,7 +1006,7 @@ console.log("Idddddddd", sourceName, source);
                                   {canView && (
                                     <MenuItem
                                       component={Link}
-                                      to={`/mainscreen/viewcitizen/${data.citizens_pk_id}/${SourceUrlId}`}
+                                      to={`/mainscreen/viewcitizen/${data.citizens_pk_id}/${SourceNameUrlId}`}
                                       onClick={handleMenuClose}
                                     >
                                       <ListItemIcon>

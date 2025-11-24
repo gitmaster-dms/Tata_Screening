@@ -1559,7 +1559,7 @@ if (!corporateForm.source || !corporateForm.source_name) {
                   </Select>
                 </FormControl>
               </Grid>
-              <Grid item xs={12} sm={6}>
+              {/* <Grid item xs={12} sm={6}>
                 <FormControl
                   fullWidth
                   size="small"
@@ -1589,7 +1589,7 @@ if (!corporateForm.source || !corporateForm.source_name) {
                     ))}
                   </Select>
                 </FormControl>
-              </Grid>
+              </Grid> */}
 
               <Grid item xs={12} sm={6}>
                 <TextField
