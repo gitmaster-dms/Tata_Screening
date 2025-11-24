@@ -1743,3 +1743,15 @@ class Workshop_delete_Serializer(serializers.ModelSerializer):
     class Meta:
         model = Workshop
         fields = ['Workshop','is_deleted']
+
+
+class Workshop_Get_Api_Dashboard_Serializer(serializers.ModelSerializer):
+   class Meta:
+       model = Workshop
+       fields = ['ws_pk_id','Workshop_name','ws_address','latitude','longitude','added_date']
+
+
+class Workshop_list_get_Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = Workshop
+        fields = ['ws_pk_id','Workshop_name','ws_taluka']

@@ -6438,3 +6438,57 @@ class FollowupPOST(APIView):
     #         return Response(serializer.data, status=201)
 
     #     return Response(serializer.errors, status=400)
+
+
+
+class WorkshopFilterAPIView(APIView):
+    def get(self, request):
+        try:
+            date_filter = request.GET.get("date_filter")       
+            ws_district = request.GET.get("ws_district")       
+
+            queryset = Workshop.objects.filter(is_deleted=False)
+
+            # --------------------------
+            # DATE FILTERING LOGIC
+            # --------------------------
+            today = timezone.now().date()
+
+            if date_filter == "today":
+                queryset = queryset.filter(added_date__date=today)
+
+            elif date_filter == "this_month":
+                queryset = queryset.filter(
+                    added_date__year=today.year,
+                    added_date__month=today.month
+                )
+
+            elif date_filter == "till_date":
+                # don't apply any filter → return all
+                pass
+
+            # --------------------------
+            # DISTRICT FILTER
+            # --------------------------
+            if ws_district:
+                queryset = queryset.filter(ws_district_id=ws_district)
+
+            serializer = Workshop_Get_Api_Dashboard_Serializer(queryset, many=True)
+            return Response({
+                "data": serializer.data
+            }, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return Response({
+                "status": False,
+                "message": str(e)
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+class Workshop_list_get_api(APIView):
+    def get(self, request,ws_taluka):
+        workshop_qs = Workshop.objects.filter(ws_taluka=ws_taluka,is_deleted=False)
+        serializer = Workshop_list_get_Serializer(workshop_qs, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+        
