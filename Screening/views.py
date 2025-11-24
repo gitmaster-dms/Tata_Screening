@@ -3893,7 +3893,7 @@ class Workshop_Delete_API(APIView):
     
 class Citizen_Get_Api(APIView):
     def get(self, request):
-        snippet = Citizen.objects.all()
+        snippet = Citizen.objects.filter(is_deleted=False)
         serializers = Citizen_Get_Serializer(snippet, many=True)
         return Response(serializers.data, status=status.HTTP_200_OK)
     
