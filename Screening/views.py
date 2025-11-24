@@ -3939,7 +3939,26 @@ class Citizen_Update_API(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+class CitizenDeleteAPI(APIView):
+    def get(self, request, citizens_pk_id):
+        try:
+            citizen = Citizen.objects.get(citizens_pk_id=citizens_pk_id, is_deleted=False)
+        except Citizen.DoesNotExist:
+            return Response({"detail": "Citizen not found"}, status=404)
 
+        serializer = Citizen_Get_Serializer(citizen)
+        return Response(serializer.data, status=200)
+
+    def delete(self, request, citizens_pk_id):
+        try:
+            citizen = Citizen.objects.get(citizens_pk_id=citizens_pk_id, is_deleted=False)
+        except Citizen.DoesNotExist:
+            return Response({"detail": "Citizen not found"}, status=404)
+
+        citizen.is_deleted = True
+        citizen.save()
+
+        return Response({"detail": "Citizen deleted successfully"}, status=200)
 
 
 class CheckCitizenScreening(APIView):

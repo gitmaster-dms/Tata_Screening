@@ -226,6 +226,7 @@ urlpatterns = [
     path('Citizen_Get/', Citizen_Get_Api.as_view(), name='Citizen_Get'),
     path('Citizen_Get_Idwise/<int:citizens_pk_id>/', Citizen_idwise_data_Get_Api.as_view(), name='Citizen_Get_idwise'),
     path('Citizen_Put_api/<int:citizens_pk_id>/', Citizen_Update_API.as_view(), name='Citizen_Put_api'),
+    path('Citizen_delete/<int:citizens_pk_id>/', CitizenDeleteAPI.as_view(), name='Citizen_delete'),
     
     path('Workshop_Post/', Workshop_Post_Api.as_view(), name='Workshop_Post'),
     path('Workshop_Get/', Workshop_Get_Api.as_view(), name='Workshop_Get'),
