@@ -1,10 +1,13 @@
-import React, { useState, useEffect } from 'react'
-import { Link } from 'react-router-dom'
-import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt';
-import './AddUser.css'
-import { DriveFileRenameOutlineOutlined, DeleteOutlineOutlined } from '@mui/icons-material';
-import axios from 'axios';
-import { Modal } from 'react-bootstrap';
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
+import "./AddUser.css";
+import {
+  DriveFileRenameOutlineOutlined,
+  DeleteOutlineOutlined,
+} from "@mui/icons-material";
+import axios from "axios";
+import { Modal } from "react-bootstrap";
 import {
   Box,
   Grid,
@@ -30,7 +33,9 @@ import {
   FormControl,
   InputLabel,
   DeleteOutlineOutlinedIcon,
-} from '@mui/material';
+  Alert,
+  Snackbar,
+} from "@mui/material";
 
 const AddUser = () => {
   //permission code start
@@ -40,99 +45,131 @@ const AddUser = () => {
   const [canEdit, setCanEdit] = useState(false);
 
   useEffect(() => {
-    const storedPermissions = localStorage.getItem('permissions');
-    console.log('Stored Permissions:', storedPermissions);
-    const parsedPermissions = storedPermissions ? JSON.parse(storedPermissions) : [];
-    console.log('parsedPermissions Permissions:', parsedPermissions);
+    const storedPermissions = localStorage.getItem("permissions");
+    console.log("Stored Permissions:", storedPermissions);
+    const parsedPermissions = storedPermissions
+      ? JSON.parse(storedPermissions)
+      : [];
+    console.log("parsedPermissions Permissions:", parsedPermissions);
     // Check if the user has permission to add a citizen with 'Edit' submodule
     const hasAddCitizenPermission = parsedPermissions.some((p) =>
       p.modules_submodule.some(
         (m) =>
-          m.moduleName === 'System User' &&
-          m.selectedSubmodules.some((s) => s.submoduleName === 'Add')
+          m.moduleName === "System User" &&
+          m.selectedSubmodules.some((s) => s.submoduleName === "Add")
       )
     );
     setCanAddUser(hasAddCitizenPermission);
     // Check if the user has permission for the "Delete" submodule
     const hasDeletePermission = parsedPermissions.some((p) =>
-      p.modules_submodule.some((m) => m.moduleName === 'System User' && m.selectedSubmodules.some((s) => s.submoduleName === 'Delete'))
+      p.modules_submodule.some(
+        (m) =>
+          m.moduleName === "System User" &&
+          m.selectedSubmodules.some((s) => s.submoduleName === "Delete")
+      )
     );
     setCanDelete(hasDeletePermission);
 
     // Check if the user has permission for the "edit" submodule
     const hasEditPermission = parsedPermissions.some((p) =>
-      p.modules_submodule.some((m) => m.moduleName === 'System User' && m.selectedSubmodules.some((s) => s.submoduleName === 'Edit'))
+      p.modules_submodule.some(
+        (m) =>
+          m.moduleName === "System User" &&
+          m.selectedSubmodules.some((s) => s.submoduleName === "Edit")
+      )
     );
     setCanEdit(hasEditPermission);
 
     // Check if the user has permission for the "edit" submodule
     const hasViewPermission = parsedPermissions.some((p) =>
-      p.modules_submodule.some((m) => m.moduleName === 'System User' && m.selectedSubmodules.some((s) => s.submoduleName === 'View'))
+      p.modules_submodule.some(
+        (m) =>
+          m.moduleName === "System User" &&
+          m.selectedSubmodules.some((s) => s.submoduleName === "View")
+      )
     );
     setCanView(hasViewPermission);
   }, []);
 
   //permission code end
-  const Port = process.env.REACT_APP_API_KEY
-  const accessToken = localStorage.getItem('token');
+  const Port = process.env.REACT_APP_API_KEY;
+  const accessToken = localStorage.getItem("token");
 
   const [showForm, setShowForm] = useState(false);
   const [transitioning, setTransitioning] = useState(false);
 
-  const [gender, setGender] = useState([])
-  const [tableData, setTableData] = useState([])
-  const [searchQuery, setSearchQuery] = useState('');
+  const [gender, setGender] = useState([]);
+  const [tableData, setTableData] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
   const [selectedRowIndex, setSelectedRowIndex] = useState(null);
+
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "success",
+  });
+
+  // Open Snackbar Helper
+  const showSnackbar = (msg, type = "error") => {
+    setSnackbar({
+      open: true,
+      message: msg,
+      severity: type,
+    });
+  };
 
   ///////////////////// Navbar
   /// State District Tehsil
-  const State = localStorage.getItem('StateLogin');
-  const District = localStorage.getItem('DistrictLogin');
-  const Tehsil = localStorage.getItem('TehsilLogin');
+  const State = localStorage.getItem("StateLogin");
+  const District = localStorage.getItem("DistrictLogin");
+  const Tehsil = localStorage.getItem("TehsilLogin");
 
-  const userID = localStorage.getItem('userID');
+  const userID = localStorage.getItem("userID");
 
   //// access the source from local storage
-  const SourceUrlId = localStorage.getItem('loginSource');
+  const SourceUrlId = localStorage.getItem("loginSource");
 
   //// access the source name from local storage
-  const SourceNameUrlId = localStorage.getItem('SourceNameFetched');
+  const SourceNameUrlId = localStorage.getItem("SourceNameFetched");
   // console.log(userID);
 
-
   const [sourceOptionNav, setSourceOptionNav] = useState([]);
-  const [selectedSourceeNav, setSelectedSourceeNav] = useState(SourceUrlId || '');
+  const [selectedSourceeNav, setSelectedSourceeNav] = useState(
+    SourceUrlId || ""
+  );
 
   const [stateOptionsNav, setStateOptionsNav] = useState([]);
-  const [selectedStateNav, setSelectedStateNav] = useState(State || '')
+  const [selectedStateNav, setSelectedStateNav] = useState(State || "");
 
   const [districtOptionsNav, setDistrictOptionsNav] = useState([]);
-  const [selectedDistrictNav, setSelectedDistrictNav] = useState(District || '')
+  const [selectedDistrictNav, setSelectedDistrictNav] = useState(
+    District || ""
+  );
 
-  const [talukaOptionsNav, setTalukaOptionsNav] = useState([])
-  const [selectedTalukaNav, setSelectedTalukaNav] = useState(Tehsil || '')
+  const [talukaOptionsNav, setTalukaOptionsNav] = useState([]);
+  const [selectedTalukaNav, setSelectedTalukaNav] = useState(Tehsil || "");
 
-  const [sourceNameOptionsNav, setSourceNameNav] = useState([])
-  const [selectedNameNav, setSelectedNameNav] = useState('')
+  const [sourceNameOptionsNav, setSourceNameNav] = useState([]);
+  const [selectedNameNav, setSelectedNameNav] = useState("");
 
   //////////////// form state district tehsil and source name useState
   const [sourceOption, setSourceOption] = useState([]);
-  const [selectedSourcee, setSelectedSourcee] = useState('');
+  const [selectedSourcee, setSelectedSourcee] = useState("");
 
   const [stateOptions, setStateOptions] = useState([]);
-  const [selectedState, setSelectedState] = useState('')
+  const [selectedState, setSelectedState] = useState("");
 
   const [districtOptions, setDistrictOptions] = useState([]);
-  const [selectedDistrict, setSelectedDistrict] = useState('')
+  const [selectedDistrict, setSelectedDistrict] = useState("");
 
-  const [talukaOptions, setTalukaOptions] = useState([])
-  const [selectedTaluka, setSelectedTaluka] = useState('')
+  const [talukaOptions, setTalukaOptions] = useState([]);
+  const [selectedTaluka, setSelectedTaluka] = useState("");
 
-  const [sourceNameOptions, setSourceName] = useState([])
-  const [selectedName, setSelectedName] = useState('')
+  const [sourceNameOptions, setSourceNameOptions] = useState([]);
+  const [selectedName, setSelectedName] = useState("");
 
-  const [roleForm, setRoleForm] = useState([])
-  const [selectedRole, setSelectedRole] = useState('')
+  const [roleForm, setRoleForm] = useState([]);
+  const [selectedRole, setSelectedRole] = useState("");
   const [updateSrc, setUpdateSrc] = useState(true); /////////// update user form
   const [deleteSrc, setDeleteSrc] = useState(true); ///////delete user
   const [deleteModel, setDeleteModel] = useState(false); /////// model Delete
@@ -141,99 +178,99 @@ const AddUser = () => {
   const [updateModel, setUpdateModel] = useState(false); ////////////// Mandotory Fields
   const [existModel, setExistModel] = useState(false); ////////////// ExistFields
   const [formEnabled, setFormEnabled] = useState(false); ////////// disabled
-  const [loading, setLoading] = useState(true)
+  const [loading, setLoading] = useState(true);
 
-  ////////////// navbar useState 
+  ////////////// navbar useState
   useEffect(() => {
     // Fetch source options
-    axios.get(`${Port}/Screening/source_GET/`,
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`
-        }
-      })
-      .then(response => {
-        setSourceOptionNav(response.data);
-      })
-      .catch(error => {
-        console.error('Error fetching sources:', error);
-      });
-  }, []);
-
-  //// Soure State against selected source
-useEffect(() => {
-  axios
-    .get(`${Port}/Screening/State_Get/`, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    })
-    .then((response) => {
-      setStateOptionsNav(response.data);
-    })
-    .catch((error) => {
-      console.error("Error while fetching state data:", error);
-    });
-}, []); 
-
-
-  //// Soure District against selected source state
-useEffect(() => {
-  if (selectedStateNav) {
     axios
-      .get(`${Port}/Screening/District_Get/${selectedStateNav}/`, {
+      .get(`${Port}/Screening/source_GET/`, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
       })
       .then((response) => {
-        setDistrictOptionsNav(response.data);
+        setSourceOptionNav(response.data);
       })
       .catch((error) => {
-        console.error("Error fetching districts:", error);
+        console.error("Error fetching sources:", error);
       });
-  }
-}, [selectedStateNav]);
+  }, []);
 
+  //// Soure State against selected source
+  useEffect(() => {
+    axios
+      .get(`${Port}/Screening/State_Get/`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+      .then((response) => {
+        setStateOptionsNav(response.data);
+      })
+      .catch((error) => {
+        console.error("Error while fetching state data:", error);
+      });
+  }, []);
+
+  //// Soure District against selected source state
+  useEffect(() => {
+    if (selectedStateNav) {
+      axios
+        .get(`${Port}/Screening/District_Get/${selectedStateNav}/`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        })
+        .then((response) => {
+          setDistrictOptionsNav(response.data);
+        })
+        .catch((error) => {
+          console.error("Error fetching districts:", error);
+        });
+    }
+  }, [selectedStateNav]);
 
   //// Soure Taluka against selected source district
   useEffect(() => {
     if (selectedDistrictNav) {
-      axios.get(`${Port}/Screening/Tehsil_Get/${selectedDistrictNav}/`,
-        {
+      axios
+        .get(`${Port}/Screening/Tehsil_Get/${selectedDistrictNav}/`, {
           headers: {
-            Authorization: `Bearer ${accessToken}`
-          }
+            Authorization: `Bearer ${accessToken}`,
+          },
         })
-        .then(response => {
+        .then((response) => {
           setTalukaOptionsNav(response.data);
         })
-        .catch(error => {
+        .catch((error) => {
           console.error("Error fetching taluka data:", error);
         });
     }
   }, [selectedDistrictNav]);
 
-
   //// Soure Name against selected source Taluka
   useEffect(() => {
     if (selectedTalukaNav) {
-      axios.get(`${Port}/Screening/Workshop_list_get/${selectedTalukaNav}/`,
-        {
+      axios
+        .get(`${Port}/Screening/Workshop_list_get/${selectedTalukaNav}/`, {
           headers: {
-            Authorization: `Bearer ${accessToken}`
-          }
+            Authorization: `Bearer ${accessToken}`,
+          },
         })
-        .then(response => {
+        .then((response) => {
           setSourceNameNav(response.data);
         })
-        .catch(error => {
-          console.error("Error fetching Source Name against Taluka data:", error);
+        .catch((error) => {
+          console.error(
+            "Error fetching Source Name against Taluka data:",
+            error
+          );
         });
     }
   }, [selectedTalukaNav]);
 
-  ////////////// modal Registered 
+  ////////////// modal Registered
   const handleRegisterModel = () => {
     setShowModal(false);
   };
@@ -259,53 +296,52 @@ useEffect(() => {
   };
 
   ////////////////////////// Form value dropdown get ///////////////////////////////
-  console.log(selectedSourcee,);
+
   useEffect(() => {
     // Fetch source options
-    axios.get(`${Port}/Screening/Source_Get/`,
-      {
+    axios
+      .get(`${Port}/Screening/Source_Get/`, {
         headers: {
-          Authorization: `Bearer ${accessToken}`
-        }
+          Authorization: `Bearer ${accessToken}`,
+        },
       })
-      .then(response => {
+      .then((response) => {
         setSourceOption(response.data);
       })
-      .catch(error => {
-        console.error('Error fetching sources:', error);
+      .catch((error) => {
+        console.error("Error fetching sources:", error);
       });
   }, []);
 
   //// Soure State against selected source
-useEffect(() => {
-  axios
-    .get(`${Port}/Screening/State_Get/`, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    })
-    .then((response) => {
-      setStateOptions(response.data);
-    })
-    .catch((error) => {
-      console.log("Error while fetching state data:", error);
-    });
-}, []);  // <-- empty dependency: executes immediately on mount
-
+  useEffect(() => {
+    axios
+      .get(`${Port}/Screening/State_Get/`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+      .then((response) => {
+        setStateOptions(response.data);
+      })
+      .catch((error) => {
+        console.log("Error while fetching state data:", error);
+      });
+  }, []); // <-- empty dependency: executes immediately on mount
 
   //// Soure District against selected source state
   useEffect(() => {
     if (selectedState) {
-      axios.get(`${Port}/Screening/District_Get/${selectedState}/`,
-        {
+      axios
+        .get(`${Port}/Screening/District_Get/${selectedState}/`, {
           headers: {
-            Authorization: `Bearer ${accessToken}`
-          }
+            Authorization: `Bearer ${accessToken}`,
+          },
         })
-        .then(response => {
+        .then((response) => {
           setDistrictOptions(response.data);
         })
-        .catch(error => {
+        .catch((error) => {
           console.error("Error fetching districts against state data:", error);
         });
     }
@@ -314,52 +350,74 @@ useEffect(() => {
   //// Soure Taluka against selected source district
   useEffect(() => {
     if (selectedDistrict) {
-      axios.get(`${Port}/Screening/Tehsil_Get/${selectedDistrict}/`,
-        {
+      axios
+        .get(`${Port}/Screening/Tehsil_Get/${selectedDistrict}/`, {
           headers: {
-            Authorization: `Bearer ${accessToken}`
-          }
+            Authorization: `Bearer ${accessToken}`,
+          },
         })
-        .then(response => {
+        .then((response) => {
           setTalukaOptions(response.data);
         })
-        .catch(error => {
+        .catch((error) => {
           console.error("Error fetching taluka data:", error);
         });
     }
   }, [selectedDistrict]);
 
-  //// Soure Name against selected source Taluka
-useEffect(() => {
-  axios
-    .get(`${Port}/Screening/Source_Get/`, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    })
-    .then((response) => {
-      setSourceName(response.data);   // ← use your state setter here
-    })
-    .catch((error) => {
-      console.error("Error fetching Source_Get data:", error);
-    });
-}, []);   // <-- direct call, no dependency
+  useEffect(() => {
+    if (selectedTaluka) {
+      axios
+        .get(`${Port}/Screening/Workshop_list_get/${selectedTaluka}/`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        })
+        .then((response) => {
+          setSourceNameOptions(response.data);
+        })
+        .catch((error) => {
+          console.error(
+            "Error fetching Source Name against Taluka data:",
+            error
+          );
+        });
+    }
+  }, [selectedTaluka]);
 
+  //// Soure Name against selected source Taluka
+  useEffect(() => {
+    axios
+      .get(`${Port}/Screening/Source_Get/`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+      .then((response) => {
+        setSourceNameOptions(response.data); // ← use your state setter here
+      })
+      .catch((error) => {
+        console.error("Error fetching Source_Get data:", error);
+      });
+  }, []); // <-- direct call, no dependency
 
   /////////// role
   useEffect(() => {
     if (selectedSourcee) {
-      axios.get(`${Port}/Screening/agg_role_info_get/${selectedSourcee}`,
-        {
+      axios
+        .get(`${Port}/Screening/agg_role_info_get/${selectedSourcee}`, {
           headers: {
-            Authorization: `Bearer ${accessToken}`
-          }
+            Authorization: `Bearer ${accessToken}`,
+          },
         })
-        .then(response => {
+        .then((response) => {
           setRoleForm(response.data);
         })
-        .catch(error => {
-          console.error("Error fetching Source Name against Taluka data:", error);
+        .catch((error) => {
+          console.error(
+            "Error fetching Source Name against Taluka data:",
+            error
+          );
         });
     }
   }, [selectedSourcee]);
@@ -369,43 +427,42 @@ useEffect(() => {
   useEffect(() => {
     const fetchTable = async () => {
       try {
-        const response = await axios.get(`${Port}/Screening/User_GET/?clg_source=${SourceUrlId}&clg_source_name_id=${SourceNameUrlId}`,
+        const response = await axios.get(
+          `${Port}/Screening/User_GET/?clg_source=${SourceUrlId}&clg_source_name_id=${SourceNameUrlId}`,
           {
             headers: {
-              Authorization: `Bearer ${accessToken}`
-            }
-          })
-        setTableData(response.data)
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
+        setTableData(response.data);
         // console.log(tableData);
-        setLoading(false)
+        setLoading(false);
+      } catch (error) {
+        console.log("Error Fetching Data", error);
+        setLoading(false);
       }
-      catch (error) {
-        console.log('Error Fetching Data', error);
-        setLoading(false)
-      }
-    }
+    };
     fetchTable();
-  }, [])
+  }, []);
 
   //// Gender Get Dropdown
   useEffect(() => {
     const fetchGender = async () => {
       try {
-        const response = await axios.get(`${Port}/Screening/Gender_GET/`,
-          {
-            headers: {
-              Authorization: `Bearer ${accessToken}`
-            }
-          })
-        setGender(response.data)
+        const response = await axios.get(`${Port}/Screening/Gender_GET/`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+        setGender(response.data);
         console.log(gender);
+      } catch (error) {
+        console.log("Error Fetching Gender", error);
       }
-      catch (error) {
-        console.log('Error Fetching Gender', error)
-      }
-    }
+    };
     fetchGender();
-  }, [])
+  }, []);
 
   const toggleForm = () => {
     setShowForm(!showForm);
@@ -425,270 +482,284 @@ useEffect(() => {
     clg_address: "",
     password: "1234",
     password2: "1234",
-    pk: '',
-    clg_source_id: '',
-    clg_states_id: '',
-    clg_district_id: '',
-    clg_tehsil_id: '',
-    clg_source_name_id: '',
-    clg_grppp_id: '',
-    clg_genderr_id: ''
+    pk: "",
+    clg_source_id: "",
+    clg_states_id: "",
+    clg_district_id: "",
+    clg_tehsil_id: "",
+    clg_source_name_id: "",
+    clg_grppp_id: "",
+    clg_genderr_id: "",
   });
 
-  const resetForm = () => {
-    setFormData({
-      clg_ref_id: "",
-      clg_gender: "",
-      clg_Date_of_birth: "",
-      clg_mobile_no: "",
-      clg_email: "",
-      clg_address: "",
-      password: "1234",
-      password2: "1234",
-      pk: '',
-    });
-
-    setSelectedSourcee("");
-    setSelectedState("");
-    setSelectedDistrict("");
-    setSelectedTaluka("");
-    setSelectedName("")
-    setSelectedRole("")
-  }
-
-  const [errors, setErrors] = useState({
-    clg_source: "",
-    clg_state: "",
-    clg_district: "",
-    clg_tahsil: "",
-    clg_source_name: "",
-    Group_id: "",
+const resetForm = () => {
+  setFormData({
     clg_ref_id: "",
     clg_gender: "",
     clg_Date_of_birth: "",
     clg_mobile_no: "",
     clg_email: "",
     clg_address: "",
+    password: "1234",
+    password2: "1234",
+    pk: "",
+    clg_source_id: "",
+    clg_states_id: "",
+    clg_district_id: "",
+    clg_tehsil_id: "",
+    clg_source_name_id: "",
+    grp_id: "",
   });
 
-  const validateForm = () => {
-    const newErrors = {};
+  setSelectedSourcee("");
+  setSelectedState("");
+  setSelectedDistrict("");
+  setSelectedTaluka("");
+  setSelectedName("");
+  setSelectedRole("");
 
-    if (!formData.clg_source) {
-      newErrors.clg_source = 'Source is required';
-    }
+  setSelectedDistrictNav("");
+  setSelectedNameNav("");
+  setSelectedStateNav("");
+  setSelectedTalukaNav("");
 
-    if (!formData.clg_state) {
-      newErrors.clg_state = 'Source State is required';
-    }
+  setErrors({});
+};
 
-    if (!formData.clg_district) {
-      newErrors.clg_district = 'Source Districtr is required';
-    }
-
-    if (!formData.clg_tahsil) {
-      newErrors.clg_tahsil = 'Source Tehsil is required';
-    }
-
-    if (!formData.clg_source_name) {
-      newErrors.clg_source_name = 'Source Name is required';
-    }
-
-    if (!formData.Group_id) {
-      newErrors.Group_id = 'Role is required';
-    }
-
-    if (!formData.clg_ref_id) {
-      newErrors.clg_ref_id = 'Name is required';
-    }
-
-    if (!formData.clg_gender) {
-      newErrors.clg_gender = 'Gender is required';
-    }
-
-    if (!formData.clg_Date_of_birth) {
-      newErrors.clg_Date_of_birth = 'DOB is required';
-    }
-
-    if (!formData.clg_mobile_no) {
-      setErrors.clg_mobile_no = 'Mobile no is required';
-    }
-
-    if (!formData.clg_email) {
-      newErrors.clg_email = 'Email is required';
-    }
-
-    if (!formData.clg_address) {
-      newErrors.clg_address = 'Address is required';
-    }
-    setErrors(newErrors);
-    return true;
-  };
+ const [errors, setErrors] = useState({
+  clg_source_id: "",
+  clg_states_id: "",
+  clg_district_id: "",
+  clg_tehsil_id: "",
+  clg_source_name_id: "",
+  grp_id: "",
+  clg_ref_id: "",
+  clg_gender: "",
+  clg_Date_of_birth: "",
+  clg_mobile_no: "",
+  clg_email: "",
+  clg_address: "",
+});
 
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    console.log('formmmmmmmmmmmm', formData);
-
-    setFormData({
-      ...formData,
+    setFormData((prev) => ({
+      ...prev,
       [name]: value,
-    });
+    }));
 
-    if (name === 'clg_source') {
-      setSelectedSourcee(value);
-    } else if (name === 'clg_state') {
-      setSelectedState(value);
-    } else if (name === 'clg_district') {
-      setSelectedDistrict(value);
-    } else if (name === 'clg_tahsil') {
-      setSelectedTaluka(value);
-    } else if (name === 'clg_source_name') {
-      setSelectedName(value);
-    } else if (name === 'grp_id') {
-      setSelectedRole(value);
+    // Dropdown / Select handlers
+    if (name === "clg_source") setSelectedSourcee(value);
+    if (name === "clg_state") setSelectedState(value);
+    if (name === "clg_district") setSelectedDistrict(value);
+    if (name === "clg_tahsil") setSelectedTaluka(value);
+    if (name === "clg_source_name_id") setSelectedName(value);
+    if (name === "grp_id") setSelectedRole(value);
+
+    // -----------------------------
+    // VALIDATION LOGIC
+    // -----------------------------
+    let errorMessage = "";
+
+    // 1️⃣ MOBILE NUMBER VALIDATION
+    if (name === "clg_mobile_no") {
+      const indianMobilePattern = /^[6-9]\d{9}$/;
+
+      if (!value) {
+        errorMessage = "Mobile Number is required";
+      } else if (!indianMobilePattern.test(value)) {
+        errorMessage = "Invalid Mobile Number";
+      } else {
+        errorMessage = "";
+      }
     }
 
-    setErrors({ ...errors, [name]: '' });
-
-    if (name === 'clg_mobile_no') {
-      // Mobile number validation
-      const indianMobilePattern = /^[6-9]\d{9}$/;
-      if (value === '') {
-        setErrors({ ...errors, clg_mobile_no: 'Mobile Number is required' });
-      } else if (!indianMobilePattern.test(value)) {
-        setErrors({ ...errors, clg_mobile_no: 'Invalid Mobile Number' });
+    // 2️⃣ NAME VALIDATION (Max 3 words)
+    if (name === "clg_ref_id") {
+      if (!value.trim()) {
+        errorMessage = "Name is required";
       } else {
-        setErrors({ ...errors, clg_mobile_no: 'Verified' });
-      }
-    } else if (name === 'clg_ref_id') {
-      // Name validation
-      if (value === '') {
-        setErrors({ ...errors, clg_ref_id: 'Name is required' });
-      } else {
-        const words = value.trim().split(' ');
+        const words = value.trim().split(" ");
         if (words.length > 3) {
-          setErrors({ ...errors, clg_ref_id: 'Name cannot contain more than three words' });
-        } else {
-          setErrors({ ...errors, clg_ref_id: '' });
+          errorMessage = "Name cannot contain more than three words";
         }
       }
-    } else if (name === 'clg_email') {
-      // Email validation
+    }
+
+    // 3️⃣ EMAIL VALIDATION
+    if (name === "clg_email") {
       const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-      if (value === '') {
-        setErrors({ ...errors, clg_email: 'Email is required' });
+
+      if (!value) {
+        errorMessage = "Email is required";
       } else if (!emailPattern.test(value)) {
-        setErrors({ ...errors, clg_email: 'Invalid Email Address' });
-      } else {
-        setErrors({ ...errors, clg_email: '' });
+        errorMessage = "Invalid Email Address";
       }
-    } else if (name === 'clg_Date_of_birth') {
-      // Date of birth validation
+    }
+
+    // 4️⃣ DATE OF BIRTH VALIDATION (18+ Check)
+    if (name === "clg_Date_of_birth") {
       const dob = new Date(value);
       const eighteenYearsAgo = new Date();
       eighteenYearsAgo.setFullYear(eighteenYearsAgo.getFullYear() - 18);
 
       if (dob > eighteenYearsAgo) {
-        setErrors({ ...errors, clg_Date_of_birth: 'Must be 18 years or older' });
-      } else {
-        setErrors({ ...errors, clg_Date_of_birth: '' });
+        errorMessage = "Must be 18 years or older";
       }
-    } else {
-      setErrors({ ...errors, [name]: '' });
     }
+
+    // Apply error state finally
+    setErrors((prev) => ({
+      ...prev,
+      [name]: errorMessage,
+    }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const isValid = validateForm();
 
-    if (formData.clg_mobile_no.length < 10) {
-      console.log('Contact number must be at least 10 characters long.');
-      alert("Contact number must be at least 10 digit long.");
+  const validateForm = () => {
+  let tempErrors = {};
+
+  // Select dropdown validations
+  if (!selectedSourcee) tempErrors.clg_source = "Source is required";
+  if (!selectedState) tempErrors.clg_state = "State is required";
+  if (!selectedDistrict) tempErrors.clg_district = "District is required";
+  if (!selectedTaluka) tempErrors.clg_tahsil = "Tehsil is required";
+  if (!formData.clg_source_name) tempErrors.clg_source_name = "Workshop is required";
+  if (!selectedRole) tempErrors.Group_id = "Role is required";
+
+  // TextField validations
+  if (!formData.clg_ref_id?.trim()) tempErrors.clg_ref_id = "Name is required";
+  if (!formData.clg_gender) tempErrors.clg_gender = "Gender is required";
+  if (!formData.clg_Date_of_birth) tempErrors.clg_Date_of_birth = "DOB is required";
+
+  if (!formData.clg_mobile_no) {
+    tempErrors.clg_mobile_no = "Mobile Number is required";
+  } else if (formData.clg_mobile_no.length !== 10) {
+    tempErrors.clg_mobile_no = "Mobile must be 10 digits";
+  }
+
+  if (!formData.clg_email) {
+    tempErrors.clg_email = "Email is required";
+  } else if (!/\S+@\S+\.\S+/.test(formData.clg_email)) {
+    tempErrors.clg_email = "Invalid email format";
+  }
+
+  if (!formData.clg_address?.trim()) tempErrors.clg_address = "Address is required";
+
+  setErrors(tempErrors);
+
+  return Object.keys(tempErrors).length === 0; // true = valid
+};
+
+const handleSubmit = async (e) => {
+  e.preventDefault();
+
+  // ❌ Form invalid → Mandatory Modal + Snackbar
+  if (!validateForm()) {
+    setMandotoryModel(true);
+    showSnackbar("Please fix the errors!", "error");
+    return;
+  }
+
+  const userData = {
+    ...formData,
+    password: "1234",
+    password2: "1234",
+    clg_added_by: userID,
+  };
+
+  if (updateSrc) {
+    userData.clg_modify_by = userID;
+  }
+
+  try {
+    let url = "";
+    let method = "";
+
+    if (!updateSrc) {
+      url = `${Port}/Screening/register/`;
+      method = "POST";
+    } else {
+      url = `${Port}/Screening/User_PUT/${formData.pk}/`;
+      method = "PUT";
+    }
+
+    const response = await fetch(url, {
+      method,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify(userData),
+    });
+
+    // -----------------------------------------------
+    // ✅ CREATE SUCCESS
+    // -----------------------------------------------
+    if (!updateSrc && response.status === 201 ) {
+      const data = await response.json();
+
+      setShowModal(true);               // OPEN REGISTER MODAL
+      showSnackbar("User Registered Successfully!", "success");
+
+      setTableData((prev) => [...prev, data]);
+      resetForm();
       return;
     }
 
-    if (isValid) {
-      const userData = {
-        ...formData,
-        password: "1234",
-        password2: "1234",
-        clg_source: formData.clg_source,
-        clg_state: formData.clg_state,
-        clg_district: formData.clg_district,
-        clg_tahsil: formData.clg_tahsil,
-        clg_source_name: formData.clg_source_name,
-        clg_added_by: userID,
-      };
+    // -----------------------------------------------
+    // ✅ UPDATE SUCCESS
+    // -----------------------------------------------
+    if (updateSrc && response.ok) {
+      const updatedUser = await response.json();
 
-      if (updateSrc) {
-        userData.clg_modify_by = userID;
-      }
+      setUpdateModel(true);             // OPEN UPDATE MODAL
+      showSnackbar("User Updated Successfully!", "success");
 
-      try {
-        if (!updateSrc) {
-          const response = await fetch(`${Port}/Screening/register/`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${accessToken}`
-            },
-            body: JSON.stringify(userData),
-          });
-
-          if (response.status === 200) {
-            const data = await response.json();
-            setShowModal(true);
-            setTableData(prevTableData => [...prevTableData, data]); // Update table data immediately
-            console.log('Data sent successfully:', data);
-            resetForm();
-          } else {
-            console.error('User Registered Successfully:', response.statusText);
-            alert('User Registered Successfully:', response.statusText);
-          }
-        } else {
-          const response = await fetch(`${Port}/Screening/User_PUT/${formData.pk}/`, {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(userData),
-          });
-
-          if (response.ok) {
-            console.log('Request successful:', response);
-            alert('User Updated Successfully');
-            const updatedUser = await response.json();
-
-            // Find the index of the updated user in tableData
-            const index = tableData.findIndex(user => user.pk === updatedUser.pk);
-
-            // If the user exists in tableData, update it, otherwise, do nothing
-            if (index !== -1) {
-              setTableData(prevTableData => {
-                const updatedTableData = [...prevTableData];
-                updatedTableData[index] = updatedUser;
-                return updatedTableData;
-              });
-            }
-          } else if (response.status === 400) {
-            alert('Fill the * mark Field');
-          } else if (response.status === 409) {
-            console.error('Conflict. The resource already exists.');
-            alert('User Already Exists');
-          } else {
-            console.error('Error:', response.statusText);
-            alert('Error:', response.statusText);
-          }
+      setTableData((prev) => {
+        const i = prev.findIndex((x) => x.pk === updatedUser.pk);
+        if (i !== -1) {
+          const updated = [...prev];
+          updated[i] = updatedUser;
+          return updated;
         }
-      } catch (error) {
-        console.error('Error:', error);
-      }
-    } else {
-      console.log('Form has errors, please correct them.');
+        return prev;
+      });
+
+      resetForm();
+      return;
     }
-  };
+
+    // -----------------------------------------------
+    // ❌ MISSING FIELDS ERROR (400)
+    // -----------------------------------------------
+    if (response.status === 400) {
+      setMandotoryModel(true);          // OPEN MANDATORY MODAL
+      showSnackbar("Please fill all required (*) fields!", "warning");
+      return;
+    }
+
+    // -----------------------------------------------
+    // ❌ USER EXIST ERROR (409)
+    // -----------------------------------------------
+    if (response.status === 409) {
+      setExistModel(true);              // OPEN EXIST MODAL
+      showSnackbar("User already exists!", "error");
+      return;
+    }
+
+    // -----------------------------------------------
+    //
+    // -----------------------------------------------
+    showSnackbar("Something went wrong. Please try again.", "error");
+
+  } catch (err) {
+    console.error("Error:", err);
+    showSnackbar("Network error! Check connection.", "error");
+  }
+};
+
 
   // const handleSubmit = async (e) => {
   //   e.preventDefault();
@@ -760,56 +831,43 @@ useEffect(() => {
 
   const handleTableRowClick = async (pk) => {
     try {
-      const response = await fetch(`${Port}/Screening/User_GET_ID/${pk}/`,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`
-          }
-        });
+      const response = await fetch(`${Port}/Screening/User_GET_ID/${pk}/`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
       const data = await response.json();
 
-      console.log('Fetched Data:', data);
-      console.log(data.source_id, 'hhhhhhhhhhhhhhhhhhhhhhhhhhhhh');
+      console.log("Fetched Data:", data);
+      console.log(data.source_id, "hhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
 
-      setFormData((prevState) => ({
-        ...prevState,
-        clg_source_id: data.clg_source,
-        clg_source: data.source_id,
+   setFormData((prev) => ({
+  ...prev,
+  clg_ref_id: data.clg_ref_id,
+  clg_gender: data.gender_id,
+  clg_Date_of_birth: data.clg_Date_of_birth,
+  clg_mobile_no: data.clg_mobile_no,
+  clg_email: data.clg_email,
+  clg_address: data.clg_address,
 
-        clg_states_id: data.clg_state,
-        clg_state: data.state_id,
+  pk: data.pk,
 
-        // clg_district: data.clg_district,
-        clg_district_id: data.clg_district,
-        clg_district: data.district_id,
-
-        // clg_tahsil: data.clg_tahsil,
-        clg_tehsil_id: data.clg_tahsil,
-        clg_tahsil: data.tehsil_id,
-
-        // clg_source_name: data.clg_source_name,
-        clg_source_name_id: data.clg_source_name,
-        clg_source_name: data.source_name_id,
-
-        // grp_id: data.grp_id,
-
-        clg_grppp_id: data.grp_id,
-        grp_id: data.group_id,
-
-        clg_genderr_id: data.clg_gender,
-        clg_gender: data.gender_id,
-
-        // clg_gender: data.clg_gender,
-        clg_email: data.clg_email,
-        clg_Date_of_birth: data.clg_Date_of_birth,
-        clg_mobile_no: data.clg_mobile_no,
-        clg_address: data.clg_address,
-        clg_ref_id: data.clg_ref_id,
-        pk: data.pk,
-      }));
-
+  clg_source_id: data.source_id,
+  clg_states_id: data.state_id,
+  clg_district_id: data.district_id,
+  clg_tehsil_id: data.tehsil_id,
+  clg_source_name_id: data.source_name_id,
+  grp_id: data.group_id,  // <-- FIXED
+  clg_genderr_id: data.gender_id,
+}));
+      setSelectedSourcee(data.source_name_id);
+      setSelectedState(data.state_id);
+      setSelectedDistrict(data.district_id);
+      setSelectedTaluka(data.tehsil_id);
+      setSelectedName(data.source_name_id);
+      setSelectedRole(data.group_id);
     } catch (error) {
-      console.error('Error fetching detailed information:', error);
+      console.error("Error fetching detailed information:", error);
     }
 
     setSelectedRowIndex(pk);
@@ -839,57 +897,61 @@ useEffect(() => {
     }
 
     try {
-      const response = await axios.get(apiUrl,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`
-          }
-        });
+      const response = await axios.get(apiUrl, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
       setTableData(response.data);
       console.log(response.data);
     } catch (error) {
-      console.log('Error while fetching data', error);
+      console.log("Error while fetching data", error);
     }
   };
 
   ////////////// Delete
-  const handleDelete = async () => {
-    const confirmDelete = window.confirm('Are you sure you want to delete this user?');
+const handleDelete = async () => {
+  const confirmDelete = window.confirm(
+    "Are you sure you want to delete this user?"
+  );
 
-    if (!confirmDelete) {
-      // User clicked Cancel, do nothing
-      return;
-    }
+  if (!confirmDelete) return;
 
-    console.log('Received sourceId:', formData.pk);
+  try {
+    const deleteUrl = `${Port}/Screening/User_DELETE/${formData.pk}/${userID}/`;
 
-    try {
-      const deleteUrl = `${Port}/Screening/User_DELETE/${formData.pk}/${userID}/`;
-      await axios.delete(deleteUrl,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`
-          }
-        });
+    await axios.delete(deleteUrl, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
 
-      console.log('Data Deleted successfully');
+    setTableData((prev) =>
+      prev.filter((item) => item.pk !== formData.pk)
+    );
 
-      // Assuming tableData and setTableData are your state variables for the table
-      setTableData(prevTableData =>
-        prevTableData.filter(item => item.pk !== formData.pk)
-      );
+    // RESET FORM COMPLETELY
+    resetForm();
 
-      setDeleteModel(true);
-      setFormData({});
-    } catch (error) {
-      console.error('Error deleting data:', error);
-    }
-  };
+    // OPEN DELETE SUCCESS MODAL
+    setDeleteModel(true);
+
+    // SNACKBAR SUCCESS
+    showSnackbar("User Deleted Successfully!", "success");
+
+  } catch (error) {
+    console.error("Error deleting data:", error);
+
+    showSnackbar("User Failed to Delete!", "error");
+  }
+};
+
+
 
   const handleClicked = () => {
     setFormEnabled(true);
     setUpdateSrc(false); // Set to false to indicate updating an existing user
-  }
+  };
 
   const handleClickCombined = () => {
     toggleForm();
@@ -909,10 +971,25 @@ useEffect(() => {
     setPage(0);
   };
 
-  const [formAction, setFormAction] = useState('');
+  const [formAction, setFormAction] = useState("");
 
   return (
     <Box sx={{ p: 2, m: "0em 0em 0 3.5em" }}>
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={3000}
+        onClose={() => setSnackbar({ ...snackbar, open: false })}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert
+          onClose={() => setSnackbar({ ...snackbar, open: false })}
+          severity={snackbar.severity}
+          variant="filled"
+          sx={{ width: "100%" }}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
       <Card
         sx={{
           borderRadius: 3,
@@ -920,15 +997,11 @@ useEffect(() => {
         }}
       >
         <CardContent>
-          <Grid
-            container
-            alignItems="center"
-            justifyContent="space-between"
-          >
+          <Grid container alignItems="center" justifyContent="space-between">
             <Grid item>
               <Typography
                 variant="h6"
-                sx={{ fontWeight: 500, color: '#1439A4', fontFamily: 'Roboto' }}
+                sx={{ fontWeight: 500, color: "#1439A4", fontFamily: "Roboto" }}
               >
                 User List
               </Typography>
@@ -957,7 +1030,12 @@ useEffect(() => {
             )}
           </Grid>
 
-          <Grid container spacing={2} alignItems="center" justifyContent="center">
+          <Grid
+            container
+            spacing={2}
+            alignItems="center"
+            justifyContent="center"
+          >
             <Grid item xs={12} sm={6} md={2}>
               <TextField
                 sx={{
@@ -985,68 +1063,9 @@ useEffect(() => {
               </TextField>
             </Grid>
 
-          <Grid item xs={12} sm={6} md={2}>
-  <TextField
-    sx={{
-      minWidth: 120,
-      "& .MuiInputBase-input.MuiSelect-select": {
-        color: "#000 !important",
-      },
-      "& .MuiSvgIcon-root": {
-        color: "#000",
-      },
-    }}
-    select
-    fullWidth
-    size="small"
-    label="Source State"
-    value={selectedStateNav}
-    onChange={(e) => setSelectedStateNav(e.target.value)}
-  >
-    <MenuItem value="">Select State</MenuItem>
-
-    {stateOptionsNav.map((drop) => (
-      <MenuItem key={drop.state_id} value={drop.state_id}>
-        {drop.state_name}
-      </MenuItem>
-    ))}
-  </TextField>
-</Grid>
-
-
-<Grid item xs={12} sm={6} md={2}>
-  <TextField
-    sx={{
-      minWidth: 120,
-      "& .MuiInputBase-input.MuiSelect-select": {
-        color: "#000 !important",
-      },
-      "& .MuiSvgIcon-root": {
-        color: "#000",
-      },
-    }}
-    select
-    fullWidth
-    size="small"
-    label="Source District"
-    value={selectedDistrictNav}
-    onChange={(e) => setSelectedDistrictNav(e.target.value)}
-  >
-    <MenuItem value="">Select District</MenuItem>
-
-    {districtOptionsNav.map((drop) => (
-      <MenuItem key={drop.dist_id} value={drop.dist_id}>
-        {drop.dist_name}
-      </MenuItem>
-    ))}
-  </TextField>
-</Grid>
-
-
-
-<Grid item xs={12} sm={6} md={2}>
-  <TextField
-  sx={{
+            <Grid item xs={12} sm={6} md={2}>
+              <TextField
+                sx={{
                   minWidth: 120,
                   "& .MuiInputBase-input.MuiSelect-select": {
                     color: "#000 !important",
@@ -1055,35 +1074,85 @@ useEffect(() => {
                     color: "#000",
                   },
                 }}
-    select
-    fullWidth
-    size="small"
-    label="Select Tehsil"
-    value={selectedTalukaNav || ""}        // safety fallback
-    onChange={(e) => {
-      const value = e.target.value;
-      setSelectedTalukaNav(value === "" ? "" : Number(value));
-    }}
-  >
-    <MenuItem value="">Select Tehsil</MenuItem>
+                select
+                fullWidth
+                size="small"
+                label="Source State"
+                value={selectedStateNav}
+                onChange={(e) => setSelectedStateNav(e.target.value)}
+              >
+                <MenuItem value="">Select State</MenuItem>
 
-    {talukaOptionsNav.length > 0 ? (
-      talukaOptionsNav.map((drop) => (
-        <MenuItem
-          key={drop.tal_id}
-          value={drop.tal_id}
-        >
-          {drop.tahsil_name}
-        </MenuItem>
-      ))
-    ) : (
-      <MenuItem disabled>No data available</MenuItem>
-    )}
-  </TextField>
-</Grid>
+                {stateOptionsNav.map((drop) => (
+                  <MenuItem key={drop.state_id} value={drop.state_id}>
+                    {drop.state_name}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Grid>
 
+            <Grid item xs={12} sm={6} md={2}>
+              <TextField
+                sx={{
+                  minWidth: 120,
+                  "& .MuiInputBase-input.MuiSelect-select": {
+                    color: "#000 !important",
+                  },
+                  "& .MuiSvgIcon-root": {
+                    color: "#000",
+                  },
+                }}
+                select
+                fullWidth
+                size="small"
+                label="Source District"
+                value={selectedDistrictNav}
+                onChange={(e) => setSelectedDistrictNav(e.target.value)}
+              >
+                <MenuItem value="">Select District</MenuItem>
 
+                {districtOptionsNav.map((drop) => (
+                  <MenuItem key={drop.dist_id} value={drop.dist_id}>
+                    {drop.dist_name}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Grid>
 
+            <Grid item xs={12} sm={6} md={2}>
+              <TextField
+                sx={{
+                  minWidth: 120,
+                  "& .MuiInputBase-input.MuiSelect-select": {
+                    color: "#000 !important",
+                  },
+                  "& .MuiSvgIcon-root": {
+                    color: "#000",
+                  },
+                }}
+                select
+                fullWidth
+                size="small"
+                label="Select Tehsil"
+                value={selectedTalukaNav || ""} // safety fallback
+                onChange={(e) => {
+                  const value = e.target.value;
+                  setSelectedTalukaNav(value === "" ? "" : Number(value));
+                }}
+              >
+                <MenuItem value="">Select Tehsil</MenuItem>
+
+                {talukaOptionsNav.length > 0 ? (
+                  talukaOptionsNav.map((drop) => (
+                    <MenuItem key={drop.tal_id} value={drop.tal_id}>
+                      {drop.tahsil_name}
+                    </MenuItem>
+                  ))
+                ) : (
+                  <MenuItem disabled>No data available</MenuItem>
+                )}
+              </TextField>
+            </Grid>
 
             <Grid item xs={12} sm={6} md={2}>
               <TextField
@@ -1100,10 +1169,10 @@ useEffect(() => {
                 fullWidth
                 size="small"
                 label="workshop Name"
-                value={selectedNameNav}
+                value={selectedTalukaNav || ""}
                 onChange={(e) => setSelectedNameNav(e.target.value)}
               >
-                <MenuItem value="">Select Source Name</MenuItem>
+                <MenuItem value="">Select workshop Name</MenuItem>
                 {sourceNameOptionsNav.map((drop) => (
                   <MenuItem key={drop.ws_pk_id} value={drop.ws_pk_id}>
                     {drop.Workshop_name}
@@ -1139,17 +1208,25 @@ useEffect(() => {
               item
               xs={12}
               md={6}
-              className={transitioning ? 'sliding-out' : ''}
+              className={transitioning ? "sliding-out" : ""}
             >
               <Card elevation={4}>
                 <CardContent>
-                  <Box display="flex" justifyContent="space-between" alignItems="center" mb={1}>
-                    <Typography variant="h6" sx={{ fontWeight: 'bold', fontSize: "16px" }}>
+                  <Box
+                    display="flex"
+                    justifyContent="space-between"
+                    alignItems="center"
+                    mb={1}
+                  >
+                    <Typography
+                      variant="h6"
+                      sx={{ fontWeight: "bold", fontSize: "16px" }}
+                    >
                       Register New User
                     </Typography>
                     <Box
                       sx={{
-                        p: 2
+                        p: 2,
                       }}
                     >
                       <IconButton
@@ -1157,7 +1234,7 @@ useEffect(() => {
                         onClick={() => {
                           setUpdateSrc(true);
                           setFormEnabled(true);
-                          setFormAction('update');
+                          setFormAction("update");
                         }}
                       >
                         <DriveFileRenameOutlineOutlined />
@@ -1189,28 +1266,35 @@ useEffect(() => {
                                 color: "#000",
                               },
                             }}
-                            size='small'
-
+                            size="small"
                             name="clg_source"
                             value={selectedSourcee}
                             onChange={handleChange}
                             label="Source"
                           >
                             <MenuItem value="">
-                              {formData.clg_source_id || 'Select Source'}
+                              {formData.source_id || "Select Source"}
                             </MenuItem>
                             {sourceOption.map((source) => (
-                              <MenuItem key={source.source_pk_id} value={source.source_pk_id}>
+                              <MenuItem
+                                key={source.source_pk_id}
+                                value={source.source_pk_id}
+                              >
                                 {source.source}
                               </MenuItem>
                             ))}
                           </Select>
+                           {errors.clg_source && (
+      <Typography sx={{ color: "red", fontSize: "12px", mt: 0.5 }}>
+        {errors.clg_source}
+      </Typography>
+    )}
                         </FormControl>
                       </Grid>
 
                       {/* State */}
                       <Grid item xs={12} md={6}>
-                        <FormControl fullWidth>
+                        <FormControl fullWidth  error={!!errors.clg_state}>
                           <InputLabel>Source State</InputLabel>
                           <Select
                             sx={{
@@ -1222,27 +1306,35 @@ useEffect(() => {
                                 color: "#000",
                               },
                             }}
-                            size='small'
+                            size="small"
                             name="clg_state"
                             value={selectedState}
                             onChange={handleChange}
                             label="Source State"
                           >
                             <MenuItem value="">
-                              {formData.state_name || 'Select State'}
+                              {formData.state_name || "Select State"}
                             </MenuItem>
                             {stateOptions.map((state) => (
-                              <MenuItem key={state.state_id} value={state.state_id}>
+                              <MenuItem
+                                key={state.state_id}
+                                value={state.state_id}
+                              >
                                 {state.state_name}
                               </MenuItem>
                             ))}
                           </Select>
+                           {errors.clg_state && (
+          <Typography sx={{ color: "red", fontSize: 12 }}>
+            {errors.clg_state}
+          </Typography>
+        )}
                         </FormControl>
                       </Grid>
 
                       {/* District */}
                       <Grid item xs={12} md={6}>
-                        <FormControl fullWidth>
+                        <FormControl fullWidth error={!!errors.clg_district}>
                           <InputLabel>Source District</InputLabel>
                           <Select
                             sx={{
@@ -1254,27 +1346,35 @@ useEffect(() => {
                                 color: "#000",
                               },
                             }}
-                            size='small'
+                            size="small"
                             name="clg_district"
                             value={selectedDistrict}
                             onChange={handleChange}
                             label="Source District"
                           >
                             <MenuItem value="">
-                              {formData.clg_district_id || 'Select District'}
+                              {formData.clg_district_id || "Select District"}
                             </MenuItem>
                             {districtOptions.map((district) => (
-                              <MenuItem key={district.dist_id} value={district.dist_id}>
+                              <MenuItem
+                                key={district.dist_id}
+                                value={district.dist_id}
+                              >
                                 {district.dist_name}
                               </MenuItem>
                             ))}
                           </Select>
+                          {errors.clg_district && (
+          <Typography sx={{ color: "red", fontSize: 12 }}>
+            {errors.clg_district}
+          </Typography>
+        )}
                         </FormControl>
                       </Grid>
 
                       {/* Tehsil */}
                       <Grid item xs={12} md={6}>
-                        <FormControl fullWidth>
+                        <FormControl fullWidth error={!!errors.clg_tahsil}>
                           <InputLabel>Source Tehsil</InputLabel>
                           <Select
                             sx={{
@@ -1286,29 +1386,42 @@ useEffect(() => {
                                 color: "#000",
                               },
                             }}
-                            size='small'
+                            size="small"
                             name="clg_tahsil"
                             value={selectedTaluka}
                             onChange={handleChange}
                             label="Source Tehsil"
                           >
                             <MenuItem value="">
-                              {formData.tal_id || 'Select Tehsil'}
+                              {formData.tal_id || "Select Tehsil"}
                             </MenuItem>
                             {talukaOptions.map((taluka) => (
-                              <MenuItem key={taluka.tal_id} value={taluka.tal_id}>
+                              <MenuItem
+                                key={taluka.tal_id}
+                                value={taluka.tal_id}
+                              >
                                 {taluka.tahsil_name}
                               </MenuItem>
                             ))}
                           </Select>
+                          {errors.clg_tahsil && (
+          <Typography sx={{ color: "red", fontSize: 12 }}>
+            {errors.clg_tahsil}
+          </Typography>
+        )}
                         </FormControl>
                       </Grid>
 
-                      {/* Source Name */}
+                      {/* workshop Name */}
                       <Grid item xs={12} md={6}>
-                        <FormControl fullWidth>
+                        <FormControl fullWidth  error={!!errors.clg_source_name}>
                           <InputLabel>Workshop Name</InputLabel>
                           <Select
+                            size="small"
+                            name="clg_source_name"
+                           value={formData.clg_source_name || ""}
+                            onChange={handleChange}
+                            label="Workshop Name"
                             sx={{
                               minWidth: 120,
                               "& .MuiInputBase-input.MuiSelect-select": {
@@ -1318,27 +1431,31 @@ useEffect(() => {
                                 color: "#000",
                               },
                             }}
-                            size='small'
-                            name="clg_source_name"
-                            value={selectedName}
-                            onChange={handleChange}
-                            label="Source Name"
                           >
-                            <MenuItem value="">
-                              {formData.Workshop_name || 'Select Source Name'}
+                              <MenuItem value="">
+                              {formData.clg_source_name || "Workshop Name"}
                             </MenuItem>
-                            {sourceNameOptions.map((source) => (
-                              <MenuItem key={source.ws_pk_id} value={source.ws_pk_id}>
-                                {source.Workshop_name}
+
+                            {sourceNameOptions.map((Workshop) => (
+                              <MenuItem
+                                key={Workshop.ws_pk_id}
+                                value={Workshop.ws_pk_id}
+                              >
+                                {Workshop.Workshop_name}
                               </MenuItem>
                             ))}
                           </Select>
+                          {errors.clg_source_name && (
+          <Typography sx={{ color: "red", fontSize: 12 }}>
+            {errors.clg_source_name}
+          </Typography>
+        )}
                         </FormControl>
                       </Grid>
 
                       {/* Role */}
                       <Grid item xs={12} md={6}>
-                        <FormControl fullWidth>
+                        <FormControl fullWidth error={!!errors.Group_id}>
                           <InputLabel>Role</InputLabel>
                           <Select
                             sx={{
@@ -1350,21 +1467,30 @@ useEffect(() => {
                                 color: "#000",
                               },
                             }}
-                            size='small'
+                            size="small"
                             name="grp_id"
                             value={selectedRole}
                             onChange={handleChange}
                             label="Role"
+                            required
                           >
                             <MenuItem value="">
-                              {formData.clg_grppp_id || 'Select Role'}
+                              {formData.Group_id || "Select Role"}
                             </MenuItem>
                             {roleForm.map((source) => (
-                              <MenuItem key={source.Group_id} value={source.Group_id}>
+                              <MenuItem
+                                key={source.Group_id}
+                                value={source.Group_id}
+                              >
                                 {source.grp_name}
                               </MenuItem>
                             ))}
                           </Select>
+                           {errors.Group_id && (
+          <Typography sx={{ color: "red", fontSize: 12 }}>
+            {errors.Group_id}
+          </Typography>
+        )}
                         </FormControl>
                       </Grid>
 
@@ -1380,12 +1506,14 @@ useEffect(() => {
                               color: "#000",
                             },
                           }}
-                          size='small'
+                          size="small"
                           label="Name"
                           name="clg_ref_id"
                           value={formData.clg_ref_id}
                           onChange={handleChange}
                           fullWidth
+                          error={!!errors.clg_ref_id}
+        helperText={errors.clg_ref_id}
                         />
                       </Grid>
 
@@ -1403,21 +1531,30 @@ useEffect(() => {
                                 color: "#000",
                               },
                             }}
-                            size='small'
+                            size="small"
                             name="clg_gender"
                             value={formData.clg_gender}
                             onChange={handleChange}
                             label="Gender"
                           >
                             <MenuItem value="">
-                              {formData.clg_genderr_id || 'Select Gender'}
+                              {formData.clg_genderr_id || "Select Gender"}
                             </MenuItem>
                             {gender.map((g) => (
-                              <MenuItem key={g.gender_pk_id} value={g.gender_pk_id}>
+                              <MenuItem
+                                key={g.gender_pk_id}
+                                value={g.gender_pk_id}
+                              >
                                 {g.gender}
                               </MenuItem>
                             ))}
                           </Select>
+                          
+        {errors.clg_gender && (
+          <Typography sx={{ color: "red", fontSize: 12 }}>
+            {errors.clg_gender}
+          </Typography>
+        )}
                         </FormControl>
                       </Grid>
 
@@ -1433,7 +1570,7 @@ useEffect(() => {
                               color: "#000",
                             },
                           }}
-                          size='small'
+                          size="small"
                           label="DOB"
                           name="clg_Date_of_birth"
                           type="date"
@@ -1441,6 +1578,9 @@ useEffect(() => {
                           value={formData.clg_Date_of_birth}
                           onChange={handleChange}
                           fullWidth
+                          error={Boolean(errors.clg_Date_of_birth)}
+                          helperText={errors.clg_Date_of_birth}
+                          required
                         />
                       </Grid>
 
@@ -1456,12 +1596,15 @@ useEffect(() => {
                               color: "#000",
                             },
                           }}
-                          size='small'
+                          size="small"
                           label="Mobile Number"
                           name="clg_mobile_no"
                           value={formData.clg_mobile_no}
                           onChange={handleChange}
                           fullWidth
+                          required
+                          error={!!errors.clg_mobile_no}
+                          helperText={errors.clg_mobile_no}
                         />
                       </Grid>
 
@@ -1477,12 +1620,14 @@ useEffect(() => {
                               color: "#000",
                             },
                           }}
-                          size='small'
+                          size="small"
                           label="Email ID"
                           name="clg_email"
                           value={formData.clg_email}
                           onChange={handleChange}
                           fullWidth
+                          error={!!errors.clg_email}
+                          helperText={errors.clg_email}
                         />
                       </Grid>
 
@@ -1498,24 +1643,34 @@ useEffect(() => {
                               color: "#000",
                             },
                           }}
-                          size='small'
+                          size="small"
                           label="Address"
                           name="clg_address"
                           value={formData.clg_address}
                           onChange={handleChange}
                           fullWidth
+                          error={!!errors.clg_address}
+        helperText={errors.clg_address}
                         />
                       </Grid>
 
                       {/* Submit Button */}
                       <Grid item xs={12}>
-                        {formAction === 'add' && (
-                          <Button variant="contained" color="primary" type="submit">
+                        {formAction === "add" && (
+                          <Button
+                            variant="contained"
+                            color="primary"
+                            type="submit"
+                          >
                             Submit
                           </Button>
                         )}
-                        {formAction === 'update' && (
-                          <Button variant="contained" color="success" type="submit">
+                        {formAction === "update" && (
+                          <Button
+                            variant="contained"
+                            color="success"
+                            type="submit"
+                          >
                             Update
                           </Button>
                         )}
@@ -1530,7 +1685,13 @@ useEffect(() => {
           <Grid item xs={12} md={showForm ? 6 : 12}>
             <Card elevation={4}>
               <CardContent>
-                <Grid container spacing={2} alignItems="end" justifyContent="end" sx={{ mb: 1 }}>
+                <Grid
+                  container
+                  spacing={2}
+                  alignItems="end"
+                  justifyContent="end"
+                  sx={{ mb: 1 }}
+                >
                   <Grid item xs={12} sm={12} md={2}>
                     <TextField
                       sx={{
@@ -1552,7 +1713,12 @@ useEffect(() => {
                 </Grid>
 
                 {loading ? (
-                  <Box display="flex" justifyContent="center" alignItems="center" height="50vh">
+                  <Box
+                    display="flex"
+                    justifyContent="center"
+                    alignItems="center"
+                    height="50vh"
+                  >
                     <CircularProgress />
                   </Box>
                 ) : (
@@ -1567,7 +1733,13 @@ useEffect(() => {
                     >
                       <TableHead>
                         <TableRow sx={{ bgcolor: "#4a7cf3ff" }}>
-                          {["Sr No", "User Name", "Mobile No", "Group", "Email ID"].map((header, i) => (
+                          {[
+                            "Sr No",
+                            "User Name",
+                            "Mobile No",
+                            "Group",
+                            "Email ID",
+                          ].map((header, i) => (
                             <TableCell
                               key={i}
                               sx={{
@@ -1590,7 +1762,10 @@ useEffect(() => {
                           Object.values(data).some(
                             (value) =>
                               value &&
-                              value.toString().toLowerCase().includes(searchQuery.toLowerCase())
+                              value
+                                .toString()
+                                .toLowerCase()
+                                .includes(searchQuery.toLowerCase())
                           )
                         )
                         .slice(page * rowsPerPage, (page + 1) * rowsPerPage)
@@ -1623,19 +1798,29 @@ useEffect(() => {
                                   sx={{ textAlign: "center" }}
                                 >
                                   <Grid item xs={2}>
-                                    <Typography sx={{ fontSize: "12px" }}>{serialNumber}</Typography>
+                                    <Typography sx={{ fontSize: "12px" }}>
+                                      {serialNumber}
+                                    </Typography>
                                   </Grid>
                                   <Grid item xs={2.5}>
-                                    <Typography sx={{ fontSize: "12px" }}>{item.clg_ref_id}</Typography>
+                                    <Typography sx={{ fontSize: "12px" }}>
+                                      {item.clg_ref_id}
+                                    </Typography>
                                   </Grid>
                                   <Grid item xs={2.5}>
-                                    <Typography sx={{ fontSize: "12px" }}>{item.clg_mobile_no}</Typography>
+                                    <Typography sx={{ fontSize: "12px" }}>
+                                      {item.clg_mobile_no}
+                                    </Typography>
                                   </Grid>
                                   <Grid item xs={2.5}>
-                                    <Typography sx={{ fontSize: "12px" }}>{item.grp_name}</Typography>
+                                    <Typography sx={{ fontSize: "12px" }}>
+                                      {item.grp_name}
+                                    </Typography>
                                   </Grid>
                                   <Grid item xs={2.5}>
-                                    <Typography sx={{ fontSize: "12px" }}>{item.clg_email}</Typography>
+                                    <Typography sx={{ fontSize: "12px" }}>
+                                      {item.clg_email}
+                                    </Typography>
                                   </Grid>
                                 </Grid>
                               </CardContent>
@@ -1701,7 +1886,7 @@ useEffect(() => {
         </Dialog>
       </Box>
     </Box>
-  )
-}
+  );
+};
 
-export default AddUser
+export default AddUser;
