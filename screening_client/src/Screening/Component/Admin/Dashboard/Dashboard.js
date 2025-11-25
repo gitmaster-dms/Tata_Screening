@@ -20,7 +20,7 @@ import { CircularProgress } from "@mui/material";
 import dashbordbg from "../../../Images/DashboardIcons/bgimagedashboard.png";
 import { useSourceContext } from "../../../../contexts/SourceContext";
 const Dashboard = () => {
-  const { setDateFilter } = useSourceContext();  
+  const { setDateFilter } = useSourceContext();
   const port = process.env.REACT_APP_API_KEY;
   const accessToken = localStorage.getItem("accessToken");
   const [tabValue, setTabValue] = useState(0);
@@ -41,9 +41,31 @@ const Dashboard = () => {
       console.error("Error fetching dashboard data:", error);
     }
   };
+
+  const [districtList, setDistrictList] = useState([]);
+  const [selectedDistrict, setSelectedDistrict] = useState("");
+
+  useEffect(() => {
+    if (selectedState) {
+      getDistricts(selectedState);
+    }
+  }, [selectedState]);
+
+  const getDistricts = async (stateId) => {
+    try {
+      const response = await axios.get(
+        `${port}/Screening/District_Get/${stateId}/`
+      );
+      console.log("District List:", response.data);
+
+      setDistrictList(response.data || []);
+    } catch (error) {
+      console.error("Error fetching districts:", error);
+    }
+  };
   // const handleTabChange = (event, newValue) => setTabValue(newValue);
- const handleTabChange = (event, newValue) => {
-   setTabValue(newValue);
+  const handleTabChange = (event, newValue) => {
+    setTabValue(newValue);
 
     // UPDATE DATE FILTER BASED ON SELECTED TAB
     if (newValue === 0) {
@@ -54,7 +76,6 @@ const Dashboard = () => {
       setDateFilter("till_date");
     }
   };
-
 
   useEffect(() => {
     fetchDashboardData();
@@ -344,7 +365,7 @@ const Dashboard = () => {
             </Grid>
 
             <Grid item xs={12} md={8} sm={12}>
-              <MapSection />
+              <MapSection selectedState={selectedState} />
             </Grid>
           </Grid>
         </Grid>

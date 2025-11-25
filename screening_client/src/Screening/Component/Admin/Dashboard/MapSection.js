@@ -131,10 +131,7 @@
 
 // export default MapSection;
 
-
-
-
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Card,
   CardContent,
@@ -143,6 +140,7 @@ import {
   Box,
   Stack,
   TextField,
+  Select,
 } from "@mui/material";
 import health from "../../../Images/DashboardIcons/Vector.png";
 import ScannerIcon from "@mui/icons-material/DocumentScanner";
@@ -152,22 +150,40 @@ import "leaflet/dist/leaflet.css";
 
 import { useSourceContext } from "../../../../contexts/SourceContext";
 import workshopIconImg from "../../../Images/blue_marker.png";
+import axios from "axios";
+const MapSection = ({ selectedState }) => {
+  const port = process.env.REACT_APP_API_KEY;
+  const [districtList, setDistrictList] = useState([]);
 
+  const [selectedDistrict, setSelectedDistrict] = useState("");
+  console.log(selectedDistrict, "selectedDistrict");
 
+  // 👇 Fetch districts when selectedState changes
+  useEffect(() => {
+    if (selectedState) {
+      getDistricts(selectedState);
+    }
+  }, [selectedState]);
 
+  const getDistricts = async (stateId) => {
+    try {
+      const response = await axios.get(
+        `${port}/Screening/District_Get/${stateId}/`
+      );
+      console.log("District List:", response.data);
 
-const MapSection = () => {
+      setDistrictList(response.data || []);
+    } catch (error) {
+      console.error("Error fetching districts:", error);
+    }
+  };
 
-
-const workshopIcon = L.icon({
-  iconUrl: workshopIconImg,
-  iconSize: [40, 40],      // adjust as you want
-  iconAnchor: [20, 40],    // center bottom
-  popupAnchor: [0, -40],
-});
-
-
-
+  const workshopIcon = L.icon({
+    iconUrl: workshopIconImg,
+    iconSize: [40, 40], // adjust as you want
+    iconAnchor: [20, 40], // center bottom
+    popupAnchor: [0, -40],
+  });
 
   //  GET CONTEXT VALUES
   const {
@@ -176,7 +192,7 @@ const workshopIcon = L.icon({
     setDateFilter,
     districtFilter,
     setDistrictFilter,
-  } = useSourceContext()
+  } = useSourceContext();
 
   const mapRef = useRef(null);
   const mapContainerRef = useRef(null);
@@ -187,7 +203,7 @@ const workshopIcon = L.icon({
     if (!mapContainerRef.current || mapRef.current) return;
 
     mapRef.current = L.map(mapContainerRef.current).setView(
-      [19.0760, 72.8777], // Mumbai
+      [19.076, 72.8777], // Mumbai
       10
     );
 
@@ -203,42 +219,40 @@ const workshopIcon = L.icon({
     };
   }, []);
 
- useEffect(() => {
-  if (!mapRef.current) return;
+  useEffect(() => {
+    if (!mapRef.current) return;
 
-  // Clear previous markers
-  workshopMarkers.current.forEach(marker => marker.remove());
-  workshopMarkers.current = [];
+    // Clear previous markers
+    workshopMarkers.current.forEach((marker) => marker.remove());
+    workshopMarkers.current = [];
 
-  const bounds = L.latLngBounds([]);
+    const bounds = L.latLngBounds([]);
 
-  // Add new markers & extend bounds
-  workshops.forEach(item => {
-    const lat = parseFloat(item.latitude);
-    const lon = parseFloat(item.longitude);
+    // Add new markers & extend bounds
+    workshops.forEach((item) => {
+      const lat = parseFloat(item.latitude);
+      const lon = parseFloat(item.longitude);
 
-    const marker = L.marker([lat, lon], { icon: workshopIcon })
-      .addTo(mapRef.current)
-      .bindPopup(`
+      const marker = L.marker([lat, lon], { icon: workshopIcon }).addTo(
+        mapRef.current
+      ).bindPopup(`
         <b>${item.Workshop_name}</b><br/>
         ${item.ws_address}
       `);
 
-    workshopMarkers.current.push(marker);
+      workshopMarkers.current.push(marker);
 
-    // extend map bounds
-    bounds.extend([lat, lon]);
-  });
-
-  // Fit map to marker bounds (only if there is data)
-  if (workshops.length > 0) {
-    mapRef.current.fitBounds(bounds, {
-      padding: [50, 50], // smooth zoom with padding
+      // extend map bounds
+      bounds.extend([lat, lon]);
     });
-  }
 
-}, [workshops]);
-
+    // Fit map to marker bounds (only if there is data)
+    if (workshops.length > 0) {
+      mapRef.current.fitBounds(bounds, {
+        padding: [50, 50], // smooth zoom with padding
+      });
+    }
+  }, [workshops]);
 
   return (
     <Card
@@ -292,30 +306,52 @@ const workshopIcon = L.icon({
 
           {/* FILTERS */}
           <Stack direction="row" alignItems="center" spacing={1}>
-
             {/* DISTRICT FILTER */}
-            <TextField
-              select
+            <Select
               size="small"
-              label="District"
-              value={districtFilter}
-              onChange={(e) => setDistrictFilter(e.target.value)}
+              fullWidth
+              displayEmpty
+              value={selectedDistrict}
+              onChange={(e) => setSelectedDistrict(e.target.value)}
+              inputProps={{ "aria-label": "Select District" }}
               sx={{
-                minWidth: 150,
-                borderRadius: 2,
-                bgcolor: "#f5f8ff",
-                boxShadow: "4px 4px 8px rgba(0, 0, 0, 0.05)",
-                fontSize: 13,
-                "& .MuiSelect-select": { py: 0.5 },
-                "& fieldset": { border: "none" },
+                height: "2.5rem",
+                width: "100%",
+                "& .MuiInputBase-input": {
+                  color: `#9e9e9e !important`,
+                },
+                "& .MuiInputBase-root": {
+                  height: "100%",
+                  padding: "0 12px",
+                  display: "flex",
+                  alignItems: "center",
+                },
+                borderRadius: "12px",
+                "& fieldset": {
+                  border: "none",
+                },
+                backgroundColor: "#fff",
+                "& input::placeholder": {
+                  fontSize: "0.85rem",
+                  color: ` #9e9e9e!important`,
+                },
+                boxShadow: "0px 2px 10px rgba(0, 0, 0, 0.1)",
+                "&:hover": {
+                  boxShadow: "0px 4px 15px rgba(0, 0, 0, 0.2)",
+                },
               }}
             >
-              <MenuItem value={5}>Aurangabad</MenuItem>
-              <MenuItem value={6}>Jalna</MenuItem>
-              <MenuItem value={7}>Nashik</MenuItem>
-            </TextField>
+              <MenuItem value="" disabled>
+                Select District
+              </MenuItem>
 
-         
+              {districtList.map((dist) => (
+                <MenuItem key={dist.dist_id} value={dist.dist_id}>
+                  {dist.dist_name}
+                </MenuItem>
+              ))}
+            </Select>
+
             <Box
               sx={{
                 width: 28,
