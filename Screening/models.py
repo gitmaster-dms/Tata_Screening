@@ -720,7 +720,7 @@ class agg_colleague_manager(BaseUserManager):
 
     # def create_user(self, clg_ref_id, clg_first_name, clg_mid_name ,clg_last_name ,grp_id , clg_email ,clg_mobile_no ,clg_gender ,clg_address ,clg_is_login ,clg_designation ,clg_state ,clg_division ,clg_district ,clg_break_type ,clg_senior ,clg_hos_id ,clg_agency_id ,clg_status ,clg_added_by ,clg_modify_by ,clg_Date_of_birth ,clg_Work_phone_number ,clg_work_email_id ,clg_Emplyee_code ,clg_qualification,clg_avaya_agentid ,clg_Aadhar_no,clg_specialization ,clg_profile_photo_path ,clg_joining_date ,clg_marital_status, clg_otp, clg_otp_count, clg_otp_expire_time,clg_source,clg_tahsil,clg_source_name,password=None,password2=None):#clg_source,clg_tahsil,clg_source_name,
     
-    def create_user(self, clg_ref_id, clg_mobile_no ,grp_id , clg_email ,clg_gender ,clg_address , clg_state ,clg_district , clg_Date_of_birth, clg_source,clg_tahsil, clg_source_name,password=None,password2=None):# clg_first_name, clg_mid_name ,clg_last_name clg_is_loginclg_added_by ,clg_modify_by, clg_otp, clg_otp_count, clg_otp_expire_time,
+    def create_user(self, clg_ref_id, clg_mobile_no ,grp_id , clg_email ,clg_gender ,clg_address , clg_state ,clg_district , clg_Date_of_birth, clg_source,clg_tahsil, clg_source_name, clg_added_by,password=None,password2=None):# clg_first_name, clg_mid_name ,clg_last_name clg_is_loginclg_added_by ,clg_modify_by, clg_otp, clg_otp_count, clg_otp_expire_time,
 
 
         """
@@ -746,7 +746,7 @@ class agg_colleague_manager(BaseUserManager):
 			# clg_otp = clg_otp,
 			# clg_otp_count = clg_otp_count,
 			# clg_otp_expire_time = clg_otp_expire_time,
-            # clg_added_by = clg_added_by ,
+            clg_added_by = clg_added_by ,
             # clg_modify_by = clg_modify_by,
             clg_source = clg_source,#added By mohin
             clg_tahsil = clg_tahsil,#added By mohin
