@@ -18,10 +18,9 @@ import VitalsCard from "./Vitals";
 import axios from "axios";
 import { CircularProgress } from "@mui/material";
 import dashbordbg from "../../../Images/DashboardIcons/bgimagedashboard.png";
-import TabContext from "@mui/lab/TabContext";
-import TabList from "@mui/lab/TabList";
-import TabPanel from "@mui/lab/TabPanel";
+import { useSourceContext } from "../../../../contexts/SourceContext";
 const Dashboard = () => {
+  const { setDateFilter } = useSourceContext();  
   const port = process.env.REACT_APP_API_KEY;
   const accessToken = localStorage.getItem("accessToken");
   const [tabValue, setTabValue] = useState(0);
@@ -42,7 +41,20 @@ const Dashboard = () => {
       console.error("Error fetching dashboard data:", error);
     }
   };
-  const handleTabChange = (event, newValue) => setTabValue(newValue);
+  // const handleTabChange = (event, newValue) => setTabValue(newValue);
+ const handleTabChange = (event, newValue) => {
+   setTabValue(newValue);
+
+    // UPDATE DATE FILTER BASED ON SELECTED TAB
+    if (newValue === 0) {
+      setDateFilter("today");
+    } else if (newValue === 1) {
+      setDateFilter("this_month");
+    } else if (newValue === 2) {
+      setDateFilter("till_date");
+    }
+  };
+
 
   useEffect(() => {
     fetchDashboardData();

@@ -332,7 +332,7 @@ const workshopIcon = L.icon({
 
 
 
-  // ⭐ GET CONTEXT VALUES
+  //  GET CONTEXT VALUES
   const {
     workshops,
     dateFilter,
