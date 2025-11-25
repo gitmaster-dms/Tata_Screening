@@ -39,24 +39,58 @@ const FamilyInfo = ({ citizensPkId, pkid, fetchVital, selectedName, onAcceptClic
         }
     }, [selectedName, fetchVital]);
 
-    // fetch data
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const response = await fetch(`${Port}/Screening/citizen_family_info_get/${pkid}/`, {
-                    headers: { Authorization: `Bearer ${accessToken}` },
-                });
-                if (!response.ok) throw new Error(`Failed to fetch. Status: ${response.status}`);
-                const data = await response.json();
-                const familyData = data[0];
-                setFamilyData(familyData);
-                setUpdateId(familyData?.citizen_id);
-            } catch (error) {
-                console.error("Error fetching family data:", error);
-            }
-        };
-        fetchData();
-    }, [citizensPkId]);
+    // // fetch data
+    // useEffect(() => {
+    //     const fetchData = async () => {
+    //         try {
+    //             const response = await fetch(`${Port}/Screening/SaveEmergencyInfo/${pkid}/`, {
+    //                 headers: { Authorization: `Bearer ${accessToken}` },
+    //             });
+    //             if (!response.ok) throw new Error(`Failed to fetch. Status: ${response.status}`);
+    //             const data = await response.json();
+    //             const familyData = data[0];
+    //             setFamilyData(familyData);
+    //             setUpdateId(familyData?.citizen_id);
+    //         } catch (error) {
+    //             console.error("Error fetching family data:", error);
+    //         }
+    //     };
+    //     fetchData();
+    // }, [citizensPkId]);
+ const fetchData = async () => {
+    try {
+      const response = await fetch(`${Port}/Screening/SaveEmergencyInfo/${pkid}/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({
+          pkid: pkid,
+          // send anything required by backend
+        }),
+      });
+
+      const res = await response.json();
+
+      if (res?.data) {
+        const childData = res.data;
+        setFamilyData(childData);
+        setFamilyData(childData?.citizen_info?.department);
+        setUpdateId(childData?.basic_pk_id);
+
+        localStorage.setItem("citizenGender", childData?.citizen_info?.gender);
+      }
+    } catch (error) {
+      console.error("Error fetching child data", error);
+    }
+  };
+
+   useEffect(() => {
+      fetchData();
+    }, [pkid]);
+
+    
 
     // update data
     const updateDataInDatabase = async (citizen_id) => {

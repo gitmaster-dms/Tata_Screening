@@ -47,6 +47,11 @@ const Citizenlist = () => {
   const accessToken = localStorage.getItem("token");
   const location = useLocation();
   const navigate = useNavigate();
+  const [snackbar, setSnackbar] = useState({
+  open: false,
+  message: "",
+  severity: "success", // "success" | "error" | "warning" | "info"
+});
 
   //// access the source from local storage
   const SourceUrlId = localStorage.getItem("loginSource");
@@ -272,40 +277,48 @@ console.log("Idddddddd", sourceName, source);
   };
 
   /////////////DELETE API
-  const handleDeleteClick = (citizenID) => {
-    // const confirmDelete = window.confirm('Are you sure you want to delete this citizen?');
-
-    // if (!confirmDelete) {
-    //     return;
-    // }
-
-    const userID = localStorage.getItem("userID");
-    console.log(userID);
-
-    fetch(`${Port}/Screening/Citizen_delete/${citizenID}/`, {
+const handleDeleteClick = async (citizenID) => {
+  try {
+    const response = await fetch(`${Port}/Screening/Citizen_delete/${citizenID}/`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${accessToken}`,
       },
-    })
-      .then((response) => {
-        if (response.ok) {
-          console.log("Record deleted successfully");
-          // alert('Deleted Successfully');
-          setTableFetch((prevTableFetch) =>
-            prevTableFetch.filter(
-              (record) => record.citizens_pk_id !== citizenID
-            )
-          );
-        } else {
-          console.error("Failed to delete record");
-        }
-      })
-      .catch((error) => {
-        console.error("Error:", error);
+    });
+
+    if (response.ok) {
+      console.log("Record deleted successfully");
+
+      setSnackbar({
+        open: true,
+        message: "Record deleted successfully!",
+        severity: "success",
       });
-  };
+
+      await handleActive(active); // refresh table
+    } else {
+      console.error("Failed to delete record");
+
+      setSnackbar({
+        open: true,
+        message: "Failed to delete record!",
+        severity: "error",
+      });
+    }
+  } catch (error) {
+    console.error("Error:", error);
+
+    setSnackbar({
+      open: true,
+      message: "Something went wrong!",
+      severity: "error",
+    });
+  }
+};
+
+
+
 
   /////////////Citizen Age nav API
   useEffect(() => {
@@ -459,11 +472,7 @@ console.log("Idddddddd", sourceName, source);
   console.log(previousData, "previousData");
 
   const open = Boolean(anchorEl);
-  const [snackbar, setSnackbar] = useState({
-    open: false,
-    message: "",
-    severity: "success",
-  });
+
 
   const handleMenuOpen = (event, citizen) => {
     setAnchorEl(event.currentTarget);
@@ -1066,34 +1075,31 @@ console.log("Idddddddd", sourceName, source);
                                     <ListItemText primary="Start Screening" />
                                   </MenuItem> */}
                                   <MenuItem
-                                    onClick={() => {
-                                      handleMenuClose();
+    onClick={() => {
+        handleMenuClose();
 
-                                      if (
-                                        selectedCitizen?.previous_screen ===
-                                        true
-                                      ) {
-                                        //  previous screening exists → show modal
-                                        setOpenModalStart(true);
-                                        handleStartScreening();
-                                      } else {
-                                        //  no previous screening → directly navigate
-                                        navigate("/mainscreen/Body", {
-                                          state: {
-                                            citizens_pk_id: data.citizens_pk_id,
+        if (selectedCitizen?.previous_screen === true) {
+            setOpenModalStart(true);
+            handleStartScreening();
+        } else {
+            console.log(data.citizens_pk_id, "citizens_pk_id");
 
-                                          },
-                                        });
-                                      }
-                                    }}
-                                  >
-                                    <ListItemIcon>
-                                      <PlayArrowOutlinedIcon
-                                        sx={{ color: "#2E7D32" }}
-                                      />
-                                    </ListItemIcon>
-                                    <ListItemText primary="Start Screening" />
-                                  </MenuItem>
+            navigate("/mainscreen/Body", {
+                state: {
+                    citizens_pk_id: data.citizens_pk_id,
+                    SourceUrlId,
+                    SourceNameUrlId,
+                },
+            });
+        }
+    }}
+>
+    <ListItemIcon>
+        <PlayArrowOutlinedIcon sx={{ color: "#2E7D32" }} />
+    </ListItemIcon>
+    <ListItemText primary="Start Screening" />
+</MenuItem>
+
                                 </Menu>
                               </Box>
                             </CardContent>
