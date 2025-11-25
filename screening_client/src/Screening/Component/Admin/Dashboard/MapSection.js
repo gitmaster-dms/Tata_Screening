@@ -134,169 +134,6 @@
 
 
 
-// import React, { useEffect, useRef } from "react";
-// import {
-//   Card,
-//   CardContent,
-//   Typography,
-//   MenuItem,
-//   Box,
-//   Stack,
-//   TextField,
-// } from "@mui/material";
-// import health from "../../../Images/DashboardIcons/Vector.png";
-// import ScannerIcon from "@mui/icons-material/DocumentScanner";
-
-// import L from "leaflet";
-// import "leaflet/dist/leaflet.css";
-
-// const MapSection = () => {
-//   const mapRef = useRef(null);       // Leaflet map instance
-//   const mapContainerRef = useRef(null); // DOM container
-
-//   useEffect(() => {
-//     if (!mapContainerRef.current || mapRef.current) return;
-
-//     // Initialize map
-//     mapRef.current = L.map(mapContainerRef.current).setView(
-//       [19.0760, 72.8777], // Mumbai
-//       10
-//     );
-
-//     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-//       maxZoom: 19,
-//     }).addTo(mapRef.current);
-
-//     return () => {
-//       if (mapRef.current) {
-//         mapRef.current.remove();
-//         mapRef.current = null;
-//       }
-//     };
-//   }, []);
-
-//   return (
-//     <Card
-//       sx={{
-//         borderRadius: 3,
-//         boxShadow: "0 2px 10px rgba(0,0,0,0.08)",
-//         background: "#F8FAFCB2",
-//         border: "2px solid #fff",
-//       }}
-//     >
-//       <CardContent sx={{ p: 1 }}>
-//         {/*Header */}
-//         <Stack
-//           direction="row"
-//           alignItems="center"
-//           justifyContent="space-between"
-//           spacing={1}
-//         >
-//           <Stack direction="row" alignItems="center" spacing={0.5}>
-//             <Box
-//               sx={{
-//                 width: 26,
-//                 height: 26,
-//                 borderRadius: "50%",
-//                 background: "linear-gradient(135deg, #4FACFE 0%, #00F2FE 100%)",
-//                 display: "flex",
-//                 alignItems: "center",
-//                 justifyContent: "center",
-//               }}
-//             >
-//               <Box
-//                 component="img"
-//                 src={health}
-//                 alt="Map Icon"
-//                 sx={{ width: 14, height: 14, objectFit: "contain" }}
-//               />
-//             </Box>
-
-//             <Typography
-//               variant="h6"
-//               sx={{
-//                 fontWeight: 600,
-//                 color: "#252539",
-//                 fontSize: 15,
-//                 fontFamily: "Roboto",
-//               }}
-//             >
-//               Map
-//             </Typography>
-//           </Stack>
-
-//           {/* Dropdown */}
-//           <Stack direction="row" alignItems="center" spacing={1}>
-//             <TextField
-//               select
-//               size="small"
-//               label="District"
-//               sx={{
-//                 minWidth: 150,
-//                 borderRadius: 2,
-//                 bgcolor: "#f5f8ff",
-//                 boxShadow: "4px 4px 8px rgba(0, 0, 0, 0.05)",
-//                 fontSize: 13,
-//                 "& .MuiSelect-select": { py: 0.5 },
-//                 "& fieldset": { border: "none" },
-//               }}
-//             >
-//               <MenuItem value="" disabled>
-//                 Select District
-//               </MenuItem>
-//               <MenuItem value="Aurangabad">Aurangabad</MenuItem>
-//               <MenuItem value="Jalna">Jalna</MenuItem>
-//               <MenuItem value="Nashik">Nashik</MenuItem>
-//             </TextField>
-
-//             <Box
-//               sx={{
-//                 width: 28,
-//                 height: 28,
-//                 borderRadius: "50%",
-//                 background: "linear-gradient(135deg, #4FACFE 0%, #00F2FE 100%)",
-//                 display: "flex",
-//                 alignItems: "center",
-//                 justifyContent: "center",
-//               }}
-//             >
-//               <ScannerIcon sx={{ color: "#fff", fontSize: 16 }} />
-//             </Box>
-//           </Stack>
-//         </Stack>
-
-//         {/* Leaflet Map Container */}
-//         <Box
-//           sx={{
-//             mt: 1.5,
-//             borderRadius: "16px",
-//             overflow: "hidden",
-//             border: "1px solid #E5EAF2",
-//           }}
-//         >
-//           <div
-//             ref={mapContainerRef}
-//             style={{ width: "100%", height: "270px" }}
-//           ></div>
-//         </Box>
-//       </CardContent>
-//     </Card>
-//   );
-// };
-
-// export default MapSection;
-
-
-
-
-
-
-
-
-
-
-
-
 import React, { useEffect, useRef } from "react";
 import {
   Card,
@@ -345,7 +182,7 @@ const workshopIcon = L.icon({
   const mapContainerRef = useRef(null);
   const workshopMarkers = useRef([]); // store dynamic markers
 
-  // ⭐ INITIALIZE MAP
+  // INITIALIZE MAP
   useEffect(() => {
     if (!mapContainerRef.current || mapRef.current) return;
 
@@ -366,28 +203,39 @@ const workshopIcon = L.icon({
     };
   }, []);
 
- // UPDATE MAP MARKERS WHEN WORKSHOPS CHANGE
-useEffect(() => {
+ useEffect(() => {
   if (!mapRef.current) return;
 
   // Clear previous markers
   workshopMarkers.current.forEach(marker => marker.remove());
   workshopMarkers.current = [];
 
-  // Add new markers
-  workshops.forEach(item => {
-    const marker = L.marker(
-      [parseFloat(item.latitude), parseFloat(item.longitude)],
-      { icon: workshopIcon }   // ⭐ USE YOUR CUSTOM ICON HERE
-    ).addTo(mapRef.current);
+  const bounds = L.latLngBounds([]);
 
-    marker.bindPopup(`
-      <b>${item.Workshop_name}</b><br/>
-      ${item.ws_address}
-    `);
+  // Add new markers & extend bounds
+  workshops.forEach(item => {
+    const lat = parseFloat(item.latitude);
+    const lon = parseFloat(item.longitude);
+
+    const marker = L.marker([lat, lon], { icon: workshopIcon })
+      .addTo(mapRef.current)
+      .bindPopup(`
+        <b>${item.Workshop_name}</b><br/>
+        ${item.ws_address}
+      `);
 
     workshopMarkers.current.push(marker);
+
+    // extend map bounds
+    bounds.extend([lat, lon]);
   });
+
+  // Fit map to marker bounds (only if there is data)
+  if (workshops.length > 0) {
+    mapRef.current.fitBounds(bounds, {
+      padding: [50, 50], // smooth zoom with padding
+    });
+  }
 
 }, [workshops]);
 
