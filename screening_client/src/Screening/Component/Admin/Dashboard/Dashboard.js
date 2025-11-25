@@ -204,34 +204,30 @@ const Dashboard = () => {
 
         {/* --- Select State Dropdown --- */}
         <Box>
-          <TextField
+          {/* <Select
             required
             id="state_id"
             name="state_id"
-            select
-            placeholder="State"
+            label="State"
             value={selectedState}
             onChange={(e) => setSelectedState(e.target.value)}
             size="small"
             fullWidth
+            InputLabelProps={{
+              shrink: true,
+            }}
+            inputProps={{ "aria-label": "Select State" }}
             sx={{
               minWidth: { xs: 130, sm: 180, md: 200 },
               textAlign: "left",
               backgroundColor: "#fff",
-              borderRadius: 3, // ✅ better to use theme scale (8px)
+              borderRadius: 3,
               boxShadow: "4px 4px 8px rgba(0, 0, 0, 0.05)",
 
-              // ✅ remove default outlined border completely
               "& .MuiOutlinedInput-root": {
-                "& fieldset": {
-                  border: "none",
-                },
-                "&:hover fieldset": {
-                  border: "none",
-                },
-                "&.Mui-focused fieldset": {
-                  border: "none",
-                },
+                "& fieldset": { border: "none" },
+                "&:hover fieldset": { border: "none" },
+                "&.Mui-focused fieldset": { border: "none" },
               },
 
               "& .MuiSelect-select": {
@@ -240,66 +236,109 @@ const Dashboard = () => {
                 fontFamily: "Roboto",
                 fontWeight: "500",
               },
+
               "& .MuiInputLabel-root": {
                 color: "#000",
                 fontWeight: "bold",
               },
-              "&.Mui-focused .MuiOutlinedInput-notchedOutline": {
-                bgcolor: "#fff",
-              },
+
               "& .MuiSelect-icon": {
-                color: "#087ED3", // ✅ dropdown arrow color
+                color: "#087ED3",
               },
             }}
           >
             <MenuItem value="" sx={{ color: "#777" }} disabled>
               Select State
             </MenuItem>
+
             {stateList.map((option) => (
               <MenuItem
                 key={option.state_id}
                 value={option.state_id}
-                sx={{
-                  fontSize: "14px",
-                  color: "black",
-                }}
+                sx={{ fontSize: "14px", color: "black" }}
               >
                 {option.state_name}
               </MenuItem>
             ))}
-          </TextField>
+          </Select> */}
+          <Select
+            value={selectedState}
+            onChange={(e) => {
+              setSelectedState(e.target.value);
+            }}
+            size="small"
+            fullWidth
+            displayEmpty
+            inputProps={{ "aria-label": "Select State" }}
+            // sx={selectStyles}
+            sx={{
+              height: "2.5rem",
+              width: "100%",
+              "& .MuiInputBase-input": {
+                color: `#9e9e9e !important`,
+              },
+              "& .MuiInputBase-root": {
+                height: "100%",
+                padding: "0 12px",
+                display: "flex",
+                alignItems: "center",
+              },
+              borderRadius: "12px",
+              "& fieldset": {
+                border: "none",
+              },
+              backgroundColor: "#fff",
+              "& input::placeholder": {
+                fontSize: "0.85rem",
+                color: ` #9e9e9e!important`,
+              },
+              boxShadow: "0px 2px 10px rgba(0, 0, 0, 0.1)",
+              "&:hover": {
+                boxShadow: "0px 4px 15px rgba(0, 0, 0, 0.2)",
+              },
+            }}
+          >
+            <MenuItem value="" disabled>
+              Select State
+            </MenuItem>
+            {stateList.map((state) => (
+              <MenuItem key={state.state_id} value={state.state_id}>
+                {state.state_name}
+              </MenuItem>
+            ))}
+          </Select>
         </Box>
       </Box>
 
       <Grid container spacing={2}>
         {/* Left 9-column section */}
-        <Grid item xs={12} md={9}>
+        <Grid item xs={12} md={9} sm={12}>
           <Grid container spacing={1}>
             {/* Row 1: Driver Stats + Health Status */}
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12} md={6} sm={12}>
               <DriverStatsCards data={dashboardData} />
             </Grid>
 
-            <Grid item xs={12} md={6}>
+            <Grid item xs={12} md={6} sm={12}>
               <HealthStatusCard healthStatusData={healthStatusData} />
             </Grid>
 
             {/* Row 2: Medical Staff + Follow-up (stacked vertically) + Map */}
-            <Grid item xs={12} md={4}>
+            <Grid item xs={12} md={4} sm={12}>
               <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
                 <MedicalStaff data={dashboardData} />
                 <FollowUpCard data={dashboardData} />
               </Box>
             </Grid>
 
-            <Grid item xs={12} md={8}>
+            <Grid item xs={12} md={8} sm={12}>
               <MapSection />
             </Grid>
           </Grid>
         </Grid>
 
         {/* Right 3-column section for Vitals */}
-        <Grid item xs={12} md={3}>
+        <Grid item xs={12} md={3} sm={12}>
           <VitalsCard vitalsData={vitalsData} />
         </Grid>
       </Grid>

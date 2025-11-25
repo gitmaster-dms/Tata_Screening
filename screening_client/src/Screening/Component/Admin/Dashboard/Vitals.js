@@ -83,17 +83,18 @@ const Vitals = ({ vitalsData }) => {
       sx={{
         background: "#F8FAFCB2 70%",
         borderRadius: "16px",
-        p: 1.5, // reduced padding
+        p: 2, // reduced padding
         width: "100%",
         border: "2px solid #fff",
+        height: { md: "93%", sm: "100%", xs: "100%" },
       }}
     >
       {/* ---------- Title ---------- */}
       <Stack direction="row" alignItems="center" spacing={1}>
         <Box
           sx={{
-            width: 26,
-            height: 26,
+            width: 30,
+            height: 30,
             borderRadius: "50%",
             background: "linear-gradient(135deg, #4FACFE 0%, #00F2FE 100%)",
             display: "flex",
@@ -174,7 +175,7 @@ const Vitals = ({ vitalsData }) => {
                   fontSize: { xs: 12.5, sm: 13 },
                   fontWeight: 500,
                   color: "#252539",
-                  lineHeight: 1.1,
+                  lineHeight: 2,
                 }}
               >
                 {item.value}
