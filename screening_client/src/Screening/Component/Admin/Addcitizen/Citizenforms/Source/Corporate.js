@@ -51,9 +51,11 @@ const Corporate = (props) => {
 
   //// access the source from local storage
   const SourceUrlId = localStorage.getItem("loginSource");
+  console.log(SourceUrlId, "SourceUrlId");
 
   //// access the source name from local storage
   const SourceNameUrlId = localStorage.getItem("SourceNameFetched");
+  console.log(SourceNameUrlId, "SourceNameUrlId");
 
   const [maritalStatus, setMaritalStatus] = useState("");
   const {
@@ -74,6 +76,7 @@ const Corporate = (props) => {
     selectedAge,
     selectedDisease,
   } = useSourceContext();
+  console.log(selectedScheduleType, "selectedScheduleType");
 
   const [department, setDepartment] = useState([]);
   const [selectedDepartment, setSelectedDepartment] = useState("");
@@ -238,22 +241,21 @@ const Corporate = (props) => {
   const [selectedNameId, setSelectedNameId] = useState("");
   const { selectedSource, setSelectedSource } = useSourceContext();
 
-const handleSourceChange = (e) => {
-  const selectedId = e.target.value;
-  const selectedOption = dropdownSource.find(
-    (opt) => opt.source_pk_id === selectedId
-  );
+  const handleSourceChange = (e) => {
+    const selectedId = e.target.value;
+    const selectedOption = dropdownSource.find(
+      (opt) => opt.source_pk_id === selectedId
+    );
 
-  setCorporateForm((prev) => ({
-    ...prev,
-    source: selectedId,
-    source_name: selectedOption?.source || "",
-  }));
+    setCorporateForm((prev) => ({
+      ...prev,
+      source: selectedId,
+      source_name: selectedOption?.source || "",
+    }));
 
-  setSelectedSource(selectedId);
-  setSelectedName(selectedOption?.source || "");
-};
-
+    setSelectedSource(selectedId);
+    setSelectedName(selectedOption?.source || "");
+  };
 
   ////////// BMI
   const [heightValue, setHeightValue] = useState("");
@@ -551,7 +553,7 @@ const handleSourceChange = (e) => {
     mobile_no: "",
     category: "",
     employee_id: "",
-
+    Workshop_name: "",
     pincode: "",
     address: "",
     arm_size: "",
@@ -600,6 +602,22 @@ const handleSourceChange = (e) => {
     }
   };
 
+  const [workshop, setWorkshop] = useState([]);
+  const [selectedWorkshop, setSelectedWorkshop] = useState(null);
+  const getworkshop = async () => {
+    try {
+      const response = await fetch(`${Port}/Screening/Workshop_Get/`);
+      const data = await response.json();
+      setWorkshop(data);
+      console.log(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    getworkshop();
+  }, []);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -620,6 +638,8 @@ const handleSourceChange = (e) => {
       formData.append("year", age.year);
       formData.append("months", age.months);
       formData.append("days", age.days);
+      formData.append("workshop_id", corporateForm.Workshop_name);
+
       formData.append("department", selectedDepartment);
       formData.append("designation", selectedDesignation);
       formData.append("marital_status", maritalStatus);
@@ -627,10 +647,10 @@ const handleSourceChange = (e) => {
       formData.append("state", selectedState);
       formData.append("district", selectedDistrict);
       formData.append("tehsil", selectedTahsil);
-      formData.append("source_name", SourceName);
+      formData.append("source_name", SourceUrlId);
       formData.append("gender", gender);
-      formData.append("type", selectedScheduleType);
-      formData.append("source", selectedSource);
+      formData.append("category", selectedScheduleType);
+      formData.append("source", SourceUrlId);
       formData.append("age", selectedAge);
       formData.append("disease", selectedDisease);
       formData.append("added_by", userID);
@@ -683,9 +703,9 @@ const handleSourceChange = (e) => {
       if (!selectedTahsil) {
         newErrorMessages.tehsil = "Tehsil is required.";
       }
-if (!corporateForm.source || !corporateForm.source_name) {
-  newErrorMessages.source = "Source and Source Name are required.";
-}
+      // if (!corporateForm.source || !corporateForm.source_name) {
+      //   newErrorMessages.source = "Source and Source Name are required.";
+      // }
 
       // if (!selectedDepartment) {
       //   newErrorMessages.department = "Department is required.";
@@ -1565,10 +1585,10 @@ if (!corporateForm.source || !corporateForm.source_name) {
                   size="small"
                   error={!!errorMessages.source}
                 >
-                  <InputLabel>Source *</InputLabel>
+                  <InputLabel>WorkShop Name *</InputLabel>
                   <Select
                     name="source"
-                    value={corporateForm.source}
+                    value={corporateForm.Workshop_name}
                     onChange={handleSourceChange}
                     label="Source"
                     sx={{
@@ -1590,6 +1610,41 @@ if (!corporateForm.source || !corporateForm.source_name) {
                   </Select>
                 </FormControl>
               </Grid> */}
+
+              <Grid item xs={12} sm={6}>
+                <FormControl
+                  fullWidth
+                  size="small"
+                  error={!!errorMessages.Workshop_name}
+                >
+                  <InputLabel>Workshop Name *</InputLabel>
+                  <Select
+                    name="Workshop_name"
+                    value={corporateForm.Workshop_name}
+                    onChange={(e) =>
+                      setCorporateForm({
+                        ...corporateForm,
+                        Workshop_name: e.target.value, // store workshop ID
+                      })
+                    }
+                    label="Workshop Name"
+                    sx={{
+                      "& .MuiInputBase-input.MuiSelect-select": {
+                        color: "#000 !important",
+                      },
+                      "& .MuiSvgIcon-root": { color: "#000" },
+                    }}
+                  >
+                    <MenuItem value="">Select Workshop</MenuItem>
+
+                    {workshop.map((ws) => (
+                      <MenuItem key={ws.ws_pk_id} value={ws.ws_pk_id}>
+                        {ws.Workshop_name || "Unnamed Workshop"}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+              </Grid>
 
               <Grid item xs={12} sm={6}>
                 <TextField

@@ -991,7 +991,7 @@ console.log("Idddddddd", sourceName, source);
                                   {canEdit && (
                                     <MenuItem
                                       component={Link}
-                                      to={`/mainscreen/updatecitizen/${data.citizens_pk_id}/${data.source}`}
+                                      to={`/mainscreen/updatecitizen/${data.citizens_pk_id}/`}
                                       onClick={handleMenuClose}
                                     >
                                       <ListItemIcon>
@@ -1006,7 +1006,7 @@ console.log("Idddddddd", sourceName, source);
                                   {canView && (
                                     <MenuItem
                                       component={Link}
-                                      to={`/mainscreen/viewcitizen/${data.citizens_pk_id}/${SourceNameUrlId}`}
+                                      to={`/mainscreen/viewcitizen/${data.citizens_pk_id}/`}
                                       onClick={handleMenuClose}
                                     >
                                       <ListItemIcon>

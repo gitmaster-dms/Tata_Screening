@@ -16,53 +16,9 @@ const CitizenView = ({ data }) => {
   const [formData, setFormData] = useState({
     state: citizendata.state || "",
   });
-  const citizendata1 = {
-    name: "Sneha Patil",
-    blood_groups: "B+",
-    dob: "2015-06-15",
-    year: "8",
-    months: "5",
-    days: "12",
-    aadhar_id: "1234 5678 9012",
-    class_name: "5th",
-    division_name: "A",
-    father_name: "Rajesh Patil",
-    mother_name: "Sunita Patil",
-    occupation_of_father: "Engineer",
-    occupation_of_mother: "Teacher",
-    parents_mobile: "9876543210",
-    sibling_count: "1",
-    height: "120 cm",
-    weight: "25 kg",
-    weight_for_age: "Normal",
-    height_for_age: "Normal",
-    bmi: "17.3",
-    weight_for_height: "Normal",
-    arm_size: "15 cm",
-    symptoms: "None",
-    state_name: "Maharashtra",
-    district_name: "Pune",
-    tehsil_name: "Haveli",
-    source_name_name: "Hospital",
-    pincode: "411001",
-    address: "123, Main Street, Pune",
-  };
-  console.log(formData, "formData");
+  
 
-  // Handle select change
 
-  const handleSelectChange = (event) => {
-    const value = event.target.value;
-    setFormData({ ...formData, state: value });
-    console.log("Selected state:", value); // logs correctly
-  };
-
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
 
   return (
     <Box sx={{ p: 2 }}>
