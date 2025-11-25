@@ -135,31 +135,31 @@ const Corporate = ({ data }) => {
                                 />
                             </Grid>
 
-                            <Grid item xs={12} sm={4}>
+                            {/* <Grid item xs={12} sm={4}>
                                 <TextField size="small"
                                     label="Department"
                                     fullWidth
                                     value={d.department_name || ""}
                                     InputProps={{ readOnly: true }}
                                 />
-                            </Grid>
-                            <Grid item xs={12} sm={4}>
+                            </Grid> */}
+                            {/* <Grid item xs={12} sm={4}>
                                 <TextField size="small"
                                     label="Designation"
                                     fullWidth
                                     value={d.designation_name || ""}
                                     InputProps={{ readOnly: true }}
                                 />
-                            </Grid>
-                            <Grid item xs={12} sm={4}>
+                            </Grid> */}
+                            {/* <Grid item xs={12} sm={4}>
                                 <TextField size="small"
                                     label="Employee ID"
                                     fullWidth
                                     value={d.employee_id || ""}
                                     InputProps={{ readOnly: true }}
                                 />
-                            </Grid>
-                            <Grid item xs={12} sm={4}>
+                            </Grid> */}
+                            {/* <Grid item xs={12} sm={4}>
                                 <TextField size="small"
                                     label="DOJ"
                                     type="date"
@@ -168,7 +168,7 @@ const Corporate = ({ data }) => {
                                     InputLabelProps={{ shrink: true }}
                                     InputProps={{ readOnly: true }}
                                 />
-                            </Grid>
+                            </Grid> */}
                         </Grid>
                     </Card>
                 </Grid>
@@ -235,7 +235,7 @@ const Corporate = ({ data }) => {
                                 />
                             </Grid>
 
-                            <Grid item xs={12} sm={6}>
+                            {/* <Grid item xs={12} sm={6}>
                                 <FormControl fullWidth>
                                     <InputLabel>Relationship</InputLabel>
                                     <Select size="small"
@@ -257,7 +257,7 @@ const Corporate = ({ data }) => {
                                         ))}
                                     </Select>
                                 </FormControl>
-                            </Grid>
+                            </Grid> */}
 
                             <Grid item xs={12} sm={6}>
                                 <TextField size="small"
@@ -347,7 +347,7 @@ const Corporate = ({ data }) => {
                                 ["State", d.state_name],
                                 ["District", d.district_name],
                                 ["Tehsil", d.tehsil_name],
-                                ["Source Name", d.source_name_name],
+                                ["WorkShop Name", d.source_name_id],
                             ].map(([label, value]) => (
                                 <Grid key={label} item xs={12} sm={6}>
                                     <TextField size="small"
@@ -383,14 +383,14 @@ const Corporate = ({ data }) => {
                                     InputProps={{ readOnly: true }}
                                 />
                             </Grid>
-                            <Grid item xs={12} sm={6}>
+                            {/* <Grid item xs={12} sm={6}>
                                 <TextField size="small"
                                     label="Site Plant"
                                     fullWidth
                                     value={d.site_plant || ""}
                                     InputProps={{ readOnly: true }}
                                 />
-                            </Grid>
+                            </Grid> */}
                         </Grid>
                     </Card>
                 </Grid>

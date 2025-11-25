@@ -1000,7 +1000,7 @@ const handleDeleteClick = async (citizenID) => {
                                   {canEdit && (
                                     <MenuItem
                                       component={Link}
-                                      to={`/mainscreen/updatecitizen/${data.citizens_pk_id}/${data.source}`}
+                                      to={`/mainscreen/updatecitizen/${data.citizens_pk_id}/`}
                                       onClick={handleMenuClose}
                                     >
                                       <ListItemIcon>
@@ -1015,7 +1015,7 @@ const handleDeleteClick = async (citizenID) => {
                                   {canView && (
                                     <MenuItem
                                       component={Link}
-                                      to={`/mainscreen/viewcitizen/${data.citizens_pk_id}/${SourceNameUrlId}`}
+                                      to={`/mainscreen/viewcitizen/${data.citizens_pk_id}/`}
                                       onClick={handleMenuClose}
                                     >
                                       <ListItemIcon>

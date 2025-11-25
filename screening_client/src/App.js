@@ -84,11 +84,12 @@ console.log("1111111", citizens_pk_id);
                   <Route path="/vital/childInfo" element={<Childvital />} />
                   <Route path="/vital/familiInfo" element={<FamilyInfo />} />
                   <Route
-                    path="/mainscreen/updatecitizen/:id/:sourceId"
+                    path="/mainscreen/updatecitizen/:id/"
                     element={<Updatecitizen />}
+                    // :sourceId
                   />
                   <Route
-                    path="/mainscreen/viewcitizen/:id/:sourceId"
+                    path="/mainscreen/viewcitizen/:id/"
                     element={<Viewcitizen />}
                   />
                   <Route path="*" element={<NotFoundImage />} />

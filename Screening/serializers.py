@@ -655,6 +655,12 @@ class Workshop_Get_Serializer(serializers.ModelSerializer):
     class Meta:
         model = Workshop
         fields = ['ws_pk_id','Workshop_name','registration_no']
+
+
+class Citizen_delete_Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = Citizen
+        fields = ['citizens_pk_id','is_deleted']
         
 class Citizen_Get_Serializer(serializers.ModelSerializer):
     category_name = serializers.CharField(source='category.category', allow_null=True)
@@ -1737,3 +1743,15 @@ class Workshop_delete_Serializer(serializers.ModelSerializer):
     class Meta:
         model = Workshop
         fields = ['Workshop','is_deleted']
+
+
+class Workshop_Get_Api_Dashboard_Serializer(serializers.ModelSerializer):
+   class Meta:
+       model = Workshop
+       fields = ['ws_pk_id','Workshop_name','ws_address','latitude','longitude','added_date']
+
+
+class Workshop_list_get_Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = Workshop
+        fields = ['ws_pk_id','Workshop_name','ws_taluka']

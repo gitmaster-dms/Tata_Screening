@@ -16,17 +16,18 @@ import Corporateview from "./Corporateview";
 const Viewcitizen = () => {
   const { id, sourceId } = useParams();
   console.log("SourceIDfromurl", sourceId, id);
-
+  const SourceUrlId = localStorage.getItem("loginSource");
+  console.log("SourceUrlId", SourceUrlId);
   const accessToken = localStorage.getItem("token");
   const Port = process.env.REACT_APP_API_KEY;
   const [citizenData, setCitizenData] = useState(null);
+  console.log(citizenData, "data1");
 
   const [data1, setData1] = useState([]);
-
   useEffect(() => {
     let apiUrl = "";
 
-    if (sourceId === "School") {
+    if (sourceId === "Community") {
       apiUrl = `${Port}/Screening/add_citizen_get/${id}/`;
     } else if (sourceId === "Corporate") {
       apiUrl = `${Port}/Screening/add_employee_get/${id}/`;
@@ -73,7 +74,7 @@ const Viewcitizen = () => {
       <Box sx={{ p: 3 }}>
         <Typography>Loading...</Typography>
       </Box>
-    );   
+    );
   }
 
   return (
@@ -83,7 +84,7 @@ const Viewcitizen = () => {
         minHeight: "100vh",
         m: "0em 0em 0 3em",
         // pl: { md: 10, sm: 2, xs: 1 }, // ⭐ fixed spacing
-        pr: { md: 10, sm: 2, xs: 1 },
+        // pr: { md: 10, sm: 2, xs: 1 },
       }}
     >
       <Paper
@@ -180,10 +181,10 @@ const Viewcitizen = () => {
       </Paper>
 
       <Box>
-        {/* {sourceId === "School" && <Childview data={data1} />} */}
-        {/* {sourceId === "corporate" && <Corporateview data={data1} />} */}
-        {String(sourceId) === "1" && <Childview data={data1} />}
-        {String(sourceId) === "2" && <Corporateview data={data1} />}
+     
+        {citizenData?.source_id_name === "Community" && (
+          <Corporateview data={data1} />
+        )}
       </Box>
     </Box>
   );

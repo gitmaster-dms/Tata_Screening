@@ -226,12 +226,16 @@ urlpatterns = [
     path('Citizen_Get/', Citizen_Get_Api.as_view(), name='Citizen_Get'),
     path('Citizen_Get_Idwise/<int:citizens_pk_id>/', Citizen_idwise_data_Get_Api.as_view(), name='Citizen_Get_idwise'),
     path('Citizen_Put_api/<int:citizens_pk_id>/', Citizen_Update_API.as_view(), name='Citizen_Put_api'),
+    path('Citizen_delete/<int:citizens_pk_id>/', CitizenDeleteAPI.as_view(), name='Citizen_delete'),
     
     path('Workshop_Post/', Workshop_Post_Api.as_view(), name='Workshop_Post'),
     path('Workshop_Get/', Workshop_Get_Api.as_view(), name='Workshop_Get'),
     path('Workshop_Update/<int:ws_pk_id>/', Workshop_Update_API.as_view(), name='Workshop_Get'),
     path('Category_Get/', Category_Get_Api.as_view(), name='Category_Get'),
     path('Workshop_delete/<int:ws_pk_id>/', Workshop_Delete_API.as_view(), name='Workshop_delete'),
+    path('Workshop_list_get/<int:ws_taluka>/', Workshop_list_get_api.as_view(), name='Workshop_list_get'),
+
+    
     
     
     path('Start_Screening/<int:citizen_pk_id>/', CheckCitizenScreening.as_view(), name='Start_Screening'),   
@@ -326,6 +330,8 @@ urlpatterns = [
     
     path('healthcard_citizen_list/', Healthcard_Citizen_List.as_view(), name='healthcard_citizen_list'),
     path('screening_count_api/',Screening_Count_API.as_view(),name='screening_count_api'),
+
+    path('Workshop_location_get/',WorkshopFilterAPIView.as_view(),name='Workshop_location_get'),
     
     path('healthcard_download/<str:citizen_id>/<int:screening_count>/', Healthcard_Download_API.as_view(), name='healthcard_download'),
     
