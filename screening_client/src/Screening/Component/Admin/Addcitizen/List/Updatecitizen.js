@@ -43,7 +43,7 @@ const Updatecitizen = () => {
     // ------------------ FETCH DATA ------------------ //
     useEffect(() => {
         let apiUrl;
-        if (sourceId === 'School') {
+        if (sourceId === 'Community') {
             apiUrl = `${Port}/Screening/add_citizen_get/${id}/`;
         } else if (sourceId === 'Corporate') {
             apiUrl = `${Port}/Screening/add_employee_get/${id}/`;
@@ -64,7 +64,7 @@ const Updatecitizen = () => {
                     age: { id: response.data.age || '', name: response.data.age_name || '' },
                     gender: { id: response.data.gender || '', name: response.data.gender_name || '' },
                     source: { id: response.data.source || '', name: response.data.source_id_name || '' },
-                    type: { id: response.data.type || '', name: response.data.type_name || '' },
+                    type: { id: response.data.category || '', name: response.data.pk_id || '' },
                     disease: { id: response.data.disease || '', name: response.data.disease_name || '' },
                 });
 
@@ -103,9 +103,9 @@ const Updatecitizen = () => {
     }, [Port, accessToken]);
 
     useEffect(() => {
-        if (data1.source) {
+    if (selectedAge1.source.id) {
             axios
-                .get(`${Port}/Screening/screening_for_type_get/${data1.source}`, {
+                .get(`${Port}/Screening/Category_Get/${selectedAge1.source.id}`, {
                     headers: {
                         Authorization: `Bearer ${accessToken}`,
                         'Content-Type': 'application/json',
@@ -114,7 +114,7 @@ const Updatecitizen = () => {
                 .then((res) => setScreeningFor(res.data))
                 .catch((err) => console.error('Error fetching type:', err));
         }
-    }, [data1.source, Port, accessToken]);
+    }, [selectedAge1.source.id, Port, accessToken]);
 
     // ------------------ HANDLE CHANGE ------------------ //
     const handleChange = (e) => {
@@ -132,7 +132,7 @@ const Updatecitizen = () => {
                 selectedOption.id = SourceNav.find((opt) => opt.source === value)?.source_pk_id || '';
                 break;
             case 'type':
-                selectedOption.id = screeningFor.find((opt) => opt.type === value)?.type_id || '';
+                selectedOption.id = screeningFor.find((opt) => opt.category === value)?.pk_id || '';
                 break;
             case 'disease':
                 selectedOption.id = DiseaseNav.find((opt) => opt.disease === value)?.disease_pk_id || '';
@@ -148,12 +148,49 @@ const Updatecitizen = () => {
 
         if (name === 'source') {
             axios
-                .get(`${Port}/Screening/screening_for_type_get/${selectedOption.id}`)
+                .get(`${Port}/Screening/Category_Get/${selectedOption.id}`)
                 .then((res) => setScreeningFor(res.data))
                 .catch((err) => console.error('Error fetching type:', err));
         }
     };
 
+   useEffect(() => {
+    axios
+        .get(`${Port}/Screening/Category_Get/`, {
+            headers: {
+                Authorization: `Bearer ${accessToken}`,
+                'Content-Type': 'application/json',
+            },
+        })
+        .then((res) => {
+            console.log("Category Loaded:", res.data);
+            setScreeningFor(res.data);
+        })
+        .catch((err) =>
+            console.error('Error fetching categories:', err)
+        );
+}, []);
+
+
+const [citizenData, setCitizenData] = useState({});
+
+  const fetchCitizenData = async () => {
+    try {
+      const response = await fetch(`${Port}/Screening/Citizen_Put_api/${id}/`);
+
+      const data = await response.json();
+      console.log("Citizen Data:", data);
+
+      setCitizenData(data);
+      setData1(data);
+    } catch (error) {
+      console.error("Error fetching citizen data:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchCitizenData();
+  }, [id]);
     return (
         <Box sx={{ p: 3, minHeight: '100vh', m: "0.1em 0em 0em 3em", }}>
             <Paper elevation={2} sx={{ p: 1, borderRadius: 3 }}>
@@ -276,8 +313,8 @@ const Updatecitizen = () => {
                             }}
                         >
                             {screeningFor.map((drop) => (
-                                <MenuItem key={drop.type_id} value={drop.type}>
-                                    {drop.type}
+                                <MenuItem key={drop.pk_id} value={drop.category}>
+                                    {drop.category}
                                 </MenuItem>
                             ))}
                         </TextField>
@@ -308,12 +345,12 @@ const Updatecitizen = () => {
             </Paper>
 
             <Box mt={2}>
-                {sourceId === 'School' && (
-                    <Childupdate data={data1} main={selectedAge1} state={sourceStateNav} />
-                )}
-                {sourceId === 'Corporate' && (
+                {citizenData?.source_id_name === 'Community' && (
                     <CorporateUpdate data={data1} main={selectedAge1} state={sourceStateNav} />
                 )}
+                {/* {sourceId === 'Corporate' && (
+                    <CorporateUpdate data={data1} main={selectedAge1} state={sourceStateNav} />
+                )} */}
             </Box>
         </Box>
     );

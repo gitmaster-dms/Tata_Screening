@@ -655,6 +655,12 @@ class Workshop_Get_Serializer(serializers.ModelSerializer):
     class Meta:
         model = Workshop
         fields = ['ws_pk_id','Workshop_name','registration_no']
+
+
+class Citizen_delete_Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = Citizen
+        fields = ['citizens_pk_id','is_deleted']
         
 class Citizen_Get_Serializer(serializers.ModelSerializer):
     category_name = serializers.CharField(source='category.category', allow_null=True)
@@ -1547,15 +1553,6 @@ class Investigation_Info_Post_Serializer(serializers.ModelSerializer):
         model = investigation_info
         fields = ['investigation_pk_id', 'citizen_id', 'screening_count', 'citizen_pk_id', 'screening_citizen_id','investigation_report', 'urine_report', 'ecg_report', 'x_ray_report',
         'form_submit', 'is_deleted', 'added_by', 'added_date', 'modify_by', 'modify_date']
-        read_only_fields = [
-            'investigation_pk_id',
-            'citizen_id',
-            'screening_count',
-            'citizen_pk_id',
-            'screening_citizen_id',
-            'added_date',
-            'modify_date'
-        ]
         
         
 class Investigation_Info_Get_Serializer(serializers.ModelSerializer):
@@ -1747,7 +1744,14 @@ class Workshop_delete_Serializer(serializers.ModelSerializer):
         model = Workshop
         fields = ['Workshop','is_deleted']
 
-class Citizen_delete_Serializer(serializers.ModelSerializer):
+
+class Workshop_Get_Api_Dashboard_Serializer(serializers.ModelSerializer):
+   class Meta:
+       model = Workshop
+       fields = ['ws_pk_id','Workshop_name','ws_address','latitude','longitude','added_date']
+
+
+class Workshop_list_get_Serializer(serializers.ModelSerializer):
     class Meta:
-        model = Citizen
-        fields = ['citizens_pk_id','is_deleted']
+        model = Workshop
+        fields = ['ws_pk_id','Workshop_name','ws_taluka']

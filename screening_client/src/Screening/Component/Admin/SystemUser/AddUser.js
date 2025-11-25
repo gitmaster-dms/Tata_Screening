@@ -146,7 +146,7 @@ const AddUser = () => {
   ////////////// navbar useState 
   useEffect(() => {
     // Fetch source options
-    axios.get(`${Port}/Screening/Source_Get/?source_pk_id=${SourceUrlId}`,
+    axios.get(`${Port}/Screening/source_GET/`,
       {
         headers: {
           Authorization: `Bearer ${accessToken}`
@@ -161,45 +161,45 @@ const AddUser = () => {
   }, []);
 
   //// Soure State against selected source
-  useEffect(() => {
-    if (selectedSourceeNav) {
-      axios.get(`${Port}/Screening/source_and_pass_state_Get/${selectedSourceeNav}`,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`
-          }
-        })
-        .then(response => {
-          setStateOptionsNav(response.data);
-        })
-        .catch(error => {
-          console.log('Error while fetching state data:', error);
-        });
-    }
-  }, [selectedSourceeNav]);
+useEffect(() => {
+  axios
+    .get(`${Port}/Screening/State_Get/`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    })
+    .then((response) => {
+      setStateOptionsNav(response.data);
+    })
+    .catch((error) => {
+      console.error("Error while fetching state data:", error);
+    });
+}, []); 
+
 
   //// Soure District against selected source state
-  useEffect(() => {
-    if (selectedStateNav) {
-      axios.get(`${Port}/Screening/state_and_pass_district_Get/${selectedSourceeNav}/${selectedStateNav}/`,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`
-          }
-        })
-        .then(response => {
-          setDistrictOptionsNav(response.data);
-        })
-        .catch(error => {
-          console.error("Error fetching districts against state data:", error);
-        });
-    }
-  }, [selectedStateNav]);
+useEffect(() => {
+  if (selectedStateNav) {
+    axios
+      .get(`${Port}/Screening/District_Get/${selectedStateNav}/`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+      .then((response) => {
+        setDistrictOptionsNav(response.data);
+      })
+      .catch((error) => {
+        console.error("Error fetching districts:", error);
+      });
+  }
+}, [selectedStateNav]);
+
 
   //// Soure Taluka against selected source district
   useEffect(() => {
     if (selectedDistrictNav) {
-      axios.get(`${Port}/Screening/district_and_pass_taluka_Get/${selectedSourceeNav}/${selectedDistrictNav}/`,
+      axios.get(`${Port}/Screening/Tehsil_Get/${selectedDistrictNav}/`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`
@@ -214,10 +214,11 @@ const AddUser = () => {
     }
   }, [selectedDistrictNav]);
 
+
   //// Soure Name against selected source Taluka
   useEffect(() => {
     if (selectedTalukaNav) {
-      axios.get(`${Port}/Screening/taluka_and_pass_SourceName_Get/?SNid=${selectedTalukaNav}`,
+      axios.get(`${Port}/Screening/Workshop_list_get/${selectedTalukaNav}/`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`
@@ -276,27 +277,26 @@ const AddUser = () => {
   }, []);
 
   //// Soure State against selected source
-  useEffect(() => {
-    if (selectedSourcee) {
-      axios.get(`${Port}/Screening/source_and_pass_state_Get/${selectedSourcee}`,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`
-          }
-        })
-        .then(response => {
-          setStateOptions(response.data);
-        })
-        .catch(error => {
-          console.log('Error while fetching state data:', error);
-        });
-    }
-  }, [selectedSourcee]);
+useEffect(() => {
+  axios
+    .get(`${Port}/Screening/State_Get/`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    })
+    .then((response) => {
+      setStateOptions(response.data);
+    })
+    .catch((error) => {
+      console.log("Error while fetching state data:", error);
+    });
+}, []);  // <-- empty dependency: executes immediately on mount
+
 
   //// Soure District against selected source state
   useEffect(() => {
     if (selectedState) {
-      axios.get(`${Port}/Screening/state_and_pass_district_Get/${selectedSourcee}/${selectedState}/`,
+      axios.get(`${Port}/Screening/District_Get/${selectedState}/`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`
@@ -314,7 +314,7 @@ const AddUser = () => {
   //// Soure Taluka against selected source district
   useEffect(() => {
     if (selectedDistrict) {
-      axios.get(`${Port}/Screening/district_and_pass_taluka_Get/${selectedSourcee}/${selectedDistrict}/`,
+      axios.get(`${Port}/Screening/Tehsil_Get/${selectedDistrict}/`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`
@@ -330,23 +330,21 @@ const AddUser = () => {
   }, [selectedDistrict]);
 
   //// Soure Name against selected source Taluka
-  useEffect(() => {
-    if (selectedTaluka) {
-      // axios.get(`${Port}/Screening/taluka_and_pass_SourceName_Get/${selectedSourcee}/${selectedTaluka}/`,
-      axios.get(`${Port}/Screening/taluka_and_pass_SourceName_Get/?SNid=${selectedTaluka}&So=${selectedSourcee}&source_pk_id=${SourceNameUrlId}`,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`
-          }
-        })
-        .then(response => {
-          setSourceName(response.data);
-        })
-        .catch(error => {
-          console.error("Error fetching Source Name against Taluka data:", error);
-        });
-    }
-  }, [selectedTaluka]);
+useEffect(() => {
+  axios
+    .get(`${Port}/Screening/Source_Get/`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    })
+    .then((response) => {
+      setSourceName(response.data);   // ← use your state setter here
+    })
+    .catch((error) => {
+      console.error("Error fetching Source_Get data:", error);
+    });
+}, []);   // <-- direct call, no dependency
+
 
   /////////// role
   useEffect(() => {
@@ -987,64 +985,68 @@ const AddUser = () => {
               </TextField>
             </Grid>
 
-            <Grid item xs={12} sm={6} md={2}>
-              <TextField
-                sx={{
-                  minWidth: 120,
-                  "& .MuiInputBase-input.MuiSelect-select": {
-                    color: "#000 !important",
-                  },
-                  "& .MuiSvgIcon-root": {
-                    color: "#000",
-                  },
-                }} select
-                fullWidth
-                size="small"
-                label="Source State"
-                value={selectedStateNav}
-                onChange={(e) => setSelectedStateNav(e.target.value)}
-              >
-                <MenuItem value="">Select State</MenuItem>
-                {stateOptionsNav.map((drop) => (
-                  <MenuItem key={drop.source_state} value={drop.source_state}>
-                    {drop.state_name}
-                  </MenuItem>
-                ))}
-              </TextField>
-            </Grid>
+          <Grid item xs={12} sm={6} md={2}>
+  <TextField
+    sx={{
+      minWidth: 120,
+      "& .MuiInputBase-input.MuiSelect-select": {
+        color: "#000 !important",
+      },
+      "& .MuiSvgIcon-root": {
+        color: "#000",
+      },
+    }}
+    select
+    fullWidth
+    size="small"
+    label="Source State"
+    value={selectedStateNav}
+    onChange={(e) => setSelectedStateNav(e.target.value)}
+  >
+    <MenuItem value="">Select State</MenuItem>
 
-            <Grid item xs={12} sm={6} md={2}>
-              <TextField
-                sx={{
-                  minWidth: 120,
-                  "& .MuiInputBase-input.MuiSelect-select": {
-                    color: "#000 !important",
-                  },
-                  "& .MuiSvgIcon-root": {
-                    color: "#000",
-                  },
-                }} select
-                fullWidth
-                size="small"
-                label="Source District"
-                value={selectedDistrictNav}
-                onChange={(e) => setSelectedDistrictNav(e.target.value)}
-              >
-                <MenuItem value="">Select District</MenuItem>
-                {districtOptionsNav.map((drop) => (
-                  <MenuItem
-                    key={drop.source_district}
-                    value={drop.source_district}
-                  >
-                    {drop.dist_name}
-                  </MenuItem>
-                ))}
-              </TextField>
-            </Grid>
+    {stateOptionsNav.map((drop) => (
+      <MenuItem key={drop.state_id} value={drop.state_id}>
+        {drop.state_name}
+      </MenuItem>
+    ))}
+  </TextField>
+</Grid>
 
-            <Grid item xs={12} sm={6} md={2}>
-              <TextField
-                sx={{
+
+<Grid item xs={12} sm={6} md={2}>
+  <TextField
+    sx={{
+      minWidth: 120,
+      "& .MuiInputBase-input.MuiSelect-select": {
+        color: "#000 !important",
+      },
+      "& .MuiSvgIcon-root": {
+        color: "#000",
+      },
+    }}
+    select
+    fullWidth
+    size="small"
+    label="Source District"
+    value={selectedDistrictNav}
+    onChange={(e) => setSelectedDistrictNav(e.target.value)}
+  >
+    <MenuItem value="">Select District</MenuItem>
+
+    {districtOptionsNav.map((drop) => (
+      <MenuItem key={drop.dist_id} value={drop.dist_id}>
+        {drop.dist_name}
+      </MenuItem>
+    ))}
+  </TextField>
+</Grid>
+
+
+
+<Grid item xs={12} sm={6} md={2}>
+  <TextField
+  sx={{
                   minWidth: 120,
                   "& .MuiInputBase-input.MuiSelect-select": {
                     color: "#000 !important",
@@ -1052,24 +1054,36 @@ const AddUser = () => {
                   "& .MuiSvgIcon-root": {
                     color: "#000",
                   },
-                }} select
-                fullWidth
-                size="small"
-                label="Select Tehsil"
-                value={selectedTalukaNav}
-                onChange={(e) => setSelectedTalukaNav(e.target.value)}
-              >
-                <MenuItem value="">Select Tehsil</MenuItem>
-                {talukaOptionsNav.map((drop) => (
-                  <MenuItem
-                    key={drop.source_taluka}
-                    value={drop.source_taluka}
-                  >
-                    {drop.tahsil_name}
-                  </MenuItem>
-                ))}
-              </TextField>
-            </Grid>
+                }}
+    select
+    fullWidth
+    size="small"
+    label="Select Tehsil"
+    value={selectedTalukaNav || ""}        // safety fallback
+    onChange={(e) => {
+      const value = e.target.value;
+      setSelectedTalukaNav(value === "" ? "" : Number(value));
+    }}
+  >
+    <MenuItem value="">Select Tehsil</MenuItem>
+
+    {talukaOptionsNav.length > 0 ? (
+      talukaOptionsNav.map((drop) => (
+        <MenuItem
+          key={drop.tal_id}
+          value={drop.tal_id}
+        >
+          {drop.tahsil_name}
+        </MenuItem>
+      ))
+    ) : (
+      <MenuItem disabled>No data available</MenuItem>
+    )}
+  </TextField>
+</Grid>
+
+
+
 
             <Grid item xs={12} sm={6} md={2}>
               <TextField
@@ -1085,14 +1099,14 @@ const AddUser = () => {
                 select
                 fullWidth
                 size="small"
-                label="Source Name"
+                label="workshop Name"
                 value={selectedNameNav}
                 onChange={(e) => setSelectedNameNav(e.target.value)}
               >
                 <MenuItem value="">Select Source Name</MenuItem>
                 {sourceNameOptionsNav.map((drop) => (
-                  <MenuItem key={drop.source_pk_id} value={drop.source_pk_id}>
-                    {drop.source_names}
+                  <MenuItem key={drop.ws_pk_id} value={drop.ws_pk_id}>
+                    {drop.Workshop_name}
                   </MenuItem>
                 ))}
               </TextField>
@@ -1215,10 +1229,10 @@ const AddUser = () => {
                             label="Source State"
                           >
                             <MenuItem value="">
-                              {formData.clg_states_id || 'Select State'}
+                              {formData.state_name || 'Select State'}
                             </MenuItem>
                             {stateOptions.map((state) => (
-                              <MenuItem key={state.source_state} value={state.source_state}>
+                              <MenuItem key={state.state_id} value={state.state_id}>
                                 {state.state_name}
                               </MenuItem>
                             ))}
@@ -1250,7 +1264,7 @@ const AddUser = () => {
                               {formData.clg_district_id || 'Select District'}
                             </MenuItem>
                             {districtOptions.map((district) => (
-                              <MenuItem key={district.source_district} value={district.source_district}>
+                              <MenuItem key={district.dist_id} value={district.dist_id}>
                                 {district.dist_name}
                               </MenuItem>
                             ))}
@@ -1279,10 +1293,10 @@ const AddUser = () => {
                             label="Source Tehsil"
                           >
                             <MenuItem value="">
-                              {formData.clg_tehsil_id || 'Select Tehsil'}
+                              {formData.tal_id || 'Select Tehsil'}
                             </MenuItem>
                             {talukaOptions.map((taluka) => (
-                              <MenuItem key={taluka.source_taluka} value={taluka.source_taluka}>
+                              <MenuItem key={taluka.tal_id} value={taluka.tal_id}>
                                 {taluka.tahsil_name}
                               </MenuItem>
                             ))}
@@ -1293,7 +1307,7 @@ const AddUser = () => {
                       {/* Source Name */}
                       <Grid item xs={12} md={6}>
                         <FormControl fullWidth>
-                          <InputLabel>Source Name</InputLabel>
+                          <InputLabel>Workshop Name</InputLabel>
                           <Select
                             sx={{
                               minWidth: 120,
@@ -1311,11 +1325,11 @@ const AddUser = () => {
                             label="Source Name"
                           >
                             <MenuItem value="">
-                              {formData.clg_source_name_id || 'Select Source Name'}
+                              {formData.Workshop_name || 'Select Source Name'}
                             </MenuItem>
                             {sourceNameOptions.map((source) => (
-                              <MenuItem key={source.source_pk_id} value={source.source_pk_id}>
-                                {source.source_names}
+                              <MenuItem key={source.ws_pk_id} value={source.ws_pk_id}>
+                                {source.Workshop_name}
                               </MenuItem>
                             ))}
                           </Select>

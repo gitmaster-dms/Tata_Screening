@@ -35,11 +35,11 @@ const Body = () => {
   const Port = process.env.REACT_APP_API_KEY;
   const [isPopupVisible, setPopupVisible] = useState(false);
   const location = useLocation();
-  const { citizensPkId, pkid, year, dob, gender, citizenId, ScreeningCount, citizenidddddddd, scheduleID, sourceID } = location.state;
+  const { citizensPkId, pkid, year, dob, gender, citizenId, ScreeningCount, citizenidddddddd, scheduleID, sourceID,citizens_pk_id } = location.state;
   const [selectedId, setSelectedId] = useState(null);
   const [selectedGender, setSelectedGender] = useState(gender);
   console.log(gender, 'genderrrrrrrrrrrrrrrrrrrrrrrrrrrr');
-  console.log(scheduleID, 'scheduleID');
+  console.log(pkid, 'pkid');
   console.log(citizenidddddddd, 'new citizen id');
 
   const [formSubmitValues, setFormSubmitValues] = useState({
@@ -279,25 +279,28 @@ const Body = () => {
   const [selectedName, setSelectedName] = useState('');
   console.log(selectedName, 'selected Name in the body componenet fetching......');
 
-  useEffect(() => {
-    const fetchVitals = async () => {
-      try {
-        const response = await axios.get(`${Port}/Screening/GET_Schedule_Screening_List/?source=${SourceUrlId}&source_name=${SourceNameUrlId}&schedule_id=${scheduleID}`, {
-          headers: {
-            'Authorization': `Bearer ${accessToken}`,
-          },
-        });
+ useEffect(() => {
+  const fetchVitals = async () => {
+    try {
+      const response = await axios.get(`${Port}/Screening/GET_Screening_List/`, {
+        headers: {
+          'Authorization': `Bearer ${accessToken}`,
+        },
+      });
 
-        // Extract screening_list from response data
-        const data = response.data[0].screening_list;
-        setFetchVital(data);
-        console.log(data, 'fetching Vital List.......');
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-    fetchVitals();
-  }, []);
+      // response.data is already the array
+      const data = response.data;
+
+      setFetchVital(data);
+      console.log(data, 'fetching Vital List.......');
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+  fetchVitals();
+}, []);
+
 
   return (
     <div className="content-wrapper">
@@ -453,7 +456,7 @@ const Body = () => {
           <div className="col-md-8 backdesign">
             {openedPart === 'Basic Information' && (
               <Childvital citizensPkId={citizensPkId}
-                pkid={pkid} citizenidddddddd={citizenidddddddd} sourceID={sourceID}
+                pkid={citizens_pk_id} citizenidddddddd={citizenidddddddd} sourceID={sourceID}
                 selectedId={selectedId} fetchVital={fetchVital}
                 selectedName={openedPart}
                 onAcceptClick={handleAcceptClick}
