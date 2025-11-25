@@ -1,5 +1,6 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import axios from 'axios';
+import { use } from 'react';
 
 const SourceContext = createContext();
 
@@ -51,6 +52,50 @@ export const SourceProvider = ({ children }) => {
     console.log(bmi, 'bmiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii');
 
     ///////////// bmi
+
+// workshops
+const [dateFilter, setDateFilter] = useState("");
+const [districtFilter, setDistrictFilter] = useState();
+const [workshops, setWorkshops] = useState([]);
+
+const buildUrl = () => {
+  let url = `${Port}/Screening/Workshop_location_get/`;
+
+  const params = [];
+
+  if (dateFilter) params.push(`date_filter=${dateFilter}`);
+  if (districtFilter) params.push(`ws_district=${districtFilter}`);
+
+  if (params.length > 0) {
+    url += "?" + params.join("&");
+  }
+
+  return url;
+};
+const fetchWorkshops = () => {
+  const url = buildUrl();
+  console.log("API URL:", url);
+
+  fetch(url)
+    .then(res => res.json())
+    .then(data => {
+      setWorkshops(data.data || []);
+      console.log("Workshops Updated:", data.data);
+    })
+    .catch(err => console.error("Workshop API Error:", err));
+};
+useEffect(() => {
+  fetchWorkshops();
+}, [dateFilter, districtFilter]);
+
+
+
+
+
+
+
+
+
     useEffect(() => {
         const fetchStateOptions = async () => {
             if (height && weight && gender && age.year !== '' && age.months !== '') {
@@ -178,7 +223,11 @@ export const SourceProvider = ({ children }) => {
                 gender, setGender,
                 selectedScheduleType, setSelectedScheduleType,
                 selectedDisease, setSelectedDisease,
-                scheduleIdd, setScheduleIdd, pkIddd, setPkIddd, citizenIddd, setCitizenIddd 
+                scheduleIdd, setScheduleIdd, pkIddd, setPkIddd, citizenIddd, setCitizenIddd ,
+                dateFilter, setDateFilter,
+                districtFilter, setDistrictFilter,
+                workshops, setWorkshops,
+                 fetchWorkshops,
             }}>
             {children}
         </SourceContext.Provider>
