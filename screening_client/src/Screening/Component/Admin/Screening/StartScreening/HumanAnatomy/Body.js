@@ -549,7 +549,7 @@ const Body = () => {
 
             {openedPart === 'Investigation' &&
               <InvestigationInfo
-                pkid={pkid} citizensPkId={citizensPkId}
+                pkid={citizens_pk_id} citizensPkId={citizensPkId}
                 selectedName={openedPart}
                 fetchVital={fetchVital}
                 onAcceptClick={handleAcceptClick}
@@ -575,7 +575,7 @@ const Body = () => {
             }
 
             {openedPart === 'Immunisation ' &&
-              <Immunisation pkid={pkid} citizensPkId={citizensPkId} dob={dob}
+              <Immunisation pkid={citizens_pk_id} citizensPkId={citizensPkId} dob={dob}
                 fetchVital={fetchVital} selectedName={selectedName}
                 onAcceptClick={handleAcceptClick}
               />}

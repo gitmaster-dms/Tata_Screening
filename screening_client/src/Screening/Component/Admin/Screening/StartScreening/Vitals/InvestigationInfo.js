@@ -172,66 +172,66 @@ const InvestigationInfo = ({ citizensPkId, pkid, fetchVital, selectedName, onAcc
         });
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        const confirmed = window.confirm('Are you sure you want to submit the form?');
+ const handleSubmit = async (e) => {
+  e.preventDefault();
 
-        if (confirmed) {
-            const formData = new FormData();
+  const confirmed = window.confirm('Are you sure you want to submit the form?');
+  if (!confirmed) return;
 
-            // Append all existing data from investData
-            Object.entries(investData).forEach(([key, value]) => {
-                if (value !== null && value !== undefined) {
-                    formData.append(key, value);
-                }
-            });
+  const formData = new FormData();
 
-            // Append only newly selected files or updated values
-            if (investData.investigation_report) {
-                formData.append('investigation_report', investData.investigation_report);
-            }
-            if (investData.urine_report) {
-                formData.append('urine_report', investData.urine_report);
-            }
-            if (investData.ecg_report) {
-                formData.append('ecg_report', investData.ecg_report);
-            }
-            if (investData.x_ray_report) {
-                formData.append('x_ray_report', investData.x_ray_report);
-            }
+  const dataObj = Array.isArray(investData) ? investData[0] : investData;
 
-            formData.append('citizen_pk_id', citizensPkId.toString());
-            formData.append('form_submit', true ? 'True' : 'False');
-            formData.append('added_by', userID);
-            formData.append('modify_by', userID);
+  const fileFields = ['investigation_report', 'urine_report', 'ecg_report', 'x_ray_report'];
+  fileFields.forEach((field) => {
+    const file = dataObj[field];
+    if (file instanceof File) {
+      formData.append(field, file);
+    }
+  });
 
-            try {
-                const response = await axios.post(
-                    `${Port}/Screening/citizen_investigation/${pkid}`,
-                    formData,
-                    {
-                        headers: {
-                            Authorization: `Bearer ${accessToken}`,
-                            'Content-Type': 'multipart/form-data'
-                        }
-                    }
-                );
-                console.log('POST response:', response);
-                // onMoveToVital('pft');
-                onAcceptClick(nextName);
-            } catch (error) {
-                console.error('Error posting data:', error);
-            }
-        } else {
-            console.log('Form submission cancelled.');
-        }
-    };
+  formData.append('citizen_pk_id', citizensPkId.toString());
+  formData.append('form_submit', 'True');
+  formData.append('added_by', userID);
+  formData.append('modify_by', userID);
+
+  // 🔹 Debug: log FormData entries
+  console.log('--- FormData Entries ---');
+  for (let pair of formData.entries()) {
+    console.log(pair[0], pair[1]);
+  }
+  console.log('--- Headers ---');
+  console.log({
+    Authorization: `Bearer ${accessToken}`,
+    'Content-Type': 'multipart/form-data',
+  });
+
+  try {
+    const response = await axios.post(
+      `${Port}/Screening/citizen_investigation/${pkid}`,
+      formData,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'multipart/form-data',
+        },
+      }
+    );
+
+    console.log('POST response:', response.data);
+    onAcceptClick(nextName);
+  } catch (error) {
+    console.error('Error posting data:', error.response?.data || error.message);
+  }
+};
+
+
 
     useEffect(() => {
         const fetchDataById = async (pkid) => {
             console.error('Citizens Pk Id...', pkid);
             try {
-                const response = await fetch(`${Port}/Screening/citizen_investigation_info_get/${pkid}/`, {
+                const response = await fetch(`${Port}/Screening/investigation_get_api/${pkid}/`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',

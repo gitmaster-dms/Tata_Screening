@@ -13,7 +13,8 @@ import {
   Radio,
   FormControlLabel,
   Button,
-  Checkbox
+  Checkbox,
+  Dialog
 } from '@mui/material';
 
 const Vision = ({ pkid, citizensPkId, fetchVital, selectedName, onAcceptClick }) => {
@@ -22,6 +23,9 @@ const Vision = ({ pkid, citizensPkId, fetchVital, selectedName, onAcceptClick })
   const [eyeMuscles, setEyeMuscles] = useState('');
   const [referractive, setReferractive] = useState('');
   const [editMode, setEditMode] = useState(false);
+  const [openConfirm, setOpenConfirm] = useState(false);
+const [loading, setLoading] = useState(false);
+
 
   const Port = process.env.REACT_APP_API_KEY;
   const accessToken = localStorage.getItem('token');
@@ -76,44 +80,93 @@ const Vision = ({ pkid, citizensPkId, fetchVital, selectedName, onAcceptClick })
 
   const handleChange = (event) => {
     const { name, value } = event.target;
-    setVisionForm((prev) => ({ ...prev, [name]: value }));
+    setVisionForm(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const isConfirmed = window.confirm('Submit Vision Form');
-    const confirmationStatus = isConfirmed ? 'True' : 'False';
+  const normalizeNumber = (value) => {
+  if (value === null || value === undefined) return "";
+  return value.toString();
+};
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   const isConfirmed = window.confirm('Submit Vision Form');
+  //   const confirmationStatus = isConfirmed ? 'True' : 'False';
 
-    const formData = {
-      ...visionForm,
-      reffered_to_specialist: specialist,
-      eye_muscle_control: eyeMuscles,
-      refractive_error: referractive,
-      citizen_pk_id: citizensPkId,
-      form_submit: confirmationStatus,
-      added_by: userID,
-      modify_by: userID,
-    };
+  //   const formData = {
+  //     ...visionForm,
+  //     reffered_to_specialist: specialist,
+  //     eye_muscle_control: eyeMuscles,
+  //     refractive_error: referractive,
+  //     citizen_pk_id: citizensPkId,
+  //     form_submit: confirmationStatus,
+  //     added_by: userID,
+  //     modify_by: userID,
+  //   };
 
-    try {
-      const response = await fetch(`${Port}/Screening/vision_post_api/${pkid}/`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${accessToken}`
-        },
-        body: JSON.stringify(formData),
-      });
+  //   try {
+  //     const response = await fetch(`${Port}/Screening/vision_post_api/${pkid}/`, {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //         Authorization: `Bearer ${accessToken}`
+  //       },
+  //       body: JSON.stringify(formData),
+  //     });
 
-      if (response.ok) {
-        await response.json();
-      }
-    } catch (error) {
-      console.error('Error sending data:', error.message);
+  //     if (response.ok) {
+  //       await response.json();
+  //     }
+  //   } catch (error) {
+  //     console.error('Error sending data:', error.message);
+  //   }
+
+  //   onAcceptClick(nextName);
+  // };
+
+
+  // ---------------- NEW handleSubmit (dialog open) ----------------
+const handleSubmit = (e) => {
+  e.preventDefault();
+  setOpenConfirm(true); // window.confirm के बजाय dialog खोलेगा
+};
+
+const handleConfirmSubmit = async () => {
+  setLoading(true);
+
+  const formData = {
+    ...visionForm,
+    reffered_to_specialist: specialist,
+    eye_muscle_control: eyeMuscles,
+    refractive_error: referractive,
+    citizen_pk_id: citizensPkId,
+    form_submit: "True",
+    added_by: userID,
+    modify_by: userID,
+  };
+
+  try {
+    const response = await fetch(`${Port}/Screening/vision_post_api/${pkid}/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      },
+      body: JSON.stringify(formData),
+    });
+
+    if (response.ok) {
+      await response.json();
     }
+  } catch (error) {
+    console.error('Error sending data:', error.message);
+  }
 
-    onAcceptClick(nextName);
-  };
+  setLoading(false);
+  setOpenConfirm(false);
+  onAcceptClick(nextName);
+};
+
+
 
   const fetchDataById = async (pkid) => {
     try {
@@ -129,10 +182,18 @@ const Vision = ({ pkid, citizensPkId, fetchVital, selectedName, onAcceptClick })
         const data = await response.json();
         if (Array.isArray(data) && data.length > 0) {
           const visionForm = data[0];
-          setVisionForm(prev => ({
-            ...prev,
-            ...visionForm,
-          }));
+         setVisionForm(prev => ({
+  ...prev,
+  ...visionForm,
+  re_near_without_glasses: normalizeNumber(visionForm.re_near_without_glasses),
+  re_far_without_glasses: normalizeNumber(visionForm.re_far_without_glasses),
+  le_near_without_glasses: normalizeNumber(visionForm.le_near_without_glasses),
+  le_far_without_glasses: normalizeNumber(visionForm.le_far_without_glasses),
+  re_near_with_glasses: normalizeNumber(visionForm.re_near_with_glasses),
+  re_far_with_glasses: normalizeNumber(visionForm.re_far_with_glasses),
+  le_near_with_glasses: normalizeNumber(visionForm.le_near_with_glasses),
+  le_far_with_glasses: normalizeNumber(visionForm.le_far_with_glasses),
+}));
           setSpecialist(visionForm.reffered_to_specialist);
           setEyeMuscles(visionForm.eye_muscle_control?.toString());
           setReferractive(visionForm.refractive_error?.toString());
@@ -339,71 +400,90 @@ const Vision = ({ pkid, citizensPkId, fetchVital, selectedName, onAcceptClick })
             ) : (
               <>
                 <Grid container spacing={2}>
-                  {[
-                    { title: 'Vision Without Glasses', near: ['re_near_without_glasses', 'le_near_without_glasses'], far: ['re_far_without_glasses', 'le_far_without_glasses'] },
-                    { title: 'Vision With Glasses', near: ['re_near_with_glasses', 'le_near_with_glasses'], far: ['re_far_with_glasses', 'le_far_with_glasses'] }
-                  ].map((section, index) => (
-                    <Grid item xs={12} md={6} key={index}>
-                      <Typography variant="subtitle1" sx={{ mt: 1, fontWeight: 600 }}>
-                        {section.title}
-                      </Typography>
+  {[
+    { 
+      title: 'Vision Without Glasses', 
+      near: ['re_near_without_glasses', 'le_near_without_glasses'], 
+      far: ['re_far_without_glasses', 'le_far_without_glasses'] 
+    },
+    { 
+      title: 'Vision With Glasses', 
+      near: ['re_near_with_glasses', 'le_near_with_glasses'], 
+      far: ['re_far_with_glasses', 'le_far_with_glasses'] 
+    }
+  ].map((section, index) => (
+    <Grid item xs={12} md={6} key={index}>
+      
+      <Typography variant="subtitle1" sx={{ mt: 1, fontWeight: 600 }}>
+        {section.title}
+      </Typography>
 
-                      {/* Near Section */}
-                      <Grid container spacing={2} alignItems="center" sx={{ mt: 1, mr: 2 }}>
-                        <Grid item xs={12} sm={2}>
-                          <Typography variant="body2" sx={{ fontWeight: 500 }}>Near</Typography>
-                        </Grid>
-                        <Grid item xs={12} sm={4.5}>
-                          <TextField
-                            size="small"
-                            fullWidth
-                            label="Right"
-                            name={section.near[0]}
-                            value={visionForm[section.near[0]]}
-                            onChange={handleChange}
-                          />
-                        </Grid>
-                        <Grid item xs={12} sm={4.5}>
-                          <TextField
-                            size="small"
-                            fullWidth
-                            label="Left"
-                            name={section.near[1]}
-                            value={visionForm[section.near[1]]}
-                            onChange={handleChange}
-                          />
-                        </Grid>
-                      </Grid>
+      {/* Near Section */}
+      <Grid container spacing={2} alignItems="center" sx={{ mt: 1 }}>
+        <Grid item xs={12} sm={3}>
+          <Typography variant="body2" sx={{ fontWeight: 600 }}>Near</Typography>
+        </Grid>
 
-                      {/* Far Section */}
-                      <Grid container spacing={2} alignItems="center" sx={{ mt: 1, mr: 2 }}>
-                        <Grid item xs={12} sm={2}>
-                          <Typography variant="body2" sx={{ fontWeight: 500 }}>Far</Typography>
-                        </Grid>
-                        <Grid item xs={12} sm={4.5}>
-                          <TextField
-                            size="small"
-                            fullWidth
-                            label="Right"
-                            name={section.far[0]}
-                            value={visionForm[section.far[0]]}
-                            onChange={handleChange}
-                          />
-                        </Grid>
-                        <Grid item xs={12} sm={4.5}>
-                          <TextField
-                            size="small"
-                            fullWidth
-                            label="Left"
-                            name={section.far[1]}
-                            value={visionForm[section.far[1]]}
-                            onChange={handleChange}
-                          />
-                        </Grid>
-                      </Grid>
-                    </Grid>
-                  ))}
-                </Grid>
+        <Grid item xs={12} sm={4.5}>
+          <TextField
+            size="small"
+            fullWidth
+            label="Right"
+            name={section.near[0]}
+            value={visionForm[section.near[0]] ?? ''}
+            onChange={handleChange}
+            InputLabelProps={{ shrink: true }}
+          />
+        </Grid>
+
+        <Grid item xs={12} sm={4.5}>
+          <TextField
+            size="small"
+            fullWidth
+            label="Left"
+            name={section.near[1]}
+            value={visionForm[section.near[1]] ?? ''}
+            onChange={handleChange}
+            InputLabelProps={{ shrink: true }}
+          />
+        </Grid>
+      </Grid>
+
+      {/* Far Section */}
+      <Grid container spacing={2} alignItems="center" sx={{ mt: 1 }}>
+        <Grid item xs={12} sm={3}>
+          <Typography variant="body2" sx={{ fontWeight: 600 }}>Far</Typography>
+        </Grid>
+
+        <Grid item xs={12} sm={4.5}>
+          <TextField
+            size="small"
+            fullWidth
+            label="Right"
+            name={section.far[0]}
+            value={visionForm[section.far[0]] ?? ''}
+            onChange={handleChange}
+            InputLabelProps={{ shrink: true }}
+          />
+        </Grid>
+
+        <Grid item xs={12} sm={4.5}>
+          <TextField
+            size="small"
+            fullWidth
+            label="Left"
+            name={section.far[1]}
+            value={visionForm[section.far[1]] ?? ''}
+            onChange={handleChange}
+            InputLabelProps={{ shrink: true }}
+          />
+        </Grid>
+      </Grid>
+
+    </Grid>
+  ))}
+</Grid>
+
 
                 <Grid container spacing={2} sx={{ mt: 2 }}>
                   <Grid item xs={3}>
@@ -458,6 +538,27 @@ const Vision = ({ pkid, citizensPkId, fetchVital, selectedName, onAcceptClick })
           </form>
         </Card>
       </Grid>
+      <Dialog open={openConfirm} onClose={() => setOpenConfirm(false)}>
+  <Box sx={{ p: 2, width: "300px" }}>
+    <Typography variant="h6">Submit Vision Form</Typography>
+    <Typography sx={{ mt: 1 }}>
+      Are you sure you want to submit?
+    </Typography>
+
+    <Box sx={{ display: "flex", justifyContent: "flex-end", mt: 3 }}>
+      <Button onClick={() => setOpenConfirm(false)} sx={{ mr: 1 }}>
+        Cancel
+      </Button>
+      <Button
+        variant="contained"
+        onClick={handleConfirmSubmit}
+        disabled={loading}
+      >
+        {loading ? "Submitting..." : "Confirm"}
+      </Button>
+    </Box>
+  </Box>
+</Dialog>
     </Box>
   );
 };

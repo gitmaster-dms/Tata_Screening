@@ -17,6 +17,10 @@ import {
   Select,
   MenuItem,
   TextField,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Dialog,
 } from '@mui/material';
 
 const Immunisation = ({ pkid, citizensPkId, dob, fetchVital, selectedName, onAcceptClick }) => {
@@ -28,6 +32,7 @@ const Immunisation = ({ pkid, citizensPkId, dob, fetchVital, selectedName, onAcc
   const [showModal, setShowModal] = useState(false);
   const [apiResponse, setApiResponse] = useState(null);
 
+const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
   const accessToken = localStorage.getItem('token');
   const userID = localStorage.getItem('userID');
   const Port = process.env.REACT_APP_API_KEY;
@@ -63,7 +68,7 @@ const Immunisation = ({ pkid, citizensPkId, dob, fetchVital, selectedName, onAcc
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get(`${Port}/Screening/citizen_immunisation_info_get/${pkid}/`, {
+        const res = await axios.get(`${Port}/Screening/immunisation_get_api/${pkid}/`, {
           headers: { Authorization: `Bearer ${accessToken}` },
         });
         setData1(res.data);
@@ -124,13 +129,13 @@ const Immunisation = ({ pkid, citizensPkId, dob, fetchVital, selectedName, onAcc
 
   // Save Data
   const handleSave = async () => {
-    const isConfirmed = window.confirm('Submit Immunisation Form');
-    const confirmationStatus = isConfirmed ? 'True' : 'False';
+   
+    const confirmationStatus = 'True'
     const selectedData = immunizationData.filter(item => item.given_yes_no !== '');
 
     try {
       const response = await axios.post(
-        `${Port}/Screening/citizen_immunisation_info_post/${pkid}`,
+        `${Port}/Screening/immunisation_post_api/${pkid}/`,
         {
           name_of_vaccine: selectedData,
           citizen_pk_id: citizensPkId,
@@ -365,19 +370,43 @@ const Immunisation = ({ pkid, citizensPkId, dob, fetchVital, selectedName, onAcc
         }}
       >
         <Button
-          variant="contained"
-          color="primary"
-          size="medium"
-          onClick={handleSave}
-          sx={{
-            textTransform: "none",
-            borderRadius: 2,
-            mb: 3
-          }}
-        >
-          Submit
-        </Button>
+  variant="contained"
+  color="primary"
+  size="medium"
+  onClick={() => setOpenConfirmDialog(true)}
+  sx={{
+    textTransform: "none",
+    borderRadius: 2,
+    mb: 3
+  }}
+>
+  Submit
+</Button>
       </Grid>
+      <Dialog
+  open={openConfirmDialog}
+  onClose={() => setOpenConfirmDialog(false)}
+>
+  <DialogTitle>Confirm Submission</DialogTitle>
+  <DialogContent>
+    <Typography>Are you sure you want to submit the Immunisation Form?</Typography>
+  </DialogContent>
+  <DialogActions>
+    <Button onClick={() => setOpenConfirmDialog(false)} color="secondary">
+      Cancel
+    </Button>
+    <Button
+      onClick={() => {
+        setOpenConfirmDialog(false);
+        handleSave(); // Actual submit function
+      }}
+      color="primary"
+      variant="contained"
+    >
+      Confirm
+    </Button>
+  </DialogActions>
+</Dialog>
     </Box >
   );
 };

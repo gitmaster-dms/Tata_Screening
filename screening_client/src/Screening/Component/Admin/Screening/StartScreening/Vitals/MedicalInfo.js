@@ -121,7 +121,7 @@ const MedicalInfo = ({ citizensPkId, pkid, fetchVital, selectedName, onAcceptCli
     useEffect(() => {
         const fetchDataById = async (pkid) => {
             try {
-                const response = await fetch(`${Port}/Screening/medical_history_get/${pkid}`, {
+                const response = await fetch(`${Port}/Screening/medical_get_api/${pkid}/`, {
                     headers: {
                         Authorization: `Bearer ${accessToken}`,
                         "Content-Type": "application/json",
@@ -175,7 +175,7 @@ const MedicalInfo = ({ citizensPkId, pkid, fetchVital, selectedName, onAcceptCli
         };
 
         try {
-            const response = await axios.post(`${Port}/Screening/medical_history/${pkid}`, postData, {
+            const response = await axios.post(`${Port}/Screening/medical_post_api/${pkid}/`, postData, {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
                     "Content-Type": "application/json",
