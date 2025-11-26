@@ -688,6 +688,7 @@ class Citizen_Get_Serializer(serializers.ModelSerializer):
     dental_info_form_submit = serializers.SerializerMethodField()
     immunisation_info_form_submit = serializers.SerializerMethodField()
     investigation_info_form_submit = serializers.SerializerMethodField()
+    gender_name = serializers.CharField(source='gender.gender',allow_null=True)
 
     class Meta:
         model = Citizen
@@ -703,6 +704,12 @@ class Citizen_Get_Serializer(serializers.ModelSerializer):
             'added_by',
             'modify_by',
             'latest_screening_pk_id',
+            'gender',
+            'gender_name',
+            'year',
+            'dob',
+            
+
 
             #FORM SUBMIT FIELDS
             'basic_info_form_submit',
