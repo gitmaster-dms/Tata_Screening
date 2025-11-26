@@ -583,7 +583,7 @@ const Body = () => {
               <BmiVital
                 citizenidddddddd={citizenidddddddd}
                 citizensPkId={citizensPkId}
-                pkid={pkid}
+                pkid={citizens_pk_id}
                 calculatedHeight={calculatedHeight}
                 enteredWeight={inputValue}
                 gender={gender}
@@ -597,7 +597,7 @@ const Body = () => {
             {openedPart === "Vital" && (
               <Vital
                 citizensPkId={citizensPkId}
-                pkid={pkid}
+                pkid={citizens_pk_id}
                 year={year}
                 gender={gender}
                 selectedId={selectedId}
@@ -609,7 +609,7 @@ const Body = () => {
 
             {openedPart === "Basic Screening" && (
               <BasicScreen
-                pkid={pkid}
+                pkid={citizens_pk_id}
                 citizensPkId={citizensPkId}
                 gender={gender}
                 scheduleID={scheduleID}
@@ -623,7 +623,7 @@ const Body = () => {
 
             {openedPart === "Auditory" && (
               <Auditory
-                pkid={pkid}
+                pkid={citizens_pk_id}
                 citizensPkId={citizensPkId}
                 lastview={preCheckbox}
                 recall={fetchData1}
@@ -635,7 +635,7 @@ const Body = () => {
 
             {openedPart === "Dental Check Up" && (
               <Dental
-                pkid={pkid}
+                pkid={citizens_pk_id}
                 citizensPkId={citizensPkId}
                 selectedName={openedPart}
                 fetchVital={fetchVital}
@@ -647,7 +647,7 @@ const Body = () => {
 
             {openedPart === "Vision" && (
               <Vision
-                pkid={pkid}
+                pkid={citizens_pk_id}
                 citizensPkId={citizensPkId}
                 selectedName={openedPart}
                 fetchVital={fetchVital}
@@ -659,7 +659,7 @@ const Body = () => {
             {openedPart === "Medical History" && (
               <MedicalInfo
                 citizensPkId={citizensPkId}
-                pkid={pkid}
+                pkid={citizens_pk_id}
                 citizenidddddddd={citizenidddddddd}
                 sourceID={sourceID}
                 selectedId={selectedId}
@@ -671,7 +671,7 @@ const Body = () => {
 
             {openedPart === "Investigation" && (
               <InvestigationInfo
-                pkid={pkid}
+                pkid={citizens_pk_id}
                 citizensPkId={citizensPkId}
                 selectedName={openedPart}
                 fetchVital={fetchVital}
@@ -681,7 +681,7 @@ const Body = () => {
 
             {openedPart === "Pulmonary Function Tests" && (
               <Pft
-                pkid={pkid}
+                pkid={citizens_pk_id}
                 citizensPkId={citizensPkId}
                 fetchVital={fetchVital}
                 selectedName={openedPart}
@@ -692,7 +692,7 @@ const Body = () => {
             {openedPart === "Psychological Screening" && (
               <Psychological
                 toggleFormVisibility={setOpenedPart}
-                pkid={pkid}
+                pkid={citizens_pk_id}
                 citizensPkId={citizensPkId}
                 selectedName={openedPart}
                 fetchVital={fetchVital}
@@ -702,7 +702,7 @@ const Body = () => {
 
             {openedPart === "Immunisation " && (
               <Immunisation
-                pkid={pkid}
+                pkid={citizens_pk_id}
                 citizensPkId={citizensPkId}
                 dob={dob}
                 fetchVital={fetchVital}
