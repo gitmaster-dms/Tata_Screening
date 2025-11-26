@@ -43,7 +43,7 @@ const Updatecitizen = () => {
     // ------------------ FETCH DATA ------------------ //
     useEffect(() => {
         let apiUrl;
-        if (sourceId === 'Community') {
+        if (id === 'Community') {
             apiUrl = `${Port}/Screening/add_citizen_get/${id}/`;
         } else if (sourceId === 'Corporate') {
             apiUrl = `${Port}/Screening/add_employee_get/${id}/`;

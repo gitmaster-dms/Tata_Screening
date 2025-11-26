@@ -23,6 +23,10 @@ const CorporateUpdate = (props) => {
   const navigate = useNavigate();
   const accessToken = localStorage.getItem("token");
   const [open, setOpen] = useState(false);
+  const [snackOpen, setSnackOpen] = useState(false);
+  const [snackMessage, setSnackMessage] = useState("");
+  const [snackSeverity, setSnackSeverity] = useState("success"); // success | error | warning | info
+
   //// access the source from local storage
   const SourceUrlId = localStorage.getItem("loginSource");
 
@@ -54,7 +58,7 @@ const CorporateUpdate = (props) => {
     email_id: "",
     emp_mobile_no: "",
     employee_id: "",
-
+    source_name: SourceUrlId,
     father_name: "",
     mother_name: "",
     occupation_of_father: "",
@@ -85,6 +89,8 @@ const CorporateUpdate = (props) => {
     doj: "",
     site_plant: "",
   });
+
+  console.log(updatedData, "updatedData");
 
   const [bmi, setBmi] = useState([]);
   console.log(bmi);
@@ -194,11 +200,10 @@ const CorporateUpdate = (props) => {
           ...updatedData,
           age: mainCorporate.age.id,
           gender: mainCorporate.gender.id,
-          source: mainCorporate.source.id,
           type: mainCorporate.type.id,
           disease: mainCorporate.disease.id,
           modify_by: userID,
-          Workshop_name: updatedData.ws_pk_id,
+          source_name: updatedData.source_id,
           tehsil: updatedData.tehsil,
         };
 
@@ -214,17 +219,25 @@ const CorporateUpdate = (props) => {
         );
 
         if (response.status === 200) {
-          navigate("/mainscreen/Citizen");
+          setSnackMessage("Citizen updated successfully");
+          setSnackSeverity("success");
+          setSnackOpen(true);
           console.log("Data updated successfully:", response.data);
+          navigate("/mainscreen/Citizen");
         } else {
-          console.error("Unexpected response status:", response.status);
+          setSnackMessage("Unexpected response.");
+          setSnackSeverity("warning");
+          setSnackOpen(true);
         }
       } catch (error) {
         if (error.response && error.response.status === 409) {
-          alert("Employee already registered with the same employee ID.");
+          setSnackMessage("Employee already registered with this employee ID.");
+          setSnackSeverity("error");
+          setSnackOpen(true);
         } else {
-          console.error("Error updating data:", error);
-          alert("An error occurred while updating the data.");
+          setSnackMessage("Error updating data.");
+          setSnackSeverity("error");
+          setSnackOpen(true);
         }
       }
     } else {
@@ -517,11 +530,11 @@ const CorporateUpdate = (props) => {
 
   useEffect(() => {
     const fetchWorkshop = async () => {
-      if (!updatedData.tehsil) return; // wait until tehsil selected
+      if (!updatedData.tehsil) return;
 
       try {
         const apiUrl = `${Port}/Screening/Workshop_list_get/${updatedData.tehsil}/`;
-        console.log(apiUrl);
+        console.log("Workshop API:", apiUrl);
 
         const response = await fetch(apiUrl, {
           headers: {
@@ -532,9 +545,18 @@ const CorporateUpdate = (props) => {
 
         const data = await response.json();
         console.log("Workshop List:", data);
+
         setSourceName(data);
+
+        // ⭐ Auto-select workshop during edit
+        if (updatedData.source_name) {
+          setUpdatedData((prev) => ({
+            ...prev,
+            source_id: prev.source_name, // backend field → dropdown field
+          }));
+        }
       } catch (error) {
-        console.log("Error fetching Workshop list");
+        console.log("Error fetching Workshop list", error);
       }
     };
 
@@ -1161,12 +1183,12 @@ const CorporateUpdate = (props) => {
                         color: "#000",
                       },
                     }}
-                    value={updatedData.Workshop_name || ""}
+                    value={updatedData.source_id || ""}
                     label="Source Name"
                     onChange={(e) =>
                       setUpdatedData({
                         ...updatedData,
-                        Workshop_name: e.target.value,
+                        source_id: e.target.value,
                       })
                     }
                   >
@@ -1248,17 +1270,17 @@ const CorporateUpdate = (props) => {
           </Button>
         </Grid>
         <Snackbar
-          open={open}
+          open={snackOpen}
           autoHideDuration={6000}
-          onClose={handleClose}
+          onClose={() => setSnackOpen(false)}
           anchorOrigin={{ vertical: "top", horizontal: "right" }}
         >
           <Alert
-            onClose={handleClose}
-            severity="success"
+            onClose={() => setSnackOpen(false)}
+            severity={snackSeverity}
             sx={{ width: "100%" }}
           >
-            Updated Successfully
+            {snackMessage}
           </Alert>
         </Snackbar>
       </Grid>

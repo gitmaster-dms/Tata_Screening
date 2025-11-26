@@ -169,6 +169,7 @@ const Dashboard = () => {
           gap: 2, // ✅ small gap between tabs and dropdown
           mb: 2,
           pl: 1,
+          flexWrap: "wrap",
         }}
       >
         <Tabs
@@ -237,63 +238,7 @@ const Dashboard = () => {
 
         {/* --- Select State Dropdown --- */}
         <Box>
-          {/* <Select
-            required
-            id="state_id"
-            name="state_id"
-            label="State"
-            value={selectedState}
-            onChange={(e) => setSelectedState(e.target.value)}
-            size="small"
-            fullWidth
-            InputLabelProps={{
-              shrink: true,
-            }}
-            inputProps={{ "aria-label": "Select State" }}
-            sx={{
-              minWidth: { xs: 130, sm: 180, md: 200 },
-              textAlign: "left",
-              backgroundColor: "#fff",
-              borderRadius: 3,
-              boxShadow: "4px 4px 8px rgba(0, 0, 0, 0.05)",
-
-              "& .MuiOutlinedInput-root": {
-                "& fieldset": { border: "none" },
-                "&:hover fieldset": { border: "none" },
-                "&.Mui-focused fieldset": { border: "none" },
-              },
-
-              "& .MuiSelect-select": {
-                color: "black !important",
-                fontSize: "16px",
-                fontFamily: "Roboto",
-                fontWeight: "500",
-              },
-
-              "& .MuiInputLabel-root": {
-                color: "#000",
-                fontWeight: "bold",
-              },
-
-              "& .MuiSelect-icon": {
-                color: "#087ED3",
-              },
-            }}
-          >
-            <MenuItem value="" sx={{ color: "#777" }} disabled>
-              Select State
-            </MenuItem>
-
-            {stateList.map((option) => (
-              <MenuItem
-                key={option.state_id}
-                value={option.state_id}
-                sx={{ fontSize: "14px", color: "black" }}
-              >
-                {option.state_name}
-              </MenuItem>
-            ))}
-          </Select> */}
+         
           <Select
             value={selectedState}
             onChange={(e) => {

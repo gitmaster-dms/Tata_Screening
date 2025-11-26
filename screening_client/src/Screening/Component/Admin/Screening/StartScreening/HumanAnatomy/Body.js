@@ -1,70 +1,86 @@
-import React, { useState, useEffect } from 'react';
-import './Body.css';
-import maleImage from '../../../../../Images/human-body-frontal-removebg-preview.png';
-import femaleImage from '../../../../../Images/Group 237928.png';
-import Head from '../Vitals/Psychological';
-import Dental from '../Vitals/Dental';
-import Vision from '../Vitals/Vision';
-import Auditory from '../Vitals/Auditory';
-import MenuIcon from '@mui/icons-material/Menu';
-import Immunisation from '../Vitals/Immunisation';
-import Childvital from '../Vitals/ChildVital';
-import FamilyInfo from '../Vitals/FamilyInfo';
-import BmiVital from '../Vitals/BmiVital';
-import Vital from '../Vitals/Vital';
-import { Link, useLocation } from 'react-router-dom'
-import BasicScreen from '../Vitals/BasicScreen';
-import MonitorWeightIcon from '@mui/icons-material/MonitorWeight';
-import axios from 'axios';
-import MedicalInfo from '../Vitals/MedicalInfo';
-import InvestigationInfo from '../Vitals/InvestigationInfo';
-import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import Pft from '../Vitals/Pft';
-import Psychological from '../Vitals/Psychological';
+import React, { useState, useEffect } from "react";
+import "./Body.css";
+import maleImage from "../../../../../Images/human-body-frontal-removebg-preview.png";
+import femaleImage from "../../../../../Images/Group 237928.png";
+import Head from "../Vitals/Psychological";
+import Dental from "../Vitals/Dental";
+import Vision from "../Vitals/Vision";
+import Auditory from "../Vitals/Auditory";
+import MenuIcon from "@mui/icons-material/Menu";
+import Immunisation from "../Vitals/Immunisation";
+import Childvital from "../Vitals/ChildVital";
+import FamilyInfo from "../Vitals/FamilyInfo";
+import BmiVital from "../Vitals/BmiVital";
+import Vital from "../Vitals/Vital";
+import { Link, useLocation } from "react-router-dom";
+import BasicScreen from "../Vitals/BasicScreen";
+import MonitorWeightIcon from "@mui/icons-material/MonitorWeight";
+import axios from "axios";
+import MedicalInfo from "../Vitals/MedicalInfo";
+import InvestigationInfo from "../Vitals/InvestigationInfo";
+import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
+import Pft from "../Vitals/Pft";
+import Psychological from "../Vitals/Psychological";
 
 const Body = () => {
-
-  const userID = localStorage.getItem('userID');
+  const userID = localStorage.getItem("userID");
   console.log(userID);
-  const accessToken = localStorage.getItem('token');
+  const accessToken = localStorage.getItem("token");
   console.log(accessToken);
-  const SourceUrlId = localStorage.getItem('loginSource');
-  const SourceNameUrlId = localStorage.getItem('SourceNameFetched');
-  console.log('fetched SOurce', SourceUrlId);
-  console.log('fetched SOurce Name', SourceNameUrlId);
+  const SourceUrlId = localStorage.getItem("loginSource");
+  const SourceNameUrlId = localStorage.getItem("SourceNameFetched");
+  console.log("fetched SOurce", SourceUrlId);
+  console.log("fetched SOurce Name", SourceNameUrlId);
   const Port = process.env.REACT_APP_API_KEY;
   const [isPopupVisible, setPopupVisible] = useState(false);
   const location = useLocation();
-  const { citizensPkId, pkid, year, dob, gender, citizenId, ScreeningCount, citizenidddddddd, scheduleID, sourceID,citizens_pk_id } = location.state;
+  const {
+    citizensPkId,
+    pkid,
+    year,
+    dob,
+    gender,
+    citizenId,
+    ScreeningCount,
+    citizenidddddddd,
+    scheduleID,
+    sourceID,
+    citizens_pk_id,
+  } = location.state;
+  console.log(citizensPkId, pkid, "citizensPkId");
+
   const [selectedId, setSelectedId] = useState(null);
   const [selectedGender, setSelectedGender] = useState(gender);
-  console.log(gender, 'genderrrrrrrrrrrrrrrrrrrrrrrrrrrr');
-  console.log(pkid, 'pkid');
-  console.log(citizenidddddddd, 'new citizen id');
+  console.log(gender, "genderrrrrrrrrrrrrrrrrrrrrrrrrrrr");
+  console.log(pkid, "pkid");
+  console.log(citizenidddddddd, "idss");
 
   const [formSubmitValues, setFormSubmitValues] = useState({
-    'basic_information': false,
-    'family_info': false,
-    'bmi_info': false,
-    'med_info': false,
-    'vital_info': false,
-    'dental_info': false,
-    'vision_info': false,
-    'immunization_info': false,
-    'basic_info': false,
-    'audit_info': false,
-    'psycho_info': false,
-    'invest_info': false,
-    'pft_info': false,
+    basic_information: false,
+    family_info: false,
+    bmi_info: false,
+    med_info: false,
+    vital_info: false,
+    dental_info: false,
+    vision_info: false,
+    immunization_info: false,
+    basic_info: false,
+    audit_info: false,
+    psycho_info: false,
+    invest_info: false,
+    pft_info: false,
   });
 
   const fetchData = async () => {
     try {
-      const res = await fetch(`${Port}/Screening/citizen-vital-status/${citizenId}/${ScreeningCount}/`, {
-        headers: {
-          'Authorization': `Bearer ${accessToken}`,
-        },
-      });
+      const res = await fetch(
+        `${Port}/Screening/citizen-vital-status/${citizenId}/${ScreeningCount}/`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
       const data = await res.json();
 
       setFormSubmitValues((prevValues) => ({
@@ -83,7 +99,6 @@ const Body = () => {
         pft_info: data?.pft_info?.[0]?.form_submit || false,
         med_info: data?.med_info?.[0]?.form_submit || false,
       }));
-
     } catch (error) {
       console.error("Error fetching form submit status:", error);
     }
@@ -111,9 +126,9 @@ const Body = () => {
 
   const getBodyImageClass = () => {
     if (selectedGender === 1) {
-      return 'male-body-image';
+      return "male-body-image";
     } else {
-      return 'female-body-image';
+      return "female-body-image";
     }
   };
 
@@ -132,14 +147,14 @@ const Body = () => {
     setProgress(newProgress);
   };
 
-  const [openedPart, setOpenedPart] = useState('Basic Information');
+  const [openedPart, setOpenedPart] = useState("Basic Information");
 
   const handleAcceptClick = (nextName) => {
     if (nextName) {
-      console.log('Handling accept click with:', nextName);
+      console.log("Handling accept click with:", nextName);
       setOpenedPart(nextName);
     } else {
-      console.log('Next Vital not found. Staying on the same page.');
+      console.log("Next Vital not found. Staying on the same page.");
     }
   };
 
@@ -225,11 +240,14 @@ const Body = () => {
   //   setOpenedPart(nextVitalName11);
   // };
 
-  //////////////// weight 
+  //////////////// weight
   const [isClicked, setIsClicked] = useState(false);
-  const [inputValue, setInputValue] = useState('');
+  const [inputValue, setInputValue] = useState("");
   const [preCheckbox, setPreCheckbox] = useState([]);
-  console.log(preCheckbox, 'kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk');
+  console.log(
+    preCheckbox,
+    "kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk"
+  );
 
   const handleClick = () => setIsClicked(!isClicked);
 
@@ -238,7 +256,12 @@ const Body = () => {
   const handleChange = (event) => {
     const value = event.target.value;
 
-    if (/^\d*\.?\d+$/.test(value) && parseFloat(value) > 0 && parseFloat(value) <= 400 || value === '') {
+    if (
+      (/^\d*\.?\d+$/.test(value) &&
+        parseFloat(value) > 0 &&
+        parseFloat(value) <= 400) ||
+      value === ""
+    ) {
       setInputValue(value);
     }
   };
@@ -246,15 +269,18 @@ const Body = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${Port}/Screening/citizen_auditory_info_get/${pkid}/`, {
-          headers: {
-            'Authorization': `Bearer ${accessToken}`,
-          },
-        });
+        const response = await axios.get(
+          `${Port}/Screening/citizen_auditory_info_get/${pkid}/`,
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
         setPreCheckbox(response.data);
         console.log(response.data);
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error("Error fetching data:", error);
       }
     };
 
@@ -263,44 +289,54 @@ const Body = () => {
 
   const fetchData1 = async () => {
     try {
-      const response = await axios.get(`${Port}/Screening/citizen_auditory_info_get/${pkid}/`, {
-        headers: {
-          'Authorization': `Bearer ${accessToken}`,
-        },
-      });
+      const response = await axios.get(
+        `${Port}/Screening/citizen_auditory_info_get/${pkid}/`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
       setPreCheckbox(response.data);
-      console.log(response.data, 'recalllllllll');
+      console.log(response.data, "recalllllllll");
     } catch (error) {
-      console.error('Error fetching data:', error);
+      console.error("Error fetching data:", error);
     }
   };
 
   const [fetchVital, setFetchVital] = useState([]);
-  const [selectedName, setSelectedName] = useState('');
-  console.log(selectedName, 'selected Name in the body componenet fetching......');
+  console.log(fetchVital,"fetchVital");
+  
+  const [selectedName, setSelectedName] = useState("");
+  console.log(
+    selectedName,
+    "selected Name in the body componenet fetching......"
+  );
 
- useEffect(() => {
-  const fetchVitals = async () => {
-    try {
-      const response = await axios.get(`${Port}/Screening/GET_Screening_List/`, {
-        headers: {
-          'Authorization': `Bearer ${accessToken}`,
-        },
-      });
+  useEffect(() => {
+    const fetchVitals = async () => {
+      try {
+        const response = await axios.get(
+          `${Port}/Screening/GET_Screening_List/`,
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
 
-      // response.data is already the array
-      const data = response.data;
+        // response.data is already the array
+        const data = response.data;
 
-      setFetchVital(data);
-      console.log(data, 'fetching Vital List.......');
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    }
-  };
+        setFetchVital(data);
+        console.log(data, "fetching Vital List.......");
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
 
-  fetchVitals();
-}, []);
-
+    fetchVitals();
+  }, []);
 
   return (
     <div className="content-wrapper">
@@ -314,15 +350,20 @@ const Body = () => {
                 </Link>
               </div>
               <h6 className="screeninfonamevital">Screening Information</h6>
-              <div className='screningstatusinfo'>
-                <MenuIcon className='menuiconinfo' onClick={handleMenuIconClick} style={{ cursor: 'pointer' }} />Screening Status
+              <div className="screningstatusinfo">
+                <MenuIcon
+                  className="menuiconinfo"
+                  onClick={handleMenuIconClick}
+                  style={{ cursor: "pointer" }}
+                />
+                Screening Status
               </div>
             </div>
 
             <div className="row">
               {/* ////////// Scale for cm */}
               <div className="col-md-1 vertical-input-container">
-                {openedPart === 'BMI & Symptoms' ? (
+                {openedPart === "BMI & Symptoms" ? (
                   <div>
                     <input
                       type="range"
@@ -332,33 +373,57 @@ const Body = () => {
                       onChange={handleProgressChange}
                     />
                     <div className="scale vertical-scale">
-                      <span class="horizontal-span">{calculateHeightInFeet(0)}cm</span>
-                      <span class="horizontal-span">{calculateHeightInFeet(14.3)}cm</span>
-                      <span class="horizontal-span">{calculateHeightInFeet(28.56)}cm</span>
-                      <span class="horizontal-span">{calculateHeightInFeet(42.86)}cm</span>
-                      <span class="horizontal-span">{calculateHeightInFeet(57.12)}cm</span>
-                      <span class="horizontal-span">{calculateHeightInFeet(71.3)}cm</span>
-                      <span class="horizontal-span">{calculateHeightInFeet(85.5)}cm</span>
-                      <span class="horizontal-span">{calculateHeightInFeet(100)}cm</span>
+                      <span class="horizontal-span">
+                        {calculateHeightInFeet(0)}cm
+                      </span>
+                      <span class="horizontal-span">
+                        {calculateHeightInFeet(14.3)}cm
+                      </span>
+                      <span class="horizontal-span">
+                        {calculateHeightInFeet(28.56)}cm
+                      </span>
+                      <span class="horizontal-span">
+                        {calculateHeightInFeet(42.86)}cm
+                      </span>
+                      <span class="horizontal-span">
+                        {calculateHeightInFeet(57.12)}cm
+                      </span>
+                      <span class="horizontal-span">
+                        {calculateHeightInFeet(71.3)}cm
+                      </span>
+                      <span class="horizontal-span">
+                        {calculateHeightInFeet(85.5)}cm
+                      </span>
+                      <span class="horizontal-span">
+                        {calculateHeightInFeet(100)}cm
+                      </span>
                     </div>
                   </div>
-                ) :
-                  (
-                    <div className="disabled-scale">
-                      <span className="disabled-text"></span>
-                    </div>
-                  )
-                }
+                ) : (
+                  <div className="disabled-scale">
+                    <span className="disabled-text"></span>
+                  </div>
+                )}
               </div>
 
               {/* //////// Body Points */}
               <div className="col-md-2">
                 <div className="image-container">
-                  <img className={`${getBodyImageClass()}`} src={getBodyImage()} alt="Body" />
-                  <div className={`circle ${isClicked ? 'clicked' : ''}`} onClick={handleClick}>
+                  <img
+                    className={`${getBodyImageClass()}`}
+                    src={getBodyImage()}
+                    alt="Body"
+                  />
+                  <div
+                    className={`circle ${isClicked ? "clicked" : ""}`}
+                    onClick={handleClick}
+                  >
                     <MonitorWeightIcon className="movable-button" />
                     {isClicked && (
-                      <div className="card cardWeightdatainput" onClick={handleModalClick}>
+                      <div
+                        className="card cardWeightdatainput"
+                        onClick={handleModalClick}
+                      >
                         <input
                           type="text"
                           placeholder="Enter Weight"
@@ -370,19 +435,46 @@ const Body = () => {
                   </div>
                 </div>
 
-                <div className="clickable-point-11" onClick={() => handlePointClick('Vitals')}></div>
-                <div className="clickable-point-22" onClick={() => handlePointClick('Basic Screening')}></div>
-                <div className="clickable-point-33" onClick={() => handlePointClick('BMI & Symptoms')}></div>
-                <div className="clickable-point-44" onClick={() => handlePointClick('Immunisation')}></div>
-                <div className="clickable-point-55" onClick={() => handlePointClick('Auditory')}></div>
-                <div className="clickable-point-66" onClick={() => handlePointClick('Dental')}></div>
-                <div className="clickable-point-77" onClick={() => handlePointClick('Vision')}></div>
-                <div className="clickable-point-88" onClick={() => handlePointClick('Psychological')}></div>
-                <div className="clickable-point-89" onClick={() => handlePointClick('Investigation')}></div>
+                <div
+                  className="clickable-point-11"
+                  onClick={() => handlePointClick("Vitals")}
+                ></div>
+                <div
+                  className="clickable-point-22"
+                  onClick={() => handlePointClick("Basic Screening")}
+                ></div>
+                <div
+                  className="clickable-point-33"
+                  onClick={() => handlePointClick("BMI & Symptoms")}
+                ></div>
+                <div
+                  className="clickable-point-44"
+                  onClick={() => handlePointClick("Immunisation")}
+                ></div>
+                <div
+                  className="clickable-point-55"
+                  onClick={() => handlePointClick("Auditory")}
+                ></div>
+                <div
+                  className="clickable-point-66"
+                  onClick={() => handlePointClick("Dental")}
+                ></div>
+                <div
+                  className="clickable-point-77"
+                  onClick={() => handlePointClick("Vision")}
+                ></div>
+                <div
+                  className="clickable-point-88"
+                  onClick={() => handlePointClick("Psychological")}
+                ></div>
+                <div
+                  className="clickable-point-89"
+                  onClick={() => handlePointClick("Investigation")}
+                ></div>
               </div>
 
               {/* ///////  Menu click Vital Name  /////// */}
-              <div className='col-md-5 popup-container'>
+              <div className="col-md-5 popup-container">
                 {isPopupVisible && (
                   <div className="card cardshiftment popup-content">
                     <div className="row">
@@ -415,21 +507,21 @@ const Body = () => {
                             <div
                               key={item.screening_vitals}
                               style={{
-                                display: 'flex',
-                                justifyContent: 'space-between',
-                                alignItems: 'center',
+                                display: "flex",
+                                justifyContent: "space-between",
+                                alignItems: "center",
                               }}
                             >
                               <h6
                                 style={{
-                                  fontSize: '13px',
-                                  margin: '0.2em 0em 0.4em 0.3em',
-                                  fontFamily: 'Roboto',
-                                  fontWeight: 'bold',
-                                  cursor: 'pointer',
+                                  fontSize: "13px",
+                                  margin: "0.2em 0em 0.4em 0.3em",
+                                  fontFamily: "Roboto",
+                                  fontWeight: "bold",
+                                  cursor: "pointer",
                                 }}
                                 onClick={() => {
-                                  setOpenedPart(item.screening_list);  // Set the opened part based on the fetched value
+                                  setOpenedPart(item.screening_list); // Set the opened part based on the fetched value
                                   setSelectedId(item.screening_vitals); // Store the selected ID
                                   setSelectedName(item.screening_list); // Store the name of the clicked item
                                 }}
@@ -440,12 +532,19 @@ const Body = () => {
                             </div>
                           ))
                         ) : (
-                          <p style={{ fontFamily: 'Roboto', fontSize: '13px', fontWeight: 'bold', color: 'gray', margin: '0.5em 0' }}>
+                          <p
+                            style={{
+                              fontFamily: "Roboto",
+                              fontSize: "13px",
+                              fontWeight: "bold",
+                              color: "gray",
+                              margin: "0.5em 0",
+                            }}
+                          >
                             No vitals found
                           </p>
                         )}
                       </div>
-
                     </div>
                   </div>
                 )}
@@ -454,19 +553,23 @@ const Body = () => {
           </div>
 
           <div className="col-md-8 backdesign">
-            {openedPart === 'Basic Information' && (
-              <Childvital citizensPkId={citizensPkId}
-                pkid={citizens_pk_id} citizenidddddddd={citizenidddddddd} sourceID={sourceID}
-                selectedId={selectedId} fetchVital={fetchVital}
+            {openedPart === "Basic Information" && (
+              <Childvital
+                citizensPkId={citizensPkId}
+                pkid={citizens_pk_id}
+                citizenidddddddd={citizenidddddddd}
+                sourceID={sourceID}
+                selectedId={selectedId}
+                fetchVital={fetchVital}
                 selectedName={openedPart}
                 onAcceptClick={handleAcceptClick}
               />
             )}
 
-            {openedPart === 'Emergency Details' && (
+            {openedPart === "Emergency Details" && (
               <FamilyInfo
                 citizensPkId={citizensPkId}
-                pkid={pkid}
+                pkid={citizens_pk_id}
                 citizenidddddddd={citizenidddddddd}
                 sourceID={sourceID}
                 selectedId={selectedId}
@@ -476,109 +579,137 @@ const Body = () => {
               />
             )}
 
-            {openedPart === 'BMI & Symptoms' && (
+            {openedPart === "BMI & Symptoms" && (
               <BmiVital
-                citizenidddddddd={citizenidddddddd} citizensPkId={citizensPkId}
-                pkid={pkid} calculatedHeight={calculatedHeight}
-                enteredWeight={inputValue} gender={gender} scheduleID={scheduleID}
+                citizenidddddddd={citizenidddddddd}
+                citizensPkId={citizensPkId}
+                pkid={pkid}
+                calculatedHeight={calculatedHeight}
+                enteredWeight={inputValue}
+                gender={gender}
+                scheduleID={scheduleID}
                 selectedName={openedPart}
                 fetchVital={fetchVital}
                 onAcceptClick={handleAcceptClick}
               />
             )}
 
-            {openedPart === 'Vital' &&
-              <Vital citizensPkId={citizensPkId} pkid={pkid} year={year}
-                gender={gender} selectedId={selectedId}
-                selectedName={openedPart}
-                fetchVital={fetchVital}
-                onAcceptClick={handleAcceptClick}
-              />
-            }
-
-            {openedPart === 'Basic Screening' &&
-              <BasicScreen
-                pkid={pkid} citizensPkId={citizensPkId} gender={gender}
-                scheduleID={scheduleID} citizenidddddddd={citizenidddddddd}
+            {openedPart === "Vital" && (
+              <Vital
+                citizensPkId={citizensPkId}
+                pkid={pkid}
+                year={year}
+                gender={gender}
                 selectedId={selectedId}
                 selectedName={openedPart}
                 fetchVital={fetchVital}
                 onAcceptClick={handleAcceptClick}
               />
-            }
+            )}
 
-            {openedPart === 'Auditory' &&
-              <Auditory
-                pkid={pkid} citizensPkId={citizensPkId}
-                lastview={preCheckbox} recall={fetchData1}
+            {openedPart === "Basic Screening" && (
+              <BasicScreen
+                pkid={pkid}
+                citizensPkId={citizensPkId}
+                gender={gender}
+                scheduleID={scheduleID}
+                citizenidddddddd={citizenidddddddd}
+                selectedId={selectedId}
                 selectedName={openedPart}
                 fetchVital={fetchVital}
                 onAcceptClick={handleAcceptClick}
               />
-            }
+            )}
 
-            {openedPart === 'Dental Check Up' &&
+            {openedPart === "Auditory" && (
+              <Auditory
+                pkid={pkid}
+                citizensPkId={citizensPkId}
+                lastview={preCheckbox}
+                recall={fetchData1}
+                selectedName={openedPart}
+                fetchVital={fetchVital}
+                onAcceptClick={handleAcceptClick}
+              />
+            )}
+
+            {openedPart === "Dental Check Up" && (
               <Dental
-                pkid={pkid} citizensPkId={citizensPkId}
+                pkid={pkid}
+                citizensPkId={citizensPkId}
                 selectedName={openedPart}
                 fetchVital={fetchVital}
                 scheduleID={scheduleID}
                 citizenId={citizenId}
                 onAcceptClick={handleAcceptClick}
               />
-            }
+            )}
 
-            {openedPart === 'Vision' &&
+            {openedPart === "Vision" && (
               <Vision
-                pkid={pkid} citizensPkId={citizensPkId}
+                pkid={pkid}
+                citizensPkId={citizensPkId}
                 selectedName={openedPart}
                 fetchVital={fetchVital}
                 onAcceptClick={handleAcceptClick}
               />
-            }
+            )}
 
             {/* Roshni Code */}
-            {openedPart === 'Medical History' &&
+            {openedPart === "Medical History" && (
               <MedicalInfo
-                citizensPkId={citizensPkId} pkid={pkid} citizenidddddddd={citizenidddddddd}
-                sourceID={sourceID} selectedId={selectedId}
+                citizensPkId={citizensPkId}
+                pkid={pkid}
+                citizenidddddddd={citizenidddddddd}
+                sourceID={sourceID}
+                selectedId={selectedId}
                 fetchVital={fetchVital}
                 selectedName={openedPart}
                 onAcceptClick={handleAcceptClick}
-              />}
+              />
+            )}
 
-            {openedPart === 'Investigation' &&
+            {openedPart === "Investigation" && (
               <InvestigationInfo
-                pkid={pkid} citizensPkId={citizensPkId}
+                pkid={pkid}
+                citizensPkId={citizensPkId}
                 selectedName={openedPart}
                 fetchVital={fetchVital}
                 onAcceptClick={handleAcceptClick}
               />
-            }
+            )}
 
-            {openedPart === 'Pulmonary Function Tests' &&
+            {openedPart === "Pulmonary Function Tests" && (
               <Pft
-                pkid={pkid} citizensPkId={citizensPkId}
+                pkid={pkid}
+                citizensPkId={citizensPkId}
                 fetchVital={fetchVital}
                 selectedName={openedPart}
                 onAcceptClick={handleAcceptClick}
               />
-            }
+            )}
 
-            {openedPart === 'Psychological Screening' &&
+            {openedPart === "Psychological Screening" && (
               <Psychological
-                toggleFormVisibility={setOpenedPart} pkid={pkid} citizensPkId={citizensPkId}
+                toggleFormVisibility={setOpenedPart}
+                pkid={pkid}
+                citizensPkId={citizensPkId}
                 selectedName={openedPart}
                 fetchVital={fetchVital}
                 onAcceptClick={handleAcceptClick}
               />
-            }
+            )}
 
-            {openedPart === 'Immunisation ' &&
-              <Immunisation pkid={pkid} citizensPkId={citizensPkId} dob={dob}
-                fetchVital={fetchVital} selectedName={selectedName}
+            {openedPart === "Immunisation " && (
+              <Immunisation
+                pkid={pkid}
+                citizensPkId={citizensPkId}
+                dob={dob}
+                fetchVital={fetchVital}
+                selectedName={selectedName}
                 onAcceptClick={handleAcceptClick}
-              />}
+              />
+            )}
           </div>
         </div>
       </div>
