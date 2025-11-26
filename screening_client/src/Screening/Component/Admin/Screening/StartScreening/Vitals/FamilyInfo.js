@@ -54,6 +54,10 @@ const FamilyInfo = ({
   }, [selectedName, fetchVital]);
 
   // Fetch Emergency Info
+
+  const [empkid , setEmpKID] = useState(null);
+  console.log("empkid",empkid);
+  
   const fetchData = async () => {
     try {
       const response = await fetch(
@@ -72,6 +76,7 @@ const FamilyInfo = ({
       if (res?.data) {
         setFamilyData(res.data); // store entire object
         setUpdateId(res.data?.citizen_id); // correct key sent by backend
+        setEmpKID(res.data?.em_pk_id)
       }
     } catch (error) {
       console.error("Error fetching family data", error);
@@ -86,7 +91,7 @@ const FamilyInfo = ({
   const updateDataInDatabase = async (citizen_id) => {
     try {
       const response = await fetch(
-        `${Port}/Screening/Citizen_emergency_put/${pkid}/`,
+        `${Port}/Screening/Citizen_emergency_put/${empkid}/`,
         {
           method: "PUT",
           headers: {

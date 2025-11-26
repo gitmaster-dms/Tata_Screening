@@ -166,8 +166,8 @@ const Dashboard = () => {
         sx={{
           display: "flex",
           alignItems: "center",
-          gap: 2, // ✅ small gap between tabs and dropdown
-          mb: 2,
+          gap: 1, // ✅ small gap between tabs and dropdown
+          mb: 1,
           pl: 1,
           flexWrap: "wrap",
         }}
@@ -288,7 +288,7 @@ const Dashboard = () => {
         </Box>
       </Box>
 
-      <Grid container spacing={2}>
+      <Grid container spacing={1}>
         {/* Left 9-column section */}
         <Grid item xs={12} md={9} sm={12}>
           <Grid container spacing={1}>

@@ -39,7 +39,7 @@ const FollowUpCard = ({data}) => {
     >
       <CardContent
         sx={{
-          p: { xs: 1.5, sm: 2, md: 1 },
+          p: { xs: 1.5, sm: 2, md: 0.5 },
           display: "flex",
           flexDirection: "column",
           justifyContent: "center",
