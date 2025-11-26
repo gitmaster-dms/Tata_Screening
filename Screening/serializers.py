@@ -862,8 +862,12 @@ class Citizen_Get_Serializer(serializers.ModelSerializer):
         if any(f is None for f in forms):
             return False
 
-        # ✔️ If ALL fields are EXACTLY False → previous_screen = True
-        return all(f is False for f in forms)
+        # ✔ If ANY field is False → previous_screen = True
+        if any(f is False for f in forms):
+            return True
+
+        # Otherwise all are True → previous_screen = False
+        return False
 
 
 
