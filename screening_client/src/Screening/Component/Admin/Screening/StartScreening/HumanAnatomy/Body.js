@@ -488,7 +488,7 @@ const Body = () => {
             )}
 
             {openedPart === 'Vital' &&
-              <Vital citizensPkId={citizensPkId} pkid={pkid} year={year}
+              <Vital citizensPkId={citizensPkId} pkid={citizens_pk_id} year={year}
                 gender={gender} selectedId={selectedId}
                 selectedName={openedPart}
                 fetchVital={fetchVital}
@@ -509,7 +509,7 @@ const Body = () => {
 
             {openedPart === 'Auditory' &&
               <Auditory
-                pkid={pkid} citizensPkId={citizensPkId}
+                pkid={citizens_pk_id} citizensPkId={citizensPkId}
                 lastview={preCheckbox} recall={fetchData1}
                 selectedName={openedPart}
                 fetchVital={fetchVital}
@@ -519,7 +519,7 @@ const Body = () => {
 
             {openedPart === 'Dental Check Up' &&
               <Dental
-                pkid={pkid} citizensPkId={citizensPkId}
+                pkid={citizens_pk_id} citizensPkId={citizensPkId}
                 selectedName={openedPart}
                 fetchVital={fetchVital}
                 scheduleID={scheduleID}
@@ -530,7 +530,7 @@ const Body = () => {
 
             {openedPart === 'Vision' &&
               <Vision
-                pkid={pkid} citizensPkId={citizensPkId}
+                pkid={citizens_pk_id} citizensPkId={citizensPkId}
                 selectedName={openedPart}
                 fetchVital={fetchVital}
                 onAcceptClick={handleAcceptClick}
@@ -540,7 +540,7 @@ const Body = () => {
             {/* Roshni Code */}
             {openedPart === 'Medical History' &&
               <MedicalInfo
-                citizensPkId={citizensPkId} pkid={pkid} citizenidddddddd={citizenidddddddd}
+                citizensPkId={citizensPkId} pkid={citizens_pk_id} citizenidddddddd={citizenidddddddd}
                 sourceID={sourceID} selectedId={selectedId}
                 fetchVital={fetchVital}
                 selectedName={openedPart}
