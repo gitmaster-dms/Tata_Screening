@@ -30,6 +30,7 @@ import {
 import NotStartedIcon from '@mui/icons-material/NotStarted';
 const Vital = ({ year, pkid, citizensPkId, gender, selectedId, fetchVital, selectedName, onAcceptClick }) => {
     const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
+    console.log(pkid,"pkidpkidpkid")
 
     //_________________________________START
     console.log(selectedName, 'Present name');
@@ -603,7 +604,7 @@ const Vital = ({ year, pkid, citizensPkId, gender, selectedId, fetchVital, selec
         console.log('Form Data:', formData);
 
         if (confirmationStatus === 'True') {
-            fetch(`${Port}/Screening/citizen_vital_info_post/${pkid}`, {
+            fetch(`${Port}/Screening/Vital_Info_Post/${pkid}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -637,7 +638,7 @@ const Vital = ({ year, pkid, citizensPkId, gender, selectedId, fetchVital, selec
     };
 
     const fetchCitizenVitalInfo = () => {
-        fetch(`${Port}/Screening/citizen_vital_info_get/${pkid}/`, {
+        fetch(`${Port}/Screening/Vital_Info_Get/${pkid}/`, {
             headers: {
                 'Authorization': `Bearer ${accessToken}`, // Include the authorization header
                 'Content-Type': 'application/json', // Ensure correct content type
