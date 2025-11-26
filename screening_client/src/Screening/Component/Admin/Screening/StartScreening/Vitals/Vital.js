@@ -604,7 +604,7 @@ const Vital = ({ year, pkid, citizensPkId, gender, selectedId, fetchVital, selec
         console.log('Form Data:', formData);
 
         if (confirmationStatus === 'True') {
-            fetch(`${Port}/Screening/Vital_Info_Post/${pkid}`, {
+            fetch(`${Port}/Screening/Vital_Info_Post/${pkid}/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

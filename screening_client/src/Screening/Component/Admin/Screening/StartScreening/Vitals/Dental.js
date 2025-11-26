@@ -118,6 +118,8 @@ const Dental = ({ scheduleID, pkid, citizensPkId, citizenId, onMoveTovision, fet
   const [surgery, setSurgery] = useState('');
   const [orthodontic, setOrthodontic] = useState('');
   const [overall, setOverall] = useState('');
+  const [openConfirm, setOpenConfirm] = useState(false);
+
 
   const calculateOverall = () => {
     const values = [
@@ -259,12 +261,15 @@ const Dental = ({ scheduleID, pkid, citizensPkId, citizenId, onMoveTovision, fet
     }));
   };
 
-  const handleSubmit = async (e) => {
-    const isConfirmed = window.confirm('Submit Dental Form');
-    const confirmationStatus = isConfirmed ? 'True' : 'False';
+   const handleSubmit = (e) => {
+    e.preventDefault();
+    setOpenConfirm(true); // open confirmation dialog instead of window.confirm
+  };
+
+  const handleConfirm = async () => {
+    setOpenConfirm(false); // close dialog
     const calculatedOverall = calculateOverall();
 
-    e.preventDefault();
     const formData = {
       ...dentalform,
       oral_hygiene: oralHygiene,
@@ -284,7 +289,7 @@ const Dental = ({ scheduleID, pkid, citizensPkId, citizenId, onMoveTovision, fet
       referred_to_surgery: surgery,
       citizen_pk_id: citizensPkId,
       dental_conditions: calculatedOverall,
-      form_submit: confirmationStatus,
+      form_submit: 'True',
       added_by: userID,
       modify_by: userID
     };
@@ -292,7 +297,7 @@ const Dental = ({ scheduleID, pkid, citizensPkId, citizenId, onMoveTovision, fet
     console.log('Form Data:', formData);
 
     try {
-      const response = await fetch(`${Port}/Screening/citizen_dental_info_post/${pkid}`, {
+      const response = await fetch(`${Port}/Screening/dental_post_api/${pkid}/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -301,18 +306,15 @@ const Dental = ({ scheduleID, pkid, citizensPkId, citizenId, onMoveTovision, fet
         body: JSON.stringify(formData),
       });
 
-      if (isConfirmed && response.ok) {
+      if (response.ok) {
         const data = await response.json();
         console.log('Server Response:', data);
-        // onMoveToVital('dentalsection');
         onAcceptClick(nextName);
       } else if (response.status === 400) {
-        console.error('Bad Request:', response.data.error);
+        console.error('Bad Request:', response.data?.error);
       } else if (response.status === 500) {
-        // onMoveToVital('dentalsection');
         onAcceptClick(nextName);
-      }
-      else {
+      } else {
         console.error('Unhandled Status Code:', response.status);
       }
     } catch (error) {
@@ -320,9 +322,14 @@ const Dental = ({ scheduleID, pkid, citizensPkId, citizenId, onMoveTovision, fet
     }
   };
 
+  const handleCancel = () => {
+    setOpenConfirm(false);
+    console.log('Form submission cancelled by user.');
+  };
+
   const fetchDataById = async (pkid) => {
     try {
-      const response = await fetch(`${Port}/Screening/citizen_dental_info_get/${pkid}/`, {
+      const response = await fetch(`${Port}/Screening/dental_get_api/${pkid}/`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -998,6 +1005,16 @@ const Dental = ({ scheduleID, pkid, citizensPkId, citizenId, onMoveTovision, fet
                 </Button>
               </Grid>
             </Grid>
+             <Dialog open={openConfirm} onClose={handleCancel}>
+        <DialogTitle>Confirm Submission</DialogTitle>
+        <DialogContent>
+          <Typography>Are you sure you want to submit the Dental Form?</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCancel} color="secondary">Cancel</Button>
+          <Button onClick={handleConfirm} variant="contained" color="primary">Confirm</Button>
+        </DialogActions>
+      </Dialog>
           </Box>
         </form>
       </Box>

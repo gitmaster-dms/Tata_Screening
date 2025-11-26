@@ -25,6 +25,7 @@ const Auditory = ({ pkid, citizensPkId, lastview, recall, fetchVital, selectedNa
   console.log(selectedName, 'Present name');
   console.log(fetchVital, 'Overall GET API');
   const [nextName, setNextName] = useState('');
+  const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
 
   useEffect(() => {
     if (fetchVital && selectedName) {
@@ -144,63 +145,65 @@ const Auditory = ({ pkid, citizensPkId, lastview, recall, fetchVital, selectedNa
   const userID = localStorage.getItem('userID');
   console.log(userID);
 
-  const handleSubmit = async (e) => {
-    const isConfirmed = window.confirm('Submit Auditory Form');
-    const confirmationStatus = isConfirmed ? 'True' : 'False';
-    e.preventDefault();
-    const postData = {
-      checkboxes: formData.selectedNames,
-      remark: formData.remark,
-      right: formData.right,
-      left: formData.left,
-      tratement_given: formData.tratement_given,
-      otoscopic_exam: formData.otoscopic_exam,
-      citizen_pk_id: citizensPkId,
-      form_submit: confirmationStatus,
-      added_by: userID,
-      modify_by: userID,
-      reffered_to_specialist: referredToSpecialist,
+const handleSubmit = async () => {
+  const confirmationStatus = 'True';
 
-      // added fields
-      hz_250_left: formData.hz_250_left,
-      hz_500_left: formData.hz_500_left,
-      hz_1000_left: formData.hz_1000_left,
-      hz_2000_left: formData.hz_2000_left,
-      hz_4000_left: formData.hz_4000_left,
-      hz_8000_left: formData.hz_8000_left,
-      reading_left: leftReading.left_average_reading,
-      left_ear_observations_remarks: leftReading.message,
-      hz_250_right: formData.hz_250_right,
-      hz_500_right: formData.hz_500_right,
-      hz_1000_right: formData.hz_1000_right,
-      hz_2000_right: formData.hz_2000_right,
-      hz_4000_right: formData.hz_4000_right,
-      hz_8000_right: formData.hz_8000_right,
-      reading_right: rightReading.Right_average_reading,
-      right_ear_observations_remarks: rightReading.message,
-    };
+  const postData = {
+    checkboxes: formData.selectedNames,
+    remark: formData.remark,
+    right: formData.right,
+    left: formData.left,
+    tratement_given: formData.tratement_given,
+    otoscopic_exam: formData.otoscopic_exam,
+    citizen_pk_id: citizensPkId,
+    form_submit: confirmationStatus,
+    added_by: userID,
+    modify_by: userID,
+    reffered_to_specialist: referredToSpecialist,
 
-    console.log(postData, 'postData');
+    // added fields
+    hz_250_left: formData.hz_250_left,
+    hz_500_left: formData.hz_500_left,
+    hz_1000_left: formData.hz_1000_left,
+    hz_2000_left: formData.hz_2000_left,
+    hz_4000_left: formData.hz_4000_left,
+    hz_8000_left: formData.hz_8000_left,
+    reading_left: leftReading.left_average_reading,
+    left_ear_observations_remarks: leftReading.message,
 
-    try {
-      const response = await axios.post(
-        `${Port}/Screening/citizen_audit_info_post/${pkid}`,
-        postData,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-            'Content-Type': 'application/json',
-          }
-        }
-      );
-      // onMoveToVital('dentalsection');
-      onAcceptClick(nextName);
-      recall();
-      console.log('POST response:', response);
-    } catch (error) {
-      console.error('Error posting data:', error);
-    }
+    hz_250_right: formData.hz_250_right,
+    hz_500_right: formData.hz_500_right,
+    hz_1000_right: formData.hz_1000_right,
+    hz_2000_right: formData.hz_2000_right,
+    hz_4000_right: formData.hz_4000_right,
+    hz_8000_right: formData.hz_8000_right,
+    reading_right: rightReading.Right_average_reading,
+    right_ear_observations_remarks: rightReading.message,
   };
+
+  console.log(postData, 'postData');
+
+  try {
+    const response = await axios.post(
+      `${Port}/Screening/auditory_post_api/${pkid}/`,
+      postData,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
+        }
+      }
+    );
+
+    onAcceptClick(nextName);
+    recall();
+    console.log('POST response:', response);
+
+  } catch (error) {
+    console.error('Error posting data:', error);
+  }
+};
+
 
   const handleChange = (e) => {
 
@@ -285,8 +288,8 @@ const Auditory = ({ pkid, citizensPkId, lastview, recall, fetchVital, selectedNa
 
   ////// value pass API ID wise 
 
-  const [leftReading, setLeftReading] = useState([]);
-  const [rightReading, setRightReading] = useState([]);
+const [leftReading, setLeftReading] = useState({ left_average_reading: '', message: '' });
+const [rightReading, setRightReading] = useState({ Right_average_reading: '', message: '' });
 
   useEffect(() => {
     const fetchLeftReading = async () => {
@@ -660,7 +663,7 @@ const Auditory = ({ pkid, citizensPkId, lastview, recall, fetchVital, selectedNa
                     variant="contained"
                     color="primary"
                     size="medium"
-                    onClick={handleSubmit}
+                    onClick={() => setOpenConfirmDialog(true)}
                     sx={{
                       textTransform: "none",
                       borderRadius: 2,
@@ -675,6 +678,30 @@ const Auditory = ({ pkid, citizensPkId, lastview, recall, fetchVital, selectedNa
           </Card>
         </Grid>
       </Box>
+ <Dialog open={openConfirmDialog} onClose={() => setOpenConfirmDialog(false)}>
+  <DialogTitle>Confirm Submission</DialogTitle>
+
+  <DialogContent>
+    <Typography>Do you want to submit this Auditory Form?</Typography>
+  </DialogContent>
+
+  <DialogActions>
+    <Button onClick={() => setOpenConfirmDialog(false)} color="error">
+      Cancel
+    </Button>
+
+    <Button
+      onClick={() => {
+        setOpenConfirmDialog(false);
+        handleSubmit();
+      }}
+      color="primary"
+      variant="contained"
+    >
+      Confirm
+    </Button>
+  </DialogActions>
+</Dialog>
     </Box>
   );
 };

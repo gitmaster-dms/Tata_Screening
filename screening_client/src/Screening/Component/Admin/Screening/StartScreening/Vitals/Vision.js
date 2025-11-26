@@ -96,7 +96,7 @@ const Vision = ({ pkid, citizensPkId, fetchVital, selectedName, onAcceptClick })
     };
 
     try {
-      const response = await fetch(`${Port}/Screening/citizen_vision_info_post/${pkid}`, {
+      const response = await fetch(`${Port}/Screening/vision_post_api/${pkid}/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -117,7 +117,7 @@ const Vision = ({ pkid, citizensPkId, fetchVital, selectedName, onAcceptClick })
 
   const fetchDataById = async (pkid) => {
     try {
-      const response = await fetch(`${Port}/Screening/citizen_vision_info_get/${pkid}/`, {
+      const response = await fetch(`${Port}/Screening/vision_get_api/${pkid}/`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',

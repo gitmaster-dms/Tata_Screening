@@ -1089,6 +1089,9 @@ const handleDeleteClick = async (citizenID) => {
                     citizens_pk_id: data.citizens_pk_id,
                     SourceUrlId,
                     SourceNameUrlId,
+                    year:data.year,
+                    dob:data.dob,
+                    gender:data.gender,
                 },
             });
         }
