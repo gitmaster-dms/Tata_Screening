@@ -2086,6 +2086,8 @@ class investigation_info(models.Model):
     urine_report = models.FileField(upload_to='media_files/', null=True, blank=True)
     ecg_report = models.FileField(upload_to='media_files/', null=True, blank=True)
     x_ray_report = models.FileField(upload_to='media_files/', null=True, blank=True)
+    selected_submodules = models.JSONField(null=True,blank=True)
+ 
 
     form_submit = models.BooleanField(default=False)
     is_deleted = models.BooleanField(default=False)
