@@ -17,7 +17,7 @@ import { Grid, Card, Typography, Box, IconButton } from '@mui/material';
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 
-const BasicScreen = ({ pkid, citizensPkId, gender, scheduleID, citizenidddddddd, fetchVital, onAcceptClick }) => {
+const BasicScreen = ({ pkid, citizensPkId, gender, scheduleID, citizenidddddddd, fetchVital, onAcceptClick,basicScreenId }) => {
 
   const Port = process.env.REACT_APP_API_KEY;
   const userID = localStorage.getItem('userID');
@@ -36,17 +36,37 @@ const BasicScreen = ({ pkid, citizensPkId, gender, scheduleID, citizenidddddddd,
     console.log('User Group:', userGroup);
   }, [userGroup]);
 
-  useEffect(() => {
+  // useEffect(() => {
+  //   const fetchVitalName = async () => {
+  //     try {
+  //       const response = await axios.get(`${Port}/Screening/GET_Schedule_Screening_sub_vital/?source=${SourceUrlId}&source_name=${SourceNameUrlId}&schedule_id=${scheduleID}`,
+  //         {
+  //           headers: {
+  //             Authorization: `Bearer ${accessToken}`
+  //           }
+  //         });
+  //       setSubVitalList(response.data[0].screening_list || []);
+  //       console.log(response.data);
+  //     } catch (error) {
+  //       console.error('Error fetching data:', error);
+  //     }
+  //   };
+
+  //   fetchVitalName();
+  // }, [Port]);
+
+    useEffect(() => {
     const fetchVitalName = async () => {
       try {
-        const response = await axios.get(`${Port}/Screening/GET_Schedule_Screening_sub_vital/?source=${SourceUrlId}&source_name=${SourceNameUrlId}&schedule_id=${scheduleID}`,
+        const response = await axios.get(`${Port}/Screening/Screening_sub_list/?screening_list=${basicScreenId}`,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`
             }
           });
-        setSubVitalList(response.data[0].screening_list || []);
-        console.log(response.data);
+        // setSubVitalList(response.data[0].screening_list || []);
+        setSubVitalList(response.data);
+        console.log(response.data,"cdcdcdcdcd");
       } catch (error) {
         console.error('Error fetching data:', error);
       }
@@ -171,7 +191,7 @@ const BasicScreen = ({ pkid, citizensPkId, gender, scheduleID, citizenidddddddd,
                             fontFamily: "Roboto",
                           }}
                         >
-                          {option.screening_list}
+                          {option.sub_list}
                         </Typography>
                       </Box>
                     </Grid>

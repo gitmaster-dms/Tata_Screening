@@ -277,7 +277,10 @@ const Body = () => {
 
   const [fetchVital, setFetchVital] = useState([]);
   const [selectedName, setSelectedName] = useState('');
+  const [selectedNameId, setSelectedNameId] = useState(null);
   console.log(selectedName, 'selected Name in the body componenet fetching......');
+const [basicScreenId, setBasicScreenId] = useState(null);
+console.log(basicScreenId,"basicScreenId");
 
  useEffect(() => {
   const fetchVitals = async () => {
@@ -432,6 +435,7 @@ const Body = () => {
                                   setOpenedPart(item.screening_list);  // Set the opened part based on the fetched value
                                   setSelectedId(item.screening_vitals); // Store the selected ID
                                   setSelectedName(item.screening_list); // Store the name of the clicked item
+                                  setSelectedNameId(item.sc_list_pk_id); // Store the name of the clicked item
                                 }}
                               >
                                 {item.screening_list}
@@ -503,6 +507,7 @@ const Body = () => {
                 selectedId={selectedId}
                 selectedName={openedPart}
                 fetchVital={fetchVital}
+                basicScreenId={selectedNameId}
                 onAcceptClick={handleAcceptClick}
               />
             }

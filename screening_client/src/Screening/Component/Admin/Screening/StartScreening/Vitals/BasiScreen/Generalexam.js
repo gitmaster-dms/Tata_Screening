@@ -190,13 +190,13 @@ const Generalexam = ({
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const isConfirmed = openSnackbar("Submit Basic Screen Form");
-    if (!isConfirmed) return;
-    const confirmationStatus = isConfirmed ? "True" : "False";
+    // const isConfirmed = openSnackbar("Submit Basic Screen Form");
+    // if (!isConfirmed) return;
+    // const confirmationStatus = isConfirmed ? "True" : "False";
 
     const formData = {
       ...generalExam,
-      form_submit: confirmationStatus,
+      // form_submit: confirmationStatus,
     };
 
     console.log("Form Data:", formData);
@@ -210,7 +210,7 @@ const Generalexam = ({
             Authorization: `Bearer ${accessToken}`,
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ pkid }),
+          body: JSON.stringify({ pkid,formData }),
         }
       );
 

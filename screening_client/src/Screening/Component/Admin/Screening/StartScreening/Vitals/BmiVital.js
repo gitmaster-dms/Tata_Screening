@@ -367,7 +367,7 @@ const BmiVital = ({
           Confirm Submission
         </DialogTitle>
         <DialogContent sx={{ textAlign: "center", fontSize: "15px" }}>
-          Are you sure you want to submit the Growth Info Form?
+          Are you sure you want to submit the BMI & Symptoms Info Form?
         </DialogContent>
         <DialogActions sx={{ justifyContent: "center", pb: 2 }}>
           <Button
