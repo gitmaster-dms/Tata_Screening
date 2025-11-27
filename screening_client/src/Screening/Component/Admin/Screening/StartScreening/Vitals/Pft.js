@@ -1,188 +1,290 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import {
-    Box,
-    Grid,
-    Card,
-    Typography,
-    TextField,
-    Button,
-    LinearProgress,
+  Box,
+  Grid,
+  Card,
+  Typography,
+  TextField,
+  Button,
+  LinearProgress,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 
-const Pft = ({ citizensPkId, pkid, fetchVital, selectedName, onAcceptClick }) => {
-    //_______________________ State Handling _______________________
-    const [nextName, setNextName] = useState("");
-    const [pftReading, setPftReading] = useState("");
-    const [pftRemark, setPftRemark] = useState("");
-    const accessToken = localStorage.getItem("token");
-    const userID = localStorage.getItem("userID");
-    const Port = process.env.REACT_APP_API_KEY;
+const Pft = ({
+  citizensPkId,
+  pkid,
+  fetchVital,
+  selectedName,
+  onAcceptClick,
+}) => {
+  //_______________________ State Handling _______________________
+  const [nextName, setNextName] = useState("");
+  const [pftReading, setPftReading] = useState("");
+  const [pftRemark, setPftRemark] = useState("");
+  const accessToken = localStorage.getItem("token");
+  const userID = localStorage.getItem("userID");
+  const Port = process.env.REACT_APP_API_KEY;
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "info",
+  });
 
-    //_______________________ Determine Next Screening _______________________
-    useEffect(() => {
-        if (fetchVital && selectedName) {
-            const currentIndex = fetchVital.findIndex(
-                (item) => item.screening_list === selectedName
-            );
-            if (currentIndex !== -1 && currentIndex < fetchVital.length - 1) {
-                const nextItem = fetchVital[currentIndex + 1];
-                setNextName(nextItem.screening_list);
-            } else {
-                setNextName("");
-            }
-        }
-    }, [selectedName, fetchVital]);
+  const openSnackbar = (message, severity = "info") => {
+    setSnackbar({ open: true, message, severity });
+  };
+  //_______________________ Determine Next Screening _______________________
+  useEffect(() => {
+    if (fetchVital && selectedName) {
+      const currentIndex = fetchVital.findIndex(
+        (item) => item.screening_list === selectedName
+      );
+      if (currentIndex !== -1 && currentIndex < fetchVital.length - 1) {
+        const nextItem = fetchVital[currentIndex + 1];
+        setNextName(nextItem.screening_list);
+      } else {
+        setNextName("");
+      }
+    }
+  }, [selectedName, fetchVital]);
 
-    //_______________________ Fetch PFT Remark on Reading Change _______________________
-    useEffect(() => {
-        if (pftReading) {
-            const fetchData = async () => {
-                try {
-                    const response = await axios.get(`${Port}/Screening/pft/${pftReading}/`, {
-                        headers: { Authorization: `Bearer ${accessToken}` },
-                    });
-                    setPftRemark(response.data);
-                } catch (error) {
-                    console.error("Error fetching remark:", error);
-                }
-            };
-            fetchData();
-        }
-    }, [pftReading]);
-
-    //_______________________ Fetch Existing PFT Data _______________________
-    useEffect(() => {
-        const fetchFormData = async () => {
-            try {
-                const response = await axios.get(`${Port}/Screening/pft_info_get/${pkid}`, {
-                    headers: { Authorization: `Bearer ${accessToken}` },
-                });
-                if (response.data.length > 0) {
-                    setPftReading(response.data[0].pft_reading);
-                    setPftRemark(response.data[0].observations);
-                } else {
-                    setPftReading("");
-                    setPftRemark("");
-                }
-            } catch (error) {
-                console.error("Error fetching form data:", error);
-            }
-        };
-        fetchFormData();
-    }, [pkid, accessToken, Port]);
-
-    //_______________________ Handle Reading Input _______________________
-    const handleReadingChange = (event) => {
-        const newReading = event.target.value;
-        if (!isNaN(newReading) && newReading >= 0 && newReading <= 800) {
-            setPftReading(newReading);
-            if (newReading === "") setPftRemark("");
-        } else {
-            alert("PFT Reading should not be greater than 800");
-            setPftReading("");
-            setPftRemark("");
-        }
-    };
-
-    //_______________________ Handle Submit _______________________
-    const handleSubmit = async () => {
-        const isConfirmed = window.confirm("Submit PFT Form");
-        const confirmationStatus = isConfirmed ? "True" : "False";
-
+  //_______________________ Fetch PFT Remark on Reading Change _______________________
+  useEffect(() => {
+    if (pftReading) {
+      const fetchData = async () => {
         try {
-            const response = await axios.post(
-                `${Port}/Screening/citizen_pft_info/${pkid}`,
-                {
-                    citizen_pk_id: citizensPkId,
-                    pft_reading: pftReading,
-                    observations: pftRemark.message,
-                    added_by: userID,
-                    modify_by: userID,
-                    form_submit: confirmationStatus,
-                },
-                {
-                    headers: { Authorization: `Bearer ${accessToken}` },
-                }
-            );
-            console.log("Response from POST API:", response.data);
-            onAcceptClick(nextName);
+          const response = await axios.get(
+            `${Port}/Screening/pft/${pftReading}/`,
+            {
+              headers: { Authorization: `Bearer ${accessToken}` },
+            }
+          );
+          setPftRemark(response.data);
         } catch (error) {
-            console.error("Error submitting PFT data:", error);
+          console.error("Error fetching remark:", error);
         }
-    };
+      };
+      fetchData();
+    }
+  }, [pftReading]);
 
-    const getRemarkColor = (remark) => {
-        const msg = remark?.message?.trim();
-        switch (msg) {
-            case "Danger":
-                return "red";
-            case "Caution":
-                return "yellow";
-            case "Stable":
-                return "green";
-            case "Out Of Range":
-                return "brown";
-            default:
-                return "white";
+  //_______________________ Fetch Existing PFT Data _______________________
+  useEffect(() => {
+    const fetchFormData = async () => {
+      try {
+        const response = await axios.get(
+          `${Port}/Screening/pft_info_get/${pkid}`,
+          {
+            headers: { Authorization: `Bearer ${accessToken}` },
+          }
+        );
+        if (response.data.length > 0) {
+          setPftReading(response.data[0].pft_reading);
+          setPftRemark(response.data[0].observations);
+        } else {
+          setPftReading("");
+          setPftRemark("");
         }
+      } catch (error) {
+        console.error("Error fetching form data:", error);
+      }
     };
+    fetchFormData();
+  }, [pkid, accessToken, Port]);
 
-    return (
-        <Box sx={{ p: 2 }}>
-            <Card sx={{ borderRadius: "20px", p: 1, mb: 1, background: "linear-gradient(90deg, #039BEF 0%, #1439A4 100%)" }}>
-                <Typography sx={{ fontWeight: 600, fontFamily: "Roboto", fontSize: "16px", color: "white" }}>
-                    PFT
-                </Typography>
-            </Card>
+  //_______________________ Handle Reading Input _______________________
+  const handleReadingChange = (event) => {
+    const newReading = event.target.value;
+    if (!isNaN(newReading) && newReading >= 0 && newReading <= 800) {
+      setPftReading(newReading);
+      if (newReading === "") setPftRemark("");
+    } else {
+      alert("PFT Reading should not be greater than 800");
+      setPftReading("");
+      setPftRemark("");
+    }
+  };
 
-            <Card sx={{ p: 2, borderRadius: "20px" }}>
-                <Grid container spacing={2} alignItems="center" sx={{ mb: 2 }}>
-                    <Grid item xs={12} md={4}>
-                        <TextField
-                            fullWidth
-                            label="PFT Reading"
-                            type="number"
-                            value={pftReading}
-                            onChange={handleReadingChange}
-                            inputProps={{ min: 0, max: 800 }}
-                            variant="outlined"
-                            size="small"
-                        />
-                    </Grid>
+  //_______________________ Handle Submit _______________________
+  const handleSubmit = async () => {
+    const isConfirmed = window.confirm("Submit PFT Form");
+    const confirmationStatus = isConfirmed ? "True" : "False";
 
-                    <Grid item xs={12} md={4}>
-                        <TextField
-                            fullWidth
-                            label="PFT Remarks"
-                            value={pftRemark ? pftRemark.message || "" : ""}
-                            variant="outlined"
-                            size="small"
-                            InputProps={{
-                                readOnly: true,
-                                style: {
-                                    backgroundColor: getRemarkColor(pftRemark),
-                                    color: "black",
-                                    fontWeight: 600,
-                                },
-                            }}
-                        />
-                    </Grid>
-                </Grid>
+    try {
+      const response = await axios.post(
+        `${Port}/Screening/citizen_pft_info/${pkid}`,
+        {
+          citizen_pk_id: citizensPkId,
+          pft_reading: pftReading,
+          observations: pftRemark.message,
+          added_by: userID,
+          modify_by: userID,
+          form_submit: confirmationStatus,
+        },
+        {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        }
+      );
+      console.log("Response from POST API:", response.data);
+      onAcceptClick(nextName);
+    } catch (error) {
+      console.error("Error submitting PFT data:", error);
+    }
+  };
 
-                <Box textAlign="center" mt={1} mb={1}>
-                    <Button
-                        variant="contained"
-                        size="small"
-                        sx={{ bgcolor: "#1439A4", textTransform: "none" }}
-                        onClick={handleSubmit}
-                    >
-                        Submit
-                    </Button>
-                </Box>
-            </Card>
+  const getRemarkColor = (remark) => {
+    const msg = remark?.message?.trim();
+    switch (msg) {
+      case "Danger":
+        return "red";
+      case "Caution":
+        return "yellow";
+      case "Stable":
+        return "green";
+      case "Out Of Range":
+        return "brown";
+      default:
+        return "white";
+    }
+  };
+
+  const [pftData, setPftData] = useState([]);
+  const fetchPftData = async () => {
+    try {
+      const response = await axios.get(
+        `${Port}/Screening/pft_get_api/${pkid}/`,
+        {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        }
+      );
+
+      if (response.data.length > 0) {
+        const data = response.data[0];
+
+        setPftReading(data.pft_reading);
+        setPftRemark({ message: data.observations }); // convert to same format as API returns
+      }
+
+      setPftData(response.data);
+      console.log("Fetched PFT Data:", response.data);
+    } catch (error) {
+      console.error("Error fetching form data:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchPftData();
+  }, []);
+
+  const pftPostData = async () => {
+    try {
+      const response = await fetch(
+        `${Port}/Screening/pft_post_api/${pkid}/`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+          body: JSON.stringify({ pkid }),
+        },
+        {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        }
+      );
+      console.log("Response from POST API:", response.data);
+      openSnackbar("Data updated successfully!", "success");
+      onAcceptClick(nextName);
+    } catch (error) {
+      console.error("Error submitting PFT data:", error);
+    }
+  };
+  return (
+    <Box sx={{ p: 2 }}>
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={3000}
+        onClose={() => setSnackbar({ ...snackbar, open: false })}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
+      >
+        <Alert
+          onClose={() => setSnackbar({ ...snackbar, open: false })}
+          severity={snackbar.severity}
+          variant="filled"
+          sx={{ width: "100%" }}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
+      <Card
+        sx={{
+          borderRadius: "20px",
+          p: 1,
+          mb: 1,
+          background: "linear-gradient(90deg, #039BEF 0%, #1439A4 100%)",
+        }}
+      >
+        <Typography
+          sx={{
+            fontWeight: 600,
+            fontFamily: "Roboto",
+            fontSize: "16px",
+            color: "white",
+          }}
+        >
+          PFT
+        </Typography>
+      </Card>
+
+      <Card sx={{ p: 2, borderRadius: "20px" }}>
+        <Grid container spacing={2} alignItems="center" sx={{ mb: 2 }}>
+          <Grid item xs={12} md={4}>
+            <TextField
+              fullWidth
+              label="PFT Reading"
+              type="number"
+              value={pftReading}
+              onChange={handleReadingChange}
+              inputProps={{ min: 0, max: 800 }}
+              variant="outlined"
+              size="small"
+            />
+          </Grid>
+
+          <Grid item xs={12} md={4}>
+            <TextField
+              fullWidth
+              label="PFT Remarks"
+              value={pftRemark ? pftRemark.message || "" : ""}
+              variant="outlined"
+              size="small"
+              InputProps={{
+                readOnly: true,
+                style: {
+                  backgroundColor: getRemarkColor(pftRemark),
+                  color: "black",
+                  fontWeight: 600,
+                },
+              }}
+            />
+          </Grid>
+        </Grid>
+
+        <Box textAlign="center" mt={1} mb={1}>
+          <Button
+            variant="contained"
+            size="small"
+            sx={{ bgcolor: "#1439A4", textTransform: "none" }}
+            onClick={pftPostData}
+          >
+            Submit
+          </Button>
         </Box>
-    );
+      </Card>
+    </Box>
+  );
 };
 
 export default Pft;

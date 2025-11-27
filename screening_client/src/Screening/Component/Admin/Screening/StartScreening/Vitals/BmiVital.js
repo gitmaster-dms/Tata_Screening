@@ -191,12 +191,12 @@ const BmiVital = ({
             Authorization: `Bearer ${accessToken}`,
             "Content-Type": "application/json", // Ensure correct content type
           },
-          body: JSON.stringify({
-            ...bmiData,
-            added_by: userID,
-            modify_by: userID,
-            form_submit: confirmationStatus,
-          }),
+        //   body: JSON.stringify({
+        //     ...bmiData,
+        //     added_by: userID,
+        //     modify_by: userID,
+        //     form_submit: confirmationStatus,
+        //   }),
         }
       );
 
