@@ -667,7 +667,6 @@ class Citizen_Get_Serializer(serializers.ModelSerializer):
     latest_screening_pk_id = serializers.SerializerMethodField()
     previous_screen = serializers.SerializerMethodField()
 
-    # FORM SUBMIT FIELDS
     basic_info_form_submit = serializers.SerializerMethodField()
     emergency_info_form_submit = serializers.SerializerMethodField()
     growth_monitoring_info_form_submit = serializers.SerializerMethodField()
@@ -688,7 +687,7 @@ class Citizen_Get_Serializer(serializers.ModelSerializer):
     dental_info_form_submit = serializers.SerializerMethodField()
     immunisation_info_form_submit = serializers.SerializerMethodField()
     investigation_info_form_submit = serializers.SerializerMethodField()
-    gender_name = serializers.CharField(source='gender.gender',allow_null=True)
+    gender_name = serializers.CharField(source='gender.gender', allow_null=True)
 
     class Meta:
         model = Citizen
@@ -708,10 +707,7 @@ class Citizen_Get_Serializer(serializers.ModelSerializer):
             'gender_name',
             'year',
             'dob',
-            
 
-
-            #FORM SUBMIT FIELDS
             'basic_info_form_submit',
             'emergency_info_form_submit',
             'growth_monitoring_info_form_submit',
@@ -737,19 +733,17 @@ class Citizen_Get_Serializer(serializers.ModelSerializer):
         ]
 
     # -------------------------------------------------
-    # GET LATEST SCREENING PK ID
+    # FIXED: GET LATEST SCREENING PK ID (Correct FK)
     # -------------------------------------------------
     def get_latest_screening_pk_id(self, obj):
         latest = Screening_citizen.objects.filter(
-            citizen_pk_id=obj
+            citizen_pk_id_id=obj.citizens_pk_id        # ✅ FIXED
         ).order_by('-added_date').first()
 
         self._latest_screening_pk_id = latest.pk_id if latest else None
         return self._latest_screening_pk_id
 
-    # -------------------------------------------------
-    # REUSABLE FUNCTION FOR FORM SUBMIT
-    # -------------------------------------------------
+    # Reusable function
     def _get_form_submit(self, model):
         latest_pk = getattr(self, "_latest_screening_pk_id", None)
         if not latest_pk:
@@ -762,75 +756,30 @@ class Citizen_Get_Serializer(serializers.ModelSerializer):
 
         return record.form_submit if record else None
 
-    # -------------------------------------------------
-    # FORM SUBMIT METHODS (using reusable function)
-    # -------------------------------------------------
-    def get_basic_info_form_submit(self, obj):
-        return self._get_form_submit(basic_info)
+    # FORM SUBMIT GETTERS
+    def get_basic_info_form_submit(self, obj): return self._get_form_submit(basic_info)
+    def get_emergency_info_form_submit(self, obj): return self._get_form_submit(emergency_info)
+    def get_growth_monitoring_info_form_submit(self, obj): return self._get_form_submit(growth_monitoring_info)
+    def get_vital_info_form_submit(self, obj): return self._get_form_submit(vital_info)
+    def get_genral_examination_form_submit(self, obj): return self._get_form_submit(genral_examination)
+    def get_systemic_exam_form_submit(self, obj): return self._get_form_submit(systemic_exam)
+    def get_disability_screening_form_submit(self, obj): return self._get_form_submit(disability_screening)
+    def get_birth_defect_form_submit(self, obj): return self._get_form_submit(birth_defect)
+    def get_deficiencies_form_submit(self, obj): return self._get_form_submit(deficiencies)
+    def get_skin_conditions_form_submit(self, obj): return self._get_form_submit(skin_conditions)
+    def get_diagnosis_form_submit(self, obj): return self._get_form_submit(diagnosis)
+    def get_check_box_if_normal_form_submit(self, obj): return self._get_form_submit(check_box_if_normal)
+    def get_treatement_form_submit(self, obj): return self._get_form_submit(treatement)
+    def get_auditory_info_form_submit(self, obj): return self._get_form_submit(auditory_info)
+    def get_vision_info_form_submit(self, obj): return self._get_form_submit(vision_info)
+    def get_medical_history_info_form_submit(self, obj): return self._get_form_submit(medical_history_info)
+    def get_pft_info_form_submit(self, obj): return self._get_form_submit(pft_info)
+    def get_dental_info_form_submit(self, obj): return self._get_form_submit(dental_info)
+    def get_immunisation_info_form_submit(self, obj): return self._get_form_submit(immunisation_info)
+    def get_investigation_info_form_submit(self, obj): return self._get_form_submit(investigation_info)
 
-    def get_emergency_info_form_submit(self, obj):
-        return self._get_form_submit(emergency_info)
-
-    def get_growth_monitoring_info_form_submit(self, obj):
-        return self._get_form_submit(growth_monitoring_info)
-
-    def get_vital_info_form_submit(self, obj):
-        return self._get_form_submit(vital_info)
-
-    def get_genral_examination_form_submit(self, obj):
-        return self._get_form_submit(genral_examination)
-
-    def get_systemic_exam_form_submit(self, obj):
-        return self._get_form_submit(systemic_exam)
-
-    def get_disability_screening_form_submit(self, obj):
-        return self._get_form_submit(disability_screening)
-
-    def get_birth_defect_form_submit(self, obj):
-        return self._get_form_submit(birth_defect)
-
-    def get_deficiencies_form_submit(self, obj):
-        return self._get_form_submit(deficiencies)
-
-    def get_skin_conditions_form_submit(self, obj):
-        return self._get_form_submit(skin_conditions)
-
-    def get_diagnosis_form_submit(self, obj):
-        return self._get_form_submit(diagnosis)
-
-    def get_check_box_if_normal_form_submit(self, obj):
-        return self._get_form_submit(check_box_if_normal)
-
-    def get_treatement_form_submit(self, obj):
-        return self._get_form_submit(treatement)
-
-    def get_auditory_info_form_submit(self, obj):
-        return self._get_form_submit(auditory_info)
-
-    def get_vision_info_form_submit(self, obj):
-        return self._get_form_submit(vision_info)
-
-    def get_medical_history_info_form_submit(self, obj):
-        return self._get_form_submit(medical_history_info)
-
-    def get_pft_info_form_submit(self, obj):
-        return self._get_form_submit(pft_info)
-
-    def get_dental_info_form_submit(self, obj):
-        return self._get_form_submit(dental_info)
-
-    def get_immunisation_info_form_submit(self, obj):
-        return self._get_form_submit(immunisation_info)
-
-    def get_investigation_info_form_submit(self, obj):
-        return self._get_form_submit(investigation_info)
-
-    # -------------------------------------------------
-    # PREVIOUS SCREEN LOGIC
-    # -------------------------------------------------
     def get_previous_screen(self, obj):
         latest_pk = getattr(self, "_latest_screening_pk_id", None)
-
         if not latest_pk:
             return False
 
@@ -858,16 +807,15 @@ class Citizen_Get_Serializer(serializers.ModelSerializer):
             self.get_investigation_info_form_submit(obj),
         ]
 
-        # ❌ If ANY field is NULL → previous_screen = False
-        if any(f is None for f in forms):
-            return False
-
-        # ✔ If ANY field is False → previous_screen = True
+        # ✅ If ANY form has value exactly False → previous_screen = True
         if any(f is False for f in forms):
             return True
 
-        # Otherwise all are True → previous_screen = False
+        # Otherwise keep basic logic
         return False
+
+
+
 
 
 
