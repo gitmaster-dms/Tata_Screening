@@ -29,7 +29,9 @@ const BasicScreen = ({ pkid, citizensPkId, gender, scheduleID, citizenidddddddd,
   const SourceNameUrlId = localStorage.getItem('SourceNameFetched');
   const accessToken = localStorage.getItem('token');
   const [subVitalList, setSubVitalList] = useState([])
-  const [selectedTab, setSelectedTab] = useState('General Examination');
+  const [selectedTab, setSelectedTab] = useState('');
+  console.log(selectedTab,"selectedTab");
+  
   const [basicScreeningPkId, setBasicScreeningPkId] = useState(null);
 
   useEffect(() => {
@@ -75,6 +77,7 @@ const BasicScreen = ({ pkid, citizensPkId, gender, scheduleID, citizenidddddddd,
     fetchVitalName();
   }, [Port]);
 
+
   const handleTabClick = (tabName, basicScreeningPkId) => {
     if (gender === 1 && selectedTab === 'Treatment' && tabName === 'Female Child Screening') {
       return;
@@ -86,7 +89,7 @@ const BasicScreen = ({ pkid, citizensPkId, gender, scheduleID, citizenidddddddd,
 
   const handleAcceptClick = (nextName, basicScreeningPkId) => {
     if (nextName) {
-      console.log('Handling accept click with:', nextName, basicScreeningPkId);
+      console.log('basicScreeningPkId', nextName, basicScreeningPkId);
       setSelectedTab(nextName);
     } else {
       console.log('Next Vital not found. Staying on the same page.');
@@ -166,18 +169,18 @@ const BasicScreen = ({ pkid, citizensPkId, gender, scheduleID, citizenidddddddd,
                     <Grid item key={option.screening_vitals}>
                       <Box
                         onClick={() =>
-                          handleTabClick(option.screening_list, option.basicScreeningPkId)
+                          handleTabClick(option.sub_list, option.basicScreeningPkId)
                         }
                         sx={{
                           p: 0.5,
                           cursor: "pointer",
                           bgcolor:
-                            selectedTab === option.screening_list ? "#f1f4f6ff" : null,
-                          color: selectedTab === option.screening_list ? "#080707ff" : "#fefefeff",
+                            selectedTab === option.sub_list ? "#f1f4f6ff" : null,
+                          color: selectedTab === option.sub_list ? "#080707ff" : "#fefefeff",
                           borderRadius: 1,
                           "&:hover": {
                             bgcolor:
-                              selectedTab === option.screening_list
+                              selectedTab === option.sub_list
                                 ? "#f1f4f6ff"
                                 : "fefefeff",
                           },

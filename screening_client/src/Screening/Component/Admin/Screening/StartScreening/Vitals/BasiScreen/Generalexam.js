@@ -19,7 +19,7 @@ import {
   Snackbar,
   Alert,
 } from "@mui/material";
-
+import { useNavigate } from "react-router-dom";
 const Generalexam = ({
   pkid,
   onAcceptClick,
@@ -28,13 +28,13 @@ const Generalexam = ({
   selectedTab,
   subVitalList,
 }) => {
-  console.log(pkid, "pkiddddss");
+  console.log(selectedTab, "selectedTab");
 
   //_________________________________START
   console.log(selectedTab, "Present name");
   console.log(subVitalList, "Overall GET API");
   const [nextName, setNextName] = useState("");
-
+  const navigation = useNavigate();
   useEffect(() => {
     if (subVitalList && selectedTab) {
       const currentIndex = subVitalList.findIndex(
@@ -120,15 +120,15 @@ const Generalexam = ({
     }));
   };
 
-    const [snackbar, setSnackbar] = useState({
-      open: false,
-      message: "",
-      severity: "info",
-    });
-  
-    const openSnackbar = (message, severity = "info") => {
-      setSnackbar({ open: true, message, severity });
-    };
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "info",
+  });
+
+  const openSnackbar = (message, severity = "info") => {
+    setSnackbar({ open: true, message, severity });
+  };
 
   const [genderalpkid, setgenderalpkid] = useState(null);
   const fetchDataById = async (pkid) => {
@@ -210,7 +210,7 @@ const Generalexam = ({
             Authorization: `Bearer ${accessToken}`,
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ pkid,formData }),
+          body: JSON.stringify({ formData }),
         }
       );
 
@@ -221,19 +221,22 @@ const Generalexam = ({
 
         // Check if the response contains the basic_screening_pk_id
         const basicScreeningPkId =
-          data.updated_data?.basic_screening_pk_id ||
-          data.posted_data?.basic_screening_pk_id;
+          data.updated_data?.genral_pk_id ||
+          data.posted_data?.genral_pk_id;
 
         if (basicScreeningPkId) {
           localStorage.setItem("basicScreeningId", basicScreeningPkId);
           console.log("basicScreeningId:", basicScreeningPkId);
           onAcceptClick(nextName, basicScreeningPkId);
+          navigation("Systematic");
+          openSnackbar("General Examination Saved Successfully.");
         } else {
           console.error("Basic Screening ID not found in response data");
           // Optionally, handle this case as appropriate
         }
       } else {
         console.error("Error:", response.status);
+        openSnackbar("Error Saving General Examination.");
         // Optionally, show a message to the user
       }
     } catch (error) {
@@ -555,21 +558,21 @@ const Generalexam = ({
 
   return (
     <Box>
-         <Snackbar
-                open={snackbar.open}
-                autoHideDuration={3000}
-                onClose={() => setSnackbar({ ...snackbar, open: false })}
-                anchorOrigin={{ vertical: "top", horizontal: "center" }}
-              >
-                <Alert
-                  onClose={() => setSnackbar({ ...snackbar, open: false })}
-                  severity={snackbar.severity}
-                  variant="filled"
-                  sx={{ width: "100%" }}
-                >
-                  {snackbar.message}
-                </Alert>
-              </Snackbar>
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={3000}
+        onClose={() => setSnackbar({ ...snackbar, open: false })}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert
+          onClose={() => setSnackbar({ ...snackbar, open: false })}
+          severity={snackbar.severity}
+          variant="filled"
+          sx={{ width: "100%" }}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
       <Typography
         variant="h5"
         sx={{
