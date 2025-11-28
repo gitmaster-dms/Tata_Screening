@@ -17,7 +17,9 @@ import {
     Dialog,
     DialogTitle,
     DialogContent,
-    DialogActions, Checkbox
+    DialogActions, Checkbox,
+    Snackbar,
+    Alert
 } from "@mui/material";
 
 const InvestigationInfo = ({ citizensPkId, pkid, fetchVital, selectedName, onAcceptClick }) => {
@@ -26,6 +28,26 @@ const InvestigationInfo = ({ citizensPkId, pkid, fetchVital, selectedName, onAcc
     console.log(selectedName, 'Present name');
     console.log(fetchVital, 'Overall GET API');
     const [nextName, setNextName] = useState('');
+    const [openDialog, setOpenDialog] = useState(false);
+    const [selectedChecks, setSelectedChecks] = useState([]);
+
+const [snackbar, setSnackbar] = useState({
+  open: false,
+  message: "",
+  severity: "success",
+});
+
+const showSnackbar = (msg, type = "success") => {
+  setSnackbar({
+    open: true,
+    message: msg,
+    severity: type,
+  });
+};
+
+const handleSnackbarClose = () => {
+  setSnackbar({ ...snackbar, open: false });
+};
 
     useEffect(() => {
         if (fetchVital && selectedName) {
@@ -92,47 +114,13 @@ const InvestigationInfo = ({ citizensPkId, pkid, fetchVital, selectedName, onAcc
 
     const Port = process.env.REACT_APP_API_KEY;
     const accessToken = localStorage.getItem('token');
+const [investData, setInvestData] = useState({
+    investigation_report: "",
+    urine_report: "",
+    ecg_report: "",
+    x_ray_report: "",
+});
 
-    const [investData, setInvestData] = useState({
-        investigation_report: null,
-        urine_report: null,
-        ecg_report: null,
-        x_ray_report: null,
-        // cbc_report: null,
-        // lipid_profile_report: null,
-        // creatinine_report: null,
-        // rbs_report: null,
-        // uric_acid_report: null,
-        // protein_report: null,
-        // albumin_report: null,
-        // alp_alkaline_phosphate_report: null,
-        // urea_report: null,
-        // bilirubin_report: null,
-        // sgot_report: null,
-        // thyroid_profile_report: null,
-        // t3_report: null,
-        // t4_report: null,
-        // tsh_report: null,
-        // vitamin_b12_report: null,
-        // vitamin_d3_report: null,
-        // hiv_report: null,
-        // vdrl_report: null,
-        // bilirubin_urine_report: null,
-        // protein_urine_report: null,
-        // glucose_report: null,
-        // specific_gravity_report: null,
-        // ph_report: null,
-        // urine_bilinogen_report: null,
-        // pus_cells_report: null,
-        // epithelial_cells_report: null,
-        // blood_report: null,
-        // leukocytes_report: null,
-        // crystals_report: null,
-        // rbc_report: null,
-        // ecg_report: null,
-        // pft_report: null,
-        // x_ray_report: null,
-    })
 
     const [imgUrl, setImgUrl] = useState('');
 
@@ -171,59 +159,69 @@ const InvestigationInfo = ({ citizensPkId, pkid, fetchVital, selectedName, onAcc
             [fieldName]: e.target.files[0],
         });
     };
+const handleDialogCancel = () => {
+  setOpenDialog(false);
+};
 
- const handleSubmit = async (e) => {
+    const handleSubmit = (e) => {
   e.preventDefault();
+  setOpenDialog(true);   // open confirmation dialog
+};
+const handleDialogConfirm = async () => {
+  console.log("👉 handleDialogConfirm CALLED");   // Check 1
 
-  const confirmed = window.confirm('Are you sure you want to submit the form?');
-  if (!confirmed) return;
+  setOpenDialog(false);
 
   const formData = new FormData();
+  const dataObj = investData;
 
-  const dataObj = Array.isArray(investData) ? investData[0] : investData;
+  console.log("📁 Sending Data Object:", dataObj); // Check 2
 
-  const fileFields = ['investigation_report', 'urine_report', 'ecg_report', 'x_ray_report'];
+  const fileFields = ["investigation_report", "urine_report", "ecg_report", "x_ray_report"];
   fileFields.forEach((field) => {
-    const file = dataObj[field];
-    if (file instanceof File) {
-      formData.append(field, file);
+    if (dataObj[field] instanceof File) {
+      formData.append(field, dataObj[field]);
     }
   });
 
-  formData.append('citizen_pk_id', citizensPkId.toString());
-  formData.append('form_submit', 'True');
-  formData.append('added_by', userID);
-  formData.append('modify_by', userID);
+//   formData.append("citizen_id", citizensPkId.toString());
+formData.append("selected_submodules", JSON.stringify(selectedChecks));
+  formData.append("form_submit", "True");
+  formData.append("added_by", userID);
+  formData.append("modify_by", userID);
 
-  // 🔹 Debug: log FormData entries
-  console.log('--- FormData Entries ---');
+  // 🔥 Print FormData values
   for (let pair of formData.entries()) {
-    console.log(pair[0], pair[1]);
+    console.log("📝 FORM DATA:", pair[0], "=>", pair[1]);
   }
-  console.log('--- Headers ---');
-  console.log({
-    Authorization: `Bearer ${accessToken}`,
-    'Content-Type': 'multipart/form-data',
-  });
 
   try {
+    console.log("🚀 API CALL FIRING...");   // Check 3
+
     const response = await axios.post(
-      `${Port}/Screening/citizen_investigation/${pkid}`,
+      `${Port}/Screening/investigation_post_api/${pkid}/`,
       formData,
       {
         headers: {
           Authorization: `Bearer ${accessToken}`,
-          'Content-Type': 'multipart/form-data',
+          "Content-Type": "multipart/form-data",
         },
       }
     );
 
-    console.log('POST response:', response.data);
+    console.log("✅ API SUCCESS RESPONSE:", response); // Check 4
+
+    showSnackbar("Investigation submitted successfully!", "success");
     onAcceptClick(nextName);
+
   } catch (error) {
-    console.error('Error posting data:', error.response?.data || error.message);
+    console.error("❌ API ERROR:", error.response?.data || error.message); // Check 5
+    showSnackbar("Failed to submit investigation!", "error");
   }
 };
+
+
+
 
 
 
@@ -306,6 +304,35 @@ const InvestigationInfo = ({ citizensPkId, pkid, fetchVital, selectedName, onAcc
 
     return (
         <Box>
+
+
+            <Dialog open={openDialog} onClose={handleDialogCancel}>
+  <DialogTitle>Confirm Submission</DialogTitle>
+  <DialogContent>
+    <Typography>
+      Are you sure you want to submit the investigation reports?
+    </Typography>
+  </DialogContent>
+
+  <DialogActions>
+    <Button onClick={handleDialogCancel} color="secondary">Cancel</Button>
+    <Button onClick={handleDialogConfirm} variant="contained" color="primary">
+      Confirm
+    </Button>
+  </DialogActions>
+</Dialog>
+
+{/* --- Snackbar --- */}
+<Snackbar
+  open={snackbar.open}
+  autoHideDuration={3000}
+  onClose={handleSnackbarClose}
+  anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+>
+  <Alert onClose={handleSnackbarClose} severity={snackbar.severity} variant="filled">
+    {snackbar.message}
+  </Alert>
+</Snackbar>
             <Card sx={{ borderRadius: "20px", p: 1, mb: 1, background: "linear-gradient(90deg, #039BEF 0%, #1439A4 100%)" }}>
                 <Typography sx={{ fontWeight: 600, fontFamily: "Roboto", fontSize: "16px", color: "white" }}>
                     Investigation Report
@@ -324,7 +351,20 @@ const InvestigationInfo = ({ citizensPkId, pkid, fetchVital, selectedName, onAcc
                         {investtData && investtData.map((data, i) => (
                             <FormControlLabel
                                 key={i}
-                                control={<Checkbox id={`checkbox-${i}`} />}
+                              control={
+  <Checkbox
+    checked={selectedChecks.includes(data.submoduleName)}
+    onChange={(e) => {
+      if (e.target.checked) {
+        setSelectedChecks([...selectedChecks, data.submoduleName]);
+      } else {
+        setSelectedChecks(
+          selectedChecks.filter(item => item !== data.submoduleName)
+        );
+      }
+    }}
+  />
+}
                                 label={
                                     <Typography variant="body2" sx={{ fontWeight: 500 }}>
                                         {data.submoduleName}

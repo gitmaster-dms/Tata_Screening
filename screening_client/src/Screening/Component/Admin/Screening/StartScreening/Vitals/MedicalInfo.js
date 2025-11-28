@@ -10,13 +10,39 @@ import {
     Checkbox,
     Button,
     LinearProgress,
+    DialogActions,
+    DialogContent,
+    DialogTitle,
+    Dialog,
+    Alert,
+    Snackbar,
 } from "@mui/material";
 
 const MedicalInfo = ({ citizensPkId, pkid, fetchVital, selectedName, onAcceptClick }) => {
     const [nextName, setNextName] = useState("");
     const [medInfoChechBox, setMedInfoChechBox] = useState([]);
     const [medPastInfoChechBox, setMedPastInfoChechBox] = useState([]);
+    const [openDialog, setOpenDialog] = useState(false);
+    
+      const [snackbar, setSnackbar] = useState({
+        open: false,
+        message: "",
+        severity: "success",
+      });
 
+        // Open Snackbar Helper
+const showSnackbar = (msg, type = "success") => {
+  setSnackbar({
+    open: true,
+    message: msg,
+    severity: type,
+  });
+};
+
+
+const handleSnackbarClose = () => {
+  setSnackbar({ ...snackbar, open: false });
+};
     const [formData, setFormData] = useState({
         checkboxes: [],
         selectedNames: [],
@@ -162,36 +188,83 @@ const MedicalInfo = ({ citizensPkId, pkid, fetchVital, selectedName, onAcceptCli
         fetchDataById(pkid);
     }, [pkid, medInfoChechBox, medPastInfoChechBox]);
 
+
+    const handleSubmit = (e) => {
+    e.preventDefault();
+    setOpenDialog(true); // Dialog open hoga
+};
+
     // Submit Handler
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        const postData = {
-            citizen_pk_id: citizensPkId,
-            form_submit: true,
-            added_by: userID,
-            modify_by: userID,
-            medical_history: formData.selectedNames,
-            past_operative_history: formPastData.selectedMedPastName,
-        };
+const handleDialogConfirm = async () => {
+  setOpenDialog(false);
 
-        try {
-            const response = await axios.post(`${Port}/Screening/medical_post_api/${pkid}/`, postData, {
-                headers: {
-                    Authorization: `Bearer ${accessToken}`,
-                    "Content-Type": "application/json",
-                },
-            });
+  const postData = {
+    citizen_pk_id: citizensPkId,
+    form_submit: true,
+    added_by: userID,
+    modify_by: userID,
+    medical_history: formData.selectedNames,
+    past_operative_history: formPastData.selectedMedPastName,
+  };
 
-            if (window.confirm("Submit Medical Form") && response.status === 200) {
-                onAcceptClick(nextName);
-            }
-        } catch (error) {
-            console.error("Error posting data:", error);
-        }
-    };
+  try {
+    const response = await axios.post(
+      `${Port}/Screening/medical_post_api/${pkid}/`,
+      postData,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (response.status === 200) {
+      showSnackbar("Medical form submitted successfully!", "success");
+      onAcceptClick(nextName);
+    }
+  } catch (error) {
+    console.error("Error posting data:", error);
+    showSnackbar("Failed to submit medical form!", "error");
+  }
+};
+
+const handleDialogCancel = () => {
+    setOpenDialog(false);
+};
 
     return (
         <Box sx={{ p: 1 }}>
+            <Snackbar
+  open={snackbar.open}
+  autoHideDuration={3000}
+  onClose={handleSnackbarClose}
+  anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
+>
+  <Alert
+    onClose={handleSnackbarClose}
+    severity={snackbar.severity}
+    variant="filled"
+    sx={{ width: "100%" }}
+  >
+    {snackbar.message}
+  </Alert>
+</Snackbar>
+
+            <Dialog open={openDialog} onClose={handleDialogCancel}>
+    <DialogTitle>Confirm Submission</DialogTitle>
+    <DialogContent>
+        <Typography>Are you sure you want to submit this medical form?</Typography>
+    </DialogContent>
+    <DialogActions>
+        <Button onClick={handleDialogCancel} color="secondary">
+            Cancel
+        </Button>
+        <Button onClick={handleDialogConfirm} color="primary" variant="contained">
+            Confirm
+        </Button>
+    </DialogActions>
+</Dialog>
             <Card sx={{ borderRadius: "20px", p: 1, mb: 1, background: "linear-gradient(90deg, #039BEF 0%, #1439A4 100%)" }}>
                 <Grid container alignItems="center" justifyContent="space-between">
                     <Typography sx={{ fontWeight: 600, fontFamily: "Roboto", fontSize: "16px", color: "white" }}>

@@ -122,25 +122,24 @@ const Auditory = ({ pkid, citizensPkId, lastview, recall, fetchVital, selectedNa
     fetchData();
   }, [Port]);
 
-  const handleCheckboxChange = (name) => {
-    setFormData((prevFormData) => {
-      const updatedCheckboxes = [...prevFormData.checkboxes];
-      const index = updatedCheckboxes.indexOf(name);
-      if (index !== -1) {
-        updatedCheckboxes.splice(index, 1);
-      } else {
-        updatedCheckboxes.push(name);
-      }
 
-      console.log('Updated Checkboxes:', updatedCheckboxes);
-
-      return {
-        ...prevFormData,
-        checkboxes: updatedCheckboxes,
-        selectedNames: updatedCheckboxes,
-      };
-    });
-  };
+  useEffect(() => {
+  if (auditoryChechBox.length > 0) {
+    setFormData(prev => ({
+      ...prev,
+      selectedNames: lastview[0]?.checkboxes || [] // use lastview if exists
+    }));
+  }
+}, [auditoryChechBox, lastview]);
+const handleCheckboxChange = (name) => {
+  setFormData(prev => {
+    const updatedNames = [...prev.selectedNames];
+    const index = updatedNames.indexOf(name);
+    if (index !== -1) updatedNames.splice(index, 1);
+    else updatedNames.push(name);
+    return { ...prev, selectedNames: updatedNames };
+  });
+};
 
   const userID = localStorage.getItem('userID');
   console.log(userID);
@@ -331,6 +330,18 @@ const [rightReading, setRightReading] = useState({ Right_average_reading: '', me
     fetchRightReading();
   }, [formData.hz_500_right, formData.hz_1000_right, formData.hz_2000_right, Port, accessToken]);
 
+
+  useEffect(() => {
+  if (fetchVital && selectedName) {
+    const currentIndex = fetchVital.findIndex(item => item.screening_list === selectedName);
+    if (currentIndex !== -1 && currentIndex < fetchVital.length - 1) {
+      setNextName(fetchVital[currentIndex + 1].screening_list);
+    } else {
+      setNextName('');
+    }
+  }
+}, [selectedName, fetchVital]);
+
   return (
     <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2 }}>
       <Card sx={{ borderRadius: "20px", p: 1, mb: 1, background: "linear-gradient(90deg, #039BEF 0%, #1439A4 100%)" }}>
@@ -447,22 +458,20 @@ const [rightReading, setRightReading] = useState({ Right_average_reading: '', me
                         </Grid>
 
                         {auditoryChechBox.map((item) => (
-                          <Grid item xs={12} sm={6} md={4} key={item.audit_name}>
-                            <FormControlLabel
-                              control={
-                                <Checkbox
-                                  checked={formData.checkboxes.some(
-                                    (name) => name === item.audit_name
-                                  )}
-                                  onChange={() =>
-                                    handleCheckboxChange(item.audit_name)
-                                  }
-                                />
-                              }
-                              label={item.audit_name}
-                            />
-                          </Grid>
-                        ))}
+  <Grid item xs={12} sm={6} md={4} key={item.audit_id}>
+    <FormControlLabel
+      control={
+        <Checkbox
+          checked={formData.selectedNames.includes(item.audit_name)}
+          onChange={() => handleCheckboxChange(item.audit_name)}
+        />
+      }
+      label={item.audit_name}
+    />
+  </Grid>
+))}
+
+                 
                       </>
                     )}
                 </Grid>
