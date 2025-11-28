@@ -152,7 +152,7 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
 import { useSourceContext } from "../../../../contexts/SourceContext";
-import workshopIconImg from "../../../Images/blue_marker.png";
+import workshopIconImg from "../../../Images/car-workshop.png";
 import axios from "axios";
 const MapSection = ({ selectedState }) => {
   const port = process.env.REACT_APP_API_KEY;
@@ -183,7 +183,7 @@ const MapSection = ({ selectedState }) => {
 
   const workshopIcon = L.icon({
     iconUrl: workshopIconImg,
-    iconSize: [40, 40], // adjust as you want
+    iconSize: [20, 20], // adjust as you want
     iconAnchor: [20, 40], // center bottom
     popupAnchor: [0, -40],
   });
@@ -205,10 +205,12 @@ const MapSection = ({ selectedState }) => {
   useEffect(() => {
     if (!mapContainerRef.current || mapRef.current) return;
 
-    mapRef.current = L.map(mapContainerRef.current).setView(
-      [19.076, 72.8777], // Mumbai
-      8
-    );
+  mapRef.current = L.map(mapContainerRef.current, {
+  attributionControl: false   // 🚀 disable Leaflet attribution
+}).setView(
+  [19.076, 72.8777], 
+  8
+);
 
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       maxZoom: 19,
