@@ -17,7 +17,8 @@ import { Grid, Card, Typography, Box, IconButton } from '@mui/material';
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
 
-const BasicScreen = ({ pkid, citizensPkId, gender, scheduleID, citizenidddddddd, fetchVital, onAcceptClick,basicScreenId }) => {
+const BasicScreen = ({ pkid, citizensPkId, gender, scheduleID, citizenidddddddd, fetchVital, onAcceptClick,basicScreenId, selectedNameId }) => {
+console.log(selectedNameId,"selected ");
 
   const Port = process.env.REACT_APP_API_KEY;
   const userID = localStorage.getItem('userID');
@@ -29,10 +30,12 @@ const BasicScreen = ({ pkid, citizensPkId, gender, scheduleID, citizenidddddddd,
   const SourceNameUrlId = localStorage.getItem('SourceNameFetched');
   const accessToken = localStorage.getItem('token');
   const [subVitalList, setSubVitalList] = useState([])
-  const [selectedTab, setSelectedTab] = useState('');
-  console.log(selectedTab,"selectedTab");
+  const [selectedTab, setSelectedTab] = useState('General Examination');
+  console.log(selectedTab, 'selectedTab');
   
   const [basicScreeningPkId, setBasicScreeningPkId] = useState(null);
+  console.log(basicScreeningPkId,"basic");
+  
 
   useEffect(() => {
     console.log('User Group:', userGroup);
@@ -60,7 +63,7 @@ const BasicScreen = ({ pkid, citizensPkId, gender, scheduleID, citizenidddddddd,
     useEffect(() => {
     const fetchVitalName = async () => {
       try {
-        const response = await axios.get(`${Port}/Screening/Screening_sub_list/?screening_list=${basicScreenId}`,
+        const response = await axios.get(`${Port}/Screening/Screening_sub_list/?screening_list=${selectedNameId}`,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`
@@ -89,7 +92,7 @@ const BasicScreen = ({ pkid, citizensPkId, gender, scheduleID, citizenidddddddd,
 
   const handleAcceptClick = (nextName, basicScreeningPkId) => {
     if (nextName) {
-      console.log('basicScreeningPkId', nextName, basicScreeningPkId);
+      console.log('Handling accept click with:', nextName);
       setSelectedTab(nextName);
     } else {
       console.log('Next Vital not found. Staying on the same page.');

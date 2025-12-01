@@ -52,11 +52,11 @@ const Disability = ({
   useEffect(() => {
     if (subVitalList && selectedTab) {
       const currentIndex = subVitalList.findIndex(
-        (item) => item.screening_list === selectedTab
+        (item) => item.sub_list === selectedTab
       );
       if (currentIndex !== -1 && currentIndex < subVitalList.length - 1) {
         const nextItem = subVitalList[currentIndex + 1];
-        setNextName(nextItem.screening_list);
+        setNextName(nextItem.sub_list);
       } else {
         setNextName("");
       }
@@ -122,7 +122,10 @@ const Disability = ({
             "Content-Type": "application/json",
             Authorization: `Bearer ${accessToken}`,
           },
-          body: JSON.stringify(disability),
+          body: JSON.stringify({
+            ...disability,
+            modify_by: localStorage.getItem("userID"),
+          }),
         }
       );
 
@@ -130,7 +133,7 @@ const Disability = ({
         const data = await response.json();
         if (response.status === 200) {
         openSnackbar("Disability Screening Saved Successfully.");
-          onAcceptClick(nextName, data.basic_screening_pk_id);
+          onAcceptClick(nextName, data.disability_pk_id);
         } else if (response.status === 400) {
           console.error("Bad Request:", data.error);
         }

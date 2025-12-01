@@ -24,25 +24,25 @@ const Systematic = ({
   console.log(subVitalList, "Overall GET API");
   const [nextName, setNextName] = useState("");
 
-  useEffect(() => {
-    if (subVitalList && selectedTab) {
-      const currentIndex = subVitalList.findIndex(
-        (item) => item.screening_list === selectedTab
-      );
+    useEffect(() => {
+      if (subVitalList && selectedTab) {
+        const currentIndex = subVitalList.findIndex(
+          (item) => item.sub_list === selectedTab
+        );
 
-      console.log("Current Index:", currentIndex);
+        console.log("Current Index:", currentIndex);
 
-      if (currentIndex !== -1 && currentIndex < subVitalList.length - 1) {
-        const nextItem = subVitalList[currentIndex + 1];
-        const nextName = nextItem.screening_list;
-        setNextName(nextName);
-        console.log("Next Name Set:", nextName);
-      } else {
-        setNextName("");
-        console.log("No next item or selectedTab not found");
+        if (currentIndex !== -1 && currentIndex < subVitalList.length - 1) {
+          const nextItem = subVitalList[currentIndex + 1];
+          const nextName = nextItem.sub_list;
+          setNextName(nextName);
+          console.log("Next Name Set:", nextName);
+        } else {
+          setNextName("");
+          console.log("No next item or selectedTab not found");
+        }
       }
-    }
-  }, [selectedTab, subVitalList]);
+    }, [selectedTab, subVitalList]);
   //_________________________________END
 
   // console.log('Systematic ID :', basicScreeningPkId);
@@ -197,16 +197,35 @@ const Systematic = ({
             "Content-Type": "application/json",
             Authorization: `Bearer ${accessToken}`, // Include the authorization header
           },
-          body: JSON.stringify(formData),
+          body: JSON.stringify({
+            ...formData,
+            modify_by: userID,
+          }),
+                    // body: JSON.stringify(formData),
+
         }
       );
 
-      if ( response.ok) {
+      if (response.ok) {
         const data = await response.json();
-        console.log("Server Response:", data);
+        console.log(data,"nextcount");
+
+        // Backend se next count aata hai
+        const nextCount = data.data?.screening_count;
+        
+
+        // SubVitalList me us count ka screen nikaalo
+        const nextScreen = subVitalList?.find(
+          (item) => item.screening_count === nextCount
+        )?.screening_list;
+
+        console.log("Next Screen:", nextScreen);
+
+        onAcceptClick(nextScreen, basicScreeningPkId);
+        openSnackbar("Systematic Examination Saved Successfully.");
 
         if (response.status === 200) {
-          const basicScreeningPkId = data.basic_screening_pk_id;
+          const basicScreeningPkId = data.systemic_pk_id;
           localStorage.setItem("basicScreeningId", basicScreeningPkId);
           console.log("basicScreeningId", basicScreeningPkId);
           openSnackbar("Systematic Examination Saved Successfully.");

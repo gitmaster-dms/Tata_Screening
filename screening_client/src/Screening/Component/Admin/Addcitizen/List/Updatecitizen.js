@@ -181,8 +181,16 @@ const [citizenData, setCitizenData] = useState({});
       const data = await response.json();
       console.log("Citizen Data:", data);
 
-      setCitizenData(data);
-      setData1(data);
+            setCitizenData(data);
+            setData1(data);
+            // Update selectedAge1 so selects show the updated option labels
+            setSelectedAge1({
+                age: { id: data.age || '', name: data.age_name || '' },
+                gender: { id: data.gender || '', name: data.gender_name || '' },
+                source: { id: data.source || '', name: data.source_id_name || '' },
+                type: { id: data.type || '', name: data.type_name || '' },
+                disease: { id: data.disease || '', name: data.disease_name || '' },
+            });
     } catch (error) {
       console.error("Error fetching citizen data:", error);
     }
