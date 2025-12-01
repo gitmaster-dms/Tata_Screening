@@ -1419,6 +1419,7 @@ class growth_monitoring_info(models.Model):
         
     remark = models.CharField(max_length=555,null=True, blank=True)
     reffered_to_specialist = models.IntegerField(null=True, blank=True)
+    refer_doctor = models.ForeignKey('doctor_list', on_delete=models.CASCADE,null=True, blank=True)
     
     form_submit = models.BooleanField(default=False)
     is_deleted = models.BooleanField(default=False)
@@ -1457,6 +1458,7 @@ class vital_info(models.Model):
     is_deleted = models.BooleanField(default=False)
     form_submit = models.BooleanField(default=False)
     reffered_to_specialist = models.IntegerField(null=True, blank=True)
+    refer_doctor = models.ForeignKey('doctor_list', on_delete=models.CASCADE,null=True, blank=True)
     
     added_date = models.DateTimeField(auto_now_add=True)
     added_by =	models.CharField(null=True, blank=True,max_length=255)
@@ -1735,6 +1737,7 @@ class treatement(models.Model):
     basic_referred_treatment = models.CharField(max_length=255,null=True,blank=True)
     form_submit = models.BooleanField(default=False)
     reffered_to_specialist = models.IntegerField(null=True, blank=True)
+    refer_doctor = models.ForeignKey('doctor_list', on_delete=models.CASCADE,null=True, blank=True)
     
     
     form_submit = models.BooleanField(default=False)
@@ -1775,6 +1778,7 @@ class auditory_info(models.Model):
     reading_right = models.CharField(max_length=255,null=True,blank=True)
     right_ear_observations_remarks = models.CharField(max_length=255,null=True,blank=True) 
     reffered_to_specialist = models.IntegerField(null=True, blank=True)
+    refer_doctor = models.ForeignKey('doctor_list', on_delete=models.CASCADE,null=True, blank=True)
     
     
     
@@ -1822,6 +1826,8 @@ class vision_info(models.Model):
     comment = models.CharField(max_length=500,null=True,blank=True)
     color_blindness = models.CharField(max_length=500,null=True,blank=True)
     reffered_to_specialist = models.IntegerField(null=True,blank=True)
+    refer_doctor = models.ForeignKey('doctor_list', on_delete=models.CASCADE,null=True, blank=True)
+
     
     form_submit = models.BooleanField(default=False)
     is_deleted = models.BooleanField(default=False)
@@ -1993,6 +1999,7 @@ class dental_info(models.Model):
     tooth_brushing_frequency = models.CharField(max_length=255,null=True,blank=True)
     tooth_brushing_frequency_remark = models.CharField(max_length=555,null=True,blank=True)
     reffered_to_specialist = models.IntegerField(null=True,blank=True)
+    refer_doctor = models.ForeignKey('doctor_list', on_delete=models.CASCADE,null=True, blank=True)
     reffered_to_specialist_remark =  models.CharField(max_length=555,null=True,blank=True)
     sensitive_teeth = models.CharField(max_length=255,null=True,blank=True)
     sensitive_teeth_remark = models.CharField(max_length=555,null=True,blank=True)
