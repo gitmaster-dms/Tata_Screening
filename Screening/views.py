@@ -4395,7 +4395,7 @@ class GrowthMonitoringInfoUpdateAPI(APIView):
         """Retrieve record by growth_pk_id"""
         try:
             record = growth_monitoring_info.objects.get(growth_pk_id=growth_pk_id)
-            serializer = growth_monitoring_info_Put_Serializer(record)
+            serializer = growth_monitoring_info_Get_Serializer(record)
             return Response(
                 {"success": True, "data": serializer.data},
                 status=status.HTTP_200_OK
@@ -4819,7 +4819,7 @@ class Vital_Post_Api(APIView):
 class Vital_info_Get_api(APIView):
     def get(self, request, pk_id):
         snippet = vital_info.objects.filter(screening_citizen_id=pk_id)
-        serializers = vital_info_Serializer(snippet, many=True)
+        serializers = vital_info_Get_Serializer(snippet, many=True)
         return Response(serializers.data, status=status.HTTP_200_OK)
     
 

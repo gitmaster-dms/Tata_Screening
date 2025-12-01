@@ -890,13 +890,27 @@ class growth_monitoring_info_Put_Serializer(serializers.ModelSerializer):
     class Meta:
         model = growth_monitoring_info
         fields = ['growth_pk_id','gender','dob','year','months','days','height','weight','weight_for_age','height_for_age','weight_for_height','bmi','arm_size','symptoms','remark','reffered_to_specialist','modify_by','is_deleted','modify_date','refer_doctor']
+
+
+class growth_monitoring_info_Get_Serializer(serializers.ModelSerializer):
+    doctor_name = serializers.CharField(source='refer_doctor.doctor_name', allow_null=True)
+    class Meta:
+        model = growth_monitoring_info
+        fields = ['growth_pk_id','gender','dob','year','months','days','height','weight','weight_for_age','height_for_age','weight_for_height','bmi','arm_size','symptoms','remark','reffered_to_specialist','modify_by','is_deleted','modify_date','refer_doctor','doctor_name']
+        
         
 
 class vital_info_Serializer(serializers.ModelSerializer):
     class Meta:
         model = vital_info
         fields = ['vital_info_pk_id','vital_code','citizen_id','screening_count','citizen_pk_id','screening_citizen_id','pulse','pulse_conditions','sys_mm','sys_mm_conditions','dys_mm','dys_mm_mm_conditions','oxygen_saturation','oxygen_saturation_conditions','rr','rr_conditions','temp','temp_conditions','is_deleted','form_submit','reffered_to_specialist','added_by','added_date','modify_by','modify_date','refer_doctor']
-        
+
+
+class vital_info_Get_Serializer(serializers.ModelSerializer):
+    doctor_name = serializers.CharField(source='refer_doctor.doctor_name', allow_null=True)
+    class Meta:
+        model = vital_info
+        fields = ['vital_info_pk_id','vital_code','citizen_id','screening_count','citizen_pk_id','screening_citizen_id','pulse','pulse_conditions','sys_mm','sys_mm_conditions','dys_mm','dys_mm_mm_conditions','oxygen_saturation','oxygen_saturation_conditions','rr','rr_conditions','temp','temp_conditions','is_deleted','form_submit','reffered_to_specialist','added_by','added_date','modify_by','modify_date','refer_doctor','doctor_name']
 
 
 
@@ -1309,10 +1323,11 @@ class Treatment_Get_Serializer(serializers.ModelSerializer):
     referral_name = serializers.CharField(source='referral.referral', read_only=True)
     place_referral_name = serializers.CharField(source='place_referral.place_referral', read_only=True)
     hospital_name_text = serializers.CharField(source='hospital_name.hospital_name', read_only=True)
+    doctor_name = serializers.CharField(source='refer_doctor.doctor_name', allow_null=True)
 
     class Meta:
         model = treatement
-        fields = ['treatement_pk_id', 'citizen_id', 'screening_count', 'citizen_pk_id', 'screening_citizen_id', 'treatment_for', 'referral', 'referral_name', 'reason_for_referral', 'place_referral', 'place_referral_name', 'outcome', 'referred_surgery', 'hospital_name', 'hospital_name_text', 'basic_referred_treatment', 'form_submit', 'reffered_to_specialist', 'is_deleted', 'added_by', 'added_date', 'modify_by', 'modify_date']
+        fields = ['treatement_pk_id', 'citizen_id', 'screening_count', 'citizen_pk_id', 'screening_citizen_id', 'treatment_for', 'referral', 'referral_name', 'reason_for_referral', 'place_referral', 'place_referral_name', 'outcome', 'referred_surgery', 'hospital_name', 'hospital_name_text', 'basic_referred_treatment', 'form_submit', 'reffered_to_specialist', 'is_deleted', 'added_by', 'added_date', 'modify_by', 'modify_date','doctor_name']
 
 
 class Auditory_Info_Post_Serializer(serializers.ModelSerializer):
@@ -1330,6 +1345,7 @@ class Auditory_Info_Post_Serializer(serializers.ModelSerializer):
         ]
         
 class Auditory_Info_Get_Serializer(serializers.ModelSerializer):
+    doctor_name = serializers.CharField(source='refer_doctor.doctor_name', allow_null=True)
     class Meta:
         model = auditory_info
         fields = [
@@ -1340,7 +1356,7 @@ class Auditory_Info_Get_Serializer(serializers.ModelSerializer):
             'hz_250_right', 'hz_500_right', 'hz_1000_right', 'hz_2000_right', 'hz_4000_right', 'hz_8000_right',
             'reading_right', 'right_ear_observations_remarks',
             'reffered_to_specialist', 'form_submit', 'is_deleted',
-            'added_by', 'added_date', 'modify_by', 'modify_date'
+            'added_by', 'added_date', 'modify_by', 'modify_date','doctor_name'
         ]
         
         
@@ -1361,6 +1377,7 @@ class Vision_Info_Post_Serializer(serializers.ModelSerializer):
         
 
 class Vision_Info_Get_Serializer(serializers.ModelSerializer):
+    doctor_name = serializers.CharField(source='refer_doctor.doctor_name', allow_null=True)
     class Meta:
         model = vision_info
         fields = [
@@ -1372,7 +1389,7 @@ class Vision_Info_Get_Serializer(serializers.ModelSerializer):
             'le_near_with_glasses', 'le_far_with_glasses',
             'comment', 'color_blindness', 'reffered_to_specialist',
             'form_submit', 'is_deleted', 'added_by', 'added_date',
-            'modify_by', 'modify_date'
+            'modify_by', 'modify_date','doctor_name'
         ]
 
 class Medical_history_Post_Serializer(serializers.ModelSerializer):
@@ -1471,6 +1488,7 @@ class Dental_Info_Post_Serializer(serializers.ModelSerializer):
 
 
 class Dental_Info_Get_Serializer(serializers.ModelSerializer):
+    doctor_name = serializers.CharField(source='refer_doctor.doctor_name', allow_null=True)
     class Meta:
         model = dental_info
         fields = [
@@ -1490,7 +1508,7 @@ class Dental_Info_Get_Serializer(serializers.ModelSerializer):
             'treatment_given', 'referred_to_surgery', 'dental_conditions',
             'dental_refer_hospital', 'image', 'english', 'marathi',
             'form_submit', 'is_deleted', 'added_by', 'added_date',
-            'modify_by', 'modify_date'
+            'modify_by', 'modify_date','doctor_name'
         ]
         
         
