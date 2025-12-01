@@ -149,6 +149,7 @@ urlpatterns = [
 
     
     path('Hospital_List/', Hospital_list_GET_API_APIView.as_view(), name='Hospital_List'),
+    path('Doctor_List/', Doctor_List_API.as_view(), name='Doctor_List'),
     
     
     

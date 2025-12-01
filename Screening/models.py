@@ -2097,7 +2097,16 @@ class investigation_info(models.Model):
     modify_by =	models.CharField(null=True, blank=True,max_length=255)
     modify_date = models.DateTimeField(auto_now=True, null=True)
     
-    
+
+
+class doctor_list(models.Model):
+    doctor_pk_id = models.AutoField(primary_key=True)
+    doctor_name = models.CharField(max_length=255,null=True,blank=True)    
+    is_deleted = models.BooleanField(default=False)
+    added_date = models.DateTimeField(auto_now_add=True)
+    added_by =	models.CharField(null=True, blank=True,max_length=255)
+    modify_date = models.DateTimeField(auto_now=True, null=True)
+    modify_by =	models.CharField(null=True, blank=True,max_length=255)
     
 
 

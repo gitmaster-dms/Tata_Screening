@@ -1721,3 +1721,8 @@ class Workshop_list_get_Serializer(serializers.ModelSerializer):
     class Meta:
         model = Workshop
         fields = ['ws_pk_id','Workshop_name','ws_taluka']
+
+class Doctor_List_Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = doctor_list
+        fields = ['doctor_pk_id','doctor_name']

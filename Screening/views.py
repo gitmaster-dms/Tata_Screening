@@ -6491,4 +6491,11 @@ class Workshop_list_get_api(APIView):
         workshop_qs = Workshop.objects.filter(ws_taluka=ws_taluka,is_deleted=False)
         serializer = Workshop_list_get_Serializer(workshop_qs, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-        
+
+
+
+class Doctor_List_API(APIView):
+    def get(self, request):
+        doctor_qs = doctor_list.objects.filter(is_deleted=False)
+        serializer = Doctor_List_Serializer(doctor_qs, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
