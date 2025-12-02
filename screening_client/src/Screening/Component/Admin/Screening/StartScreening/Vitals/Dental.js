@@ -283,7 +283,8 @@ const Dental = ({ scheduleID, pkid, citizensPkId, citizenId, onMoveTovision, fet
     comment: '',
     treatment_given: '',
     citizen_pk_id: citizensPkId,
-    dental_conditions: overall
+    dental_conditions: overall,
+    refer_doctor: "",
   })
 
   const handleChange = (event) => {
@@ -397,6 +398,7 @@ const Dental = ({ scheduleID, pkid, citizensPkId, citizenId, onMoveTovision, fet
             comment: data[0].comment,
             treatment_given: data[0].treatment_given,
             dental_conditions: dentalData.dental_conditions || overall,
+            refer_doctor: dentalData.refer_doctor || "",
           }));
 
           setOralHygiene(dentalData.oral_hygiene.toString());
@@ -414,6 +416,7 @@ const Dental = ({ scheduleID, pkid, citizensPkId, citizenId, onMoveTovision, fet
           setMalalignment(dentalData.malalignment.toString());
           setOrthodontic(dentalData.orthodontic_treatment.toString());
           setSurgery(dentalData.referred_to_surgery.toString());
+          setSelectedDoctor(Number(dentalData.refer_doctor || ""));
         } else {
           console.error('Empty or invalid data array.');
         }
@@ -967,43 +970,61 @@ const Dental = ({ scheduleID, pkid, citizensPkId, citizenId, onMoveTovision, fet
                       />
                     </Grid>
                      {/* Dropdown → Only show if "Yes" is selected */}
-      {referredToSpecialist === 1 && (
-              <Grid item xs={12} sm={6} sx={{ mb: 1,ml:2 }}>
-                <FormControl fullWidth>
-                  <InputLabel>Choose Doctor</InputLabel>
-                  <Select
-                    label="Choose Doctor"
-                    value={selectedDoctor}
-                    onChange={(e) => setSelectedDoctor(e.target.value)}
-                    disabled={loadingDoctors}
-                  >
-                    {loadingDoctors && (
-                      <MenuItem value="">
-                        <em>Loading...</em>
-                      </MenuItem>
-                    )}
-
-                    {doctorList.length > 0
-                      ? doctorList.map((doc) => (
-                          <MenuItem
-                            key={doc.doctor_pk_id}
-                            value={doc.doctor_pk_id}
-                          >
-                            {doc.doctor_name}
-                          </MenuItem>
-                        ))
-                      : !loadingDoctors && (
-                          <MenuItem value="">
-                            <em>No Doctors Found</em>
-                          </MenuItem>
-                        )}
-                  </Select>
-                </FormControl>
-              </Grid>
-            )}
+      
                   </Grid>
+
+
                   
                 </Card>
+             {referredToSpecialist === 1 && (
+  <Card
+    sx={{
+      mb: 2,
+      p: 2,
+      borderRadius: "18px",
+      boxShadow: 3,
+    }}
+  >
+    <Grid container spacing={2}>
+      <Grid item xs={12} sm={12}>
+        <FormControl fullWidth size="small">
+          <InputLabel>Choose Specialist</InputLabel>
+          <Select
+            label="Choose Specialist"
+            value={selectedDoctor}
+            onChange={(e) => setSelectedDoctor(e.target.value)}
+            disabled={loadingDoctors}
+            sx={{
+                      "& .MuiInputBase-input.MuiSelect-select": {
+                        color: "#000 !important",
+                      },
+                      "& .MuiSvgIcon-root": {
+                        color: "#000",
+                      },
+                    }}
+          >
+            {loadingDoctors ? (
+              <MenuItem value="">
+                <em>Loading...</em>
+              </MenuItem>
+            ) : doctorList.length > 0 ? (
+              doctorList.map((doc) => (
+                <MenuItem key={doc.doctor_pk_id} value={doc.doctor_pk_id}>
+                  {doc.doctor_name}
+                </MenuItem>
+              ))
+            ) : (
+              <MenuItem value="">
+                <em>No Doctors Found</em>
+              </MenuItem>
+            )}
+          </Select>
+        </FormControl>
+      </Grid>
+    </Grid>
+  </Card>
+)}
+
               </>
             )
           }

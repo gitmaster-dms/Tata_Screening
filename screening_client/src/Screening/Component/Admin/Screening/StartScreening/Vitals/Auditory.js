@@ -122,55 +122,95 @@ const Auditory = ({
   };
   console.log("Selected doctor:", selectedDoctor);
 
-  const [formData, setFormData] = useState({
-    right: "",
-    left: "",
-    tratement_given: "",
-    otoscopic_exam: "",
-    remark: "",
-    citizen_pk_id: citizensPkId,
-    checkboxes: lastview[0]?.checkboxes || auditoryChechBox.map(() => false),
-    // Initialize checkboxes with an empty array
-    selectedNames: [],
-    refer_doctor : selectedDoctor,
+ const [formData, setFormData] = useState({
+  right: "",
+  left: "",
+  tratement_given: "",
+  otoscopic_exam: "",
+  remark: "",
+  citizen_pk_id: citizensPkId,
+  checkboxes: [],
+  selectedNames: [],
+  refer_doctor: "",
+  reffered_to_specialist: null,
 
-    ///// added fields
-    hz_250_left: null,
-    hz_500_left: null,
-    hz_1000_left: null,
-    hz_2000_left: null,
-    hz_4000_left: null,
-    hz_8000_left: null,
-    reading_left: null,
-    left_ear_observations_remarks: "",
-    hz_250_right: null,
-    hz_500_right: null,
-    hz_1000_right: null,
-    hz_2000_right: null,
-    hz_4000_right: null,
-    hz_8000_right: null,
-    reading_right: null,
-    right_ear_observations_remarks: "",
-  });
+  // Audio fields
+  hz_250_left: "",
+  hz_500_left: "",
+  hz_1000_left: "",
+  hz_2000_left: "",
+  hz_4000_left: "",
+  hz_8000_left: "",
+  reading_left: "",
+  left_ear_observations_remarks: "",
+  hz_250_right: "",
+  hz_500_right: "",
+  hz_1000_right: "",
+  hz_2000_right: "",
+  hz_4000_right: "",
+  hz_8000_right: "",
+  reading_right: "",
+  right_ear_observations_remarks: "",
+});
+
   console.log(formData, "fdddddddddd");
+useEffect(() => {
+  const fetchData = async () => {
+    try {
+      const response = await axios.get(`${Port}/Screening/auditory_get_api/${pkid}/`, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      const data = response.data[0] || {};
+      
+      setFormData(prev => ({
+        ...prev,
+        right: data.right || "",
+        left: data.left || "",
+        tratement_given: data.tratement_given || "",
+        otoscopic_exam: data.otoscopic_exam || "",
+        remark: data.remark || "",
+        selectedNames: data.checkboxes || [],
+        hz_250_left: data.hz_250_left || null,
+        hz_500_left: data.hz_500_left || null,
+        hz_1000_left: data.hz_1000_left || null,
+        hz_2000_left: data.hz_2000_left || null,
+        hz_4000_left: data.hz_4000_left || null,
+        hz_8000_left: data.hz_8000_left || null,
+        left_ear_observations_remarks: data.left_ear_observations_remarks || "",
+        reading_left: data.reading_left || null,
+        hz_250_right: data.hz_250_right || null,
+        hz_500_right: data.hz_500_right || null,
+        hz_1000_right: data.hz_1000_right || null,
+        hz_2000_right: data.hz_2000_right || null,
+        hz_4000_right: data.hz_4000_right || null,
+        hz_8000_right: data.hz_8000_right || null,
+        right_ear_observations_remarks: data.right_ear_observations_remarks || "",
+        reading_right: data.reading_right || null,
+      }));
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(`${Port}/Screening/auditory_get_api/${pkid}/`, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
-        setAuditoryChechBox(response.data);
-        console.log(response.data);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
+      // Specialist info
+      setReferredToSpecialist(data.reffered_to_specialist || null);
+      setSelectedDoctor(data.refer_doctor || "");
 
-    fetchData();
-  }, [Port]);
+      // Prefill left/right reading states
+      setLeftReading({
+        left_average_reading: data.reading_left || "",
+        message: data.left_ear_observations_remarks || "",
+      });
+      setRightReading({
+        Right_average_reading: data.reading_right || "",
+        message: data.right_ear_observations_remarks || "",
+      });
+
+    } catch (error) {
+      console.error("Error fetching auditory data:", error);
+    }
+  };
+
+  fetchData();
+}, [Port, pkid, accessToken]);
+
+
 
   useEffect(() => {
     if (auditoryChechBox.length > 0) {
@@ -252,87 +292,72 @@ const Auditory = ({
     }
   };
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
+const handleChange = (e) => {
+  const { name, value } = e.target;
 
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
+  setFormData((prev) => ({
+    ...prev,
+    [name]: value,
+  }));
+
+  if (name.includes("_left")) {
+    setLeftReading((prev) => ({
+      ...prev,
+      left_average_reading: "",
+      message: "",
+    }));
+  }
+
+  if (name.includes("_right")) {
+    setRightReading((prev) => ({
+      ...prev,
+      Right_average_reading: "",
+      message: "",
+    }));
+  }
+};
+
+
+useEffect(() => {
+  if (lastview.length > 0) {
+    const data = lastview[0];
+    setFormData((prev) => ({
+      ...prev,
+      hz_250_left: data.hz_250_left || "",
+      hz_500_left: data.hz_500_left || "",
+      hz_1000_left: data.hz_1000_left || "",
+      hz_2000_left: data.hz_2000_left || "",
+      hz_4000_left: data.hz_4000_left || "",
+      hz_8000_left: data.hz_8000_left || "",
+      left_ear_observations_remarks: data.left_ear_observations_remarks || "",
+      reading_left: data.reading_left || "",
+      hz_250_right: data.hz_250_right || "",
+      hz_500_right: data.hz_500_right || "",
+      hz_1000_right: data.hz_1000_right || "",
+      hz_2000_right: data.hz_2000_right || "",
+      hz_4000_right: data.hz_4000_right || "",
+      hz_8000_right: data.hz_8000_right || "",
+      right_ear_observations_remarks: data.right_ear_observations_remarks || "",
+      reading_right: data.reading_right || "",
+      reffered_to_specialist: data.reffered_to_specialist || null,
+      refer_doctor: data.refer_doctor || "",
+    }));
+
+    setLeftReading({
+      message: data.left_ear_observations_remarks || "",
+      left_average_reading: data.reading_left || "",
     });
 
-    if (value === "") {
-      setLeftReading({
-        message: "",
-        left_average_reading: "",
-      });
-    }
+    setRightReading({
+      message: data.right_ear_observations_remarks || "",
+      Right_average_reading: data.reading_right || "",
+    });
 
-    if (value === "") {
-      setRightReading({
-        message: "",
-        Right_average_reading: "",
-      });
-    }
-  };
+    setReferredToSpecialist(data.reffered_to_specialist || null);
+    setSelectedDoctor(data.refer_doctor || "");
+  }
+}, [lastview]);
 
-  useEffect(() => {
-    if (lastview.length > 0) {
-      const {
-        hz_250_left = null,
-        hz_500_left = null,
-        hz_1000_left = null,
-        hz_2000_left = null,
-        hz_4000_left = null,
-        hz_8000_left = null,
-        left_ear_observations_remarks = "",
-        reading_left = null,
-        hz_250_right = null,
-        hz_500_right = null,
-        hz_1000_right = null,
-        hz_2000_right = null,
-        hz_4000_right = null,
-        hz_8000_right = null,
-        right_ear_observations_remarks = "",
-        reading_right = null,
-        reffered_to_specialist = "",
-      } = lastview[0];
-
-      setFormData({
-        ...formData,
-        hz_250_left,
-        hz_500_left,
-        hz_1000_left,
-        hz_2000_left,
-        hz_4000_left,
-        hz_8000_left,
-        left_ear_observations_remarks,
-        reading_left,
-        hz_250_right,
-        hz_500_right,
-        hz_1000_right,
-        hz_2000_right,
-        hz_4000_right,
-        hz_8000_right,
-        right_ear_observations_remarks,
-        reading_right,
-        reffered_to_specialist,
-        
-      });
-
-      setLeftReading({
-        message: left_ear_observations_remarks,
-        left_average_reading: reading_left,
-      });
-
-      setRightReading({
-        message: right_ear_observations_remarks,
-        Right_average_reading: reading_right,
-      });
-
-      setReferredToSpecialist(reffered_to_specialist);
-      setSelectedDoctor(lastview[0]?.refer_doctor || "");
-    }
-  }, [lastview]);
 
   ////// value pass API ID wise
 
@@ -620,7 +645,7 @@ const Auditory = ({
                         <InputLabel>Doctor</InputLabel>
                         <Select
                           value={selectedDoctor}
-                          onChange={(e) => setSelectedDoctor(e.target.value)}
+                           onChange={(e) => setSelectedDoctor(Number(e.target.value))}
                         >
                           {doctorList.map((doc) => (
                             <MenuItem key={doc.id} value={doc.id}>
@@ -777,9 +802,9 @@ const Auditory = ({
                   {/* Left Side → Radio Group */}
                   <Grid item xs={12} sm={6}>
                     <FormControl component="fieldset" fullWidth>
-                      <FormLabel component="legend">
-                        Referred To Specialist
-                      </FormLabel>
+                     <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                                                 Referred To Specialist
+                                               </Typography>
                       <RadioGroup
                         row
                         value={referredToSpecialist}
@@ -802,40 +827,49 @@ const Auditory = ({
                   </Grid>
 
                   {/* Right Side → Dropdown (Visible only if Yes) */}
-                  {referredToSpecialist === 1 && (
-                    <Grid item xs={12} sm={6}>
-                      <FormControl fullWidth>
-                        <InputLabel>Choose Doctor</InputLabel>
-                        <Select
-                          label="Choose Doctor"
-                          value={selectedDoctor}
-                          onChange={(e) => setSelectedDoctor(e.target.value)}
-                          disabled={loadingDoctors}
-                        >
-                          {loadingDoctors && (
-                            <MenuItem value="">
-                              <em>Loading...</em>
-                            </MenuItem>
-                          )}
+                {referredToSpecialist === 1 && (
+  <Grid item xs={12} sm={6}>
+    <FormControl fullWidth size="small">
+      <InputLabel sx={{ fontSize: "0.8rem" }}>Choose Doctor</InputLabel>
+      <Select
+        label="Choose Doctor"
+        value={selectedDoctor}
+        onChange={(e) => setSelectedDoctor(Number(e.target.value))}
+        disabled={loadingDoctors}
+      sx={{
+                      "& .MuiInputBase-input.MuiSelect-select": {
+                        color: "#000 !important",
+                      },
+                      "& .MuiSvgIcon-root": {
+                        color: "#000",
+                      },
+                    }}
+      >
+        {loadingDoctors && (
+          <MenuItem value="">
+            <em>Loading...</em>
+          </MenuItem>
+        )}
+        {doctorList.length > 0
+          ? doctorList.map((doc) => (
+              <MenuItem
+                key={doc.doctor_pk_id}
+                value={doc.doctor_pk_id}
+                sx={{ fontSize: "0.8rem" }}
+              >
+                {doc.doctor_name}
+              </MenuItem>
+            ))
+          : !loadingDoctors && (
+              <MenuItem value="" sx={{ fontSize: "0.8rem" }}>
+                <em>No Doctors Found</em>
+              </MenuItem>
+            )}
+      </Select>
+    </FormControl>
+  </Grid>
+)}
 
-                          {doctorList.length > 0
-                            ? doctorList.map((doc) => (
-                                <MenuItem
-                                  key={doc.doctor_pk_id}
-                                  value={doc.doctor_pk_id}
-                                >
-                                  {doc.doctor_name}
-                                </MenuItem>
-                              ))
-                            : !loadingDoctors && (
-                                <MenuItem value="">
-                                  <em>No Doctors Found</em>
-                                </MenuItem>
-                              )}
-                        </Select>
-                      </FormControl>
-                    </Grid>
-                  )}
                 </Grid>
 
                 <Grid

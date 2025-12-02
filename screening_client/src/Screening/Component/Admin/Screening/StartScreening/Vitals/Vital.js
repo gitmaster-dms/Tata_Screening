@@ -1052,7 +1052,9 @@ const Vital = ({
             {/* Left Side → Radio Group */}
             <Grid item xs={12} sm={6}>
               <FormControl component="fieldset" fullWidth>
-                <FormLabel component="legend">Referred To Specialist</FormLabel>
+                <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                  Referred To Specialist
+                </Typography>
                 <RadioGroup
                   row
                   value={referredToSpecialist}
@@ -1069,31 +1071,41 @@ const Vital = ({
             {/* Right Side → Dropdown (Visible only if Yes) */}
             {referredToSpecialist === 1 && (
               <Grid item xs={12} sm={6}>
-                <FormControl fullWidth>
-                  <InputLabel>Choose Doctor</InputLabel>
+                <FormControl fullWidth size="small">
+                  <InputLabel sx={{ fontSize: "0.8rem" }}>
+                    Choose Doctor
+                  </InputLabel>
                   <Select
                     label="Choose Doctor"
                     value={selectedDoctor}
-                    onChange={(e) => setSelectedDoctor(e.target.value)}
+                    onChange={(e) => setSelectedDoctor(Number(e.target.value))}
                     disabled={loadingDoctors}
+                    sx={{
+                      "& .MuiInputBase-input.MuiSelect-select": {
+                        color: "#000 !important",
+                      },
+                      "& .MuiSvgIcon-root": {
+                        color: "#000",
+                      },
+                    }}
                   >
                     {loadingDoctors && (
                       <MenuItem value="">
                         <em>Loading...</em>
                       </MenuItem>
                     )}
-
                     {doctorList.length > 0
                       ? doctorList.map((doc) => (
                           <MenuItem
                             key={doc.doctor_pk_id}
                             value={doc.doctor_pk_id}
+                            sx={{ fontSize: "0.8rem" }}
                           >
                             {doc.doctor_name}
                           </MenuItem>
                         ))
                       : !loadingDoctors && (
-                          <MenuItem value="">
+                          <MenuItem value="" sx={{ fontSize: "0.8rem" }}>
                             <em>No Doctors Found</em>
                           </MenuItem>
                         )}
