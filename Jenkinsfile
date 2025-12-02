@@ -143,6 +143,173 @@
 
 
 
+// pipeline {
+//     agent any
+
+//     options {
+//         skipDefaultCheckout(true)
+//     }
+
+//     environment {
+//         PROJECT_DIR = "/var/www/html/Tata_Screening"
+//         DJANGO_DIR = "${PROJECT_DIR}/"
+//         REACT_DIR = "${PROJECT_DIR}/screening_client"
+//         PYTHON = "/usr/bin/python3"
+//         PIP = "/usr/bin/pip3"
+//         GUNICORN_PORT = "8000"
+//     }
+ 
+//     stages {
+ 
+//         // 1️⃣ Checkout latest code
+//         stage('Checkout Code') {
+//             steps {
+//                 git branch: 'main', url: 'https://github.com/gitmaster-dms/Tata_Screening.git'
+//             }
+//         }
+ 
+//         // 2️⃣ Deploy code to target server directory (KEEP media safe + INCLUDE tin)
+//         stage('Deploy Code to Server Directory') {
+//             steps {
+//                 sh """
+//                 echo "🚀 Deploying latest code to ${PROJECT_DIR}"
+
+//                 # tin folder included
+//                 # media folder is protected 
+//                 sudo rsync -av --delete \
+//                     --exclude '.git' \
+//                     --exclude 'venv' \
+//                     --exclude 'media' \
+//                     ./ ${PROJECT_DIR}/
+
+//                 sudo chown -R jenkins:jenkins ${PROJECT_DIR}
+//                 sudo chmod -R 775 ${PROJECT_DIR}
+//                 """
+//             }
+//         }
+ 
+//         // 3️⃣ Ensure Node.js (v20) and npm are installed
+//         stage('Ensure Node.js') {
+//             steps {
+//                 sh '''
+//                 if ! command -v node >/dev/null 2>&1 || [ "$(node -v | cut -d. -f1 | tr -d v)" -lt 20 ]; then
+//                     echo "⚙️ Installing Node.js 20..."
+//                     curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
+//                     sudo apt install -y nodejs
+//                 fi
+//                 echo "Node version: $(node -v)"
+//                 echo "NPM version: $(npm -v)"
+//                 '''
+//             }
+//         }
+ 
+//         // 4️⃣ Setup Python virtual environment
+//         stage('Setup Python Environment') {
+//             steps {
+//                 dir("${DJANGO_DIR}") {
+//                     sh """
+//                     if [ ! -d "venv" ]; then
+//                         ${PYTHON} -m venv venv
+//                     fi
+//                     . venv/bin/activate
+//                     pip install --upgrade pip
+//                     pip install -r requirements.txt
+//                     pip install gunicorn
+//                     """
+//                 }
+//             }
+//         }
+ 
+//         // 5️⃣ Build React App
+//         stage('Build React App') {
+//             steps {
+//                 dir("${REACT_DIR}") {
+//                     sh '''
+//                     echo "⚙️ Setting permissions..."
+//                     sudo chown -R $USER:$USER ${REACT_DIR}
+//                     sudo chmod -R 775 ${REACT_DIR}
+ 
+//                     echo "📦 Installing npm dependencies..."
+//                     npm install --legacy-peer-deps
+ 
+//                     echo "🏗️ Building React app..."
+//                     CI=false npm run build
+//                     '''
+//                 }
+//             }
+//         }
+ 
+//         // 6️⃣ Collect Django static files
+//         stage('Collect Static Files') {
+//             steps {
+//                 dir("${DJANGO_DIR}") {
+//                     sh """
+//                     . venv/bin/activate
+//                     python manage.py collectstatic --noinput
+//                     """
+//                 }
+//             }
+//         }
+ 
+//         // 7️⃣ Restart Gunicorn process
+//         stage('Run Gunicorn') {
+//             steps {
+//                 dir("${DJANGO_DIR}") {
+//                     sh """
+//                     . venv/bin/activate
+//                     echo "🔄 Restarting Gunicorn on port ${GUNICORN_PORT}"
+//                     sudo systemctl restart gunicorn_tata
+//                     """
+//                 }
+//             }
+//         }
+ 
+//         // 8️⃣ Configure and reload Nginx
+//         stage('Configure Nginx') {
+//             steps {
+//                 sh """
+//                     echo "🔧 Testing Nginx configuration..."
+//                     sudo nginx -t
+                    
+//                     echo "🔄 Restarting Nginx..."
+//                     sudo systemctl restart nginx
+                    
+//                     echo "✅ Verifying services..."
+//                     sudo systemctl status nginx --no-pager | head -10
+//                     sudo systemctl status gunicorn_tata --no-pager | head -10 || echo "Gunicorn running in background"
+//                 """
+//             }
+//         }
+//     }
+ 
+//     post {
+//         success {
+//             echo "✅ Deployment complete! Django + React app running from ${PROJECT_DIR}"
+//         }
+//         failure {
+//             echo "❌ Deployment failed — check Jenkins logs."
+//         }
+//     }
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 pipeline {
     agent any
 
@@ -158,24 +325,22 @@ pipeline {
         PIP = "/usr/bin/pip3"
         GUNICORN_PORT = "8000"
     }
- 
+
     stages {
- 
+
         // 1️⃣ Checkout latest code
         stage('Checkout Code') {
             steps {
                 git branch: 'main', url: 'https://github.com/gitmaster-dms/Tata_Screening.git'
             }
         }
- 
-        // 2️⃣ Deploy code to target server directory (KEEP media safe + INCLUDE tin)
+
+        // 2️⃣ Deploy code while keeping media folder safe
         stage('Deploy Code to Server Directory') {
             steps {
                 sh """
                 echo "🚀 Deploying latest code to ${PROJECT_DIR}"
 
-                # tin folder included
-                # media folder is protected 
                 sudo rsync -av --delete \
                     --exclude '.git' \
                     --exclude 'venv' \
@@ -187,8 +352,8 @@ pipeline {
                 """
             }
         }
- 
-        // 3️⃣ Ensure Node.js (v20) and npm are installed
+
+        // 3️⃣ Ensure Node.js (v20) & NPM installed
         stage('Ensure Node.js') {
             steps {
                 sh '''
@@ -197,13 +362,14 @@ pipeline {
                     curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
                     sudo apt install -y nodejs
                 fi
+
                 echo "Node version: $(node -v)"
                 echo "NPM version: $(npm -v)"
                 '''
             }
         }
- 
-        // 4️⃣ Setup Python virtual environment
+
+        // 4️⃣ Python Virtual Environment
         stage('Setup Python Environment') {
             steps {
                 dir("${DJANGO_DIR}") {
@@ -219,26 +385,22 @@ pipeline {
                 }
             }
         }
- 
+
         // 5️⃣ Build React App
         stage('Build React App') {
             steps {
                 dir("${REACT_DIR}") {
                     sh '''
-                    echo "⚙️ Setting permissions..."
                     sudo chown -R $USER:$USER ${REACT_DIR}
                     sudo chmod -R 775 ${REACT_DIR}
- 
-                    echo "📦 Installing npm dependencies..."
+
                     npm install --legacy-peer-deps
- 
-                    echo "🏗️ Building React app..."
                     CI=false npm run build
                     '''
                 }
             }
         }
- 
+
         // 6️⃣ Collect Django static files
         stage('Collect Static Files') {
             steps {
@@ -250,41 +412,49 @@ pipeline {
                 }
             }
         }
- 
-        // 7️⃣ Restart Gunicorn process
+
+        // 7️⃣ Restart Gunicorn
         stage('Run Gunicorn') {
             steps {
                 dir("${DJANGO_DIR}") {
                     sh """
                     . venv/bin/activate
-                    echo "🔄 Restarting Gunicorn on port ${GUNICORN_PORT}"
                     sudo systemctl restart gunicorn_tata
                     """
                 }
             }
         }
- 
-        // 8️⃣ Configure and reload Nginx
+
+        // 8️⃣ Fix Media Permissions (IMPORTANT)
+        stage('Fix Media Permissions') {
+            steps {
+                sh """
+                echo "🔧 Fixing media permissions..."
+
+                sudo chown -R adminscr:adminscr /var/www/html/Tata_Screening/media
+                sudo chmod -R 775 /var/www/html/Tata_Screening/media
+                sudo chmod -R a+rwx /var/www/html/Tata_Screening/media/media_files
+                """
+            }
+        }
+
+        // 9️⃣ Configure Nginx
         stage('Configure Nginx') {
             steps {
                 sh """
-                    echo "🔧 Testing Nginx configuration..."
-                    sudo nginx -t
-                    
-                    echo "🔄 Restarting Nginx..."
-                    sudo systemctl restart nginx
-                    
-                    echo "✅ Verifying services..."
-                    sudo systemctl status nginx --no-pager | head -10
-                    sudo systemctl status gunicorn_tata --no-pager | head -10 || echo "Gunicorn running in background"
+                sudo nginx -t
+                sudo systemctl restart nginx
+
+                sudo systemctl status nginx --no-pager | head -10
+                sudo systemctl status gunicorn_tata --no-pager | head -10 || echo "Gunicorn running in background"
                 """
             }
         }
     }
- 
+
     post {
         success {
-            echo "✅ Deployment complete! Django + React app running from ${PROJECT_DIR}"
+            echo "✅ Deployment complete! Django + React app running successfully."
         }
         failure {
             echo "❌ Deployment failed — check Jenkins logs."
