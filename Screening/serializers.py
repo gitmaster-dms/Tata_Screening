@@ -1328,7 +1328,7 @@ class Treatment_Get_Serializer(serializers.ModelSerializer):
 
     class Meta:
         model = treatement
-        fields = ['treatement_pk_id', 'citizen_id', 'screening_count', 'citizen_pk_id', 'screening_citizen_id', 'treatment_for', 'referral', 'referral_name', 'reason_for_referral', 'place_referral', 'place_referral_name', 'outcome', 'referred_surgery', 'hospital_name', 'hospital_name_text', 'basic_referred_treatment', 'form_submit', 'reffered_to_specialist', 'is_deleted', 'added_by', 'added_date', 'modify_by', 'modify_date','doctor_name']
+        fields = ['treatement_pk_id', 'citizen_id', 'screening_count', 'citizen_pk_id', 'screening_citizen_id', 'treatment_for', 'referral', 'referral_name', 'reason_for_referral', 'place_referral', 'place_referral_name', 'outcome', 'referred_surgery', 'hospital_name', 'hospital_name_text', 'basic_referred_treatment', 'form_submit', 'reffered_to_specialist', 'is_deleted', 'added_by', 'added_date', 'modify_by', 'modify_date','doctor_name','refer_doctor']
 
 
 class Auditory_Info_Post_Serializer(serializers.ModelSerializer):
@@ -1357,7 +1357,7 @@ class Auditory_Info_Get_Serializer(serializers.ModelSerializer):
             'hz_250_right', 'hz_500_right', 'hz_1000_right', 'hz_2000_right', 'hz_4000_right', 'hz_8000_right',
             'reading_right', 'right_ear_observations_remarks',
             'reffered_to_specialist', 'form_submit', 'is_deleted',
-            'added_by', 'added_date', 'modify_by', 'modify_date','doctor_name'
+            'added_by', 'added_date', 'modify_by', 'modify_date','doctor_name','refer_doctor'
         ]
         
         
@@ -1390,7 +1390,7 @@ class Vision_Info_Get_Serializer(serializers.ModelSerializer):
             'le_near_with_glasses', 'le_far_with_glasses',
             'comment', 'color_blindness', 'reffered_to_specialist',
             'form_submit', 'is_deleted', 'added_by', 'added_date',
-            'modify_by', 'modify_date','doctor_name'
+            'modify_by', 'modify_date','doctor_name','refer_doctor'
         ]
 
 class Medical_history_Post_Serializer(serializers.ModelSerializer):
@@ -1509,7 +1509,7 @@ class Dental_Info_Get_Serializer(serializers.ModelSerializer):
             'treatment_given', 'referred_to_surgery', 'dental_conditions',
             'dental_refer_hospital', 'image', 'english', 'marathi',
             'form_submit', 'is_deleted', 'added_by', 'added_date',
-            'modify_by', 'modify_date','doctor_name'
+            'modify_by', 'modify_date','doctor_name','refer_doctor'
         ]
         
         
