@@ -44,12 +44,12 @@ const Birthdefect = ({
   useEffect(() => {
     if (subVitalList && selectedTab) {
       const currentIndex = subVitalList.findIndex(
-        (item) => item.screening_list === selectedTab
+        (item) => item.sub_list === selectedTab
       );
 
       if (currentIndex !== -1 && currentIndex < subVitalList.length - 1) {
         const nextItem = subVitalList[currentIndex + 1];
-        setNextName(nextItem.screening_list);
+        setNextName(nextItem.sub_list);
       } else {
         setNextName("");
       }
@@ -149,7 +149,7 @@ const Birthdefect = ({
       if (response.status === 200) {
         const responseData = response.data;
         console.log("Form Submitted Successfully");
-        onAcceptClick(nextName, responseData.basic_screening_pk_id);
+        onAcceptClick(nextName, responseData.birth_pk_id);
         openSnackbar("Birth Defects Saved Successfully.");
       } else if (response.status === 400) {
         openSnackbar("Bad Request", "error");

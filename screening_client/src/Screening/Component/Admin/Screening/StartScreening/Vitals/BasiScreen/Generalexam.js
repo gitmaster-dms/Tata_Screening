@@ -20,6 +20,7 @@ import {
   Alert,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+
 const Generalexam = ({
   pkid,
   onAcceptClick,
@@ -38,14 +39,15 @@ const Generalexam = ({
   useEffect(() => {
     if (subVitalList && selectedTab) {
       const currentIndex = subVitalList.findIndex(
-        (item) => item.screening_list === selectedTab
+        (item) => item.sub_list === selectedTab
       );
 
       console.log("Current Index:", currentIndex);
 
       if (currentIndex !== -1 && currentIndex < subVitalList.length - 1) {
         const nextItem = subVitalList[currentIndex + 1];
-        const nextName = nextItem.screening_list;
+        const nextName = nextItem.sub_list;
+      
         setNextName(nextName);
         console.log("Next Name Set:", nextName);
       } else {
@@ -216,19 +218,22 @@ const Generalexam = ({
 
       const data = await response.json();
 
-      if (response.ok) {
+      if (response.status  === 200) {
         console.log("Server Response:", data);
 
         // Check if the response contains the basic_screening_pk_id
         const basicScreeningPkId =
-          data.updated_data?.genral_pk_id ||
-          data.posted_data?.genral_pk_id;
+          data?.data.genral_pk_id ||
+          data?.data.genral_pk_id;
+
+          console.log(basicScreeningPkId,'jjjjjjjj');
+          
 
         if (basicScreeningPkId) {
           localStorage.setItem("basicScreeningId", basicScreeningPkId);
           console.log("basicScreeningId:", basicScreeningPkId);
           onAcceptClick(nextName, basicScreeningPkId);
-          navigation("Systematic");
+
           openSnackbar("General Examination Saved Successfully.");
         } else {
           console.error("Basic Screening ID not found in response data");

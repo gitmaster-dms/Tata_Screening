@@ -35,6 +35,8 @@ const BmiVital = ({
   console.log(selectedName, "Present name");
   console.log(fetchVital, "Overall GET API");
   const [nextName, setNextName] = useState("");
+  console.log(nextName, "nextName");
+  
 
   useEffect(() => {
     if (fetchVital && selectedName) {

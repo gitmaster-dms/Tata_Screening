@@ -47,11 +47,11 @@ const Childhood = ({
   useEffect(() => {
     if (subVitalList && selectedTab) {
       const currentIndex = subVitalList.findIndex(
-        (item) => item.screening_list === selectedTab
+        (item) => item.sub_list === selectedTab
       );
 
       if (currentIndex !== -1 && currentIndex < subVitalList.length - 1) {
-        setNextName(subVitalList[currentIndex + 1].screening_list);
+        setNextName(subVitalList[currentIndex + 1].sub_list);
       } else {
         setNextName("");
       }
@@ -116,7 +116,7 @@ const Childhood = ({
 
       if (response.status === 200) {
         const responseData = response.data;
-        const basicScreeningPkId = responseData.basic_screening_pk_id;
+        const basicScreeningPkId = responseData.childhood_pk_id;
         onAcceptClick(nextName, basicScreeningPkId);
         openSnackbar("Childhood Disease Saved Successfully.");
       } else if (response.status === 400) {

@@ -133,6 +133,8 @@ const Body = () => {
   };
 
   const [openedPart, setOpenedPart] = useState('Basic Information');
+  console.log(openedPart,"opwnnnn");
+  
 
   const handleAcceptClick = (nextName) => {
     if (nextName) {
@@ -507,7 +509,7 @@ console.log(basicScreenId,"basicScreenId");
                 selectedId={selectedId}
                 selectedName={openedPart}
                 fetchVital={fetchVital}
-                basicScreenId={selectedNameId}
+                selectedNameId={selectedNameId}
                 onAcceptClick={handleAcceptClick}
               />
             }

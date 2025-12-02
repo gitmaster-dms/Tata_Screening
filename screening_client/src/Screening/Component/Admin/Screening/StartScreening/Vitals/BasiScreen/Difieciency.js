@@ -33,12 +33,12 @@ const Difieciency = ({
   useEffect(() => {
     if (subVitalList && selectedTab) {
       const currentIndex = subVitalList.findIndex(
-        (item) => item.screening_list === selectedTab
+        (item) => item.sub_list === selectedTab
       );
 
       if (currentIndex !== -1 && currentIndex < subVitalList.length - 1) {
         const nextItem = subVitalList[currentIndex + 1];
-        const nextName = nextItem.screening_list;
+        const nextName = nextItem.sub_list;
         setNextName(nextName);
       } else {
         setNextName("");
@@ -180,7 +180,7 @@ const Difieciency = ({
 
       if (response.status === 200) {
         const responseData = response.data;
-        const basicScreeningPkId = responseData.basic_screening_pk_id;
+        const basicScreeningPkId = responseData.deficiencies_pk_id;
         console.log("Deficiency Form Submitted Successfully");
         onAcceptClick(nextName, basicScreeningPkId);
         openSnackbar("Deficiencies Saved Successfully.");
