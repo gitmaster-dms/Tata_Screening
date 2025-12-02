@@ -168,12 +168,20 @@ pipeline {
             }
         }
  
-        // 2️⃣ Deploy code to target server directory
+        // 2️⃣ Deploy code to target server directory (KEEP media safe + INCLUDE tin)
         stage('Deploy Code to Server Directory') {
             steps {
                 sh """
                 echo "🚀 Deploying latest code to ${PROJECT_DIR}"
-                sudo rsync -av --delete --exclude '.git' --exclude 'venv' ./ ${PROJECT_DIR}/
+
+                # tin folder included
+                # media folder is protected 
+                sudo rsync -av --delete \
+                    --exclude '.git' \
+                    --exclude 'venv' \
+                    --exclude 'media' \
+                    ./ ${PROJECT_DIR}/
+
                 sudo chown -R jenkins:jenkins ${PROJECT_DIR}
                 sudo chmod -R 775 ${PROJECT_DIR}
                 """
