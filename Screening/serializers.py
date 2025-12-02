@@ -856,9 +856,10 @@ class emergency_info_Save_Serializer(serializers.ModelSerializer):
 
 
 class growth_monitoring_info_Save_Serializer(serializers.ModelSerializer):
+    doctor_name = serializers.CharField(source='refer_doctor.doctor_name', allow_null=True)
     class Meta:
         model = growth_monitoring_info
-        fields = ['growth_pk_id','citizen_id','screening_count','citizen_pk_id','screening_citizen_id','gender','dob','year','months','days','height','weight','weight_for_age','height_for_age','weight_for_height','bmi','arm_size','symptoms','remark','reffered_to_specialist','form_submit','is_deleted','added_by','added_date','modify_by','modify_date']
+        fields = ['growth_pk_id','citizen_id','screening_count','citizen_pk_id','screening_citizen_id','gender','dob','year','months','days','height','weight','weight_for_age','height_for_age','weight_for_height','bmi','arm_size','symptoms','remark','reffered_to_specialist','form_submit','is_deleted','added_by','added_date','modify_by','modify_date','refer_doctor','doctor_name']
         
         
 class basic_info_Put_Serializer(serializers.ModelSerializer):
@@ -1341,7 +1342,7 @@ class Auditory_Info_Post_Serializer(serializers.ModelSerializer):
             'hz_250_right', 'hz_500_right', 'hz_1000_right', 'hz_2000_right', 'hz_4000_right', 'hz_8000_right',
             'reading_right', 'right_ear_observations_remarks',
             'reffered_to_specialist', 'form_submit', 'is_deleted',
-            'added_by', 'added_date', 'modify_by', 'modify_date','refer_doctor'
+            'added_by', 'added_date', 'modify_by', 'modify_date','refer_doctor',
         ]
         
 class Auditory_Info_Get_Serializer(serializers.ModelSerializer):
