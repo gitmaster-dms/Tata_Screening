@@ -19,6 +19,7 @@ import {
   DialogActions,
   Alert,
   Snackbar,
+  MenuItem,
 } from "@mui/material";
 
 const BmiVital = ({
@@ -76,7 +77,40 @@ const BmiVital = ({
   console.log(pkid);
 
   const [isFormBlurred, setIsFormBlurred] = useState(true);
+ 
   const [referredToSpecialist, setReferredToSpecialist] = useState(null);
+const [doctorList, setDoctorList] = useState([]);
+const [loadingDoctors, setLoadingDoctors] = useState(false);
+const [selectedDoctor, setSelectedDoctor] = useState(""); 
+
+
+useEffect(() => {
+  if (referredToSpecialist === 1) {
+    fetchDoctors();
+  } else {
+    setDoctorList([]);
+  }
+}, [referredToSpecialist]);
+
+const fetchDoctors = async () => {
+  try {
+    setLoadingDoctors(true);
+
+    const res = await fetch(`${Port}/Screening/Doctor_List/`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    const data = await res.json();
+    setDoctorList(data || []);
+  } catch (error) {
+    console.error("Error fetching doctors:", error);
+  } finally {
+    setLoadingDoctors(false);
+  }
+};
+console.log("Selected doctor:", selectedDoctor);
 
   const [bmiData, setBmiData] = useState({
     // dob: "",
@@ -96,6 +130,7 @@ const BmiVital = ({
     // gender: "",
     remark: "",
     symptoms_if_any: "",
+    refer_doctor : "",
   });
 
   const [snackbar, setSnackbar] = useState({
@@ -164,6 +199,7 @@ const BmiVital = ({
           },
           symptoms_if_any: d.symptoms,
           remark: d.remark,
+          refer_doctor : d.refer_doctor,
         });
         setGrowthId(d.growth_pk_id);
 
@@ -191,12 +227,13 @@ const BmiVital = ({
             Authorization: `Bearer ${accessToken}`,
             "Content-Type": "application/json", // Ensure correct content type
           },
-        //   body: JSON.stringify({
-        //     ...bmiData,
-        //     added_by: userID,
-        //     modify_by: userID,
-        //     form_submit: confirmationStatus,
-        //   }),
+          body: JSON.stringify({
+            ...bmiData,
+            added_by: userID,
+            modify_by: userID,
+            refer_doctor : selectedDoctor,
+            form_submit: confirmationStatus,
+          }),
         }
       );
 
@@ -750,31 +787,64 @@ const BmiVital = ({
           </Grid>
 
           {/* Referred to Specialist */}
-          <Grid container alignItems="center" mt={2}>
-            <Grid item xs={12} sm={4}>
-              <Typography variant="body1">Referred To Specialist</Typography>
-            </Grid>
-            <Grid item xs={12} sm={8}>
-              <RadioGroup
-                row
-                value={referredToSpecialist}
-                onChange={(e) =>
-                  setReferredToSpecialist(parseInt(e.target.value))
-                }
-              >
-                <FormControlLabel
-                  value={1}
-                  control={<Radio size="small" />}
-                  label="Yes"
-                />
-                <FormControlLabel
-                  value={2}
-                  control={<Radio size="small" />}
-                  label="No"
-                />
-              </RadioGroup>
-            </Grid>
-          </Grid>
+       <Grid container alignItems="center" mt={2}>
+  <Grid item xs={12} sm={4}>
+    <Typography variant="body1">Referred To Specialist</Typography>
+  </Grid>
+
+  <Grid item xs={12} sm={8}>
+    <RadioGroup
+      row
+      value={referredToSpecialist}
+      onChange={(e) => setReferredToSpecialist(parseInt(e.target.value))}
+    >
+      <FormControlLabel value={1} control={<Radio size="small" />} label="Yes" />
+      <FormControlLabel value={2} control={<Radio size="small" />} label="No" />
+    </RadioGroup>
+  </Grid>
+</Grid>
+
+{/* Dropdown auto-renders after selecting “Yes” */}
+{referredToSpecialist === 1 && (
+  <Grid container alignItems="center" mt={2}>
+    <Grid item xs={12} sm={4}>
+      <Typography variant="body1">Select Doctor</Typography>
+    </Grid>
+
+    <Grid item xs={12} sm={8}>
+      {loadingDoctors ? (
+        <Typography variant="body2">Loading...</Typography>
+      ) : (
+       <TextField
+  select
+  fullWidth
+  size="small"
+  label="Doctors"
+  value={selectedDoctor}
+  onChange={(e) => setSelectedDoctor(e.target.value)}
+  sx={{
+    "& .MuiSelect-select": {
+      color: "black",       // selected value
+    },
+    "& .MuiMenuItem-root": {
+      color: "black",       // dropdown items (optional)
+    },
+    "& .MuiInputLabel-root": {
+      color: "black !important", // label always black
+    }
+  }}
+>
+          {doctorList.map((doc) => (
+            <MenuItem key={doc.doctor_pk_id} value={doc.doctor_pk_id}>
+              {doc.doctor_name}
+            </MenuItem>
+          ))}
+        </TextField>
+      )}
+    </Grid>
+  </Grid>
+)}
+
         </Card>
 
         <Box textAlign="center" mt={1} mb={2}>

@@ -120,6 +120,40 @@ const Dental = ({ scheduleID, pkid, citizensPkId, citizenId, onMoveTovision, fet
   const [overall, setOverall] = useState('');
   const [openConfirm, setOpenConfirm] = useState(false);
 
+  const [doctorList, setDoctorList] = useState([]);
+  const [loadingDoctors, setLoadingDoctors] = useState(false);
+  const [selectedDoctor, setSelectedDoctor] = useState("");
+
+
+  
+  useEffect(() => {
+    if (referredToSpecialist === 1) {
+      fetchDoctors();
+    } else {
+      setDoctorList([]);
+    }
+  }, [referredToSpecialist]);
+
+  const fetchDoctors = async () => {
+    try {
+      setLoadingDoctors(true);
+
+      const res = await fetch(`${Port}/Screening/Doctor_List/`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      const data = await res.json();
+      setDoctorList(data || []);
+    } catch (error) {
+      console.error("Error fetching doctors:", error);
+    } finally {
+      setLoadingDoctors(false);
+    }
+  };
+  console.log("Selected doctor:", selectedDoctor);
+
 
   const calculateOverall = () => {
     const values = [
@@ -291,7 +325,8 @@ const Dental = ({ scheduleID, pkid, citizensPkId, citizenId, onMoveTovision, fet
       dental_conditions: calculatedOverall,
       form_submit: 'True',
       added_by: userID,
-      modify_by: userID
+      modify_by: userID,
+      refer_doctor : selectedDoctor,
     };
 
     console.log('Form Data:', formData);
@@ -931,7 +966,43 @@ const Dental = ({ scheduleID, pkid, citizensPkId, citizenId, onMoveTovision, fet
                         onChange={handleChange}
                       />
                     </Grid>
+                     {/* Dropdown → Only show if "Yes" is selected */}
+      {referredToSpecialist === 1 && (
+              <Grid item xs={12} sm={6} sx={{ mb: 1,ml:2 }}>
+                <FormControl fullWidth>
+                  <InputLabel>Choose Doctor</InputLabel>
+                  <Select
+                    label="Choose Doctor"
+                    value={selectedDoctor}
+                    onChange={(e) => setSelectedDoctor(e.target.value)}
+                    disabled={loadingDoctors}
+                  >
+                    {loadingDoctors && (
+                      <MenuItem value="">
+                        <em>Loading...</em>
+                      </MenuItem>
+                    )}
+
+                    {doctorList.length > 0
+                      ? doctorList.map((doc) => (
+                          <MenuItem
+                            key={doc.doctor_pk_id}
+                            value={doc.doctor_pk_id}
+                          >
+                            {doc.doctor_name}
+                          </MenuItem>
+                        ))
+                      : !loadingDoctors && (
+                          <MenuItem value="">
+                            <em>No Doctors Found</em>
+                          </MenuItem>
+                        )}
+                  </Select>
+                </FormControl>
+              </Grid>
+            )}
                   </Grid>
+                  
                 </Card>
               </>
             )

@@ -14,12 +14,13 @@ import {
   FormControlLabel,
   Button,
   Checkbox,
-  Dialog
+  Dialog,
+  FormLabel
 } from '@mui/material';
 
 const Vision = ({ pkid, citizensPkId, fetchVital, selectedName, onAcceptClick }) => {
   const [nextName, setNextName] = useState('');
-  const [specialist, setSpecialist] = useState(null);
+  // const [specialist, setSpecialist] = useState(null);
   const [eyeMuscles, setEyeMuscles] = useState('');
   const [referractive, setReferractive] = useState('');
   const [editMode, setEditMode] = useState(false);
@@ -32,6 +33,38 @@ const [loading, setLoading] = useState(false);
   const source = localStorage.getItem('source');
   const userID = localStorage.getItem('userID');
   const userGroup = localStorage.getItem('usergrp');
+
+   const [referredToSpecialist, setReferredToSpecialist] = useState(null);
+  const [doctorList, setDoctorList] = useState([]);
+  const [loadingDoctors, setLoadingDoctors] = useState(false);
+  const [selectedDoctor, setSelectedDoctor] = useState("");
+   useEffect(() => {
+    if (referredToSpecialist === 1) {
+      fetchDoctors();
+    } else {
+      setDoctorList([]);
+    }
+  }, [referredToSpecialist]);
+
+  const fetchDoctors = async () => {
+    try {
+      setLoadingDoctors(true);
+
+      const res = await fetch(`${Port}/Screening/Doctor_List/`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      const data = await res.json();
+      setDoctorList(data || []);
+    } catch (error) {
+      console.error("Error fetching doctors:", error);
+    } finally {
+      setLoadingDoctors(false);
+    }
+  };
+  console.log("Selected doctor:", selectedDoctor);
 
   const [visionForm, setVisionForm] = useState({
     if_other_commnet: '',
@@ -53,6 +86,9 @@ const [loading, setLoading] = useState(false);
     re_far_with_glasses: null,
     le_near_with_glasses: null,
     le_far_with_glasses: null,
+    reffered_to_specialist: null,
+    refer_doctor : "",
+    
   });
 
   useEffect(() => {
@@ -70,7 +106,7 @@ const [loading, setLoading] = useState(false);
   const handleRadioChange = (event) => {
     const { name, value } = event.target;
     if (name === "reffered_to_specialist") {
-      setSpecialist(parseInt(value));
+      setReferredToSpecialist(parseInt(value));
     } else if (name === "eye_muscle_control") {
       setEyeMuscles(value);
     } else if (name === "refractive_error") {
@@ -135,11 +171,12 @@ const handleConfirmSubmit = async () => {
 
   const formData = {
     ...visionForm,
-    reffered_to_specialist: specialist,
+    reffered_to_specialist: referredToSpecialist,
     eye_muscle_control: eyeMuscles,
     refractive_error: referractive,
     citizen_pk_id: citizensPkId,
     form_submit: "True",
+    refer_doctor : selectedDoctor,
     added_by: userID,
     modify_by: userID,
   };
@@ -194,7 +231,8 @@ const handleConfirmSubmit = async () => {
   le_near_with_glasses: normalizeNumber(visionForm.le_near_with_glasses),
   le_far_with_glasses: normalizeNumber(visionForm.le_far_with_glasses),
 }));
-          setSpecialist(visionForm.reffered_to_specialist);
+          setReferredToSpecialist(visionForm.reffered_to_specialist);
+          setSelectedDoctor(visionForm.doctor_name || "");
           setEyeMuscles(visionForm.eye_muscle_control?.toString());
           setReferractive(visionForm.refractive_error?.toString());
         }
@@ -390,7 +428,7 @@ const handleConfirmSubmit = async () => {
                     </Grid>
 
                     <Typography variant="subtitle1" sx={{ mt: 3 }}>Referred To Specialist</Typography>
-                    <RadioGroup row name="reffered_to_specialist" value={specialist} onChange={handleRadioChange}>
+                    <RadioGroup row name="reffered_to_specialist" value={setReferredToSpecialist} onChange={handleRadioChange}>
                       <FormControlLabel value={1} control={<Radio />} label="Yes" />
                       <FormControlLabel value={2} control={<Radio />} label="No" />
                     </RadioGroup>
@@ -521,14 +559,51 @@ const handleConfirmSubmit = async () => {
                     />
                   </Grid>
 
-                  <Grid item xs={12}>
-                    <Typography variant="subtitle1" sx={{ mb: 1 }}>Referred To Specialist</Typography>
-                    <RadioGroup row name="reffered_to_specialist" value={specialist} onChange={handleRadioChange}>
-                      <FormControlLabel value={1} control={<Radio />} label="Yes" />
-                      <FormControlLabel value={2} control={<Radio />} label="No" />
-                    </RadioGroup>
-                  </Grid>
+       
+
                 </Grid>
+                      <Grid container spacing={2} alignItems="center" sx={{ mt: 2 }}>
+            {/* Left Side → Radio Group */}
+            <Grid item xs={12} sm={6}>
+              <FormControl component="fieldset" fullWidth>
+                <FormLabel component="legend">Referred To Specialist</FormLabel>
+                <RadioGroup
+                  row
+                  value={referredToSpecialist}
+                  onChange={(e) =>
+                    setReferredToSpecialist(Number(e.target.value))
+                  }
+                >
+                  <FormControlLabel value={1} control={<Radio />} label="Yes" />
+                  <FormControlLabel value={2} control={<Radio />} label="No" />
+                </RadioGroup>
+              </FormControl>
+            </Grid>
+
+            {/* Right Side → Dropdown (Visible only if Yes) */}
+            {referredToSpecialist === 1 && (
+  <Grid item xs={12} sm={6}>
+  <FormControl fullWidth>
+    <InputLabel>Choose Doctor</InputLabel>
+    <Select
+      value={selectedDoctor}
+      onChange={(e) => setSelectedDoctor(e.target.value)}
+      disabled={loadingDoctors}
+    >
+      {loadingDoctors && <MenuItem value=""><em>Loading...</em></MenuItem>}
+      {doctorList.length > 0
+        ? doctorList.map((doc) => (
+            <MenuItem key={doc.doctor_pk_id} value={doc.doctor_pk_id}>
+              {doc.doctor_name}
+            </MenuItem>
+          ))
+        : !loadingDoctors && <MenuItem value=""><em>No Doctors Found</em></MenuItem>}
+    </Select>
+  </FormControl>
+  </Grid>
+)}
+  
+          </Grid>
               </>
             )}
 
