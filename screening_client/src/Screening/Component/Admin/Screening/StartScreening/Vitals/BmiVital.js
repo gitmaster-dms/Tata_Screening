@@ -20,6 +20,8 @@ import {
   Alert,
   Snackbar,
   MenuItem,
+  InputLabel,
+  Select,
 } from "@mui/material";
 
 const BmiVital = ({
@@ -115,25 +117,23 @@ const fetchDoctors = async () => {
 console.log("Selected doctor:", selectedDoctor);
 
   const [bmiData, setBmiData] = useState({
-    // dob: "",
-    year: "",
-    month: "",
-    days: "",
+  citizen_info: {
+    gender: "",
+    dob: "",
     height: null,
     weight: null,
-    weight_for_age: "",
-    height_for_age: "",
-    weight_for_height: "",
-    bmi: null,
+    year: "0",
+    months: "0",
+    days: "0",
     arm_size: "",
-    citizen_info: {
-      gender: "", // Add default value for gender
-    },
-    // gender: "",
-    remark: "",
-    symptoms_if_any: "",
-    refer_doctor : "",
-  });
+    bmi: null,
+  },
+  symptoms_if_any: "",
+  remark: "",
+  refer_doctor: "",
+  reffered_to_specialist: "",
+});
+
 
   const [snackbar, setSnackbar] = useState({
     open: false,
@@ -202,9 +202,12 @@ console.log("Selected doctor:", selectedDoctor);
           symptoms_if_any: d.symptoms,
           remark: d.remark,
           refer_doctor : d.refer_doctor,
+          reffered_to_specialist: d.reffered_to_specialist,
         });
         setGrowthId(d.growth_pk_id);
 
+      setReferredToSpecialist(Number(d.reffered_to_specialist));
+        selectedDoctor(Number(d.refer_doctor || ""));
         setUpdateId(d.citizen_id);
       }
       console.log("POST BMI:", data);
@@ -235,6 +238,9 @@ console.log("Selected doctor:", selectedDoctor);
             modify_by: userID,
             refer_doctor : selectedDoctor,
             form_submit: confirmationStatus,
+            reffered_to_specialist: referredToSpecialist,
+
+            
           }),
         }
       );
@@ -301,6 +307,8 @@ console.log("Selected doctor:", selectedDoctor);
       },
     }));
   }, [enteredWeight]);
+
+  
 
   // useEffect(() => {
   //     const fetchOtherData = async () => {
@@ -789,7 +797,7 @@ console.log("Selected doctor:", selectedDoctor);
           </Grid>
 
           {/* Referred to Specialist */}
-       <Grid container alignItems="center" mt={2}>
+       {/* <Grid container alignItems="center" mt={2}>
   <Grid item xs={12} sm={4}>
     <Typography variant="body1">Referred To Specialist</Typography>
   </Grid>
@@ -804,48 +812,72 @@ console.log("Selected doctor:", selectedDoctor);
       <FormControlLabel value={2} control={<Radio size="small" />} label="No" />
     </RadioGroup>
   </Grid>
-</Grid>
+</Grid> */}
 
 {/* Dropdown auto-renders after selecting “Yes” */}
-{referredToSpecialist === 1 && (
-  <Grid container alignItems="center" mt={2}>
-    <Grid item xs={12} sm={4}>
-      <Typography variant="body1">Select Doctor</Typography>
+{referredToSpecialist !== null && (
+  <Grid container spacing={2} alignItems="center" sx={{ mt: 2 }}>
+    {/* Radio Group */}
+    <Grid item xs={12} sm={6}>
+      <FormControl component="fieldset" fullWidth>
+        <Typography variant="body2" sx={{ fontWeight: 600 }}>
+          Referred To Specialist
+        </Typography>
+        <RadioGroup
+          row
+          value={referredToSpecialist}
+          onChange={(e) => setReferredToSpecialist(Number(e.target.value))}
+        >
+          <FormControlLabel value={1} control={<Radio />} label="Yes" />
+          <FormControlLabel value={2} control={<Radio />} label="No" />
+        </RadioGroup>
+      </FormControl>
     </Grid>
 
-    <Grid item xs={12} sm={8}>
-      {loadingDoctors ? (
-        <Typography variant="body2">Loading...</Typography>
-      ) : (
-       <TextField
-  select
-  fullWidth
-  size="small"
-  label="Doctors"
-  value={selectedDoctor}
-  onChange={(e) => setSelectedDoctor(e.target.value)}
-  sx={{
-    "& .MuiSelect-select": {
-      color: "black",       // selected value
-    },
-    "& .MuiMenuItem-root": {
-      color: "black",       // dropdown items (optional)
-    },
-    "& .MuiInputLabel-root": {
-      color: "black !important", // label always black
-    }
-  }}
->
-          {doctorList.map((doc) => (
-            <MenuItem key={doc.doctor_pk_id} value={doc.doctor_pk_id}>
-              {doc.doctor_name}
-            </MenuItem>
-          ))}
-        </TextField>
-      )}
-    </Grid>
+    {/* Dropdown (only show if Yes) */}
+    {referredToSpecialist === 1 && (
+      <Grid item xs={12} sm={6}>
+        <FormControl fullWidth size="small">
+          <InputLabel>Choose Specialist</InputLabel>
+          <Select
+            label="Choose Specialist"
+            value={selectedDoctor}
+            onChange={(e) => setSelectedDoctor(Number(e.target.value))}
+            disabled={loadingDoctors}
+            sx={{
+              "& .MuiInputBase-input.MuiSelect-select": {
+                color: "#000 !important",
+                fontSize: "0.85rem", // smaller font to fit nicely
+              },
+              "& .MuiSvgIcon-root": {
+                color: "#000",
+              },
+            }}
+          >
+            {loadingDoctors && (
+              <MenuItem value="">
+                <em>Loading...</em>
+              </MenuItem>
+            )}
+
+            {doctorList.length > 0
+              ? doctorList.map((doc) => (
+                  <MenuItem key={doc.doctor_pk_id} value={doc.doctor_pk_id}>
+                    {doc.doctor_name}
+                  </MenuItem>
+                ))
+              : !loadingDoctors && (
+                  <MenuItem value="">
+                    <em>No Doctors Found</em>
+                  </MenuItem>
+                )}
+          </Select>
+        </FormControl>
+      </Grid>
+    )}
   </Grid>
 )}
+
 
         </Card>
 

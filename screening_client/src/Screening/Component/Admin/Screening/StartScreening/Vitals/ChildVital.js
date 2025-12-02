@@ -33,6 +33,8 @@ const Childvital = ({
   const userID = localStorage.getItem("userID");
   const accessToken = localStorage.getItem("token");
 
+  console.log("pkid in ChildVital:", pkid);
+
   const [department, setDepartment] = useState([]);
   const [selectedDepartment, setSelectedDepartment] = useState("");
   const [designation, setDesignation] = useState([]);
