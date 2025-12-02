@@ -492,54 +492,54 @@ const AddUser = () => {
     clg_genderr_id: "",
   });
 
-const resetForm = () => {
-  setFormData({
-    clg_ref_id: "",
-    clg_gender: "",
-    clg_Date_of_birth: "",
-    clg_mobile_no: "",
-    clg_email: "",
-    clg_address: "",
-    password: "1234",
-    password2: "1234",
-    pk: "",
+  const resetForm = () => {
+    setFormData({
+      clg_ref_id: "",
+      clg_gender: "",
+      clg_Date_of_birth: "",
+      clg_mobile_no: "",
+      clg_email: "",
+      clg_address: "",
+      password: "1234",
+      password2: "1234",
+      pk: "",
+      clg_source_id: "",
+      clg_states_id: "",
+      clg_district_id: "",
+      clg_tehsil_id: "",
+      clg_source_name_id: "",
+      grp_id: "",
+    });
+
+    setSelectedSourcee("");
+    setSelectedState("");
+    setSelectedDistrict("");
+    setSelectedTaluka("");
+    setSelectedName("");
+    setSelectedRole("");
+
+    setSelectedDistrictNav("");
+    setSelectedNameNav("");
+    setSelectedStateNav("");
+    setSelectedTalukaNav("");
+
+    setErrors({});
+  };
+
+  const [errors, setErrors] = useState({
     clg_source_id: "",
     clg_states_id: "",
     clg_district_id: "",
     clg_tehsil_id: "",
     clg_source_name_id: "",
     grp_id: "",
+    clg_ref_id: "",
+    clg_gender: "",
+    clg_Date_of_birth: "",
+    clg_mobile_no: "",
+    clg_email: "",
+    clg_address: "",
   });
-
-  setSelectedSourcee("");
-  setSelectedState("");
-  setSelectedDistrict("");
-  setSelectedTaluka("");
-  setSelectedName("");
-  setSelectedRole("");
-
-  setSelectedDistrictNav("");
-  setSelectedNameNav("");
-  setSelectedStateNav("");
-  setSelectedTalukaNav("");
-
-  setErrors({});
-};
-
- const [errors, setErrors] = useState({
-  clg_source_id: "",
-  clg_states_id: "",
-  clg_district_id: "",
-  clg_tehsil_id: "",
-  clg_source_name_id: "",
-  grp_id: "",
-  clg_ref_id: "",
-  clg_gender: "",
-  clg_Date_of_birth: "",
-  clg_mobile_no: "",
-  clg_email: "",
-  clg_address: "",
-});
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -618,147 +618,147 @@ const resetForm = () => {
 
 
   const validateForm = () => {
-  let tempErrors = {};
+    let tempErrors = {};
 
-  // Select dropdown validations
-  if (!selectedSourcee) tempErrors.clg_source = "Source is required";
-  if (!selectedState) tempErrors.clg_state = "State is required";
-  if (!selectedDistrict) tempErrors.clg_district = "District is required";
-  if (!selectedTaluka) tempErrors.clg_tahsil = "Tehsil is required";
-  if (!formData.clg_source_name) tempErrors.clg_source_name = "Workshop is required";
-  if (!selectedRole) tempErrors.Group_id = "Role is required";
+    // Select dropdown validations
+    if (!selectedSourcee) tempErrors.clg_source = "Source is required";
+    if (!selectedState) tempErrors.clg_state = "State is required";
+    if (!selectedDistrict) tempErrors.clg_district = "District is required";
+    if (!selectedTaluka) tempErrors.clg_tahsil = "Tehsil is required";
+    if (!formData.clg_source_name) tempErrors.clg_source_name = "Workshop is required";
+    if (!selectedRole) tempErrors.Group_id = "Role is required";
 
-  // TextField validations
-  if (!formData.clg_ref_id?.trim()) tempErrors.clg_ref_id = "Name is required";
-  if (!formData.clg_gender) tempErrors.clg_gender = "Gender is required";
-  if (!formData.clg_Date_of_birth) tempErrors.clg_Date_of_birth = "DOB is required";
+    // TextField validations
+    if (!formData.clg_ref_id?.trim()) tempErrors.clg_ref_id = "Name is required";
+    if (!formData.clg_gender) tempErrors.clg_gender = "Gender is required";
+    if (!formData.clg_Date_of_birth) tempErrors.clg_Date_of_birth = "DOB is required";
 
-  if (!formData.clg_mobile_no) {
-    tempErrors.clg_mobile_no = "Mobile Number is required";
-  } else if (formData.clg_mobile_no.length !== 10) {
-    tempErrors.clg_mobile_no = "Mobile must be 10 digits";
-  }
+    if (!formData.clg_mobile_no) {
+      tempErrors.clg_mobile_no = "Mobile Number is required";
+    } else if (formData.clg_mobile_no.length !== 10) {
+      tempErrors.clg_mobile_no = "Mobile must be 10 digits";
+    }
 
-  if (!formData.clg_email) {
-    tempErrors.clg_email = "Email is required";
-  } else if (!/\S+@\S+\.\S+/.test(formData.clg_email)) {
-    tempErrors.clg_email = "Invalid email format";
-  }
+    if (!formData.clg_email) {
+      tempErrors.clg_email = "Email is required";
+    } else if (!/\S+@\S+\.\S+/.test(formData.clg_email)) {
+      tempErrors.clg_email = "Invalid email format";
+    }
 
-  if (!formData.clg_address?.trim()) tempErrors.clg_address = "Address is required";
+    if (!formData.clg_address?.trim()) tempErrors.clg_address = "Address is required";
 
-  setErrors(tempErrors);
+    setErrors(tempErrors);
 
-  return Object.keys(tempErrors).length === 0; // true = valid
-};
-
-const handleSubmit = async (e) => {
-  e.preventDefault();
-
-  // ❌ Form invalid → Mandatory Modal + Snackbar
-  if (!validateForm()) {
-    setMandotoryModel(true);
-    showSnackbar("Please fix the errors!", "error");
-    return;
-  }
-
-  const userData = {
-    ...formData,
-    password: "1234",
-    password2: "1234",
-    clg_added_by: userID,
+    return Object.keys(tempErrors).length === 0; // true = valid
   };
 
-  if (updateSrc) {
-    userData.clg_modify_by = userID;
-  }
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  try {
-    let url = "";
-    let method = "";
-
-    if (!updateSrc) {
-      url = `${Port}/Screening/register/`;
-      method = "POST";
-    } else {
-      url = `${Port}/Screening/User_PUT/${formData.pk}/`;
-      method = "PUT";
-    }
-
-    const response = await fetch(url, {
-      method,
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-      },
-      body: JSON.stringify(userData),
-    });
-
-    // -----------------------------------------------
-    // ✅ CREATE SUCCESS
-    // -----------------------------------------------
-    if (!updateSrc && response.status === 201 ) {
-      const data = await response.json();
-
-      setShowModal(true);               // OPEN REGISTER MODAL
-      showSnackbar("User Registered Successfully!", "success");
-
-      setTableData((prev) => [...prev, data]);
-      resetForm();
+    // ❌ Form invalid → Mandatory Modal + Snackbar
+    if (!validateForm()) {
+      setMandotoryModel(true);
+      showSnackbar("Please fix the errors!", "error");
       return;
     }
 
-    // -----------------------------------------------
-    // ✅ UPDATE SUCCESS
-    // -----------------------------------------------
-    if (updateSrc && response.ok) {
-      const updatedUser = await response.json();
+    const userData = {
+      ...formData,
+      password: "1234",
+      password2: "1234",
+      clg_added_by: userID,
+    };
 
-      setUpdateModel(true);             // OPEN UPDATE MODAL
-      showSnackbar("User Updated Successfully!", "success");
+    if (updateSrc) {
+      userData.clg_modify_by = userID;
+    }
 
-      setTableData((prev) => {
-        const i = prev.findIndex((x) => x.pk === updatedUser.pk);
-        if (i !== -1) {
-          const updated = [...prev];
-          updated[i] = updatedUser;
-          return updated;
-        }
-        return prev;
+    try {
+      let url = "";
+      let method = "";
+
+      if (!updateSrc) {
+        url = `${Port}/Screening/register/`;
+        method = "POST";
+      } else {
+        url = `${Port}/Screening/User_PUT/${formData.pk}/`;
+        method = "PUT";
+      }
+
+      const response = await fetch(url, {
+        method,
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify(userData),
       });
 
-      resetForm();
-      return;
+      // -----------------------------------------------
+      // ✅ CREATE SUCCESS
+      // -----------------------------------------------
+      if (!updateSrc && response.status === 201) {
+        const data = await response.json();
+
+        setShowModal(true);               // OPEN REGISTER MODAL
+        showSnackbar("User Registered Successfully!", "success");
+
+        setTableData((prev) => [...prev, data]);
+        resetForm();
+        return;
+      }
+
+      // -----------------------------------------------
+      // ✅ UPDATE SUCCESS
+      // -----------------------------------------------
+      if (updateSrc && response.ok) {
+        const updatedUser = await response.json();
+
+        setUpdateModel(true);             // OPEN UPDATE MODAL
+        showSnackbar("User Updated Successfully!", "success");
+
+        setTableData((prev) => {
+          const i = prev.findIndex((x) => x.pk === updatedUser.pk);
+          if (i !== -1) {
+            const updated = [...prev];
+            updated[i] = updatedUser;
+            return updated;
+          }
+          return prev;
+        });
+
+        resetForm();
+        return;
+      }
+
+      // -----------------------------------------------
+      // ❌ MISSING FIELDS ERROR (400)
+      // -----------------------------------------------
+      if (response.status === 400) {
+        setMandotoryModel(true);          // OPEN MANDATORY MODAL
+        showSnackbar("Please fill all required (*) fields!", "warning");
+        return;
+      }
+
+      // -----------------------------------------------
+      // ❌ USER EXIST ERROR (409)
+      // -----------------------------------------------
+      if (response.status === 409) {
+        setExistModel(true);              // OPEN EXIST MODAL
+        showSnackbar("User already exists!", "error");
+        return;
+      }
+
+      // -----------------------------------------------
+      //
+      // -----------------------------------------------
+      showSnackbar("Something went wrong. Please try again.", "error");
+
+    } catch (err) {
+      console.error("Error:", err);
+      showSnackbar("Network error! Check connection.", "error");
     }
-
-    // -----------------------------------------------
-    // ❌ MISSING FIELDS ERROR (400)
-    // -----------------------------------------------
-    if (response.status === 400) {
-      setMandotoryModel(true);          // OPEN MANDATORY MODAL
-      showSnackbar("Please fill all required (*) fields!", "warning");
-      return;
-    }
-
-    // -----------------------------------------------
-    // ❌ USER EXIST ERROR (409)
-    // -----------------------------------------------
-    if (response.status === 409) {
-      setExistModel(true);              // OPEN EXIST MODAL
-      showSnackbar("User already exists!", "error");
-      return;
-    }
-
-    // -----------------------------------------------
-    //
-    // -----------------------------------------------
-    showSnackbar("Something went wrong. Please try again.", "error");
-
-  } catch (err) {
-    console.error("Error:", err);
-    showSnackbar("Network error! Check connection.", "error");
-  }
-};
+  };
 
 
   // const handleSubmit = async (e) => {
@@ -841,26 +841,27 @@ const handleSubmit = async (e) => {
       console.log("Fetched Data:", data);
       console.log(data.source_id, "hhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
 
-   setFormData((prev) => ({
-  ...prev,
-  clg_ref_id: data.clg_ref_id,
-  clg_gender: data.gender_id,
-  clg_Date_of_birth: data.clg_Date_of_birth,
-  clg_mobile_no: data.clg_mobile_no,
-  clg_email: data.clg_email,
-  clg_address: data.clg_address,
+      setFormData((prev) => ({
+        ...prev,
+        clg_ref_id: data.clg_ref_id,
+        clg_gender: data.gender_id,
+        clg_Date_of_birth: data.clg_Date_of_birth,
+        clg_mobile_no: data.clg_mobile_no,
+        clg_email: data.clg_email,
+        clg_address: data.clg_address,
 
-  pk: data.pk,
+        pk: data.pk,
 
-  clg_source_id: data.source_id,
-  clg_states_id: data.state_id,
-  clg_district_id: data.district_id,
-  clg_tehsil_id: data.tehsil_id,
-  clg_source_name_id: data.source_name_id,
-  grp_id: data.group_id,  // <-- FIXED
-  clg_genderr_id: data.gender_id,
-}));
-      setSelectedSourcee(data.source_name_id);
+        clg_source_id: data.source_id,
+        clg_states_id: data.state_id,
+        clg_district_id: data.district_id,
+        clg_tehsil_id: data.tehsil_id,
+        clg_source_name_id: data.source_name_id,
+        grp_id: data.group_id,  // <-- FIXED
+        clg_genderr_id: data.gender_id,
+
+      }));
+      setSelectedSourcee(data.source_id);
       setSelectedState(data.state_id);
       setSelectedDistrict(data.district_id);
       setSelectedTaluka(data.tehsil_id);
@@ -910,41 +911,41 @@ const handleSubmit = async (e) => {
   };
 
   ////////////// Delete
-const handleDelete = async () => {
-  const confirmDelete = window.confirm(
-    "Are you sure you want to delete this user?"
-  );
-
-  if (!confirmDelete) return;
-
-  try {
-    const deleteUrl = `${Port}/Screening/User_DELETE/${formData.pk}/${userID}/`;
-
-    await axios.delete(deleteUrl, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
-
-    setTableData((prev) =>
-      prev.filter((item) => item.pk !== formData.pk)
+  const handleDelete = async () => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this user?"
     );
 
-    // RESET FORM COMPLETELY
-    resetForm();
+    if (!confirmDelete) return;
 
-    // OPEN DELETE SUCCESS MODAL
-    setDeleteModel(true);
+    try {
+      const deleteUrl = `${Port}/Screening/User_DELETE/${formData.pk}/${userID}/`;
 
-    // SNACKBAR SUCCESS
-    showSnackbar("User Deleted Successfully!", "success");
+      await axios.delete(deleteUrl, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
 
-  } catch (error) {
-    console.error("Error deleting data:", error);
+      setTableData((prev) =>
+        prev.filter((item) => item.pk !== formData.pk)
+      );
 
-    showSnackbar("User Failed to Delete!", "error");
-  }
-};
+      // RESET FORM COMPLETELY
+      resetForm();
+
+      // OPEN DELETE SUCCESS MODAL
+      setDeleteModel(true);
+
+      // SNACKBAR SUCCESS
+      showSnackbar("User Deleted Successfully!", "success");
+
+    } catch (error) {
+      console.error("Error deleting data:", error);
+
+      showSnackbar("User Failed to Delete!", "error");
+    }
+  };
 
 
 
@@ -1284,17 +1285,17 @@ const handleDelete = async () => {
                               </MenuItem>
                             ))}
                           </Select>
-                           {errors.clg_source && (
-      <Typography sx={{ color: "red", fontSize: "12px", mt: 0.5 }}>
-        {errors.clg_source}
-      </Typography>
-    )}
+                          {errors.clg_source && (
+                            <Typography sx={{ color: "red", fontSize: "12px", mt: 0.5 }}>
+                              {errors.clg_source}
+                            </Typography>
+                          )}
                         </FormControl>
                       </Grid>
 
                       {/* State */}
                       <Grid item xs={12} md={6}>
-                        <FormControl fullWidth  error={!!errors.clg_state}>
+                        <FormControl fullWidth error={!!errors.clg_state}>
                           <InputLabel>Source State</InputLabel>
                           <Select
                             sx={{
@@ -1324,11 +1325,11 @@ const handleDelete = async () => {
                               </MenuItem>
                             ))}
                           </Select>
-                           {errors.clg_state && (
-          <Typography sx={{ color: "red", fontSize: 12 }}>
-            {errors.clg_state}
-          </Typography>
-        )}
+                          {errors.clg_state && (
+                            <Typography sx={{ color: "red", fontSize: 12 }}>
+                              {errors.clg_state}
+                            </Typography>
+                          )}
                         </FormControl>
                       </Grid>
 
@@ -1365,10 +1366,10 @@ const handleDelete = async () => {
                             ))}
                           </Select>
                           {errors.clg_district && (
-          <Typography sx={{ color: "red", fontSize: 12 }}>
-            {errors.clg_district}
-          </Typography>
-        )}
+                            <Typography sx={{ color: "red", fontSize: 12 }}>
+                              {errors.clg_district}
+                            </Typography>
+                          )}
                         </FormControl>
                       </Grid>
 
@@ -1405,21 +1406,21 @@ const handleDelete = async () => {
                             ))}
                           </Select>
                           {errors.clg_tahsil && (
-          <Typography sx={{ color: "red", fontSize: 12 }}>
-            {errors.clg_tahsil}
-          </Typography>
-        )}
+                            <Typography sx={{ color: "red", fontSize: 12 }}>
+                              {errors.clg_tahsil}
+                            </Typography>
+                          )}
                         </FormControl>
                       </Grid>
 
                       {/* workshop Name */}
                       <Grid item xs={12} md={6}>
-                        <FormControl fullWidth  error={!!errors.clg_source_name}>
+                        <FormControl fullWidth error={!!errors.clg_source_name}>
                           <InputLabel>Workshop Name</InputLabel>
                           <Select
                             size="small"
                             name="clg_source_name"
-                           value={formData.clg_source_name || ""}
+                            value={formData.clg_source_name || ""}
                             onChange={handleChange}
                             label="Workshop Name"
                             sx={{
@@ -1432,7 +1433,7 @@ const handleDelete = async () => {
                               },
                             }}
                           >
-                              <MenuItem value="">
+                            <MenuItem value="">
                               {formData.clg_source_name || "Workshop Name"}
                             </MenuItem>
 
@@ -1446,10 +1447,10 @@ const handleDelete = async () => {
                             ))}
                           </Select>
                           {errors.clg_source_name && (
-          <Typography sx={{ color: "red", fontSize: 12 }}>
-            {errors.clg_source_name}
-          </Typography>
-        )}
+                            <Typography sx={{ color: "red", fontSize: 12 }}>
+                              {errors.clg_source_name}
+                            </Typography>
+                          )}
                         </FormControl>
                       </Grid>
 
@@ -1486,11 +1487,11 @@ const handleDelete = async () => {
                               </MenuItem>
                             ))}
                           </Select>
-                           {errors.Group_id && (
-          <Typography sx={{ color: "red", fontSize: 12 }}>
-            {errors.Group_id}
-          </Typography>
-        )}
+                          {errors.Group_id && (
+                            <Typography sx={{ color: "red", fontSize: 12 }}>
+                              {errors.Group_id}
+                            </Typography>
+                          )}
                         </FormControl>
                       </Grid>
 
@@ -1513,7 +1514,7 @@ const handleDelete = async () => {
                           onChange={handleChange}
                           fullWidth
                           error={!!errors.clg_ref_id}
-        helperText={errors.clg_ref_id}
+                          helperText={errors.clg_ref_id}
                         />
                       </Grid>
 
@@ -1549,12 +1550,12 @@ const handleDelete = async () => {
                               </MenuItem>
                             ))}
                           </Select>
-                          
-        {errors.clg_gender && (
-          <Typography sx={{ color: "red", fontSize: 12 }}>
-            {errors.clg_gender}
-          </Typography>
-        )}
+
+                          {errors.clg_gender && (
+                            <Typography sx={{ color: "red", fontSize: 12 }}>
+                              {errors.clg_gender}
+                            </Typography>
+                          )}
                         </FormControl>
                       </Grid>
 
@@ -1650,7 +1651,7 @@ const handleDelete = async () => {
                           onChange={handleChange}
                           fullWidth
                           error={!!errors.clg_address}
-        helperText={errors.clg_address}
+                          helperText={errors.clg_address}
                         />
                       </Grid>
 
@@ -1723,6 +1724,7 @@ const handleDelete = async () => {
                   </Box>
                 ) : (
                   <>
+                    {/* TABLE HEADER */}
                     <Table
                       sx={{
                         borderCollapse: "separate",
@@ -1733,13 +1735,7 @@ const handleDelete = async () => {
                     >
                       <TableHead>
                         <TableRow sx={{ bgcolor: "#4a7cf3ff" }}>
-                          {[
-                            "Sr No",
-                            "User Name",
-                            "Mobile No",
-                            "Group",
-                            "Email ID",
-                          ].map((header, i) => (
+                          {["Sr No", "User Name", "Mobile No", "Email ID"].map((header, i) => (
                             <TableCell
                               key={i}
                               sx={{
@@ -1748,6 +1744,12 @@ const handleDelete = async () => {
                                 textAlign: "center",
                                 fontSize: "12px",
                               }}
+                              width={
+                                i === 0 ? "15%" :
+                                  i === 1 ? "30%" :
+                                    i === 2 ? "25%" :
+                                      "35%"
+                              }
                             >
                               {header}
                             </TableCell>
@@ -1762,10 +1764,7 @@ const handleDelete = async () => {
                           Object.values(data).some(
                             (value) =>
                               value &&
-                              value
-                                .toString()
-                                .toLowerCase()
-                                .includes(searchQuery.toLowerCase())
+                              value.toString().toLowerCase().includes(searchQuery.toLowerCase())
                           )
                         )
                         .slice(page * rowsPerPage, (page + 1) * rowsPerPage)
@@ -1784,6 +1783,7 @@ const handleDelete = async () => {
                                 transition: "all 0.2s ease-in-out",
                                 "&:hover": { boxShadow: 6 },
                                 borderRadius: "20px",
+                                fontSize: "12px",
                               }}
                               onClick={() => {
                                 handleTableRowClick(item.pk);
@@ -1794,33 +1794,31 @@ const handleDelete = async () => {
                                 <Grid
                                   container
                                   alignItems="center"
-                                  justifyContent="space-between"
-                                  sx={{ textAlign: "center" }}
+                                  sx={{
+                                    display: "flex",
+                                    textAlign: "center",
+                                    width: "100%",
+                                    justifyContent: "space-between",
+                                  }}
                                 >
-                                  <Grid item xs={2}>
-                                    <Typography sx={{ fontSize: "12px" }}>
-                                      {serialNumber}
-                                    </Typography>
+                                  {/* Sr No */}
+                                  <Grid item sx={{ width: "10%" }}>
+                                    <Typography sx={{ fontSize: "12px" }}>{serialNumber}</Typography>
                                   </Grid>
-                                  <Grid item xs={2.5}>
-                                    <Typography sx={{ fontSize: "12px" }}>
-                                      {item.clg_ref_id}
-                                    </Typography>
+
+                                  {/* User Name */}
+                                  <Grid item sx={{ width: "30%" }}>
+                                    <Typography sx={{ fontSize: "12px" }}>{item.clg_ref_id}</Typography>
                                   </Grid>
-                                  <Grid item xs={2.5}>
-                                    <Typography sx={{ fontSize: "12px" }}>
-                                      {item.clg_mobile_no}
-                                    </Typography>
+
+                                  {/* Mobile No */}
+                                  <Grid item sx={{ width: "25%" }}>
+                                    <Typography sx={{ fontSize: "12px" }}>{item.clg_mobile_no}</Typography>
                                   </Grid>
-                                  <Grid item xs={2.5}>
-                                    <Typography sx={{ fontSize: "12px" }}>
-                                      {item.grp_name}
-                                    </Typography>
-                                  </Grid>
-                                  <Grid item xs={2.5}>
-                                    <Typography sx={{ fontSize: "12px" }}>
-                                      {item.clg_email}
-                                    </Typography>
+
+                                  {/* Email */}
+                                  <Grid item sx={{ width: "35%" }}>
+                                    <Typography sx={{ fontSize: "12px" }}>{item.clg_email}</Typography>
                                   </Grid>
                                 </Grid>
                               </CardContent>
@@ -1829,6 +1827,7 @@ const handleDelete = async () => {
                         })}
                     </Box>
 
+                    {/* PAGINATION */}
                     <TablePagination
                       component="div"
                       count={tableData.length}
