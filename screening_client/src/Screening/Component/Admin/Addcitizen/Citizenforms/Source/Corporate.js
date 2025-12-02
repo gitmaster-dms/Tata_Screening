@@ -15,6 +15,14 @@ import {
   Card,
   FormHelperText,
 } from "@mui/material";
+import {
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+} from "@mui/material";
+
 import axios from "axios";
 
 const Corporate = (props) => {
@@ -23,6 +31,7 @@ const Corporate = (props) => {
   console.log(userID);
   const navigate = useNavigate();
   const accessToken = localStorage.getItem("token");
+  const [openConfirm, setOpenConfirm] = useState(false);
 
   /// State District Tehsil
   const State = localStorage.getItem("StateLogin");
@@ -146,7 +155,6 @@ const Corporate = (props) => {
     };
     fetchDistrictOptions();
   }, [selectedState]);
-  
 
   useEffect(() => {
     const fetchTalukaOptions = async () => {
@@ -619,12 +627,17 @@ const Corporate = (props) => {
     getworkshop();
   }, []);
 
-  const handleSubmit = async (e) => {
+const handleSubmit = async (e, confirmed = false) => {
     e.preventDefault();
 
-    const confirmed = window.confirm(
-      "Are you sure you want to submit the form?"
-    );
+    // const confirmed = window.confirm(
+    //   "Are you sure you want to submit the form?"
+    // );
+    if (!confirmed) {
+      // If called without confirmation, just open the dialog
+      setOpenConfirm(true);
+      return;
+    }
 
     if (confirmed) {
       const formData = new FormData();
@@ -1580,7 +1593,7 @@ const Corporate = (props) => {
                   </Select>
                 </FormControl>
               </Grid>
-              <Grid item xs={12} sm={6}>
+              {/* <Grid item xs={12} sm={6}>
                 <FormControl
                   fullWidth
                   size="small"
@@ -1610,7 +1623,7 @@ const Corporate = (props) => {
                     ))}
                   </Select>
                 </FormControl>
-              </Grid>
+              </Grid> */}
 
               <Grid item xs={12} sm={6}>
                 <FormControl
@@ -1717,6 +1730,28 @@ const Corporate = (props) => {
           </Box>
         </Grid>
       </Grid>
+      <Dialog open={openConfirm} onClose={() => setOpenConfirm(false)}>
+        <DialogTitle>Confirm Submission</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to submit the form?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setOpenConfirm(false)} color="secondary">
+            Cancel
+          </Button>
+          <Button
+            onClick={(e) => {
+              setOpenConfirm(false);
+              handleSubmit(e, true); // pass a flag to indicate confirmation
+            }}
+            color="primary"
+          >
+            Confirm
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 };

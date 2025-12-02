@@ -63,6 +63,11 @@ const Difieciency = ({
           },
         });
         setDeficiencies(response.data);
+        setFormData((prev) => ({
+          ...prev,
+          checkboxes: new Array(response.data.length).fill(false),
+        }));
+        console.log("Fetched master deficiencies:", response.data.length);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -72,8 +77,8 @@ const Difieciency = ({
   }, []);
 
   const [formData, setFormData] = useState({
-    checkboxes: new Array(deficiencies.length).fill(0),
-    selectedNames: [],
+    checkboxes:[],
+    selectedIds: [],
     citizen_pk_id: citizensPkId,
     modify_by: userID,
   });
@@ -81,60 +86,18 @@ const Difieciency = ({
   const handleCheckboxChange = (index) => {
     const updatedCheckboxes = [...formData.checkboxes];
     updatedCheckboxes[index] = !updatedCheckboxes[index];
+    const selectedIds = deficiencies
+      .filter((_, i) => updatedCheckboxes[i])
+      .map((item) => item.deficiencies_id);
 
-    const selectedNames = deficiencies
-      .filter((item, i) => updatedCheckboxes[i])
-      .map((item) => item.deficiencies);
-
-    setFormData({
-      ...formData,
+    setFormData((prev) => ({
+      ...prev,
       checkboxes: updatedCheckboxes,
-      selectedNames: selectedNames,
-    });
+      selectedIds: selectedIds,
+    }));
   };
 
-  useEffect(() => {
-    const fetchDataById = async (pkid) => {
-      try {
-        const response = await fetch(
-          `${Port}/Screening/citizen_basic_screening_info_get/${pkid}/`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${accessToken}`,
-            },
-          }
-        );
-
-        if (response.ok) {
-          const data = await response.json();
-          if (Array.isArray(data) && data.length > 0) {
-            const screeningInfo = data[0];
-            const difeciencyData = screeningInfo.deficiencies || [];
-
-            const initialCheckboxes = deficiencies.map((item) =>
-              difeciencyData.includes(item.deficiencies)
-            );
-
-            setFormData((prevState) => ({
-              ...prevState,
-              checkboxes: initialCheckboxes,
-              selectedNames: difeciencyData,
-            }));
-          } else {
-            console.error("Empty or invalid data array.");
-          }
-        } else {
-          console.error("Server Error:", response.status, response.statusText);
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error.message);
-      }
-    };
-
-    fetchDataById(pkid);
-  }, [pkid, deficiencies]);
+ 
 
 
    const [allData, setAllData] = useState([]);
@@ -150,19 +113,45 @@ const Difieciency = ({
           }
         );
         setAllData(response.data);
+        console.log("Fetched screening deficiencies for pkid:", response.data);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
 
-   useEffect(() => {
-     fetchAllData();
-   },[pkid]);
+  useEffect(() => {
+    fetchAllData();
+  },[pkid]);
+
+  // Initialize checkboxes/selected IDs when master list AND screening data are available
+  useEffect(() => {
+    if (deficiencies.length > 0 && Array.isArray(allData) && allData.length > 0) {
+      const screeningInfo = allData[0];
+      const selectedIds = (screeningInfo.deficiencies || [])
+        .filter((id) => id != null)
+        .map((id) => Number(id));
+
+      const initialCheckboxes = deficiencies.map((item) =>
+        selectedIds.includes(item.deficiencies_id)
+      );
+
+      setFormData((prev) => ({
+        ...prev,
+        checkboxes: initialCheckboxes,
+        selectedIds: selectedIds,
+      }));
+    }
+  }, [deficiencies, allData]);
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const selectedIdsClean = (formData.selectedIds || [])
+      .filter((id) => id != null)
+      .map((id) => Number(id));
+
     const postData = {
-      deficiencies: formData.selectedNames,
+      deficiencies: selectedIdsClean,
     };
+    console.log("Submitting Deficiencies POST:", postData);
 
     try {
       const accessToken = localStorage.getItem("token");
@@ -223,12 +212,12 @@ const Difieciency = ({
       </Snackbar>
       <Box component="form" onSubmit={handleSubmit}>
         <Grid container>
-          {allData.map((item, index) => (
-            <Grid item xs={12} sm={6} md={4} key={item.id}>
+          {deficiencies.map((item, index) => (
+            <Grid item xs={12} sm={6} md={4} key={item.deficiencies_id}>
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={formData.checkboxes[index]}
+                    checked={formData.checkboxes[index] || false}
                     onChange={() => handleCheckboxChange(index)}
                     color="primary"
                     sx={{

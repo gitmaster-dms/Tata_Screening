@@ -70,8 +70,8 @@ const Skin = ({
   }, []);
 
   const [formData, setFormData] = useState({
-    checkboxes: new Array(skinDisease.length).fill(0),
-    selectedNames: [],
+    checkboxes: [],
+    selectedNames: [], // stores selected IDs
     citizen_pk_id: citizensPkId,
     modify_by: userID,
   });
@@ -82,7 +82,7 @@ const Skin = ({
 
     const selectedNames = skinDisease
       .filter((item, i) => updatedCheckboxes[i])
-      .map((item) => item.skin_conditions);
+      .map((item) => item.skin_conditions_id);
 
     setFormData({
       ...formData,
@@ -153,7 +153,7 @@ const Skin = ({
             const skinData = screeningInfo.skin_conditions || [];
 
             const initialCheckboxes = skinDisease.map((item) =>
-              skinData.includes(item.skin_conditions)
+              skinData.includes(item.skin_conditions_id)
             );
 
             setFormData((prevState) => ({
@@ -172,6 +172,16 @@ const Skin = ({
 
     fetchDataById(pkid);
   }, [pkid, skinDisease]);
+  // Initialize checkboxes array whenever skinDisease list changes
+  useEffect(() => {
+    setFormData((prev) => ({
+      ...prev,
+      checkboxes:
+        prev.checkboxes && prev.checkboxes.length > 0
+          ? prev.checkboxes
+          : new Array(skinDisease.length).fill(false),
+    }));
+  }, [skinDisease]);
   // Submit Handler old api
   // const handleSubmit = async (e) => {
   //     e.preventDefault();
@@ -221,8 +231,8 @@ const Skin = ({
             );
 
             if ( response.status === 200) {
-                const responseData = response.data;
-                const basicScreeningPkId = responseData.skin_pk_id;
+              const responseData = response.data && response.data.data ? response.data.data : response.data;
+              const basicScreeningPkId = responseData.skin_pk_id || (response.data && response.data.skin_pk_id);
                 console.log("Skin Form Submitted Successfully");
                 openSnackbar("Skin Form Submitted Successfully.");
                 onAcceptClick(nextName, basicScreeningPkId);
@@ -263,11 +273,11 @@ const Skin = ({
       <Box component="form" onSubmit={handleSubmit}>
         <Grid container>
           {skinDisease.map((item, index) => (
-            <Grid item xs={12} sm={6} md={4} key={item.id}>
+            <Grid item xs={12} sm={6} md={4} key={item.skin_conditions_id}>
               <FormControlLabel
                 control={
                   <Checkbox
-                    checked={formData.checkboxes[index]}
+                    checked={!!formData.checkboxes[index]}
                     onChange={() => handleCheckboxChange(index)}
                     color="primary"
                     sx={{

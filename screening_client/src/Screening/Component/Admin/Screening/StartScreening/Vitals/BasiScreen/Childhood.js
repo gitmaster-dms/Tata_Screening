@@ -21,10 +21,11 @@ const Childhood = ({
   subVitalList,
 }) => {
   const [nextName, setNextName] = useState("");
-  const [childhoodData, setChildhoodData] = useState([]);
+  const [childhoodList, setChildhoodList] = useState([]); // master list
+  const [screeningData, setScreeningData] = useState([]); // existing screening data
   const [formData, setFormData] = useState({
     checkboxes: [],
-    selectedNames: [],
+    selectedIds: [],
     citizen_pk_id: citizensPkId,
     modify_by: localStorage.getItem("userID"),
   });
@@ -58,9 +59,31 @@ const Childhood = ({
     }
   }, [selectedTab, subVitalList]);
 
+
+    useEffect(() => {
+      const fetchChildhoodList = async () => {
+        try {
+          const response = await axios.get(`${Port}/Screening/childhood_disease/`, {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+              "Content-Type": "application/json",
+            },
+          });
+          setChildhoodList(response.data);
+          setFormData((prev) => ({
+            ...prev,
+            checkboxes: new Array(response.data.length).fill(false),
+          }));
+          console.log("Fetched childhood master list:", response.data.length);
+        } catch (error) {
+          console.error("Error fetching master childhood list:", error);
+        }
+      };
+      fetchChildhoodList();
+    }, [Port, accessToken]);
   // 🔹 Fetch childhood disease options
   useEffect(() => {
-    const fetchChildhoodData = async () => {
+    const fetchChildhoodScreeningData = async () => {
       try {
         const response = await axios.get(
           `${Port}/Screening/childhood_disease_get_api/${pkid}/`,
@@ -71,36 +94,39 @@ const Childhood = ({
             },
           }
         );
-        setChildhoodData(response.data);
+        setScreeningData(response.data);
+        console.log("Fetched screening data for childhood:", response.data);
       } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error("Error fetching screening childhood data:", error);
       }
     };
-    fetchChildhoodData();
-  }, [Port, accessToken]);
+    if (pkid) fetchChildhoodScreeningData();
+  }, [Port, accessToken, pkid]);
 
   // 🔹 Checkbox selection logic
   const handleCheckboxChange = (index) => {
     const updatedCheckboxes = [...formData.checkboxes];
     updatedCheckboxes[index] = !updatedCheckboxes[index];
-
-    const selectedNames = childhoodData
-      .filter((_, i) => updatedCheckboxes[i])
-      .map((item) => item.childhood_disease);
-
     setFormData({
       ...formData,
       checkboxes: updatedCheckboxes,
-      selectedNames,
+      selectedIds: childhoodList
+        .filter((_, i) => updatedCheckboxes[i])
+        .map((item) => item.childhood_disease_id),
     });
   };
 
   // 🔹 Submit form
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const selectedIdsClean = (formData.selectedIds || [])
+      .filter((id) => id != null)
+      .map((id) => Number(id));
+
     const postData = {
-      childhood_disease: formData.selectedNames,
+      childhood_diseases: selectedIdsClean,
     };
+    console.log("Submitting Childhood POST:", postData)
 
     try {
       const response = await axios.post(
@@ -129,48 +155,25 @@ const Childhood = ({
     }
   };
 
-  // 🔹 Fetch selected values by pkid
+  // 🔹 Initialize checkbox selection from the screening GET API
   useEffect(() => {
-    const fetchDataById = async (pkid) => {
-      try {
-        const response = await fetch(
-          `${Port}/Screening/citizen_basic_screening_info_get/${pkid}/`,
-          {
-            method: "GET",
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
+    if (childhoodList.length > 0 && Array.isArray(screeningData) && screeningData.length > 0) {
+      const screeningInfo = screeningData[0];
+      const childHoodDisease = (screeningInfo.childhood_diseases || [])
+        .filter((id) => id != null)
+        .map((id) => Number(id));
 
-        if (response.ok) {
-          const data = await response.json();
+      const initialCheckboxes = childhoodList.map((item) =>
+        childHoodDisease.includes(item.childhood_disease_id)
+      );
 
-          if (Array.isArray(data) && data.length > 0) {
-            const screeningInfo = data[0];
-            const childHoodDisease = screeningInfo.childhood_disease || [];
-
-            const initialCheckboxes = childhoodData.map((item) =>
-              childHoodDisease.includes(item.childhood_disease)
-            );
-
-            setFormData((prevState) => ({
-              ...prevState,
-              checkboxes: initialCheckboxes,
-              selectedNames: childHoodDisease,
-            }));
-          }
-        } else {
-          console.error("Server Error:", response.status);
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
-    if (pkid) fetchDataById(pkid);
-  }, [pkid, childhoodData, Port, accessToken]);
+      setFormData((prevState) => ({
+        ...prevState,
+        checkboxes: initialCheckboxes,
+        selectedIds: childHoodDisease,
+      }));
+    }
+  }, [childhoodList, screeningData]);
 
   return (
     <Box
@@ -207,8 +210,8 @@ const Childhood = ({
 
       <Box component="form" onSubmit={handleSubmit}>
         <Grid container>
-          {childhoodData.map((item, index) => (
-            <Grid item xs={12} sm={6} md={4} key={item.id}>
+          {childhoodList.map((item, index) => (
+            <Grid item xs={12} sm={6} md={4} key={item.childhood_disease_id}>
               <FormGroup>
                 <FormControlLabel
                   control={

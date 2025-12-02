@@ -23,7 +23,7 @@ const Diagnosis = ({
   const [diagnosis, setDiagnosis] = useState([]);
   const [formData, setFormData] = useState({
     checkboxes: [],
-    selectedNames: [],
+    selectedIds: [],
     citizen_pk_id: citizensPkId,
     modify_by: localStorage.getItem("userID"),
   });
@@ -68,6 +68,7 @@ const Diagnosis = ({
           },
         });
         setDiagnosis(response.data);
+        console.log("Fetched diagnosis master list:", response.data.length);
         setFormData((prev) => ({
           ...prev,
           checkboxes: new Array(response.data.length).fill(false),
@@ -99,16 +100,20 @@ const Diagnosis = ({
           const data = await response.json();
           if (Array.isArray(data) && data.length > 0) {
             const screeningInfo = data[0];
-            const selectedDiagnosis = screeningInfo.diagnosis || [];
+            // Assume screeningInfo.diagnosis is an array of diagnosis IDs
+            const selectedDiagnosisIds = (screeningInfo.diagnosis || [])
+              .filter((id) => id != null)
+              .map((id) => Number(id));
+            console.log("Existing screening diagnosis IDs:", selectedDiagnosisIds);
 
             const initialCheckboxes = diagnosis.map((item) =>
-              selectedDiagnosis.includes(item.diagnosis)
+              selectedDiagnosisIds.includes(item.diagnosis_id)
             );
 
             setFormData((prevState) => ({
               ...prevState,
               checkboxes: initialCheckboxes,
-              selectedNames: selectedDiagnosis,
+              selectedIds: selectedDiagnosisIds,
             }));
           } else {
             console.error("Empty or invalid data array.");
@@ -131,23 +136,34 @@ const Diagnosis = ({
     const updatedCheckboxes = [...formData.checkboxes];
     updatedCheckboxes[index] = !updatedCheckboxes[index];
 
-    const selectedNames = diagnosis
+    const selectedIds = diagnosis
       .filter((_, i) => updatedCheckboxes[i])
-      .map((item) => item.diagnosis);
+      .map((item) => item.diagnosis_id);
 
-    setFormData({
-      ...formData,
+    setFormData((prev) => ({
+      ...prev,
       checkboxes: updatedCheckboxes,
-      selectedNames,
-    });
+      selectedIds: selectedIds,
+    }));
   };
 
   // ---------------- SUBMIT HANDLER ----------------
   const handleSubmit = async (e) => {
     e.preventDefault();
+    // Use selected diagnosis IDs directly, filter out null/undefined & coerce to Number
+    const selectedIdsClean = (formData.selectedIds || [])
+      .filter((id) => id != null)
+      .map((id) => Number(id));
     const postData = {
-      diagnosis: formData.selectedNames,
+      diagnosis: selectedIdsClean,
     };
+
+    console.log("Submitting Diagnosis POST: ", postData);
+
+    if (!postData.diagnosis || postData.diagnosis.length === 0) {
+      openSnackbar("Please select at least one diagnosis before submitting", "warning");
+      return;
+    }
 
     try {
       const response = await axios.post(
@@ -163,8 +179,9 @@ const Diagnosis = ({
 
       if (response.status === 200) {
         // if (window.confirm("Submit Diagnosis Form")) 
-            {
+        {
           console.log("Diagnosis Form Submitted Successfully");
+          console.log("Diagnosis POST response:", response.data);
           openSnackbar("Diagnosis Form Submitted Successfully", "success");
           onAcceptClick(nextName, basicScreeningPkId);
         }
@@ -172,7 +189,8 @@ const Diagnosis = ({
         console.error("Unexpected status:", response.status);
       }
     } catch (error) {
-      console.error("Error posting diagnosis data:", error);
+      console.error("Error posting diagnosis data:", error.response ? error.response.data : error.message);
+      openSnackbar("Error saving diagnosis. Check console for details.", "error");
     }
   };
 
@@ -208,7 +226,7 @@ const Diagnosis = ({
       <form onSubmit={handleSubmit}>
         <Grid container>
           {diagnosis.map((item, index) => (
-            <Grid item xs={12} sm={6} md={4} key={item.id}>
+            <Grid item xs={12} sm={6} md={4} key={item.diagnosis_id}>
               <FormControlLabel
                 control={
                   <MUICheckbox

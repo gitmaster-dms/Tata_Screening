@@ -18,6 +18,10 @@ import {
   FormControl,
   Snackbar,
   Alert,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
@@ -36,6 +40,8 @@ const Generalexam = ({
   console.log(subVitalList, "Overall GET API");
   const [nextName, setNextName] = useState("");
   const navigation = useNavigate();
+  const [openDialog, setOpenDialog] = useState(false);
+
   useEffect(() => {
     if (subVitalList && selectedTab) {
       const currentIndex = subVitalList.findIndex(
@@ -47,7 +53,7 @@ const Generalexam = ({
       if (currentIndex !== -1 && currentIndex < subVitalList.length - 1) {
         const nextItem = subVitalList[currentIndex + 1];
         const nextName = nextItem.sub_list;
-      
+
         setNextName(nextName);
         console.log("Next Name Set:", nextName);
       } else {
@@ -190,8 +196,14 @@ const Generalexam = ({
     fetchDataById(pkid);
   }, [pkid]);
 
+  const handleOpenDialog = () => {
+    setOpenDialog(true);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setOpenDialog(false);
+
     // const isConfirmed = openSnackbar("Submit Basic Screen Form");
     // if (!isConfirmed) return;
     // const confirmationStatus = isConfirmed ? "True" : "False";
@@ -212,22 +224,20 @@ const Generalexam = ({
             Authorization: `Bearer ${accessToken}`,
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({ formData }),
+          body: JSON.stringify(formData),
         }
       );
 
       const data = await response.json();
 
-      if (response.status  === 200) {
+      if (response.status === 200) {
         console.log("Server Response:", data);
 
         // Check if the response contains the basic_screening_pk_id
         const basicScreeningPkId =
-          data?.data.genral_pk_id ||
-          data?.data.genral_pk_id;
+          data?.data.genral_pk_id || data?.data.genral_pk_id;
 
-          console.log(basicScreeningPkId,'jjjjjjjj');
-          
+        console.log(basicScreeningPkId, "jjjjjjjj");
 
         if (basicScreeningPkId) {
           localStorage.setItem("basicScreeningId", basicScreeningPkId);
@@ -247,6 +257,10 @@ const Generalexam = ({
     } catch (error) {
       console.error("Error sending data:", error.message);
     }
+  };
+
+  const handleCancel = () => {
+    setOpenDialog(false);
   };
 
   const extractBasicScreeningPkId = (data) => {
@@ -1209,7 +1223,7 @@ const Generalexam = ({
             variant="contained"
             color="primary"
             size="medium"
-            onClick={handleSubmit}
+            onClick={handleOpenDialog}
             sx={{
               textTransform: "none",
               borderRadius: 2,
@@ -1218,6 +1232,24 @@ const Generalexam = ({
             Submit
           </Button>
         </Grid>
+        <Dialog open={openDialog} onClose={handleCancel}>
+          <DialogTitle>Confirm Submission</DialogTitle>
+
+          <DialogContent>
+            <Typography>
+              Are you sure you want to submit this General Examination form?
+            </Typography>
+          </DialogContent>
+
+          <DialogActions>
+            <Button onClick={handleCancel} color="error">
+              Cancel
+            </Button>
+            <Button onClick={handleSubmit} color="primary" variant="contained">
+              Confirm
+            </Button>
+          </DialogActions>
+        </Dialog>
       </form>
     </Box>
   );

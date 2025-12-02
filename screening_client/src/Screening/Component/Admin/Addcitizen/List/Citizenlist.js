@@ -48,20 +48,19 @@ const Citizenlist = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const [snackbar, setSnackbar] = useState({
-  open: false,
-  message: "",
-  severity: "success", // "success" | "error" | "warning" | "info"
-});
+    open: false,
+    message: "",
+    severity: "success", // "success" | "error" | "warning" | "info"
+  });
 
   //// access the source from local storage
   const SourceUrlId = localStorage.getItem("loginSource");
   console.log("SourceUrlId", SourceUrlId);
 
-  const source = localStorage.getItem("source_id");        // "5" (string)
-const sourceName = localStorage.getItem("source_name_id"); // "1" (string)
+  const source = localStorage.getItem("source_id"); // "5" (string)
+  const sourceName = localStorage.getItem("source_name_id"); // "1" (string)
 
-console.log("Idddddddd", sourceName, source);
-
+  console.log("Idddddddd", sourceName, source);
 
   //// access the source name from local storage
   const SourceNameUrlId = localStorage.getItem("SourceNameFetched");
@@ -277,48 +276,48 @@ console.log("Idddddddd", sourceName, source);
   };
 
   /////////////DELETE API
-const handleDeleteClick = async (citizenID) => {
-  try {
-    const response = await fetch(`${Port}/Screening/Citizen_delete/${citizenID}/`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
+  const handleDeleteClick = async (citizenID) => {
+    try {
+      const response = await fetch(
+        `${Port}/Screening/Citizen_delete/${citizenID}/`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
 
-    if (response.ok) {
-      console.log("Record deleted successfully");
+      if (response.ok) {
+        console.log("Record deleted successfully");
+
+        setSnackbar({
+          open: true,
+          message: "Record deleted successfully!",
+          severity: "success",
+        });
+
+        await handleActive(active); // refresh table
+      } else {
+        console.error("Failed to delete record");
+
+        setSnackbar({
+          open: true,
+          message: "Failed to delete record!",
+          severity: "error",
+        });
+      }
+    } catch (error) {
+      console.error("Error:", error);
 
       setSnackbar({
         open: true,
-        message: "Record deleted successfully!",
-        severity: "success",
-      });
-
-      await handleActive(active); // refresh table
-    } else {
-      console.error("Failed to delete record");
-
-      setSnackbar({
-        open: true,
-        message: "Failed to delete record!",
+        message: "Something went wrong!",
         severity: "error",
       });
     }
-  } catch (error) {
-    console.error("Error:", error);
-
-    setSnackbar({
-      open: true,
-      message: "Something went wrong!",
-      severity: "error",
-    });
-  }
-};
-
-
-
+  };
 
   /////////////Citizen Age nav API
   useEffect(() => {
@@ -469,10 +468,10 @@ const handleDeleteClick = async (citizenID) => {
   const [openModalStart, setOpenModalStart] = useState(false);
   const [loadingPrevious, setLoadingPrevious] = useState(false);
   const [previousData, setPreviousData] = useState(null);
-  console.log(previousData, "previousData");
+  const [newPkId, setNewPkId] = useState(null);
+  console.log(newPkId, "newPkIdnewPkIdnewPkId");
 
   const open = Boolean(anchorEl);
-
 
   const handleMenuOpen = (event, citizen) => {
     setAnchorEl(event.currentTarget);
@@ -507,7 +506,7 @@ const handleDeleteClick = async (citizenID) => {
   const handleStartScreening = async () => {
     if (!selectedCitizen) return;
     handleMenuClose();
-    setOpenModalStart(true);
+    // setOpenModalStart(true);
     setLoadingPrevious(true);
 
     try {
@@ -517,6 +516,47 @@ const handleDeleteClick = async (citizenID) => {
       const data = await response.json();
       console.log("Fetched Screening Data:", data);
       setPreviousData(data);
+    } catch (error) {
+      console.error("Error fetching previous screening:", error);
+      setPreviousData({ error: true });
+    } finally {
+      setLoadingPrevious(false);
+    }
+  };
+
+  ///POST
+  const handleStartScreeningPOST = async (data) => {
+    console.log(data.citizens_pk_id, "citizens_pk_id");
+
+    if (!data.citizens_pk_id) return;
+    handleMenuClose();
+    setLoadingPrevious(true);
+
+    try {
+      const response = await fetch(
+        `${Port}/Screening/Start_Screening/${data.citizens_pk_id}/`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+
+      const result = await response.json();
+      console.log("POST Screening Response:", result.new_screening?.pk_id);
+      setNewPkId(result.new_screening?.pk_id);
+      navigate("/mainscreen/Body", {
+        state: {
+          newPkId,
+          // citizens_pk_id: newPkId,
+          citizens_pk_id: data.pk_id,
+          SourceUrlId,
+          SourceNameUrlId,
+          year: data.year,
+          dob: data.dob,
+          gender: data.gender,
+        },
+      });
+      // setPreviousData(result);
     } catch (error) {
       console.error("Error fetching previous screening:", error);
       setPreviousData({ error: true });
@@ -920,7 +960,7 @@ const handleDeleteClick = async (citizenID) => {
                   )
                   .slice(page * rowsPerPage, (page + 1) * rowsPerPage)
                   .map((data, index) => {
-                    console.log(data,"data");
+                    console.log(data, "data");
                     const serialNumber = index + 1 + page * rowsPerPage;
                     return (
                       <TableRow
@@ -1055,16 +1095,52 @@ const handleDeleteClick = async (citizenID) => {
                                     </MenuItem>
                                   )}
 
-                                  {/* <MenuItem
-                                    component={Link}
+                                  <MenuItem
                                     onClick={() => {
                                       handleMenuClose();
-                                      setOpenModalStart(true); // Only show modal - DO NOT navigate here
-                                      handleStartScreening();
+
+                                      if (
+                                        selectedCitizen?.previous_screen ===
+                                        true
+                                      ) {
+                                        setOpenModalStart(true);
+                                      } else {
+                                        handleStartScreeningPOST(data);
+                                      }
                                     }}
-                                    // to="/vital/childInfo"
-                                    state={{
-                                      citizens_pk_id: data.citizens_pk_id,
+                                  >
+                                    <ListItemIcon>
+                                      <PlayArrowOutlinedIcon
+                                        sx={{ color: "#2E7D32" }}
+                                      />
+                                    </ListItemIcon>
+                                    <ListItemText primary="Start Screening" />
+                                  </MenuItem>
+
+                                  {/* <MenuItem
+                                    onClick={() => {
+                                      handleMenuClose();
+
+                                      if (
+                                        selectedCitizen?.previous_screen ===
+                                        true
+                                      ) {
+                                        setOpenModalStart(true);
+                                        // handleStartScreening();
+                                      } else {
+                                        handleStartScreeningPOST(data);
+                                        // navigate("/mainscreen/Body", {
+                                        //   state: {
+                                        //     // citizens_pk_id: data.citizens_pk_id,
+                                        //     citizens_pk_id: data.pk_id,
+                                        //     SourceUrlId,
+                                        //     SourceNameUrlId,
+                                        //     year: data.year,
+                                        //     dob: data.dob,
+                                        //     gender: data.gender,
+                                        //   },
+                                        // });
+                                      }
                                     }}
                                   >
                                     <ListItemIcon>
@@ -1074,35 +1150,6 @@ const handleDeleteClick = async (citizenID) => {
                                     </ListItemIcon>
                                     <ListItemText primary="Start Screening" />
                                   </MenuItem> */}
-                                  <MenuItem
-    onClick={() => {
-        handleMenuClose();
-
-        if (selectedCitizen?.previous_screen === true) {
-            setOpenModalStart(true);
-            handleStartScreening();
-        } else {
-            console.log(data.citizens_pk_id, "citizens_pk_id");
-
-            navigate("/mainscreen/Body", {
-                state: {
-                    citizens_pk_id: data.citizens_pk_id,
-                    SourceUrlId,
-                    SourceNameUrlId,
-                    year:data.year,
-                    dob:data.dob,
-                    gender:data.gender,
-                },
-            });
-        }
-    }}
->
-    <ListItemIcon>
-        <PlayArrowOutlinedIcon sx={{ color: "#2E7D32" }} />
-    </ListItemIcon>
-    <ListItemText primary="Start Screening" />
-</MenuItem>
-
                                 </Menu>
                               </Box>
                             </CardContent>
