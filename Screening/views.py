@@ -26,6 +26,9 @@ from django.contrib.auth.hashers import make_password
 from django.core.exceptions import ValidationError
 from rest_framework import viewsets
 
+from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
+from rest_framework.authentication import get_authorization_header
+
 
 
 
@@ -230,6 +233,7 @@ class UserLoginView(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 #####--------------------------------------logout------------------------------------------#
+
 class LogoutView(APIView):
     # renderer_classes = [UserRenderer]
     # permission_classes = [IsAuthenticated]
@@ -249,7 +253,6 @@ class LogoutView(APIView):
             return Response({'msg':'Token is blacklisted successfully.'},status=status.HTTP_200_OK)
         except Exception as e:
             return Response({'msg':'Bad Request'},status=status.HTTP_400_BAD_REQUEST)
-        
 ######--------------------------------Get API---------------------------------------------#
 @api_view(['GET'])
 @renderer_classes([UserRenderer])
