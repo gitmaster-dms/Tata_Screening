@@ -546,7 +546,7 @@ const Citizenlist = () => {
       setNewPkId(result.new_screening?.pk_id);
       navigate("/mainscreen/Body", {
         state: {
-          newPkId,
+          newPkId: result.new_screening?.pk_id,
           // citizens_pk_id: newPkId,
           citizens_pk_id: data.pk_id,
           SourceUrlId,
@@ -1104,7 +1104,8 @@ const Citizenlist = () => {
                                         true
                                       ) {
                                         setOpenModalStart(true);
-                                      } else {
+                                      } 
+                                      else {
                                         handleStartScreeningPOST(data);
                                       }
                                     }}
@@ -1116,40 +1117,6 @@ const Citizenlist = () => {
                                     </ListItemIcon>
                                     <ListItemText primary="Start Screening" />
                                   </MenuItem>
-
-                                  {/* <MenuItem
-                                    onClick={() => {
-                                      handleMenuClose();
-
-                                      if (
-                                        selectedCitizen?.previous_screen ===
-                                        true
-                                      ) {
-                                        setOpenModalStart(true);
-                                        // handleStartScreening();
-                                      } else {
-                                        handleStartScreeningPOST(data);
-                                        // navigate("/mainscreen/Body", {
-                                        //   state: {
-                                        //     // citizens_pk_id: data.citizens_pk_id,
-                                        //     citizens_pk_id: data.pk_id,
-                                        //     SourceUrlId,
-                                        //     SourceNameUrlId,
-                                        //     year: data.year,
-                                        //     dob: data.dob,
-                                        //     gender: data.gender,
-                                        //   },
-                                        // });
-                                      }
-                                    }}
-                                  >
-                                    <ListItemIcon>
-                                      <PlayArrowOutlinedIcon
-                                        sx={{ color: "#2E7D32" }}
-                                      />
-                                    </ListItemIcon>
-                                    <ListItemText primary="Start Screening" />
-                                  </MenuItem> */}
                                 </Menu>
                               </Box>
                             </CardContent>
@@ -1280,24 +1247,6 @@ const Citizenlist = () => {
                     >
                       Continue Previous Screening
                     </Button>
-
-                    {/* <Button
-                                            fullWidth={false}
-                                            variant="contained"
-                                            sx={{
-                                                textTransform: "none",
-                                                bgcolor: "#1565C0",
-                                                "&:hover": { bgcolor: "#1565C0" },
-                                                minWidth: 180,
-                                            }}
-                                            onClick={() => {
-                                                console.log("Starting new screening for:", selectedCitizen.citizens_pk_id);
-                                                setOpenModal(false);
-                                                // navigate(`/mainscreen/body/${selectedCitizen.citizens_pk_id}`);
-                                            }}
-                                        >
-                                            Start New Screening
-                                        </Button> */}
                   </Box>
                 </Box>
               ) : (
