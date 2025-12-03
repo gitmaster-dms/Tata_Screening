@@ -11,6 +11,7 @@ import {
   Snackbar,
   Alert,
 } from "@mui/material";
+import { API_URL } from "../../../../../../Config/api";
 
 const Pft = ({
   citizensPkId,
@@ -25,7 +26,7 @@ const Pft = ({
   const [pftRemark, setPftRemark] = useState("");
   const accessToken = localStorage.getItem("token");
   const userID = localStorage.getItem("userID");
-  const API_URL = process.env.REACT_APP_API_KEY;
+  // const API_URL = process.env.REACT_APP_API_KEY;
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: "",

@@ -22,6 +22,7 @@ import {
   DialogTitle,
   Dialog,
 } from '@mui/material';
+import { API_URL } from '../../../../../../Config/api';
 
 const Immunisation = ({ pkid, citizensPkId, dob, fetchVital, selectedName, onAcceptClick }) => {
   const [nextName, setNextName] = useState('');
@@ -35,7 +36,7 @@ const Immunisation = ({ pkid, citizensPkId, dob, fetchVital, selectedName, onAcc
 const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
   const accessToken = localStorage.getItem('token');
   const userID = localStorage.getItem('userID');
-  const API_URL = process.env.REACT_APP_API_KEY;
+  // const API_URL = process.env.REACT_APP_API_KEY;
 
   // Calculate Next Section Name
   useEffect(() => {

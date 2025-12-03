@@ -31,6 +31,7 @@ import {
   Select,
 } from "@mui/material";
 import NotStartedIcon from "@mui/icons-material/NotStarted";
+import { API_URL } from "../../../../../../Config/api";
 const Vital = ({
   year,
   pkid,
@@ -80,7 +81,7 @@ const Vital = ({
   console.log(userID);
   const accessToken = localStorage.getItem("token");
 
-  const Port = process.env.REACT_APP_API_KEY;
+  // const API_URL = process.env.REACT_APP_API_KEY;
   //////// pulse
   const [pulseValue, setPulseValue] = useState(null);
   const [pulseResponse, setPulseResponse] = useState("");
@@ -130,7 +131,7 @@ const Vital = ({
     try {
       setLoadingDoctors(true);
 
-      const res = await fetch(`${Port}/Screening/Doctor_List/`, {
+      const res = await fetch(`${API_URL}/Screening/Doctor_List/`, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
@@ -152,7 +153,7 @@ const Vital = ({
       const fetchData = async () => {
         try {
           const response = await fetch(
-            `${Port}/Screening/pulse_get_api/${year}/${pulseValue}/`,
+            `${API_URL}/Screening/pulse_get_api/${year}/${pulseValue}/`,
             {
               method: "GET",
               headers: {
@@ -182,7 +183,7 @@ const Vital = ({
       const fetchData = async () => {
         try {
           const response = await fetch(
-            `${Port}/Screening/sys_get_api/${year}/${sys}/`,
+            `${API_URL}/Screening/sys_get_api/${year}/${sys}/`,
             {
               method: "GET",
               headers: {
@@ -212,7 +213,7 @@ const Vital = ({
       const fetchData = async () => {
         try {
           const response = await fetch(
-            `${Port}/Screening/dys_get_api/${year}/${dys}/`,
+            `${API_URL}/Screening/dys_get_api/${year}/${dys}/`,
             {
               method: "GET",
               headers: {
@@ -242,7 +243,7 @@ const Vital = ({
       const fetchData = async () => {
         try {
           const response = await fetch(
-            `${Port}/Screening/rr_get_api/${year}/${rr}/`,
+            `${API_URL}/Screening/rr_get_api/${year}/${rr}/`,
             {
               method: "GET",
               headers: {
@@ -272,7 +273,7 @@ const Vital = ({
       const fetchData = async () => {
         try {
           const response = await fetch(
-            `${Port}/Screening/o2sat_get_api/${year}/${sats}/`,
+            `${API_URL}/Screening/o2sat_get_api/${year}/${sats}/`,
             {
               method: "GET",
               headers: {
@@ -302,7 +303,7 @@ const Vital = ({
       const fetchData = async () => {
         try {
           const response = await fetch(
-            `${Port}/Screening/temp_get_api/${year}/${temp}/`,
+            `${API_URL}/Screening/temp_get_api/${year}/${temp}/`,
             {
               method: "GET",
               headers: {
@@ -332,7 +333,7 @@ const Vital = ({
       const fetchData = async () => {
         try {
           const response = await fetch(
-            `${Port}/Screening/hb_get_api/${gender}/${year}/${hb}/`,
+            `${API_URL}/Screening/hb_get_api/${gender}/${year}/${hb}/`,
             {
               method: "GET",
               headers: {
@@ -487,7 +488,7 @@ const Vital = ({
   // const fetchDataTemp = async (paramValue) => {
   //     setLoading(true);
   //     try {
-  //         const response = await fetch(`${Port}/Screening/device_data/?type=${paramValue}`);
+  //         const response = await fetch(`${API_URL}/Screening/device_data/?type=${paramValue}`);
   //         if (!response.ok) {
   //             throw new Error("Network response was not ok");
   //         }
@@ -510,7 +511,7 @@ const Vital = ({
     setLoading(true);
     try {
       const response = await fetch(
-        `${Port}/Screening/device_data/?type=${paramValue}`
+        `${API_URL}/Screening/device_data/?type=${paramValue}`
       );
       if (!response.ok) {
         throw new Error("Network response was not ok");
@@ -528,7 +529,7 @@ const Vital = ({
     setLoading(true);
     try {
       const response = await fetch(
-        `${Port}/Screening/device_data/?type=${paramValue}`
+        `${API_URL}/Screening/device_data/?type=${paramValue}`
       );
       if (!response.ok) {
         throw new Error("Network response was not ok");
@@ -546,7 +547,7 @@ const Vital = ({
     setLoading(true);
     try {
       const response = await fetch(
-        `${Port}/Screening/device_data/?type=${paramValue}`
+        `${API_URL}/Screening/device_data/?type=${paramValue}`
       );
       if (!response.ok) {
         throw new Error("Network response was not ok");
@@ -564,7 +565,7 @@ const Vital = ({
     setLoading(true);
     try {
       const response = await fetch(
-        `${Port}/Screening/device_data/?type=${paramValue}`
+        `${API_URL}/Screening/device_data/?type=${paramValue}`
       );
       if (!response.ok) {
         throw new Error("Network response was not ok");
@@ -582,7 +583,7 @@ const Vital = ({
     setLoading(true);
     try {
       const response = await fetch(
-        `${Port}/Screening/device_data/?type=${paramValue}`
+        `${API_URL}/Screening/device_data/?type=${paramValue}`
       );
       if (!response.ok) {
         throw new Error("Network response was not ok");
@@ -679,7 +680,7 @@ const Vital = ({
     console.log("Form Data:", formData);
 
     if (confirmationStatus === "True") {
-      fetch(`${Port}/Screening/Vital_Info_Post/${pkid}/`, {
+      fetch(`${API_URL}/Screening/Vital_Info_Post/${pkid}/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -713,7 +714,7 @@ const Vital = ({
   };
 
   const fetchCitizenVitalInfo = () => {
-    fetch(`${Port}/Screening/Vital_Info_Get/${pkid}/`, {
+    fetch(`${API_URL}/Screening/Vital_Info_Get/${pkid}/`, {
       headers: {
         Authorization: `Bearer ${accessToken}`, // Include the authorization header
         "Content-Type": "application/json", // Ensure correct content type

@@ -17,6 +17,7 @@ import {
   Dialog,
   FormLabel,
 } from "@mui/material";
+import { API_URL } from "../../../../../../Config/api";
 
 const Vision = ({
   pkid,
@@ -33,7 +34,7 @@ const Vision = ({
   const [openConfirm, setOpenConfirm] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const Port = process.env.REACT_APP_API_KEY;
+  // const API_URL = process.env.REACT_APP_API_KEY;
   const accessToken = localStorage.getItem("token");
   const source = localStorage.getItem("source");
   const userID = localStorage.getItem("userID");
@@ -55,7 +56,7 @@ const Vision = ({
     try {
       setLoadingDoctors(true);
 
-      const res = await fetch(`${Port}/Screening/Doctor_List/`, {
+      const res = await fetch(`${API_URL}/Screening/Doctor_List/`, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
@@ -146,7 +147,7 @@ const Vision = ({
   //   };
 
   //   try {
-  //     const response = await fetch(`${Port}/Screening/vision_post_api/${pkid}/`, {
+  //     const response = await fetch(`${API_URL}/Screening/vision_post_api/${pkid}/`, {
   //       method: 'POST',
   //       headers: {
   //         'Content-Type': 'application/json',
@@ -188,7 +189,7 @@ const Vision = ({
 
     try {
       const response = await fetch(
-        `${Port}/Screening/vision_post_api/${pkid}/`,
+        `${API_URL}/Screening/vision_post_api/${pkid}/`,
         {
           method: "POST",
           headers: {
@@ -214,7 +215,7 @@ const Vision = ({
   const fetchDataById = async (pkid) => {
     try {
       const response = await fetch(
-        `${Port}/Screening/vision_get_api/${pkid}/`,
+        `${API_URL}/Screening/vision_get_api/${pkid}/`,
         {
           method: "GET",
           headers: {

@@ -12,6 +12,7 @@ import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
 import DeleteOutlineOutlinedIcon from "@mui/icons-material/DeleteOutlineOutlined";
 import TablePagination from "@mui/material/TablePagination";
 import CircularProgress from "@mui/material/CircularProgress";
+import { API_URL } from "../../../../../../Config/api";
 
 const Citizenlist = () => {
   //permission code start
@@ -111,7 +112,7 @@ const Citizenlist = () => {
   }, []);
 
   //permission code end
-  const Port = process.env.REACT_APP_API_KEY;
+  // const API_URL = process.env.REACT_APP_API_KEY;
   const [active, setActive] = useState("today"); // today filter
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedAge, setSelectedAge] = useState("");
@@ -158,7 +159,7 @@ const Citizenlist = () => {
     try {
       const accessToken = localStorage.getItem("token"); // Retrieve access token
       const response = await axios.get(
-        `${Port}/Screening/filter-citizens/?date_filter=${type}`,
+        `${API_URL}/Screening/filter-citizens/?date_filter=${type}`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -191,7 +192,7 @@ const Citizenlist = () => {
 
     const accessToken = localStorage.getItem("token"); // Retrieve access token
 
-    const url = `${Port}/Screening/filter-citizens/?${Object.entries(filters)
+    const url = `${API_URL}/Screening/filter-citizens/?${Object.entries(filters)
       .filter(([key, value]) => value !== null && value !== undefined)
       .map(([key, value]) => `${key}=${value}`)
       .join("&")}`;
@@ -215,7 +216,7 @@ const Citizenlist = () => {
   // useEffect(() => {
   //     const fetchTableData = async () => {
   //         try {
-  //             const response = await axios.get(`${Port}/Screening/add_citizen_get/`)
+  //             const response = await axios.get(`${API_URL}/Screening/add_citizen_get/`)
   //             setTableFetch(response.data)
   //             console.log(tableFetch);
   //             setLoading(false);
@@ -241,7 +242,7 @@ const Citizenlist = () => {
     const userID = localStorage.getItem("userID");
     console.log(userID);
 
-    fetch(`${Port}/Screening/add_citizen_delete/${citizenID}/${userID}/`, {
+    fetch(`${API_URL}/Screening/add_citizen_delete/${citizenID}/${userID}/`, {
       method: "DELETE",
       headers: {
         "Content-Type": "application/json",
@@ -270,7 +271,7 @@ const Citizenlist = () => {
   useEffect(() => {
     const fetchUserAgeDropdown = async () => {
       try {
-        const response = await axios.get(`${Port}/Screening/Age_GET/`, {
+        const response = await axios.get(`${API_URL}/Screening/Age_GET/`, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
             "Content-Type": "application/json",
@@ -289,7 +290,7 @@ const Citizenlist = () => {
   useEffect(() => {
     const fetchUserGenderDropdown = async () => {
       try {
-        const response = await axios.get(`${Port}/Screening/Gender_GET/`, {
+        const response = await axios.get(`${API_URL}/Screening/Gender_GET/`, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
             "Content-Type": "application/json",
@@ -308,7 +309,7 @@ const Citizenlist = () => {
   useEffect(() => {
     const fetchUserSourceDropdown = async () => {
       try {
-        const response = await axios.get(`${Port}/Screening/source_GET/`, {
+        const response = await axios.get(`${API_URL}/Screening/source_GET/`, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
             "Content-Type": "application/json",
@@ -328,7 +329,7 @@ const Citizenlist = () => {
     const fetchUserDiseaseDropdown = async () => {
       try {
         const response = await axios.get(
-          `${Port}/Screening/child_disease_info_get/`,
+          `${API_URL}/Screening/child_disease_info_get/`,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,
@@ -349,7 +350,7 @@ const Citizenlist = () => {
   useEffect(() => {
     if (selectedSource) {
       axios
-        .get(`${Port}/Screening/screening_for_type_get/${selectedSource}`, {
+        .get(`${API_URL}/Screening/screening_for_type_get/${selectedSource}`, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
             "Content-Type": "application/json",
@@ -368,7 +369,7 @@ const Citizenlist = () => {
   useEffect(() => {
     const fetchClass = async () => {
       try {
-        const response = await axios.get(`${Port}/Screening/get_class/`, {
+        const response = await axios.get(`${API_URL}/Screening/get_class/`, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
             "Content-Type": "application/json",
@@ -386,7 +387,7 @@ const Citizenlist = () => {
   useEffect(() => {
     const fetchDivision = async () => {
       try {
-        const response = await axios.get(`${Port}/Screening/get_division/`, {
+        const response = await axios.get(`${API_URL}/Screening/get_division/`, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
             "Content-Type": "application/json",

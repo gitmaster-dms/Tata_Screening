@@ -19,10 +19,11 @@ import CallOutlinedIcon from "@mui/icons-material/CallOutlined";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import registrationBadge from '../../Images/TataLogoNav.png';
+import { API_URL } from "../../../Config/api";
 
 const Navbar = ({ onLogout }) => {
     const history = useNavigate();
-    const Port = process.env.REACT_APP_API_KEY;
+    // const API_URL = process.env.REACT_APP_API_KEY;
 
     const personName = localStorage.getItem("name");
     const colleagueEmail = localStorage.getItem("colleagueEmail");
@@ -47,7 +48,7 @@ const Navbar = ({ onLogout }) => {
         try {
             const refresh = localStorage.getItem("refresh");
             const userID = localStorage.getItem("userID");
-            const response = await axios.post(`${Port}/Screening/logout/`, {
+            const response = await axios.post(`${API_URL}/Screening/logout/`, {
                 refresh,
                 clg_id: userID,
             });
