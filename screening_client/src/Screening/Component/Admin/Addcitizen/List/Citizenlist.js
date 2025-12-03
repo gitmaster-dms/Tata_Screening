@@ -482,26 +482,50 @@ const Citizenlist = () => {
     setAnchorEl(null);
   };
 
-  const handlePreviousClick = async () => {
-    if (!selectedCitizen) return;
-    handleMenuClose();
-    setOpenModal(true);
-    setLoadingPrevious(true);
+  const [pkIdnewprevious, setpkIdnewprevious] = useState(null);
+  console.log(pkIdnewprevious,"pkidprevous");
+  
+const handlePreviousClick = async () => {
+  if (!selectedCitizen) return;
 
-    try {
-      const response = await fetch(
-        `${Port}/Screening/Start_Screening/${selectedCitizen.citizens_pk_id}/`
-      );
-      const data = await response.json();
-      console.log("Fetched Screening Data:", data);
-      setPreviousData(data);
-    } catch (error) {
-      console.error("Error fetching previous screening:", error);
-      setPreviousData({ error: true });
-    } finally {
-      setLoadingPrevious(false);
-    }
-  };
+  handleMenuClose();
+  setOpenModal(true);
+  setLoadingPrevious(true);
+
+  try {
+    const response = await fetch(
+      `${Port}/Screening/Start_Screening/${selectedCitizen.citizens_pk_id}/`
+    );
+
+    const data = await response.json();
+    console.log("Fetched Screening Data:", data);
+
+    setPreviousData(data);
+
+    // ✅ Get PK ID immediately
+    const previousPkId = data?.latest_screening?.pk_id;
+    console.log("Previous Screening PK ID:", previousPkId);
+
+    // Navigate using the pk_id
+    navigate("/mainscreen/Body", {
+      state: {
+        newPkId: previousPkId,   // <-- pass previous screening ID
+        SourceUrlId,
+        SourceNameUrlId,
+        year: selectedCitizen.year,
+        dob: selectedCitizen.dob,
+        gender: selectedCitizen.gender,
+      },
+    });
+
+  } catch (error) {
+    console.error("Error fetching previous screening:", error);
+    setPreviousData({ error: true });
+  } finally {
+    setLoadingPrevious(false);
+  }
+};
+
 
   const handleStartScreening = async () => {
     if (!selectedCitizen) return;
@@ -1085,6 +1109,7 @@ const Citizenlist = () => {
                                     true && (
                                     <MenuItem
                                       onClick={(e) => handlePreviousClick(data)}
+                                      
                                     >
                                       <ListItemIcon>
                                         <ReplayOutlinedIcon
@@ -1104,10 +1129,10 @@ const Citizenlist = () => {
                                         true
                                       ) {
                                         setOpenModalStart(true);
-                                      } 
-                                      else {
-                                        handleStartScreeningPOST(data);
                                       }
+                                      // else {
+                                      //   handleStartScreeningPOST(data);
+                                      // }
                                     }}
                                   >
                                     <ListItemIcon>

@@ -47,8 +47,9 @@ const Body = () => {
     sourceID,
     citizens_pk_id,
     newPkId,
+    previousPkId,
   } = location.state;
-  console.log(newPkId, "getting ID from citizen List");
+  console.log(previousPkId, "getting ID from citizen List");
 
   const [selectedId, setSelectedId] = useState(null);
   const [selectedGender, setSelectedGender] = useState(gender);
