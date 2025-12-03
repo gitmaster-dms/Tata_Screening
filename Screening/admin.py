@@ -185,4 +185,5 @@ admin.site.register(Category)
 #------------------------------------------------------------------------------------------------------------
 admin.site.register(Screening_citizen)
 admin.site.register(doctor_list)
+admin.site.register(Citizen)
 
