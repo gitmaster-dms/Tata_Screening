@@ -166,6 +166,8 @@ console.log("Selected doctor:", selectedDoctor);
   };
 
   const [growthId, setGrowthId] = useState(null);
+  console.log(growthId,"growthId");
+  
   const postBmiData = async () => {
     try {
       const response = await fetch(

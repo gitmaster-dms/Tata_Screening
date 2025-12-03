@@ -121,6 +121,9 @@ const Childvital = ({
     fetchDesignation();
   }, [selectedDepartment]);
 
+  const [basicpkid , setBasicpkid] = useState(null);
+  console.log(basicpkid, "basicpkid");
+  
   const fetchData = async () => {
     try {
       const response = await fetch(`${Port}/Screening/SaveBasicInfo/${pkid}/`, {
@@ -141,8 +144,9 @@ const Childvital = ({
         const childData = res.data;
         setChildData(childData);
         setSelectedDepartment(childData?.citizen_info?.department);
-        setUpdateId(childData?.basic_pk_id);
-
+        setBasicpkid(childData?.basic_pk_id);
+        console.log(childData?.basic_pk_id,"baiscpkid");
+        
         localStorage.setItem("citizenGender", childData?.citizen_info?.gender);
       }
     } catch (error) {
@@ -155,9 +159,11 @@ const Childvital = ({
   }, [pkid]);
 
   const updateDataInDatabase = async ( confirmationStatus) => {
+    console.log(confirmationStatus,"confirmationStatus");
+    
     try {
       const response = await fetch(
-        `${Port}/Screening/CitizenBasicInfo/${childData?.basic_pk_id}/`,
+        `${Port}/Screening/CitizenBasicInfo/${basicpkid}/`,
         {
           method: "PUT",
           headers: {

@@ -24,7 +24,7 @@ const FamilyInfo = ({
   const [nextName, setNextName] = useState("");
   const [updateId, setUpdateId] = useState("");
   const [familyData, setFamilyData] = useState({});
-  console.log(familyData, "familydata");
+  console.log(pkid, "pkidssssss");
 
   const [openConfirm, setOpenConfirm] = useState(false);
 
@@ -76,7 +76,7 @@ const FamilyInfo = ({
       if (res?.data) {
         setFamilyData(res.data); // store entire object
         setUpdateId(res.data?.citizen_id); // correct key sent by backend
-        setEmpKID(res.data?.citizen_pk_id)
+        setEmpKID(res.data?.em_pk_id)
       }
     } catch (error) {
       console.error("Error fetching family data", error);

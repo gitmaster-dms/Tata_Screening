@@ -482,34 +482,44 @@ const Citizenlist = () => {
     setAnchorEl(null);
   };
 
-  const [pkIdnewprevious, setpkIdnewprevious] = useState(null);
-  console.log(pkIdnewprevious,"pkidprevous");
-  
-const handlePreviousClick = async () => {
-  if (!selectedCitizen) return;
+  const [PreviousPkId, setPreviousPkId] = useState(null);
+  console.log(PreviousPkId, "pkidprevous");
 
-  handleMenuClose();
-  setOpenModal(true);
-  setLoadingPrevious(true);
+  // Fetch previous screening for a citizen. If `openModalFlag` is false,
+  // do not open the Previous Screening modal (useful when starting a new screening).
+  const handlePreviousClick = async (citizen = null, options = { openModalFlag: true }) => {
+    const target = citizen || selectedCitizen;
+    if (!target) return;
 
-  try {
-    const response = await fetch(
-      `${Port}/Screening/Start_Screening/${selectedCitizen.citizens_pk_id}/`
-    );
+    handleMenuClose();
+    if (options.openModalFlag) setOpenModal(true);
+    setLoadingPrevious(true);
 
-    const data = await response.json();
-    console.log("Fetched Screening Data:", data);
+    try {
+      const response = await fetch(
+        `${Port}/Screening/Start_Screening/${target.citizens_pk_id}/`
+      );
 
-    setPreviousData(data);
+      const data = await response.json();
+      console.log("Fetched Screening Data:", data);
+      setPreviousData(data);
 
-    // ✅ Get PK ID immediately
-    const previousPkId = data?.latest_screening?.pk_id;
-    console.log("Previous Screening PK ID:", previousPkId);
+      // Get PK ID immediately
+      setPreviousPkId(data?.latest_screening?.pk_id);
+    } catch (error) {
+      console.error("Error fetching previous screening:", error);
+      setPreviousData({ error: true });
+    } finally {
+      setLoadingPrevious(false);
+    }
+  };
 
-    // Navigate using the pk_id
+  const continuePreviousScreening = () => {
+    setOpenModal(false);
+
     navigate("/mainscreen/Body", {
       state: {
-        newPkId: previousPkId,   // <-- pass previous screening ID
+        newPkId: PreviousPkId,
         SourceUrlId,
         SourceNameUrlId,
         year: selectedCitizen.year,
@@ -517,35 +527,6 @@ const handlePreviousClick = async () => {
         gender: selectedCitizen.gender,
       },
     });
-
-  } catch (error) {
-    console.error("Error fetching previous screening:", error);
-    setPreviousData({ error: true });
-  } finally {
-    setLoadingPrevious(false);
-  }
-};
-
-
-  const handleStartScreening = async () => {
-    if (!selectedCitizen) return;
-    handleMenuClose();
-    // setOpenModalStart(true);
-    setLoadingPrevious(true);
-
-    try {
-      const response = await fetch(
-        `${Port}/Screening/Start_Screening/${selectedCitizen.citizens_pk_id}/`
-      );
-      const data = await response.json();
-      console.log("Fetched Screening Data:", data);
-      setPreviousData(data);
-    } catch (error) {
-      console.error("Error fetching previous screening:", error);
-      setPreviousData({ error: true });
-    } finally {
-      setLoadingPrevious(false);
-    }
   };
 
   ///POST
@@ -589,50 +570,73 @@ const handlePreviousClick = async () => {
     }
   };
 
-  const handleStartNewScreening = async () => {
-    if (!selectedCitizen?.citizens_pk_id) {
-      setSnackbar({
-        open: true,
-        message: "Invalid citizen data.",
-        severity: "error",
-      });
-      return;
-    }
+ const handleStartNewScreening = async () => {
+  if (!selectedCitizen?.citizens_pk_id) {
+    setSnackbar({
+      open: true,
+      message: "Invalid citizen data.",
+      severity: "error",
+    });
+    return;
+  }
 
-    try {
-      const response = await axios.post(
-        `${Port}/Screening/Start_Screening/${selectedCitizen.citizens_pk_id}/`,
-        {
-          citizen_id: selectedCitizen.citizens_pk_id,
+  try {
+    const response = await axios.post(
+      `${Port}/Screening/Start_Screening/${selectedCitizen.citizens_pk_id}/`,
+      {},
+      {
+        headers: {
+          "Content-Type": "application/json",
         },
-        {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-          },
-        }
-      );
+      }
+    );
 
-      if (response.status === 200 || response.status === 201) {
+    if (response.status === 200 || response.status === 201) {
+      const result = response.data; // ⭐ Most important
+      const newPkId = result?.new_screening?.pk_id;
+
+      if (!newPkId) {
+        console.error("PK ID missing in API response:", result);
         setSnackbar({
           open: true,
-          message: "New screening started successfully!",
-          severity: "success",
+          message: "PK ID not found in response.",
+          severity: "error",
         });
-
-        setOpenModalStart(false);
-      } else {
-        throw new Error("Failed to start new screening.");
+        return;
       }
-    } catch (error) {
-      console.error("Error starting new screening:", error);
+
       setSnackbar({
         open: true,
-        message: "Failed to start new screening. Please try again.",
-        severity: "error",
+        message: "New screening started successfully!",
+        severity: "success",
       });
+
+      navigate("/mainscreen/Body", {
+        state: {
+          citizens_pk_id: newPkId,  // ⭐ Only this is correct
+          newPkId: newPkId,
+          SourceUrlId,
+          SourceNameUrlId,
+          year: selectedCitizen?.year,
+          dob: selectedCitizen?.dob,
+          gender: selectedCitizen?.gender,
+        },
+      });
+
+      setOpenModalStart(false);
+    } else {
+      throw new Error("Failed to start new screening.");
     }
-  };
+  } catch (error) {
+    console.error("Error starting new screening:", error);
+    setSnackbar({
+      open: true,
+      message: "Failed to start new screening. Please try again.",
+      severity: "error",
+    });
+  }
+};
+
 
   return (
     <div>
@@ -1109,7 +1113,6 @@ const handlePreviousClick = async () => {
                                     true && (
                                     <MenuItem
                                       onClick={(e) => handlePreviousClick(data)}
-                                      
                                     >
                                       <ListItemIcon>
                                         <ReplayOutlinedIcon
@@ -1119,20 +1122,31 @@ const handlePreviousClick = async () => {
                                       <ListItemText primary="Previous Screening" />
                                     </MenuItem>
                                   )}
-
+                                  
                                   <MenuItem
-                                    onClick={() => {
+                                    onClick={async () => {
                                       handleMenuClose();
 
-                                      if (
-                                        selectedCitizen?.previous_screen ===
-                                        true
-                                      ) {
-                                        setOpenModalStart(true);
+                                      console.log(
+                                        "Start Screening clicked",
+                                        data
+                                      );
+
+                                      // If there is no previous screening on this row, start directly
+                                      if (!data?.previous_screen === true) {
+                                        console.log(
+                                          "No previous screening → direct start"
+                                        );
+                                        handleStartScreeningPOST(data);
+                                        return;
                                       }
-                                      // else {
-                                      //   handleStartScreeningPOST(data);
-                                      // }
+
+                                      // Open only the "Start New Screening" modal and
+                                      // fetch previous screening data silently (don't open the previous modal)
+                                      setOpenModalStart(true);
+                                      setLoadingPrevious(true);
+                                      await handlePreviousClick(data, { openModalFlag: false });
+                                      setLoadingPrevious(false);
                                     }}
                                   >
                                     <ListItemIcon>
@@ -1256,19 +1270,7 @@ const handlePreviousClick = async () => {
                         "&:hover": { bgcolor: "#2E7D32" },
                         minWidth: 180,
                       }}
-                      onClick={() => {
-                        console.log(
-                          "Continuing screening for citizen:",
-                          previousData.latest_screening.citizen_pk_id
-                        );
-                        setOpenModal(false);
-                        // change path of the routing
-                        navigate("/mainscreen/Body", {
-                          state: {
-                            citizens_pk_id: selectedCitizen.citizens_pk_id,
-                          },
-                        });
-                      }}
+                      onClick={continuePreviousScreening}
                     >
                       Continue Previous Screening
                     </Button>
@@ -1442,7 +1444,7 @@ const handlePreviousClick = async () => {
                         "Starting new screening for:",
                         selectedCitizen.citizens_pk_id
                       );
-                      setOpenModal(false);
+                      setOpenModalStart(false); // ✔ FIXED
                       // navigate(`/mainscreen/body/${selectedCitizen.citizens_pk_id}`);
                     }}
                   >

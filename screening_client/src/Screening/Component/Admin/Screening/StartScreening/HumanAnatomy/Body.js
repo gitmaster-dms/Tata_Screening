@@ -49,12 +49,12 @@ const Body = () => {
     newPkId,
     previousPkId,
   } = location.state;
-  console.log(previousPkId, "getting ID from citizen List");
+  console.log(newPkId, "newPkId");
 
   const [selectedId, setSelectedId] = useState(null);
   const [selectedGender, setSelectedGender] = useState(gender);
   console.log(gender, "genderrrrrrrrrrrrrrrrrrrrrrrrrrrr");
-  console.log(pkid, "pkid");
+  console.log(newPkId, "pkipkiddpkidpkidpkidpkid");
   console.log(citizenidddddddd, "new citizen id");
 
   const [formSubmitValues, setFormSubmitValues] = useState({
