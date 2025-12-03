@@ -17,6 +17,7 @@ import {
   Snackbar,
   Alert,
 } from "@mui/material";
+import { API_URL } from "../../../../../../Config/api";
 
 const Childvital = ({
   citizensPkId,
@@ -29,7 +30,7 @@ const Childvital = ({
   const SourceUrlId = localStorage.getItem("loginSource");
   const SourceNameUrlId = localStorage.getItem("SourceNameFetched");
   const source = localStorage.getItem("source");
-  const API_URL = process.env.REACT_APP_API_KEY;
+  // const API_URL = process.env.REACT_APP_API_KEY;
   const userID = localStorage.getItem("userID");
   const accessToken = localStorage.getItem("token");
 

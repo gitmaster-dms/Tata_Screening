@@ -23,6 +23,7 @@ import {
   InputLabel,
   Select,
 } from "@mui/material";
+import { API_URL } from "../../../../../../Config/api";
 
 const BmiVital = ({
   onAcceptClick,
@@ -60,7 +61,7 @@ const BmiVital = ({
     }
   }, [selectedName, fetchVital]);
   //__________________________________END
-  const API_URL = process.env.REACT_APP_API_KEY;
+  // const API_URL = process.env.REACT_APP_API_KEY;
   const accessToken = localStorage.getItem("token");
   const userID = localStorage.getItem("userID");
   console.log(userID);
