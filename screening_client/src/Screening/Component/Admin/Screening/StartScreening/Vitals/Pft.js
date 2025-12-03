@@ -25,7 +25,7 @@ const Pft = ({
   const [pftRemark, setPftRemark] = useState("");
   const accessToken = localStorage.getItem("token");
   const userID = localStorage.getItem("userID");
-  const Port = process.env.REACT_APP_API_KEY;
+  const API_URL = process.env.REACT_APP_API_KEY;
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: "",
@@ -56,7 +56,7 @@ const Pft = ({
       const fetchData = async () => {
         try {
           const response = await axios.get(
-            `${Port}/Screening/pft/${pftReading}/`,
+            `${API_URL}/Screening/pft/${pftReading}/`,
             {
               headers: { Authorization: `Bearer ${accessToken}` },
             }
@@ -75,7 +75,7 @@ const Pft = ({
     const fetchFormData = async () => {
       try {
         const response = await axios.get(
-          `${Port}/Screening/pft_info_get/${pkid}`,
+          `${API_URL}/Screening/pft_info_get/${pkid}`,
           {
             headers: { Authorization: `Bearer ${accessToken}` },
           }
@@ -92,7 +92,7 @@ const Pft = ({
       }
     };
     fetchFormData();
-  }, [pkid, accessToken, Port]);
+  }, [pkid, accessToken, API_URL]);
 
   //_______________________ Handle Reading Input _______________________
   const handleReadingChange = (event) => {
@@ -114,7 +114,7 @@ const Pft = ({
 
     try {
       const response = await axios.post(
-        `${Port}/Screening/citizen_pft_info/${pkid}`,
+        `${API_URL}/Screening/citizen_pft_info/${pkid}`,
         {
           citizen_pk_id: citizensPkId,
           pft_reading: pftReading,
@@ -154,7 +154,7 @@ const Pft = ({
   const fetchPftData = async () => {
     try {
       const response = await axios.get(
-        `${Port}/Screening/pft_get_api/${pkid}/`,
+        `${API_URL}/Screening/pft_get_api/${pkid}/`,
         {
           headers: { Authorization: `Bearer ${accessToken}` },
         }
@@ -181,7 +181,7 @@ const Pft = ({
   const pftPostData = async () => {
     try {
       const response = await fetch(
-        `${Port}/Screening/pft_post_api/${pkid}/`,
+        `${API_URL}/Screening/pft_post_api/${pkid}/`,
         {
           method: "POST",
           headers: {

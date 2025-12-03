@@ -36,6 +36,7 @@ import {
   Alert,
   Snackbar,
 } from "@mui/material";
+import { API_URL } from "../../../../Config/api";
 
 const AddUser = () => {
   //permission code start
@@ -92,7 +93,7 @@ const AddUser = () => {
   }, []);
 
   //permission code end
-  const Port = process.env.REACT_APP_API_KEY;
+  // const API_URL = process.env.REACT_APP_API_KEY;
   const accessToken = localStorage.getItem("token");
 
   const [showForm, setShowForm] = useState(false);
@@ -184,7 +185,7 @@ const AddUser = () => {
   useEffect(() => {
     // Fetch source options
     axios
-      .get(`${Port}/Screening/source_GET/`, {
+      .get(`${API_URL}/Screening/source_GET/`, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
@@ -200,7 +201,7 @@ const AddUser = () => {
   //// Soure State against selected source
   useEffect(() => {
     axios
-      .get(`${Port}/Screening/State_Get/`, {
+      .get(`${API_URL}/Screening/State_Get/`, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
@@ -217,7 +218,7 @@ const AddUser = () => {
   useEffect(() => {
     if (selectedStateNav) {
       axios
-        .get(`${Port}/Screening/District_Get/${selectedStateNav}/`, {
+        .get(`${API_URL}/Screening/District_Get/${selectedStateNav}/`, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
@@ -235,7 +236,7 @@ const AddUser = () => {
   useEffect(() => {
     if (selectedDistrictNav) {
       axios
-        .get(`${Port}/Screening/Tehsil_Get/${selectedDistrictNav}/`, {
+        .get(`${API_URL}/Screening/Tehsil_Get/${selectedDistrictNav}/`, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
@@ -253,7 +254,7 @@ const AddUser = () => {
   useEffect(() => {
     if (selectedTalukaNav) {
       axios
-        .get(`${Port}/Screening/Workshop_list_get/${selectedTalukaNav}/`, {
+        .get(`${API_URL}/Screening/Workshop_list_get/${selectedTalukaNav}/`, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
@@ -300,7 +301,7 @@ const AddUser = () => {
   useEffect(() => {
     // Fetch source options
     axios
-      .get(`${Port}/Screening/Source_Get/`, {
+      .get(`${API_URL}/Screening/Source_Get/`, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
@@ -316,7 +317,7 @@ const AddUser = () => {
   //// Soure State against selected source
   useEffect(() => {
     axios
-      .get(`${Port}/Screening/State_Get/`, {
+      .get(`${API_URL}/Screening/State_Get/`, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
@@ -333,7 +334,7 @@ const AddUser = () => {
   useEffect(() => {
     if (selectedState) {
       axios
-        .get(`${Port}/Screening/District_Get/${selectedState}/`, {
+        .get(`${API_URL}/Screening/District_Get/${selectedState}/`, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
@@ -351,7 +352,7 @@ const AddUser = () => {
   useEffect(() => {
     if (selectedDistrict) {
       axios
-        .get(`${Port}/Screening/Tehsil_Get/${selectedDistrict}/`, {
+        .get(`${API_URL}/Screening/Tehsil_Get/${selectedDistrict}/`, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
@@ -368,7 +369,7 @@ const AddUser = () => {
   useEffect(() => {
     if (selectedTaluka) {
       axios
-        .get(`${Port}/Screening/Workshop_list_get/${selectedTaluka}/`, {
+        .get(`${API_URL}/Screening/Workshop_list_get/${selectedTaluka}/`, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
@@ -388,7 +389,7 @@ const AddUser = () => {
   //// Soure Name against selected source Taluka
   useEffect(() => {
     axios
-      .get(`${Port}/Screening/Source_Get/`, {
+      .get(`${API_URL}/Screening/Source_Get/`, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
@@ -405,7 +406,7 @@ const AddUser = () => {
   useEffect(() => {
     if (selectedSourcee) {
       axios
-        .get(`${Port}/Screening/agg_role_info_get/${selectedSourcee}`, {
+        .get(`${API_URL}/Screening/agg_role_info_get/${selectedSourcee}`, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
@@ -428,7 +429,7 @@ const AddUser = () => {
     const fetchTable = async () => {
       try {
         const response = await axios.get(
-          `${Port}/Screening/User_GET/?clg_source=${SourceUrlId}&clg_source_name_id=${SourceNameUrlId}`,
+          `${API_URL}/Screening/User_GET/?clg_source=${SourceUrlId}&clg_source_name_id=${SourceNameUrlId}`,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,
@@ -450,7 +451,7 @@ const AddUser = () => {
   useEffect(() => {
     const fetchGender = async () => {
       try {
-        const response = await axios.get(`${Port}/Screening/Gender_GET/`, {
+        const response = await axios.get(`${API_URL}/Screening/Gender_GET/`, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
@@ -678,10 +679,10 @@ const AddUser = () => {
       let method = "";
 
       if (!updateSrc) {
-        url = `${Port}/Screening/register/`;
+        url = `${API_URL}/Screening/register/`;
         method = "POST";
       } else {
-        url = `${Port}/Screening/User_PUT/${formData.pk}/`;
+        url = `${API_URL}/Screening/User_PUT/${formData.pk}/`;
         method = "PUT";
       }
 
@@ -790,7 +791,7 @@ const AddUser = () => {
 
   //     try {
   //       if (!updateSrc) {
-  //         const response = await fetch(`${Port}/Screening/register/`, {
+  //         const response = await fetch(`${API_URL}/Screening/register/`, {
   //           method: 'POST',
   //           headers: {
   //             'Content-Type': 'application/json',
@@ -802,7 +803,7 @@ const AddUser = () => {
 
   //       }
   //       else {
-  //         const response = await fetch(`${Port}/Screening/User_PUT/${formData.pk}/`, {
+  //         const response = await fetch(`${API_URL}/Screening/User_PUT/${formData.pk}/`, {
   //           method: 'PUT',
   //           headers: {
   //             'Content-Type': 'application/json',
@@ -831,7 +832,7 @@ const AddUser = () => {
 
   const handleTableRowClick = async (pk) => {
     try {
-      const response = await fetch(`${Port}/Screening/User_GET_ID/${pk}/`, {
+      const response = await fetch(`${API_URL}/Screening/User_GET_ID/${pk}/`, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
@@ -875,7 +876,7 @@ const AddUser = () => {
   };
 
   const handleSearch = async () => {
-    let apiUrl = `${Port}/Screening/filter-User/?`;
+    let apiUrl = `${API_URL}/Screening/filter-User/?`;
 
     if (selectedSourceeNav) {
       apiUrl += `clg_source=${selectedSourceeNav}&`;
@@ -919,7 +920,7 @@ const AddUser = () => {
     if (!confirmDelete) return;
 
     try {
-      const deleteUrl = `${Port}/Screening/User_DELETE/${formData.pk}/${userID}/`;
+      const deleteUrl = `${API_URL}/Screening/User_DELETE/${formData.pk}/${userID}/`;
 
       await axios.delete(deleteUrl, {
         headers: {

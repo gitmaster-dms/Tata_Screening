@@ -28,6 +28,7 @@ import {
   RadioGroup,
   FormLabel,
 } from "@mui/material";
+import { API_URL } from "../../../../../../Config/api";
 
 const Auditory = ({
   pkid,
@@ -87,7 +88,7 @@ const Auditory = ({
 
   const localStorageKey = `auditoryFormData_${pkid}`;
 
-  const Port = process.env.REACT_APP_API_KEY;
+  // const API_URL = process.env.REACT_APP_API_KEY;
   const [auditoryChechBox, setAuditoryChechBox] = useState([]);
   const [referredToSpecialist, setReferredToSpecialist] = useState(null);
   const [doctorList, setDoctorList] = useState([]);
@@ -106,7 +107,7 @@ const Auditory = ({
     try {
       setLoadingDoctors(true);
 
-      const res = await fetch(`${Port}/Screening/Doctor_List/`, {
+      const res = await fetch(`${API_URL}/Screening/Doctor_List/`, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
@@ -157,7 +158,7 @@ const Auditory = ({
 useEffect(() => {
   const fetchData = async () => {
     try {
-      const response = await axios.get(`${Port}/Screening/auditory_get_api/${pkid}/`, {
+      const response = await axios.get(`${API_URL}/Screening/auditory_get_api/${pkid}/`, {
         headers: { Authorization: `Bearer ${accessToken}` },
       });
       const data = response.data[0] || {};
@@ -208,7 +209,7 @@ useEffect(() => {
   };
 
   fetchData();
-}, [Port, pkid, accessToken]);
+}, [API_URL, pkid, accessToken]);
 
 
 
@@ -274,7 +275,7 @@ useEffect(() => {
 
     try {
       const response = await axios.post(
-        `${Port}/Screening/auditory_post_api/${pkid}/`,
+        `${API_URL}/Screening/auditory_post_api/${pkid}/`,
         postData,
         {
           headers: {
@@ -379,7 +380,7 @@ useEffect(() => {
       ) {
         try {
           const response = await axios.get(
-            `${Port}/Screening/left_reading/${formData.hz_500_left}/${formData.hz_1000_left}/${formData.hz_2000_left}/`,
+            `${API_URL}/Screening/left_reading/${formData.hz_500_left}/${formData.hz_1000_left}/${formData.hz_2000_left}/`,
             {
               headers: {
                 Authorization: `Bearer ${accessToken}`,
@@ -398,7 +399,7 @@ useEffect(() => {
     };
 
     fetchLeftReading();
-  }, [formData, Port, accessToken]);
+  }, [formData, API_URL, accessToken]);
 
   useEffect(() => {
     const fetchRightReading = async () => {
@@ -409,7 +410,7 @@ useEffect(() => {
       ) {
         try {
           const response = await axios.get(
-            `${Port}/Screening/right_reading/${formData.hz_500_right}/${formData.hz_1000_right}/${formData.hz_2000_right}/`,
+            `${API_URL}/Screening/right_reading/${formData.hz_500_right}/${formData.hz_1000_right}/${formData.hz_2000_right}/`,
             {
               headers: {
                 Authorization: `Bearer ${accessToken}`,
@@ -432,7 +433,7 @@ useEffect(() => {
     formData.hz_500_right,
     formData.hz_1000_right,
     formData.hz_2000_right,
-    Port,
+    API_URL,
     accessToken,
   ]);
 

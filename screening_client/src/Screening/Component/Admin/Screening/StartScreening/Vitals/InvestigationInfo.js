@@ -21,6 +21,7 @@ import {
     Snackbar,
     Alert
 } from "@mui/material";
+import { API_URL } from '../../../../../../Config/api';
 
 const InvestigationInfo = ({ citizensPkId, pkid, fetchVital, selectedName, onAcceptClick }) => {
 
@@ -112,7 +113,7 @@ const handleSnackbarClose = () => {
     }, []);
     /////////// Roshni's Code End //////////////////////////
 
-    const Port = process.env.REACT_APP_API_KEY;
+    // const API_URL = process.env.REACT_APP_API_KEY;
     const accessToken = localStorage.getItem('token');
 const [investData, setInvestData] = useState({
     investigation_report: "",
@@ -151,14 +152,17 @@ const [investData, setInvestData] = useState({
     //         [fieldName]: files[0]
     //     });
     // };
+const handleFileChange = (e, fieldName) => {
+  const file = e.target.files[0];
 
-    const handleFileChange = (e, fieldName) => {
-        const { files } = e.target;
-        setInvestData({
-            ...investData,
-            [fieldName]: e.target.files[0],
-        });
-    };
+  setInvestData(prev => [
+    {
+      ...prev[0],
+      [fieldName]: file,
+    }
+  ]);
+};
+
 const handleDialogCancel = () => {
   setOpenDialog(false);
 };
@@ -199,7 +203,7 @@ formData.append("selected_submodules", JSON.stringify(selectedChecks));
     console.log("🚀 API CALL FIRING...");   // Check 3
 
     const response = await axios.post(
-      `${Port}/Screening/investigation_post_api/${pkid}/`,
+      `${API_URL}/Screening/investigation_post_api/${pkid}/`,
       formData,
       {
         headers: {
@@ -225,57 +229,52 @@ formData.append("selected_submodules", JSON.stringify(selectedChecks));
 
 
 
-    useEffect(() => {
-        const fetchDataById = async (pkid) => {
-            console.error('Citizens Pk Id...', pkid);
-            try {
-                const response = await fetch(`${Port}/Screening/investigation_get_api/${pkid}/`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${accessToken}`,
-                    },
-                });
+ useEffect(() => {
+    const fetchDataById = async (pkid) => {
+        try {
+            const response = await fetch(`${API_URL}/Screening/investigation_get_api/${pkid}/`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${accessToken}`,
+                },
+            });
 
-                if (response.ok) {
-                    const data = await response.json();
-                    console.log('These are selected files.', data);
-                    setInvestData(data);
-                    // setImgUrl(data[0].investigation_report)
+            if (response.ok) {
+                const data = await response.json();
+                console.log("GET DATA:", data);
 
-                    // if (data && data.length > 0) {
-                    //     switch (data[0].submoduleName) {
-                    //         case 'Blood Report':
-                    //             setImgUrl(data[0].investigation_report);
-                    //             break;
-                    //         case 'Urine Report':
-                    //             setImgUrl(data[0].urine_report);
-                    //             break;
-                    //         case 'ECG Report':
-                    //             setImgUrl(data[0].ecg_report);
-                    //             break;
-                    //         case 'X-Ray Report':
-                    //             setImgUrl(data[0].x_ray_report);
-                    //             break;
-                    //         default:
-                    //             break;
-                    //     }
-                    // }
-                } else {
-                    console.error('Server Error:', response.status, response.statusText);
-                }
-            } catch (error) {
-                console.error('Error fetching data:', error.message);
+               if (data && data.length > 0) {
+  const item = data[0];
+
+  // Prefill selected submodules (checkbox)
+  setSelectedChecks(item.selected_submodules || []);
+
+  // Prefill files (array format because your UI uses investData[0])
+  setInvestData([
+    {
+      investigation_report: item.investigation_report,
+      urine_report: item.urine_report,
+      ecg_report: item.ecg_report,
+      x_ray_report: item.x_ray_report,
+    }
+  ]);
+}
             }
-        };
+        } catch (error) {
+            console.error("Error:", error);
+        }
+    };
 
-        fetchDataById(pkid);
-    }, [pkid]);
+    fetchDataById(pkid);
+}, [pkid]);
+
+
 
     const downloadFile = async (fileUrl) => {
         console.log('imgUrl...', fileUrl);
         try {
-            const response = await fetch(`${Port}${fileUrl}`, {
+            const response = await fetch(`${API_URL}${fileUrl}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/pdf',

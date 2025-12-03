@@ -29,7 +29,7 @@ const Childvital = ({
   const SourceUrlId = localStorage.getItem("loginSource");
   const SourceNameUrlId = localStorage.getItem("SourceNameFetched");
   const source = localStorage.getItem("source");
-  const Port = process.env.REACT_APP_API_KEY;
+  const API_URL = process.env.REACT_APP_API_KEY;
   const userID = localStorage.getItem("userID");
   const accessToken = localStorage.getItem("token");
 
@@ -83,7 +83,7 @@ const Childvital = ({
     const fetchDepartment = async () => {
       try {
         const response = await fetch(
-          `${Port}/Screening/get_department/${SourceUrlId}/${SourceNameUrlId}/`,
+          `${API_URL}/Screening/get_department/${SourceUrlId}/${SourceNameUrlId}/`,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,
@@ -104,7 +104,7 @@ const Childvital = ({
       if (selectedDepartment) {
         try {
           const response = await fetch(
-            `${Port}/Screening/get_designation/${selectedDepartment}/${SourceUrlId}/${SourceNameUrlId}/`,
+            `${API_URL}/Screening/get_designation/${selectedDepartment}/${SourceUrlId}/${SourceNameUrlId}/`,
             {
               headers: {
                 Authorization: `Bearer ${accessToken}`,
@@ -123,7 +123,7 @@ const Childvital = ({
 
   const fetchData = async () => {
     try {
-      const response = await fetch(`${Port}/Screening/SaveBasicInfo/${pkid}/`, {
+      const response = await fetch(`${API_URL}/Screening/SaveBasicInfo/${pkid}/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -154,50 +154,36 @@ const Childvital = ({
     fetchData();
   }, [pkid]);
 
-  const updateDataInDatabase = async ( confirmationStatus) => {
-    try {
-      const response = await fetch(
-        `${Port}/Screening/CitizenBasicInfo/${childData?.basic_pk_id}/`,
-        {
-          method: "PUT",
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            citizen_id: childData.citizen_id,
-            schedule_id: childData.schedule_id,
-            name: childData.citizen_info.name,
-            doj: childData.citizen_info.doj,
-            gender: childData.citizen_info.gender,
-            blood_groups: childData.citizen_info.blood_groups,
-            dob: childData.citizen_info.dob,
-            year: childData.citizen_info.year,
-            months: childData.citizen_info.months,
-            days: childData.citizen_info.days,
-            aadhar_id: childData.citizen_info.aadhar_id,
-            emp_mobile_no: childData.citizen_info.emp_mobile_no,
-            email_id: childData.citizen_info.email_id,
-            employee_id: childData.citizen_info.employee_id,
-            department: childData.citizen_info.department,
-            designation: childData.citizen_info.designation,
-            form_submit: confirmationStatus,
-            added_by: userID,
-            modify_by: userID,
-          }),
-        }
-      );
-
-      if (response.status === 200) {
-        setChildData({ ...childData });
-        onAcceptClick(nextName);
-      } else {
-        alert(`Failed to update data. Status: ${response.status}`);
+const updateDataInDatabase = async (confirmationStatus) => {
+  try {
+    const response = await fetch(
+      `${API_URL}/Screening/CitizenBasicInfo/${childData?.basic_pk_id}/`,
+      {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...childData.citizen_info,
+          form_submit: confirmationStatus,
+          added_by: userID,
+          modify_by: userID,
+        }),
       }
-    } catch (error) {
-      console.error("Error updating data", error);
+    );
+
+    if (response.status === 200) {
+      setChildData({ ...childData });
+      onAcceptClick(nextName);
+    } else {
+      alert(`Failed to update data. Status: ${response.status}`);
     }
-  };
+  } catch (error) {
+    console.error("Error updating data", error);
+  }
+};
+
 
   const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
   const [snackbar, setSnackbar] = useState({

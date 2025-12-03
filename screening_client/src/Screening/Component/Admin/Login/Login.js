@@ -16,6 +16,7 @@ import {
 import loginImage from '../../../Images/LoginImage.jpg';
 import tatamotors from '../../../Images/Tata Motors.png';
 import SperoLogo from '../../../Images/SperoLogo.png';
+import { API_URL } from '../../../../Config/api';
 
 const validationSchema = Yup.object().shape({
   clg_ref_id: Yup.string().required('User Name is required'),
@@ -28,7 +29,7 @@ const Login = ({ onLogin, isLoggedIn }) => {
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState('info');
 
-  const Port = process.env.REACT_APP_API_KEY;
+  // const Port = process.env.REACT_APP_API_KEY;
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -48,7 +49,7 @@ const Login = ({ onLogin, isLoggedIn }) => {
         try {
           const refreshToken = localStorage.getItem('refresh');
           const clgId = localStorage.getItem('userID');
-          const response = await axios.post(`${Port}/Screening/logout/`, {
+          const response = await axios.post(`${API_URL}/Screening/logout/`, {
             refreshToken,
             clg_id: clgId,
           });
@@ -63,14 +64,14 @@ const Login = ({ onLogin, isLoggedIn }) => {
     };
     window.addEventListener('beforeunload', handleBeforeUnload);
     return () => window.removeEventListener('beforeunload', handleBeforeUnload);
-  }, [Port, navigate]);
+  }, [API_URL, navigate]);
 
   const formik = useFormik({
     initialValues: { clg_ref_id: '', password: '' },
     validationSchema,
     onSubmit: async (values) => {
       try {
-        const response = await fetch(`${Port}/Screening/login/`, {
+        const response = await fetch(`${API_URL}/Screening/login/`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(values),
@@ -86,7 +87,7 @@ const Login = ({ onLogin, isLoggedIn }) => {
           localStorage.setItem('name', colleague.name);
 
           const logo = json.registration_details.Registration_details;
-          const logoFullUrl = `${Port}${logo}`;
+          const logoFullUrl = `${API_URL}${logo}`;
           setLogoUrl(logoFullUrl);
           localStorage.setItem('logo', logoFullUrl);
 

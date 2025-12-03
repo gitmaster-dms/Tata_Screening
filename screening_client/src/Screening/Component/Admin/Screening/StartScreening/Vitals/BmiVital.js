@@ -60,7 +60,7 @@ const BmiVital = ({
     }
   }, [selectedName, fetchVital]);
   //__________________________________END
-  const Port = process.env.REACT_APP_API_KEY;
+  const API_URL = process.env.REACT_APP_API_KEY;
   const accessToken = localStorage.getItem("token");
   const userID = localStorage.getItem("userID");
   console.log(userID);
@@ -100,7 +100,7 @@ const fetchDoctors = async () => {
   try {
     setLoadingDoctors(true);
 
-    const res = await fetch(`${Port}/Screening/Doctor_List/`, {
+    const res = await fetch(`${API_URL}/Screening/Doctor_List/`, {
       headers: {
         Authorization: `Bearer ${accessToken}`,
       },
@@ -169,7 +169,7 @@ console.log("Selected doctor:", selectedDoctor);
   const postBmiData = async () => {
     try {
       const response = await fetch(
-        `${Port}/Screening/SaveGrowthMonitoringInfo/${pkid}/`,
+        `${API_URL}/Screening/SaveGrowthMonitoringInfo/${pkid}/`,
         {
           method: "POST",   
           headers: {
@@ -225,7 +225,7 @@ console.log("Selected doctor:", selectedDoctor);
   const updateDataInDatabase = async (citizen_id, confirmationStatus) => {
     try {
       const response = await fetch(
-        `${Port}/Screening/Citizen_growth_monitoring_put/${growthId}/`,
+        `${API_URL}/Screening/Citizen_growth_monitoring_put/${growthId}/`,
         {
           method: "PUT",
           headers: {
@@ -313,7 +313,7 @@ console.log("Selected doctor:", selectedDoctor);
   // useEffect(() => {
   //     const fetchOtherData = async () => {
   //         try {
-  //             const response = await fetch(`${Port}/Screening/SAM_MAM_BMI/${bmiData.citizen_info.year}/${bmiData.citizen_info.months}/${bmiData.citizen_info.gender}/${bmiData.citizen_info.height}/${bmiData.citizen_info.weight}/`, {
+  //             const response = await fetch(`${API_URL}/Screening/SAM_MAM_BMI/${bmiData.citizen_info.year}/${bmiData.citizen_info.months}/${bmiData.citizen_info.gender}/${bmiData.citizen_info.height}/${bmiData.citizen_info.weight}/`, {
   //                 headers: {
   //                     'Authorization': `Bearer ${accessToken}`,
   //                 },

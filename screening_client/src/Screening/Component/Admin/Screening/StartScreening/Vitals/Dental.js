@@ -25,6 +25,7 @@ import {
   Box,
   IconButton
 } from "@mui/material";
+import { API_URL } from '../../../../../../Config/api';
 
 const Dental = ({ scheduleID, pkid, citizensPkId, citizenId, onMoveTovision, fetchVital, selectedName, onAcceptClick }) => {
 
@@ -35,7 +36,7 @@ const Dental = ({ scheduleID, pkid, citizensPkId, citizenId, onMoveTovision, fet
 
   const handleOpen = async () => {
     try {
-      const response = await fetch(`${Port}/Screening/QRCode/`, {
+      const response = await fetch(`${API_URL}/Screening/QRCode/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -55,7 +56,7 @@ const Dental = ({ scheduleID, pkid, citizensPkId, citizenId, onMoveTovision, fet
         setPkIddd(pkid);
         setCitizenIddd(citizenId);
 
-        const assessmentUrl = `${Port}/screening/dental_assesment?schedule_id=${encodeURIComponent(data.schedule_id)}&citizen_id=${encodeURIComponent(data.citizen_id)}&citizen_pk_id=${encodeURIComponent(data.citizens_pk_id)}`;
+        const assessmentUrl = `${API_URL}/screening/dental_assesment?schedule_id=${encodeURIComponent(data.schedule_id)}&citizen_id=${encodeURIComponent(data.citizen_id)}&citizen_pk_id=${encodeURIComponent(data.citizens_pk_id)}`;
         Cookies.set('scheduleIdd', scheduleID, { expires: 1, path: assessmentUrl });
       } else {
         console.error('Error:', response.status);
@@ -99,7 +100,7 @@ const Dental = ({ scheduleID, pkid, citizensPkId, citizenId, onMoveTovision, fet
   const userID = localStorage.getItem('userID');
   console.log(userID);
 
-  const Port = process.env.REACT_APP_API_KEY;
+  // const API_URL = process.env.REACT_APP_API_KEY;
 
   const [oralHygiene, setOralHygiene] = useState('');
   const [gum, setGum] = useState('');
@@ -138,7 +139,7 @@ const Dental = ({ scheduleID, pkid, citizensPkId, citizenId, onMoveTovision, fet
     try {
       setLoadingDoctors(true);
 
-      const res = await fetch(`${Port}/Screening/Doctor_List/`, {
+      const res = await fetch(`${API_URL}/Screening/Doctor_List/`, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
@@ -333,7 +334,7 @@ const Dental = ({ scheduleID, pkid, citizensPkId, citizenId, onMoveTovision, fet
     console.log('Form Data:', formData);
 
     try {
-      const response = await fetch(`${Port}/Screening/dental_post_api/${pkid}/`, {
+      const response = await fetch(`${API_URL}/Screening/dental_post_api/${pkid}/`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -365,7 +366,7 @@ const Dental = ({ scheduleID, pkid, citizensPkId, citizenId, onMoveTovision, fet
 
   const fetchDataById = async (pkid) => {
     try {
-      const response = await fetch(`${Port}/Screening/dental_get_api/${pkid}/`, {
+      const response = await fetch(`${API_URL}/Screening/dental_get_api/${pkid}/`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -496,7 +497,7 @@ const Dental = ({ scheduleID, pkid, citizensPkId, citizenId, onMoveTovision, fet
           <h4 id="dental-screening-modal">Scan QR Code</h4>
           {qrCodeImage ? (
             <img
-              src={`${Port}${qrCodeImage}`}
+              src={`${API_URL}${qrCodeImage}`}
               alt="QR Code"
               style={{ width: '100%', height: 'auto', marginTop: '16px' }}
             />

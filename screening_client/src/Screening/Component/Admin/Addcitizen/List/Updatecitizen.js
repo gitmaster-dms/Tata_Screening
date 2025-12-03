@@ -13,10 +13,11 @@ import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import { Link, useParams } from 'react-router-dom';
 import Childupdate from './Childupdate';
 import CorporateUpdate from './CorporateUpdate';
+import { API_URL } from '../../../../../Config/api';
 
 const Updatecitizen = () => {
     const accessToken = localStorage.getItem('token');
-    const Port = process.env.REACT_APP_API_KEY;
+    // const API_URL = process.env.REACT_APP_API_KEY;
 
     const { id, sourceId } = useParams();
     const [data1, setData1] = useState([]);
@@ -44,9 +45,9 @@ const Updatecitizen = () => {
     useEffect(() => {
         let apiUrl;
         if (id === 'Community') {
-            apiUrl = `${Port}/Screening/add_citizen_get/${id}/`;
+            apiUrl = `${API_URL}/Screening/add_citizen_get/${id}/`;
         } else if (sourceId === 'Corporate') {
-            apiUrl = `${Port}/Screening/add_employee_get/${id}/`;
+            apiUrl = `${API_URL}/Screening/add_employee_get/${id}/`;
         } else {
             return;
         }
@@ -69,7 +70,7 @@ const Updatecitizen = () => {
                 });
 
                 axios
-                    .get(`${Port}/Screening/source_and_pass_state_Get/${response.data.source}`, {
+                    .get(`${API_URL}/Screening/source_and_pass_state_Get/${response.data.source}`, {
                         headers: {
                             Authorization: `Bearer ${accessToken}`,
                             'Content-Type': 'application/json',
@@ -79,7 +80,7 @@ const Updatecitizen = () => {
                     .catch((err) => console.error('Error second API:', err));
             })
             .catch((error) => console.error('Error:', error));
-    }, [Port, accessToken, id, sourceId]);
+    }, [API_URL, accessToken, id, sourceId]);
 
     useEffect(() => {
         const fetchDropdown = async (url, setFn) => {
@@ -96,16 +97,16 @@ const Updatecitizen = () => {
             }
         };
 
-        fetchDropdown(`${Port}/Screening/Age_GET/`, setAgeNav);
-        fetchDropdown(`${Port}/Screening/Gender_GET/`, setGenderNav);
-        fetchDropdown(`${Port}/Screening/source_GET/`, setSourceNav);
-        fetchDropdown(`${Port}/Screening/child_disease_info_get/`, setDiseaseNav);
-    }, [Port, accessToken]);
+        fetchDropdown(`${API_URL}/Screening/Age_GET/`, setAgeNav);
+        fetchDropdown(`${API_URL}/Screening/Gender_GET/`, setGenderNav);
+        fetchDropdown(`${API_URL}/Screening/source_GET/`, setSourceNav);
+        fetchDropdown(`${API_URL}/Screening/child_disease_info_get/`, setDiseaseNav);
+    }, [API_URL, accessToken]);
 
     useEffect(() => {
     if (selectedAge1.source.id) {
             axios
-                .get(`${Port}/Screening/Category_Get/${selectedAge1.source.id}`, {
+                .get(`${API_URL}/Screening/Category_Get/${selectedAge1.source.id}`, {
                     headers: {
                         Authorization: `Bearer ${accessToken}`,
                         'Content-Type': 'application/json',
@@ -114,7 +115,7 @@ const Updatecitizen = () => {
                 .then((res) => setScreeningFor(res.data))
                 .catch((err) => console.error('Error fetching type:', err));
         }
-    }, [selectedAge1.source.id, Port, accessToken]);
+    }, [selectedAge1.source.id, API_URL, accessToken]);
 
     // ------------------ HANDLE CHANGE ------------------ //
     const handleChange = (e) => {
@@ -148,7 +149,7 @@ const Updatecitizen = () => {
 
         if (name === 'source') {
             axios
-                .get(`${Port}/Screening/Category_Get/${selectedOption.id}`)
+                .get(`${API_URL}/Screening/Category_Get/${selectedOption.id}`)
                 .then((res) => setScreeningFor(res.data))
                 .catch((err) => console.error('Error fetching type:', err));
         }
@@ -156,7 +157,7 @@ const Updatecitizen = () => {
 
    useEffect(() => {
     axios
-        .get(`${Port}/Screening/Category_Get/`, {
+        .get(`${API_URL}/Screening/Category_Get/`, {
             headers: {
                 Authorization: `Bearer ${accessToken}`,
                 'Content-Type': 'application/json',
@@ -176,7 +177,7 @@ const [citizenData, setCitizenData] = useState({});
 
   const fetchCitizenData = async () => {
     try {
-      const response = await fetch(`${Port}/Screening/Citizen_Put_api/${id}/`);
+      const response = await fetch(`${API_URL}/Screening/Citizen_Put_api/${id}/`);
 
       const data = await response.json();
       console.log("Citizen Data:", data);
