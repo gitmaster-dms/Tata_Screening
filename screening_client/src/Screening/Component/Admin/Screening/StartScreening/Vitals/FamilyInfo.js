@@ -13,6 +13,7 @@ import {
   Snackbar,
   Alert,
 } from "@mui/material";
+import { API_URL } from "../../../../../../Config/api";
 
 const FamilyInfo = ({
   citizensPkId,
@@ -37,7 +38,7 @@ const FamilyInfo = ({
   const userID = localStorage.getItem("userID");
   const accessToken = localStorage.getItem("token");
   const source = localStorage.getItem("source");
-  const Port = process.env.REACT_APP_API_KEY;
+  // const API_URL = process.env.REACT_APP_API_KEY;
 
   // Get next name in list
   useEffect(() => {
@@ -61,7 +62,7 @@ const FamilyInfo = ({
   const fetchData = async () => {
     try {
       const response = await fetch(
-        `${Port}/Screening/SaveEmergencyInfo/${pkid}/`,
+        `${API_URL}/Screening/SaveEmergencyInfo/${pkid}/`,
         {
           method: "POST",
           headers: {
@@ -91,7 +92,7 @@ const FamilyInfo = ({
   const updateDataInDatabase = async (citizen_id) => {
     try {
       const response = await fetch(
-        `${Port}/Screening/Citizen_emergency_put/${empkid}/`,
+        `${API_URL}/Screening/Citizen_emergency_put/${empkid}/`,
         {
           method: "PUT",
           headers: {

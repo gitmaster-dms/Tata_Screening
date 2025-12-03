@@ -10,6 +10,7 @@ import {
   Button,
   Paper,
 } from "@mui/material";
+import { API_URL } from "../../../../../../Config/api";
 
 const particularsList = [
   "Footfall",
@@ -52,14 +53,14 @@ const fieldMapping = {
 
 const Other = ({ pkid, citizensPkId, dob, fetchVital, selectedName, onAcceptClick }) => {
   const userID = localStorage.getItem('userID');
-  const Port = process.env.REACT_APP_API_KEY;
+  // const API_URL = process.env.REACT_APP_API_KEY;
   const accessToken = localStorage.getItem('token');
 
   useEffect(() => {
     const fetchExistingData = async () => {
       try {
         const response = await fetch(
-          `${Port}/Screening/citizen_other_info_get/${citizensPkId}/`,
+          `${API_URL}/Screening/citizen_other_info_get/${citizensPkId}/`,
           {
             method: "GET",
             headers: {
@@ -161,7 +162,7 @@ const Other = ({ pkid, citizensPkId, dob, fetchVital, selectedName, onAcceptClic
 
     // Step 3: API Call
     try {
-      const response = await fetch(`${Port}/Screening/citizen_other_info_post/${pkid}`, {
+      const response = await fetch(`${API_URL}/Screening/citizen_other_info_post/${pkid}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

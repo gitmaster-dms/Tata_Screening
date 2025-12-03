@@ -23,6 +23,7 @@ import {
   Button,
   Card,
 } from "@mui/material";
+import { API_URL } from "../../../../Config/api";
 
 const CustomSnackbar = styled(Snackbar)(({ theme }) => ({
   "& .MuiAlert-filledSuccess": {
@@ -38,7 +39,7 @@ const Permission = () => {
   console.log(usergrp, "gggggg");
   console.log(permission, "ppppppppppppppppeeeeeeeeeee");
   const classes = CustomSnackbar;
-  const Port = process.env.REACT_APP_API_KEY;
+  // const Port = process.env.REACT_APP_API_KEY;
   const [source, setSource] = useState([]);
   const [role, setRole] = useState([]);
   const [moduleSubmodule, setModuleSubmodule] = useState([]);
@@ -64,7 +65,7 @@ const Permission = () => {
 useEffect(() => {
   const fetchUserSourceDropdown = async () => {
     try {
-      const response = await axios.get(`${Port}/Screening/source_GET/`, {
+      const response = await axios.get(`${API_URL}/Screening/source_GET/`, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
@@ -113,7 +114,7 @@ useEffect(() => {
       if (usergrp === "UG-ADMIN") {
         // If admin, fetch roles excluding the admin role
         rolesResponse = await axios.get(
-          `${Port}/Screening/agg_role_info_get/${id}`,
+          `${API_URL}/Screening/agg_role_info_get/${id}`,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,
@@ -129,7 +130,7 @@ useEffect(() => {
       } else {
         // If superadmin or other role, fetch all roles
         const response = await axios.get(
-          `${Port}/Screening/agg_role_info_get/${id}`,
+          `${API_URL}/Screening/agg_role_info_get/${id}`,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,
@@ -147,7 +148,7 @@ useEffect(() => {
   const fetchModuleSubmodule = async (id) => {
     setSourceid(id);
     try {
-      const response = await axios.get(`${Port}/Screening/combined/`, {
+      const response = await axios.get(`${API_URL}/Screening/combined/`, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
@@ -163,7 +164,7 @@ useEffect(() => {
     setRoleid(id);
     try {
       const response = await axios.get(
-        `${Port}/Screening/permissions/${sourceid}/${id}/`,
+        `${API_URL}/Screening/permissions/${sourceid}/${id}/`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -346,7 +347,7 @@ useEffect(() => {
   if (permission_list == "") {
     if (selectedData.modules_submodule.length > 0) {
       axios
-        .post(`${Port}/Screening/permissions/`, selectedData, {
+        .post(`${API_URL}/Screening/permissions/`, selectedData, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
@@ -368,7 +369,7 @@ useEffect(() => {
     }
   } else {
     axios
-      .put(`${Port}/Screening/permissions/${perId}/`, selectedData, {
+      .put(`${API_URL}/Screening/permissions/${perId}/`, selectedData, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },

@@ -35,7 +35,7 @@ const Immunisation = ({ pkid, citizensPkId, dob, fetchVital, selectedName, onAcc
 const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
   const accessToken = localStorage.getItem('token');
   const userID = localStorage.getItem('userID');
-  const Port = process.env.REACT_APP_API_KEY;
+  const API_URL = process.env.REACT_APP_API_KEY;
 
   // Calculate Next Section Name
   useEffect(() => {
@@ -53,7 +53,7 @@ const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get(`${Port}/Screening/get_immunisation/`, {
+        const res = await axios.get(`${API_URL}/Screening/get_immunisation/`, {
           headers: { Authorization: `Bearer ${accessToken}` },
         });
         setData(res.data);
@@ -62,22 +62,23 @@ const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
       }
     };
     fetchData();
-  }, [Port]);
+  }, [API_URL]);
 
   // Fetch Citizen-specific Data
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const res = await axios.get(`${Port}/Screening/immunisation_get_api/${pkid}/`, {
-          headers: { Authorization: `Bearer ${accessToken}` },
-        });
-        setData1(res.data);
-      } catch (error) {
-        console.error('Error fetching citizen data:', error);
-      }
-    };
-    fetchData();
-  }, [Port, pkid]);
+const fetchData1 = async () => {
+  try {
+    const res = await axios.get(`${API_URL}/Screening/immunisation_get_api/${pkid}/`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    setData1(res.data);
+  } catch (error) {
+    console.error('Error fetching citizen data:', error);
+  }
+};
+useEffect(() => {
+  fetchData1();
+}, [API_URL, pkid]);
+
 
   // Set Immunisation Data State
   useEffect(() => {
@@ -94,32 +95,31 @@ const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
   }, [data]);
 
   // Handle Field Changes
-  const handleInputChange = async (index, field, value, i_pk_id) => {
-    const newData = [...immunizationData];
-    if (newData[index]) {
-      newData[index][field] = value;
+const handleInputChange = async (index, field, value, i_pk_id) => {
+  const updated = [...immunizationData];
+  updated[index][field] = value;
 
-      if (field === 'given_yes_no' && (value === '1' || value === '2')) {
-        newData[index]['scheduled_date_from'] = '';
-        newData[index]['scheduled_date_to'] = '';
-      }
+  if (field === 'given_yes_no' && (value === '1' || value === '2')) {
+    updated[index].scheduled_date_from = '';
+    updated[index].scheduled_date_to = '';
+  }
 
-      if (field === 'given_yes_no' && value === '3') {
-        try {
-          const res = await axios.get(`${Port}/Screening/calculate_days/${dob}/${i_pk_id}/`, {
-            headers: { Authorization: `Bearer ${accessToken}` },
-          });
-          setApiResponse(res.data.status);
-          setShowModal(true);
-        } catch (error) {
-          setApiError('Error fetching data from the API');
-          setShowModal(true);
-        }
-      }
-
-      setImmunizationData(newData);
+  if (field === 'given_yes_no' && value === '3') {
+    try {
+      const res = await axios.get(`${API_URL}/Screening/calculate_days/${dob}/${i_pk_id}/`, {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      });
+      setApiResponse(res.data.status);
+      setShowModal(true);
+    } catch (error) {
+      setApiError('Error fetching data from the API');
+      setShowModal(true);
     }
-  };
+  }
+
+  setImmunizationData(updated);
+};
+
 
   const handleCloseModal = () => {
     setShowModal(false);
@@ -127,32 +127,80 @@ const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
     setApiError(null);
   };
 
+  const normalizeForPayload = (item) => ({
+  immunisations: item.immunisations,
+  given_yes_no: item.given_yes_no || null,
+  scheduled_date_from: item.scheduled_date_from || null,
+  scheduled_date_to: item.scheduled_date_to || null,
+  window_period_days_from: item.window_period_days_from || null,
+  window_period_days_to: item.window_period_days_to || null,
+});
+
+
+  
   // Save Data
-  const handleSave = async () => {
-   
-    const confirmationStatus = 'True'
-    const selectedData = immunizationData.filter(item => item.given_yes_no !== '');
+const handleSave = async () => {
+  const confirmationStatus = 'True';
 
-    try {
-      const response = await axios.post(
-        `${Port}/Screening/immunisation_post_api/${pkid}/`,
-        {
-          name_of_vaccine: selectedData,
-          citizen_pk_id: citizensPkId,
-          form_submit: confirmationStatus,
-          modify_by: userID,
-          added_by: userID,
-        },
-        { headers: { Authorization: `Bearer ${accessToken}` } }
-      );
+  // Prioritize citizen-filled data (data1). Fallback to master data.
+const source = immunizationData;
 
-      if (response.status === 201) {
-        onAcceptClick(nextName);
-      }
-    } catch (error) {
-      console.error('Error posting data:', error);
+
+  // Final normalized payload (converts blank → null)
+  const finalPayload = source.map(item => normalizeForPayload({
+    immunisations: item.immunisations,
+    given_yes_no: item.given_yes_no,
+    scheduled_date_from: item.scheduled_date_from,
+    scheduled_date_to: item.scheduled_date_to,
+    window_period_days_from: item.window_period_days_from,
+    window_period_days_to: item.window_period_days_to
+  }));
+
+  try {
+    const response = await axios.post(
+      `${API_URL}/Screening/immunisation_post_api/${pkid}/`,
+      {
+        name_of_vaccine: finalPayload,
+        citizen_pk_id: citizensPkId,
+        form_submit: confirmationStatus,
+        modify_by: userID,
+        added_by: userID,
+      },
+      { headers: { Authorization: `Bearer ${accessToken}` } }
+    );
+
+    if (response.status === 201) {
+      await fetchData1();
+      onAcceptClick(nextName);
     }
-  };
+  } catch (error) {
+    console.error('Error posting data:', error);
+  }
+};
+
+useEffect(() => {
+  if (data.length === 0) return;
+
+  const merged = data.map(master => {
+    const matched = data1.length > 0
+      ? data1[0].name_of_vaccine.find(v => v.immunisations === master.immunisations)
+      : null;
+
+    return {
+      immunisations: master.immunisations,
+      given_yes_no: matched?.given_yes_no || '',
+      scheduled_date_from: matched?.scheduled_date_from || master.scheduled_date_from || '',
+      scheduled_date_to: matched?.scheduled_date_to || master.scheduled_date_to || '',
+      window_period_days_from: master.window_period_days_from || '',
+      window_period_days_to: master.window_period_days_to || '',
+      immunization_info_pk_id: matched?.immunization_info_pk_id || master.immunization_info_pk_id
+    };
+  });
+
+  setImmunizationData(merged);
+}, [data, data1]);
+
+
 
   return (
     <Box>
@@ -219,144 +267,131 @@ const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
           </Card>
         </Grid>
 
-        {(data1.length > 0 ? data1 : data).map((row, index) => {
-          const vaccines = row.name_of_vaccine || [row];
-          return vaccines.map((vaccine, innerIndex) => (
-            <Grid item xs={12} key={`${index}-${innerIndex}`}>
-              <Card sx={{ borderRadius: "20px", p: 1, background: "white", color: "black" }}>
-                <Grid container spacing={1} alignItems="center">
-                  <Grid item xs={3}>
-                    <Typography variant="body2">{vaccine.immunisations}</Typography>
-                  </Grid>
+      {immunizationData.map((item, index) => (
+  <Grid item xs={12} key={index}>
+    <Card sx={{ borderRadius: "20px", p: 1, background: "white", color: "black" }}>
+      <Grid container spacing={1} alignItems="center">
 
-                  <Grid item xs={2}>
-                    <Select
-                      sx={{
-                        "& .MuiInputBase-input.MuiSelect-select": {
-                          color: "#000 !important",
-                        },
-                        "& .MuiSvgIcon-root": {
-                          color: "#000",
-                        },
-                      }}
-                      size="small"
-                      fullWidth
-                      value={vaccine.given_yes_no || immunizationData[index]?.given_yes_no || ''}
-                      onChange={e =>
-                        handleInputChange(
-                          index,
-                          'given_yes_no',
-                          e.target.value,
-                          vaccine.immunization_info_pk_id
-                        )
-                      }
-                    >
-                      <MenuItem value="">Select</MenuItem>
-                      <MenuItem value="1">Already Taken</MenuItem>
-                      <MenuItem value="2">Already Taken (ODR)</MenuItem>
-                      <MenuItem value="3">Not Yet Taken</MenuItem>
-                    </Select>
-                  </Grid>
+        {/* Vaccine Name */}
+        <Grid item xs={3}>
+          <Typography variant="body2">{item.immunisations}</Typography>
+        </Grid>
 
-                  <Grid item xs={5}>
-                    <Grid container spacing={1}>
-                      <Grid item xs={6}>
-                        <TextField
-                          type="date"
-                          size="small"
-                          fullWidth
-                          value={
-                            immunizationData[index]?.scheduled_date_from ||
-                            vaccine.scheduled_date_from ||
-                            ''
-                          }
-                          onChange={e =>
-                            handleInputChange(
-                              index,
-                              'scheduled_date_from',
-                              e.target.value,
-                              vaccine.immunisation_pk_id
-                            )
-                          }
-                          inputProps={{
-                            max:
-                              immunizationData[index]?.given_yes_no === '1' ||
-                                immunizationData[index]?.given_yes_no === '2'
-                                ? new Date().toISOString().split('T')[0]
-                                : undefined,
-                            min:
-                              immunizationData[index]?.given_yes_no === '3'
-                                ? new Date().toISOString().split('T')[0]
-                                : undefined,
-                          }}
-                          sx={{
-                            bgcolor:
-                              immunizationData[index]?.given_yes_no === '1'
-                                ? '#90EE90'
-                                : immunizationData[index]?.given_yes_no === '2'
-                                  ? '#FFC000'
-                                  : immunizationData[index]?.given_yes_no === '3'
-                                    ? '#FF726F'
-                                    : '',
-                            borderRadius: 1,
-                          }}
-                        />
-                      </Grid>
-                      <Grid item xs={6}>
-                        <TextField
-                          type="date"
-                          size="small"
-                          fullWidth
-                          value={
-                            immunizationData[index]?.scheduled_date_to ||
-                            vaccine.scheduled_date_to ||
-                            ''
-                          }
-                          onChange={e =>
-                            handleInputChange(index, 'scheduled_date_to', e.target.value)
-                          }
-                          disabled={
-                            immunizationData[index]?.given_yes_no === '1' ||
-                            immunizationData[index]?.given_yes_no === '2'
-                          }
-                          inputProps={{
-                            max:
-                              immunizationData[index]?.given_yes_no === '1' ||
-                                immunizationData[index]?.given_yes_no === '2'
-                                ? new Date().toISOString().split('T')[0]
-                                : undefined,
-                            min:
-                              immunizationData[index]?.given_yes_no === '3'
-                                ? new Date().toISOString().split('T')[0]
-                                : undefined,
-                          }}
-                          sx={{
-                            bgcolor:
-                              immunizationData[index]?.given_yes_no === '3' ? '#FF726F' : '',
-                            borderRadius: 1,
-                          }}
-                        />
-                      </Grid>
-                    </Grid>
-                  </Grid>
+        {/* Given Yes/No */}
+        <Grid item xs={2}>
+          <Select
+            size="small"
+            fullWidth
+            value={item.given_yes_no || ""}
+            onChange={(e) =>
+              handleInputChange(
+                index,
+                "given_yes_no",
+                e.target.value,
+                item.immunization_info_pk_id
+              )
+            }
+             sx={{
+                
+                "& .MuiInputBase-input.MuiSelect-select": {
+                  color: "#000 !important",
+                },
+                "& .MuiSvgIcon-root": {
+                  color: "#000",
+                },
+              }}
+          >
+            <MenuItem value="">Select</MenuItem>
+            <MenuItem value="1">Already Taken</MenuItem>
+            <MenuItem value="2">Already Taken (ODR)</MenuItem>
+            <MenuItem value="3">Not Yet Taken</MenuItem>
+          </Select>
+        </Grid>
 
-                  <Grid item xs={1}>
-                    <Typography variant="body2" align="center">
-                      {vaccine.window_period_days_from || '-'}
-                    </Typography>
-                  </Grid>
-
-                  {/* Days To */}
-                  <Grid item xs={1}>
-                    <Typography variant="body2" align="center">
-                      {vaccine.window_period_days_to || '-'}
-                    </Typography>
-                  </Grid>
-                </Grid>
-              </Card>
+        {/* Dates */}
+        <Grid item xs={5}>
+          <Grid container spacing={1}>
+            {/* From Date */}
+            <Grid item xs={6}>
+              <TextField
+                type="date"
+                size="small"
+                fullWidth
+                value={item.scheduled_date_from || ""}
+                onChange={(e) =>
+                  handleInputChange(index, "scheduled_date_from", e.target.value)
+                }
+                inputProps={{
+                  max:
+                    item.given_yes_no === "1" || item.given_yes_no === "2"
+                      ? new Date().toISOString().split("T")[0]
+                      : undefined,
+                  min:
+                    item.given_yes_no === "3"
+                      ? new Date().toISOString().split("T")[0]
+                      : undefined,
+                }}
+                sx={{
+                  bgcolor:
+                    item.given_yes_no === "1"
+                      ? "#90EE90"
+                      : item.given_yes_no === "2"
+                      ? "#FFC000"
+                      : item.given_yes_no === "3"
+                      ? "#FF726F"
+                      : "",
+                  borderRadius: 1,
+                }}
+              />
             </Grid>
-          ));
-        })}
+
+            {/* To Date */}
+            <Grid item xs={6}>
+              <TextField
+                type="date"
+                size="small"
+                fullWidth
+                value={item.scheduled_date_to || ""}
+                onChange={(e) =>
+                  handleInputChange(index, "scheduled_date_to", e.target.value)
+                }
+                disabled={item.given_yes_no === "1" || item.given_yes_no === "2"}
+                inputProps={{
+                  max:
+                    item.given_yes_no === "1" || item.given_yes_no === "2"
+                      ? new Date().toISOString().split("T")[0]
+                      : undefined,
+                  min:
+                    item.given_yes_no === "3"
+                      ? new Date().toISOString().split("T")[0]
+                      : undefined,
+                }}
+                sx={{
+                  bgcolor: item.given_yes_no === "3" ? "#FF726F" : "",
+                  borderRadius: 1,
+                }}
+              />
+            </Grid>
+          </Grid>
+        </Grid>
+
+        {/* Days From */}
+        <Grid item xs={1}>
+          <Typography variant="body2" align="center">
+            {item.window_period_days_from || "-"}
+          </Typography>
+        </Grid>
+
+        {/* Days To */}
+        <Grid item xs={1}>
+          <Typography variant="body2" align="center">
+            {item.window_period_days_to || "-"}
+          </Typography>
+        </Grid>
+      </Grid>
+    </Card>
+  </Grid>
+))}
       </Grid >
 
       <Grid

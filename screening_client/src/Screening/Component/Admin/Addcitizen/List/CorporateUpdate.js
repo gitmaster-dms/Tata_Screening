@@ -15,9 +15,10 @@ import {
   Snackbar,
   Alert,
 } from "@mui/material";
+import { API_URL } from "../../../../../Config/api";
 
 const CorporateUpdate = (props) => {
-  const Port = process.env.REACT_APP_API_KEY;
+  // const API_URL = process.env.REACT_APP_API_KEY;
   const userID = localStorage.getItem("userID");
   console.log(userID);
   const navigate = useNavigate();
@@ -107,7 +108,7 @@ const CorporateUpdate = (props) => {
       ) {
         try {
           const response = await axios.get(
-            `${Port}/Screening/SAM_MAM_BMI/${updatedData.year}/${updatedData.months}/${updatedData.gender}/${updatedData.height}/${updatedData.weight}/`,
+            `${API_URL}/Screening/SAM_MAM_BMI/${updatedData.year}/${updatedData.months}/${updatedData.gender}/${updatedData.height}/${updatedData.weight}/`,
             {
               headers: {
                 Authorization: `Bearer ${accessToken}`,
@@ -208,7 +209,7 @@ const CorporateUpdate = (props) => {
         };
 
         const response = await axios.put(
-          `${Port}/Screening/Citizen_Put_api/${corporateData.citizens_pk_id}/`,
+          `${API_URL}/Screening/Citizen_Put_api/${corporateData.citizens_pk_id}/`,
           updatedDataWithDepartment,
           {
             headers: {
@@ -262,7 +263,7 @@ const CorporateUpdate = (props) => {
   //                 modify_by: userID
   //             };
 
-  //             const response = await axios.put(`${Port}/Screening/add_employee_put/${corporateData.citizens_pk_id}/`, updatedDataWithDepartment, {
+  //             const response = await axios.put(`${API_URL}/Screening/add_employee_put/${corporateData.citizens_pk_id}/`, updatedDataWithDepartment, {
   //                 headers: {
   //                     'Authorization': `Bearer ${accessToken}`,
   //                     'Content-Type': 'application/json'
@@ -292,7 +293,7 @@ const CorporateUpdate = (props) => {
       try {
         const accessToken = localStorage.getItem("token"); // Retrieve access token
         const response = await axios.get(
-          `${Port}/Screening/get_department/${SourceUrlId}/${SourceNameUrlId}/`,
+          `${API_URL}/Screening/get_department/${SourceUrlId}/${SourceNameUrlId}/`,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`,
@@ -321,7 +322,7 @@ const CorporateUpdate = (props) => {
   useEffect(() => {
     const fetchDesignation = async () => {
       if (updatedData.department) {
-        const apiUrl = `${Port}/Screening/get_designation/${updatedData.department}/${SourceUrlId}/${SourceNameUrlId}/`;
+        const apiUrl = `${API_URL}/Screening/get_designation/${updatedData.department}/${SourceUrlId}/${SourceNameUrlId}/`;
         console.log(apiUrl); // Log the API URL
         try {
           const response = await fetch(apiUrl, {
@@ -354,7 +355,7 @@ const CorporateUpdate = (props) => {
   // useEffect(() => {
   //     const fetchState = async () => {
   //         if (updatedData.source) {
-  //             const apiUrl = `${Port}/Screening/State_Get/`;
+  //             const apiUrl = `${API_URL}/Screening/State_Get/`;
   //             console.log(apiUrl);
   //             try {
   //                 const response = await fetch(apiUrl, {
@@ -379,7 +380,7 @@ const CorporateUpdate = (props) => {
   // useEffect(() => {
   //     const fetchState = async () => {
   //         if (updatedData.source && updatedData.state) {
-  //             const apiUrl = `${Port}/Screening/state_and_pass_district_Get/${updatedData.state}/${updatedData.state}/`;
+  //             const apiUrl = `${API_URL}/Screening/state_and_pass_district_Get/${updatedData.state}/${updatedData.state}/`;
   //             console.log(apiUrl);
   //             try {
   //                 const response = await fetch(apiUrl, {
@@ -404,7 +405,7 @@ const CorporateUpdate = (props) => {
   // useEffect(() => {
   //     const fetchTehsil = async () => {
   //         if (updatedData.source && updatedData.district) {
-  //             const apiUrl = `${Port}/Screening/district_and_pass_taluka_Get/${updatedData.source}/${updatedData.district}/`;
+  //             const apiUrl = `${API_URL}/Screening/district_and_pass_taluka_Get/${updatedData.source}/${updatedData.district}/`;
   //             console.log(apiUrl);
   //             try {
   //                 const response = await fetch(apiUrl, {
@@ -429,8 +430,8 @@ const CorporateUpdate = (props) => {
   // useEffect(() => {
   //     const fetchName = async () => {
   //         if (updatedData.source && updatedData.tehsil) {
-  //             // const apiUrl = `${Port}/Screening/taluka_and_pass_SourceName_Get/${updatedData.source}/${updatedData.tehsil}/`;
-  //             const apiUrl = `${Port}/Screening/taluka_and_pass_SourceName_Get/?SNid=${updatedData.tehsil}&So=${updatedData.source}&source_pk_id=${SourceNameUrlId}`;
+  //             // const apiUrl = `${API_URL}/Screening/taluka_and_pass_SourceName_Get/${updatedData.source}/${updatedData.tehsil}/`;
+  //             const apiUrl = `${API_URL}/Screening/taluka_and_pass_SourceName_Get/?SNid=${updatedData.tehsil}&So=${updatedData.source}&source_pk_id=${SourceNameUrlId}`;
   //             console.log(apiUrl);
   //             try {
   //                 const response = await fetch(apiUrl, {
@@ -455,7 +456,7 @@ const CorporateUpdate = (props) => {
   useEffect(() => {
     const fetchState = async () => {
       try {
-        const apiUrl = `${Port}/Screening/State_Get/`;
+        const apiUrl = `${API_URL}/Screening/State_Get/`;
         console.log(apiUrl);
 
         const response = await fetch(apiUrl, {
@@ -481,7 +482,7 @@ const CorporateUpdate = (props) => {
       if (!updatedData.state) return;
 
       try {
-        const apiUrl = `${Port}/Screening/District_Get/${updatedData.state}/`;
+        const apiUrl = `${API_URL}/Screening/District_Get/${updatedData.state}/`;
         console.log(apiUrl);
 
         const response = await fetch(apiUrl, {
@@ -507,7 +508,7 @@ const CorporateUpdate = (props) => {
       if (!updatedData.district) return;
 
       try {
-        const apiUrl = `${Port}/Screening/Tehsil_Get/${updatedData.district}/`;
+        const apiUrl = `${API_URL}/Screening/Tehsil_Get/${updatedData.district}/`;
         console.log(apiUrl);
 
         const response = await fetch(apiUrl, {
@@ -533,7 +534,7 @@ const CorporateUpdate = (props) => {
       if (!updatedData.tehsil) return;
 
       try {
-        const apiUrl = `${Port}/Screening/Workshop_list_get/${updatedData.tehsil}/`;
+        const apiUrl = `${API_URL}/Screening/Workshop_list_get/${updatedData.tehsil}/`;
         console.log("Workshop API:", apiUrl);
 
         const response = await fetch(apiUrl, {

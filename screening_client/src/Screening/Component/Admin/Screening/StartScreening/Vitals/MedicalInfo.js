@@ -17,6 +17,7 @@ import {
     Alert,
     Snackbar,
 } from "@mui/material";
+import { API_URL } from "../../../../../../Config/api";
 
 const MedicalInfo = ({ citizensPkId, pkid, fetchVital, selectedName, onAcceptClick }) => {
     const [nextName, setNextName] = useState("");
@@ -56,7 +57,7 @@ const handleSnackbarClose = () => {
 
     const userID = localStorage.getItem("userID");
     const accessToken = localStorage.getItem("token");
-    const Port = process.env.REACT_APP_API_KEY;
+    // const API_URL = process.env.REACT_APP_API_KEY;
 
     // Determine next screening name
     useEffect(() => {
@@ -79,7 +80,7 @@ const handleSnackbarClose = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch(`${Port}/Screening/citizen_medical_history/`, {
+                const response = await fetch(`${API_URL}/Screening/citizen_medical_history/`, {
                     headers: {
                         Authorization: `Bearer ${accessToken}`,
                         "Content-Type": "application/json",
@@ -113,7 +114,7 @@ const handleSnackbarClose = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await fetch(`${Port}/Screening/citizen_past_operative_history/`, {
+                const response = await fetch(`${API_URL}/Screening/citizen_past_operative_history/`, {
                     headers: {
                         Authorization: `Bearer ${accessToken}`,
                         "Content-Type": "application/json",
@@ -147,7 +148,7 @@ const handleSnackbarClose = () => {
     useEffect(() => {
         const fetchDataById = async (pkid) => {
             try {
-                const response = await fetch(`${Port}/Screening/medical_get_api/${pkid}/`, {
+                const response = await fetch(`${API_URL}/Screening/medical_get_api/${pkid}/`, {
                     headers: {
                         Authorization: `Bearer ${accessToken}`,
                         "Content-Type": "application/json",
@@ -209,7 +210,7 @@ const handleDialogConfirm = async () => {
 
   try {
     const response = await axios.post(
-      `${Port}/Screening/medical_post_api/${pkid}/`,
+      `${API_URL}/Screening/medical_post_api/${pkid}/`,
       postData,
       {
         headers: {

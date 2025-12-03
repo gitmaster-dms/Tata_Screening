@@ -16,11 +16,12 @@ import axios from 'axios';
 import { Grid, Card, Typography, Box, IconButton } from '@mui/material';
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import ArrowDropUpIcon from "@mui/icons-material/ArrowDropUp";
+import { API_URL } from '../../../../../../Config/api'
 
 const BasicScreen = ({ pkid, citizensPkId, gender, scheduleID, citizenidddddddd, fetchVital, onAcceptClick,basicScreenId, selectedNameId }) => {
 console.log(selectedNameId,"selected ");
 
-  const Port = process.env.REACT_APP_API_KEY;
+  // const API_URL = process.env.REACT_APP_API_KEY;
   const userID = localStorage.getItem('userID');
   console.log(userID);
   console.log(scheduleID, 'scheduleIDddd');
@@ -44,7 +45,7 @@ console.log(selectedNameId,"selected ");
   // useEffect(() => {
   //   const fetchVitalName = async () => {
   //     try {
-  //       const response = await axios.get(`${Port}/Screening/GET_Schedule_Screening_sub_vital/?source=${SourceUrlId}&source_name=${SourceNameUrlId}&schedule_id=${scheduleID}`,
+  //       const response = await axios.get(`${API_URL}/Screening/GET_Schedule_Screening_sub_vital/?source=${SourceUrlId}&source_name=${SourceNameUrlId}&schedule_id=${scheduleID}`,
   //         {
   //           headers: {
   //             Authorization: `Bearer ${accessToken}`
@@ -58,12 +59,12 @@ console.log(selectedNameId,"selected ");
   //   };
 
   //   fetchVitalName();
-  // }, [Port]);
+  // }, [API_URL]);
 
     useEffect(() => {
     const fetchVitalName = async () => {
       try {
-        const response = await axios.get(`${Port}/Screening/Screening_sub_list/?screening_list=${selectedNameId}`,
+        const response = await axios.get(`${API_URL}/Screening/Screening_sub_list/?screening_list=${selectedNameId}`,
           {
             headers: {
               Authorization: `Bearer ${accessToken}`
@@ -78,7 +79,7 @@ console.log(selectedNameId,"selected ");
     };
 
     fetchVitalName();
-  }, [Port]);
+  }, [API_URL]);
 
 
   const handleTabClick = (tabName, basicScreeningPkId) => {

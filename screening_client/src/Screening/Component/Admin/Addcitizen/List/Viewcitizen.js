@@ -12,6 +12,7 @@ import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
 import { Link, useParams } from "react-router-dom";
 import Childview from "./Childview";
 import Corporateview from "./Corporateview";
+import { API_URL } from "../../../../../Config/api";
 
 const Viewcitizen = () => {
   const { id, sourceId } = useParams();
@@ -19,7 +20,7 @@ const Viewcitizen = () => {
   const SourceUrlId = localStorage.getItem("loginSource");
   console.log("SourceUrlId", SourceUrlId);
   const accessToken = localStorage.getItem("token");
-  const Port = process.env.REACT_APP_API_KEY;
+  // const API_URL = process.env.REACT_APP_API_KEY;
   const [citizenData, setCitizenData] = useState(null);
   console.log(citizenData, "data1");
 
@@ -28,9 +29,9 @@ const Viewcitizen = () => {
     let apiUrl = "";
 
     if (id === "Community") {
-      apiUrl = `${Port}/Screening/add_citizen_get/${id}/`;
+      apiUrl = `${API_URL}/Screening/add_citizen_get/${id}/`;
     } else if (sourceId === "Corporate") {
-      apiUrl = `${Port}/Screening/add_employee_get/${id}/`;
+      apiUrl = `${API_URL}/Screening/add_employee_get/${id}/`;
     }
 
     if (apiUrl) {
@@ -49,11 +50,11 @@ const Viewcitizen = () => {
           console.error("Error:", error);
         });
     }
-  }, [sourceId, id, accessToken, Port]);
+  }, [sourceId, id, accessToken, API_URL]);
 
   const fetchCitizenData = async () => {
     try {
-      const response = await fetch(`${Port}/Screening/Citizen_Put_api/${id}/`);
+      const response = await fetch(`${API_URL}/Screening/Citizen_Put_api/${id}/`);
 
       const data = await response.json();
       console.log("Citizen Data:", data);
