@@ -1476,8 +1476,8 @@ def follow_up_status_citizen_info_ViewSet1(request):
 #--------------------------------------------------------------------------------------------
 
 class GetPermissionAPIView(APIView):
-    # renderer_classes = [UserRenderer]
-    # permission_classes = [IsAuthenticated]
+    renderer_classes = [UserRenderer]
+    permission_classes = [IsAuthenticated]
     serializer_class = SavePermissionSerializer
 
     def get(self, request, source, role, *args, **kwargs):
