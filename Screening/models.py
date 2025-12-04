@@ -1245,9 +1245,9 @@ class Citizen(models.Model):
     emergency_address = models.CharField(max_length=555,null=True,blank=True)
     
     is_deleted = models.BooleanField(default=False)
-    added_by =	models.CharField(max_length=255,null=True, blank=True)
+    added_by =	models.ForeignKey(agg_com_colleague, on_delete=models.CASCADE, null=True, blank=True)
     added_date = models.DateTimeField(auto_now_add=True)
-    modify_by =	models.CharField(max_length=255,null=True, blank=True)
+    modify_by =	models.ForeignKey(agg_com_colleague, on_delete=models.CASCADE, null=True, blank=True, related_name='citizen_modify_by')
     modify_date = models.DateTimeField(auto_now=True, null=True)
     
     
@@ -1304,9 +1304,9 @@ class Workshop(models.Model):
     longitude = models.DecimalField(max_digits=9, decimal_places=6, null=True)  # Longitude can range from -180 to 180
 
     is_deleted = models.BooleanField(default=False)
-    added_by =	models.CharField(max_length=255,null=True, blank=True)
+    added_by =	models.ForeignKey(agg_com_colleague, on_delete=models.CASCADE, null=True, blank=True)
     added_date = models.DateTimeField(auto_now_add=True)
-    modify_by =	models.CharField(max_length=255,null=True, blank=True)
+    modify_by =	models.ForeignKey(agg_com_colleague, on_delete=models.CASCADE, null=True, blank=True, related_name='workshop_modify_by')
     modify_date = models.DateTimeField(auto_now=True, null=True)
 
     def __str__(self):
@@ -1335,9 +1335,9 @@ class Screening_citizen(models.Model):
     screening_count = models.IntegerField(null=True,blank=True)
     citizen_id = models.CharField(max_length=255,null=True,blank=True) 
     citizen_pk_id = models.ForeignKey(Citizen, on_delete=models.CASCADE, null=True,blank=True)
-    added_by = models.CharField(max_length=255,null=True, blank=True)
+    added_by =	models.ForeignKey(agg_com_colleague, on_delete=models.CASCADE, null=True, blank=True)
     added_date = models.DateTimeField(auto_now_add=True)
-    modify_by = models.CharField(max_length=255,null=True, blank=True)
+    modify_by = models.ForeignKey(agg_com_colleague, on_delete=models.CASCADE, null=True, blank=True, related_name='screening_modify_by')
     modified_date = models.DateTimeField(auto_now=True)
     
     
@@ -1362,9 +1362,9 @@ class basic_info(models.Model):
     phone_no = models.CharField(max_length=10, null=True,blank=True)
     form_submit = models.BooleanField(default=False)
     is_deleted = models.BooleanField(default=False)
-    added_by =	models.CharField(null=True, blank=True,max_length=255)
+    added_by =	models.ForeignKey(agg_com_colleague, on_delete=models.CASCADE, null=True, blank=True)
     added_date = models.DateTimeField(auto_now_add=True)
-    modify_by =	models.CharField(null=True, blank=True,max_length=255)
+    modify_by = models.ForeignKey(agg_com_colleague, on_delete=models.CASCADE, null=True, blank=True, related_name='basic_modify_by')
     modify_date = models.DateTimeField(auto_now=True, null=True)
     
     
@@ -1385,9 +1385,9 @@ class emergency_info(models.Model):
     
     form_submit = models.BooleanField(default=False)
     is_deleted = models.BooleanField(default=False)
-    added_by =	models.CharField(null=True, blank=True,max_length=255)
+    added_by = models.ForeignKey(agg_com_colleague, on_delete=models.CASCADE, null=True, blank=True)
     added_date = models.DateTimeField(auto_now_add=True)
-    modify_by =	models.CharField(null=True, blank=True,max_length=255)
+    modify_by = models.ForeignKey(agg_com_colleague, on_delete=models.CASCADE, null=True, blank=True, related_name='emergency_modify_by')
     modify_date = models.DateTimeField(auto_now=True, null=True)
 
 
@@ -1423,9 +1423,9 @@ class growth_monitoring_info(models.Model):
     
     form_submit = models.BooleanField(default=False)
     is_deleted = models.BooleanField(default=False)
-    added_by =	models.CharField(null=True, blank=True,max_length=255)
+    added_by =	models.ForeignKey(agg_com_colleague, on_delete=models.CASCADE, null=True, blank=True)
     added_date = models.DateTimeField(auto_now_add=True)
-    modify_by =	models.CharField(null=True, blank=True,max_length=255)
+    modify_by = models.ForeignKey(agg_com_colleague, on_delete=models.CASCADE, null=True, blank=True, related_name='growth_modify_by')
     modify_date = models.DateTimeField(auto_now=True, null=True)
     
     
@@ -1461,9 +1461,9 @@ class vital_info(models.Model):
     refer_doctor = models.ForeignKey('doctor_list', on_delete=models.CASCADE,null=True, blank=True)
     
     added_date = models.DateTimeField(auto_now_add=True)
-    added_by =	models.CharField(null=True, blank=True,max_length=255)
+    added_by =	models.ForeignKey(agg_com_colleague, on_delete=models.CASCADE, null=True, blank=True)
     modify_date = models.DateTimeField(auto_now=True, null=True)
-    modify_by =	models.CharField(null=True, blank=True,max_length=255)
+    modify_by = models.ForeignKey(agg_com_colleague, on_delete=models.CASCADE, null=True, blank=True, related_name='vital_modify_by')
 
     def save(self, *args, **kwargs):
         if not self.vital_code:
@@ -1512,9 +1512,9 @@ class genral_examination(models.Model):
     form_submit = models.BooleanField(default=False)
 
     added_date = models.DateTimeField(auto_now_add=True)
-    added_by =	models.CharField(null=True, blank=True,max_length=255)
+    added_by = models.ForeignKey(agg_com_colleague, on_delete=models.CASCADE, null=True, blank=True)
     modify_date = models.DateTimeField(auto_now=True, null=True)
-    modify_by =	models.CharField(null=True, blank=True,max_length=255)
+    modify_by = models.ForeignKey(agg_com_colleague, on_delete=models.CASCADE, null=True, blank=True, related_name='genral_modify_by')
     
     
     
@@ -1547,9 +1547,9 @@ class systemic_exam(models.Model):
     form_submit = models.BooleanField(default=False)
 
     added_date = models.DateTimeField(auto_now_add=True)
-    added_by =	models.CharField(null=True, blank=True,max_length=255)
+    added_by = models.ForeignKey(agg_com_colleague, on_delete=models.CASCADE, null=True, blank=True)
     modify_date = models.DateTimeField(auto_now=True, null=True)
-    modify_by =	models.CharField(null=True, blank=True,max_length=255)
+    modify_by = models.ForeignKey(agg_com_colleague, on_delete=models.CASCADE, null=True, blank=True, related_name='systemic_modify_by')
 
 
 
@@ -1582,9 +1582,9 @@ class female_screening(models.Model):
     form_submit = models.BooleanField(default=False)
 
     added_date = models.DateTimeField(auto_now_add=True)
-    added_by =	models.CharField(null=True, blank=True,max_length=255)
+    added_by = models.ForeignKey(agg_com_colleague, on_delete=models.CASCADE, null=True, blank=True)
     modify_date = models.DateTimeField(auto_now=True, null=True)
-    modify_by =	models.CharField(null=True, blank=True,max_length=255)
+    modify_by = models.ForeignKey(agg_com_colleague, on_delete=models.CASCADE, null=True, blank=True, related_name='female_modify_by')
 
 
 class disability_screening(models.Model):
@@ -1605,7 +1605,7 @@ class disability_screening(models.Model):
     form_submit = models.BooleanField(default=False)
 
     added_date = models.DateTimeField(auto_now_add=True)
-    added_by =	models.CharField(null=True, blank=True,max_length=255)
+    added_by = models.ForeignKey(agg_com_colleague, on_delete=models.CASCADE, null=True, blank=True)
     modify_date = models.DateTimeField(auto_now=True, null=True)
     modify_by =	models.CharField(null=True, blank=True,max_length=255)
 
@@ -1622,9 +1622,9 @@ class birth_defect(models.Model):
     form_submit = models.BooleanField(default=False)
     is_deleted = models.BooleanField(default=False)
     
-    added_by =	models.CharField(null=True, blank=True,max_length=255)
+    added_by = models.ForeignKey(agg_com_colleague, on_delete=models.CASCADE, null=True, blank=True)
     added_date = models.DateTimeField(auto_now_add=True)
-    modify_by =	models.CharField(null=True, blank=True,max_length=255)
+    modify_by = models.ForeignKey(agg_com_colleague, on_delete=models.CASCADE, null=True, blank=True, related_name='birth_modify_by')
     modify_date = models.DateTimeField(auto_now=True, null=True)
     
 class childhood_diseases(models.Model):
@@ -1639,9 +1639,9 @@ class childhood_diseases(models.Model):
     form_submit = models.BooleanField(default=False)
     is_deleted = models.BooleanField(default=False)
     
-    added_by =	models.CharField(null=True, blank=True,max_length=255)
+    added_by = models.ForeignKey(agg_com_colleague, on_delete=models.CASCADE, null=True, blank=True)
     added_date = models.DateTimeField(auto_now_add=True)
-    modify_by =	models.CharField(null=True, blank=True,max_length=255)
+    modify_by = models.ForeignKey(agg_com_colleague, on_delete=models.CASCADE, null=True, blank=True, related_name='childhood_modify_by')
     modify_date = models.DateTimeField(auto_now=True, null=True)
     
 class deficiencies(models.Model):
@@ -1656,9 +1656,9 @@ class deficiencies(models.Model):
     form_submit = models.BooleanField(default=False)
     is_deleted = models.BooleanField(default=False)
     
-    added_by =	models.CharField(null=True, blank=True,max_length=255)
+    added_by = models.ForeignKey(agg_com_colleague, on_delete=models.CASCADE, null=True, blank=True)
     added_date = models.DateTimeField(auto_now_add=True)
-    modify_by =	models.CharField(null=True, blank=True,max_length=255)
+    modify_by = models.ForeignKey(agg_com_colleague, on_delete=models.CASCADE, null=True, blank=True, related_name='deficiencies_modify_by')
     modify_date = models.DateTimeField(auto_now=True, null=True)
     
 class skin_conditions(models.Model):
@@ -1673,9 +1673,9 @@ class skin_conditions(models.Model):
     form_submit = models.BooleanField(default=False)
     is_deleted = models.BooleanField(default=False)
     
-    added_by =	models.CharField(null=True, blank=True,max_length=255)
+    added_by = models.ForeignKey(agg_com_colleague, on_delete=models.CASCADE, null=True, blank=True)
     added_date = models.DateTimeField(auto_now_add=True)
-    modify_by =	models.CharField(null=True, blank=True,max_length=255)
+    modify_by = models.ForeignKey(agg_com_colleague, on_delete=models.CASCADE, null=True, blank=True, related_name='skin_modify_by')
     modify_date = models.DateTimeField(auto_now=True, null=True)
     
 
@@ -1694,9 +1694,9 @@ class diagnosis(models.Model):
     form_submit = models.BooleanField(default=False)
     is_deleted = models.BooleanField(default=False)
     
-    added_by =	models.CharField(null=True, blank=True,max_length=255)
+    added_by = models.ForeignKey(agg_com_colleague, on_delete=models.CASCADE, null=True, blank=True)
     added_date = models.DateTimeField(auto_now_add=True)
-    modify_by =	models.CharField(null=True, blank=True,max_length=255)
+    modify_by = models.ForeignKey(agg_com_colleague, on_delete=models.CASCADE, null=True, blank=True, related_name='diagnosis_modify_by')
     modify_date = models.DateTimeField(auto_now=True, null=True)
     
 
@@ -1713,9 +1713,9 @@ class check_box_if_normal(models.Model):
     form_submit = models.BooleanField(default=False)
     is_deleted = models.BooleanField(default=False)
     
-    added_by =	models.CharField(null=True, blank=True,max_length=255)
+    added_by = models.ForeignKey(agg_com_colleague, on_delete=models.CASCADE, null=True, blank=True)
     added_date = models.DateTimeField(auto_now_add=True)
-    modify_by =	models.CharField(null=True, blank=True,max_length=255)
+    modify_by = models.ForeignKey(agg_com_colleague, on_delete=models.CASCADE, null=True, blank=True, related_name='checkbox_modify_by')
     modify_date = models.DateTimeField(auto_now=True, null=True)
         
 
@@ -1743,9 +1743,9 @@ class treatement(models.Model):
     form_submit = models.BooleanField(default=False)
     is_deleted = models.BooleanField(default=False)
     
-    added_by =	models.CharField(null=True, blank=True,max_length=255)
+    added_by = models.ForeignKey(agg_com_colleague, on_delete=models.CASCADE, null=True, blank=True)
     added_date = models.DateTimeField(auto_now_add=True)
-    modify_by =	models.CharField(null=True, blank=True,max_length=255)
+    modify_by = models.ForeignKey(agg_com_colleague, on_delete=models.CASCADE, null=True, blank=True, related_name='treatement_modify_by')
     modify_date = models.DateTimeField(auto_now=True, null=True)
 
 
@@ -1785,9 +1785,9 @@ class auditory_info(models.Model):
     form_submit = models.BooleanField(default=False)
     is_deleted = models.BooleanField(default=False)
     
-    added_by =	models.CharField(null=True, blank=True,max_length=255)
+    added_by = models.ForeignKey(agg_com_colleague, on_delete=models.CASCADE, null=True, blank=True)
     added_date = models.DateTimeField(auto_now_add=True)
-    modify_by =	models.CharField(null=True, blank=True,max_length=255)
+    modify_by = models.ForeignKey(agg_com_colleague, on_delete=models.CASCADE, null=True, blank=True, related_name='audit_modify_by')
     modify_date = models.DateTimeField(auto_now=True, null=True)
     
     def save(self, *args, **kwargs):
@@ -1832,9 +1832,9 @@ class vision_info(models.Model):
     form_submit = models.BooleanField(default=False)
     is_deleted = models.BooleanField(default=False)
     
-    added_by =	models.CharField(null=True, blank=True,max_length=255)
+    added_by = models.ForeignKey(agg_com_colleague, on_delete=models.CASCADE, null=True, blank=True)
     added_date = models.DateTimeField(auto_now_add=True)
-    modify_by =	models.CharField(null=True, blank=True,max_length=255)
+    modify_by = models.ForeignKey(agg_com_colleague, on_delete=models.CASCADE, null=True, blank=True, related_name='vision_modify_by')
     modify_date = models.DateTimeField(auto_now=True, null=True)
     
 
@@ -1865,9 +1865,9 @@ class medical_history_info(models.Model):
     
     form_submit = models.BooleanField(default=False)
     is_deleted = models.BooleanField(default=False)
-    added_by =	models.CharField(null=True, blank=True,max_length=255)
+    added_by = models.ForeignKey(agg_com_colleague, on_delete=models.CASCADE, null=True, blank=True)
     added_date = models.DateTimeField(auto_now_add=True)
-    modify_by =	models.CharField(null=True, blank=True,max_length=255)
+    modify_by = models.ForeignKey(agg_com_colleague, on_delete=models.CASCADE, null=True, blank=True, related_name='medical_history_modify_by')
     modify_date = models.DateTimeField(auto_now=True, null=True)
 
 
@@ -1903,9 +1903,9 @@ class follow_up(models.Model):
     follow_up = models.IntegerField(blank=True,null=True,default=2)
     
     is_deleted = models.BooleanField(default=False)
-    added_by =	models.CharField(null=True, blank=True,max_length=255)
+    added_by = models.ForeignKey(agg_com_colleague, on_delete=models.CASCADE, null=True, blank=True)
     added_date = models.DateTimeField(auto_now_add=True)
-    modify_by =	models.CharField(null=True, blank=True,max_length=255)
+    modify_by = models.ForeignKey(agg_com_colleague, on_delete=models.CASCADE, null=True, blank=True, related_name='followup_citizen_modify_by')
     modify_date = models.DateTimeField(auto_now=True, null=True)
 
 
@@ -1943,9 +1943,9 @@ class followup_save(models.Model):
     follow_up_citizen_pk_id = models.ForeignKey('follow_up',on_delete=models.CASCADE, blank=True,null=True)
     
     is_deleted = models.BooleanField(default=False)
-    added_by =	models.CharField(null=True, blank=True,max_length=255)
+    added_by = models.ForeignKey(agg_com_colleague, on_delete=models.CASCADE, null=True, blank=True)
     added_date = models.DateTimeField(auto_now_add=True)
-    modify_by =	models.CharField(null=True, blank=True,max_length=255)
+    modify_by = models.ForeignKey(agg_com_colleague, on_delete=models.CASCADE, null=True, blank=True, related_name='followup_modify_by')
     modify_date = models.DateTimeField(auto_now=True, null=True)
     
 
@@ -1963,9 +1963,9 @@ class pft_info(models.Model):
     
     form_submit = models.BooleanField(default=False)
     is_deleted = models.BooleanField(default=False)
-    added_by =	models.CharField(null=True, blank=True,max_length=255)
+    added_by = models.ForeignKey(agg_com_colleague, on_delete=models.CASCADE, null=True, blank=True)
     added_date = models.DateTimeField(auto_now_add=True)
-    modify_by =	models.CharField(null=True, blank=True,max_length=255)
+    modify_by = models.ForeignKey(agg_com_colleague, on_delete=models.CASCADE, null=True, blank=True, related_name='pft_modify_by')
     modify_date = models.DateTimeField(auto_now=True, null=True)
     
     
@@ -2021,9 +2021,9 @@ class dental_info(models.Model):
     
     form_submit = models.BooleanField(default=False)
     is_deleted = models.BooleanField(default=False)
-    added_by =	models.CharField(null=True, blank=True,max_length=255)
+    added_by = models.ForeignKey(agg_com_colleague, on_delete=models.CASCADE, null=True, blank=True)
     added_date = models.DateTimeField(auto_now_add=True)
-    modify_by =	models.CharField(null=True, blank=True,max_length=255)
+    modify_by = models.ForeignKey(agg_com_colleague, on_delete=models.CASCADE, null=True, blank=True, related_name='dental_modify_by')
     modify_date = models.DateTimeField(auto_now=True, null=True)
     
 
@@ -2062,9 +2062,9 @@ class immunisation_info(models.Model):
     
     form_submit = models.BooleanField(default=False)
     is_deleted = models.BooleanField(default=False)
-    added_by =	models.CharField(null=True, blank=True,max_length=255)
+    added_by = models.ForeignKey(agg_com_colleague, on_delete=models.CASCADE, null=True, blank=True)
     added_date = models.DateTimeField(auto_now_add=True)
-    modify_by =	models.CharField(null=True, blank=True,max_length=255)
+    modify_by = models.ForeignKey(agg_com_colleague, on_delete=models.CASCADE, null=True, blank=True, related_name='immunization_modify_by')
     modify_date = models.DateTimeField(auto_now=True, null=True)
 
     def save(self, *args, **kwargs):
@@ -2099,9 +2099,9 @@ class investigation_info(models.Model):
     form_submit = models.BooleanField(default=False)
     is_deleted = models.BooleanField(default=False)
     
-    added_by =	models.CharField(null=True, blank=True,max_length=255)
+    added_by = models.ForeignKey(agg_com_colleague, on_delete=models.CASCADE, null=True, blank=True)
     added_date = models.DateTimeField(auto_now_add=True)
-    modify_by =	models.CharField(null=True, blank=True,max_length=255)
+    modify_by = models.ForeignKey(agg_com_colleague, on_delete=models.CASCADE, null=True, blank=True, related_name='investigation_modify_by')
     modify_date = models.DateTimeField(auto_now=True, null=True)
     
 
