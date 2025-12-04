@@ -27,8 +27,58 @@ from django.core.exceptions import ValidationError
 from rest_framework import viewsets
 
 from rest_framework_simplejwt.tokens import RefreshToken, AccessToken
-from rest_framework.authentication import get_authorization_header
+from rest_framework_simplejwt.token_blacklist.models import BlacklistedToken, OutstandingToken
+from rest_framework.authentication import BaseAuthentication
+from rest_framework.exceptions import AuthenticationFailed
+import logging
 
+
+
+
+def custom_exception_handler(exc, context):
+    response = exception_handler(exc, context)
+ 
+    if isinstance(exc, AuthenticationFailed):
+        return Response({"detail": str(exc)}, status=status.HTTP_403_FORBIDDEN)
+ 
+    return response
+
+
+
+class CustomJWTAuthentication(BaseAuthentication):
+    def authenticate(self, request):
+        auth_header = request.headers.get('Authorization')
+
+        if not auth_header:
+            raise AuthenticationFailed('Authorization header missing')
+
+        if not auth_header.startswith('Bearer '):
+            raise AuthenticationFailed('Authorization header must start with "Bearer "')
+
+        token = auth_header.split(' ')[1]
+
+        try:
+            access_token = AccessToken(token)
+
+            if BlacklistedToken.objects.filter(token__jti=access_token['jti']).exists():
+                raise AuthenticationFailed('This token has been blacklisted.')
+
+            payload = access_token.payload
+            user_id = int(payload.get('user_id'))
+
+            user = agg_com_colleague.objects.filter(id=user_id).first()
+
+            if not user:
+                raise AuthenticationFailed('User not found.')
+
+            if user.clg_is_login is False:
+                raise AuthenticationFailed('Token expired. Login again.')
+
+            return (user, None)
+
+        except Exception:
+            logging.exception("Token validation failed")
+            raise AuthenticationFailed("Invalid or expired token.")
 
 
 
@@ -1480,7 +1530,9 @@ def follow_up_status_citizen_info_ViewSet1(request):
 
 class GetPermissionAPIView(APIView):
     renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
     permission_classes = [IsAuthenticated]
+   
     serializer_class = SavePermissionSerializer
 
     def get(self, request, source, role, *args, **kwargs):

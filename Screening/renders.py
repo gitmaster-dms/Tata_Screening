@@ -1,12 +1,17 @@
-from rest_framework import renderers
+from rest_framework.renderers import JSONRenderer
 import json
-
-class UserRenderer(renderers.JSONRenderer):
-    charset='utf-8'
+ 
+class UserRenderer(JSONRenderer):
+    charset = 'utf-8'
+ 
     def render(self, data, accepted_media_type=None, renderer_context=None):
-        response = ''
-        if 'ErrorDetail' in str(data):
-            response = json.dumps({'errors':data})
-        else:
-            response = json.dumps(data)
-        return response
+        """
+        Custom JSON renderer that safely handles datetime, Decimal, and other
+        non-serializable types by converting them to strings automatically.
+        """
+        try:
+            return json.dumps(data, default=str)  # safely convert datetimes
+        except Exception:
+            # fallback to DRF’s JSONRenderer if any unexpected issue occurs
+            return super().render(data, accepted_media_type, renderer_context)
+ 
