@@ -4176,8 +4176,8 @@ class BasicInfoSaveAPI(APIView):
                 "days": citizen.days,
                 "aadhar_id": citizen.aadhar_id,
                 "phone_no": citizen.mobile_no,
-                "added_by": request.data.get("added_by", "Mohin"),
-                "modify_by": request.data.get("modify_by", "Mohin"),
+                "added_by_id": citizen.added_by_id,
+                "modify_by_id": citizen.modify_by_id,
             }
 
             # 5️⃣ Serialize and save new record
@@ -4249,8 +4249,8 @@ class EmergencyInfoSaveAPI(APIView):
                 "emergency_contact": citizen.emergency_contact,
                 "relationship_with_employee": citizen.relationship_with_employee,
                 "emergency_address": citizen.emergency_address,
-                "added_by": request.data.get("added_by", "Mohin"),
-                "modify_by": request.data.get("modify_by", "Mohin"),
+                "added_by_id": citizen.added_by_id,
+                "modify_by_id": citizen.modify_by_id,
             }
 
             # 5️⃣ Validate & save
@@ -4332,8 +4332,8 @@ class GrowthMonitoringInfoSaveAPI(APIView):
                 "bmi": citizen.bmi,
                 "arm_size": citizen.arm_size,
                 "symptoms": citizen.symptoms,
-                "added_by": request.data.get("added_by", "Mohin"),
-                "modify_by": request.data.get("modify_by", "Mohin"),
+                "added_by_id": citizen.added_by_id,
+                "modify_by_id": citizen.modify_by_id,
             }
 
             # 5️⃣ Serialize and save
