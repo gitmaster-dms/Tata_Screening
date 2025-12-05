@@ -184,7 +184,7 @@ urlpatterns = [
     
     path('QRCode/', QRCodeGenerateAPIView.as_view(), name='QRCode'),
     path('dental_image_analyse/', DentalScreeningAPIView.as_view(), name='dental_image_analyse'),
-       
+    path('Citizen_filter/', CitizensFilterAPIView.as_view(), name='Citizen_filter'),
     
     #-----------------------Location API-----------------------
     

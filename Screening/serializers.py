@@ -1745,3 +1745,9 @@ class Doctor_List_Serializer(serializers.ModelSerializer):
     class Meta:
         model = doctor_list
         fields = ['doctor_pk_id','doctor_name']
+
+
+class Citizen_Filter_Serializer(serializers.ModelSerializer):
+     class Meta:
+        model = Citizen
+        fields = '__all__'

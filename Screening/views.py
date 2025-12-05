@@ -2129,6 +2129,9 @@ def bad_habbits_get_info_ViewSet1(request):
 
 
 class Hospital_list_GET_API_APIView(APIView):
+    renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def get(self,request,format=None):
         snippets = referred_hospital_list.objects.all()
         serializer = HospitalListSerializer(snippets,many=True)
@@ -2136,6 +2139,7 @@ class Hospital_list_GET_API_APIView(APIView):
 
 class audio_reading_get_api(APIView):
     renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
     permission_classes = [IsAuthenticated]
     def get(self, request,reading):
             if(reading>=0 and reading<=25):
@@ -2159,6 +2163,7 @@ class audio_reading_get_api(APIView):
 
 class LeftReading(APIView):
     renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
     permission_classes = [IsAuthenticated]
     def get(self, request, *args, **kwargs):
         hz_500_left = kwargs.get('hz_500_left')
@@ -2183,6 +2188,7 @@ class LeftReading(APIView):
         
 class RightReading(APIView):
     renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
     permission_classes = [IsAuthenticated]
     def get(self, request, *args, **kwargs):
         hz_500_right = kwargs.get('hz_500_right')
@@ -2208,6 +2214,7 @@ class RightReading(APIView):
 
 class GET_Screening_List_View(APIView):
     renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
     permission_classes = [IsAuthenticated]
     def get(self,request):
         snippet = agg_screening_list.objects.all()
@@ -2215,8 +2222,9 @@ class GET_Screening_List_View(APIView):
         return Response(serializers.data,status=status.HTTP_200_OK)
 
 class Screening_sub_list_Viewset(APIView):
-    # renderer_classes = [UserRenderer]
-    # permission_classes = [IsAuthenticated]
+    renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def get(self,request):
         screening_list = request.GET.get('screening_list')
         snippet = agg_screening_sub_list.objects.all()
@@ -3589,6 +3597,9 @@ genai.configure(api_key="AIzaSyB6IPWiMtU5XXtkRlTlFKxR-b8cvMTHACM")
 translator = Translator()
 
 class DentalScreeningAPIView(APIView):
+    renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticated]
     parser_classes = (MultiPartParser, FormParser)  # Support file uploads
 
     def post(self, request, *args, **kwargs):
@@ -3868,6 +3879,9 @@ from django.db import connection
 from rest_framework.views import APIView
 
 class location_get_APIView(APIView):
+    renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def get(self, request):
         try:
             wrd_inst = request.GET.get("wrd_inst")  
@@ -3887,6 +3901,9 @@ class location_get_APIView(APIView):
 
 
 class Citizen_Post_Api(APIView):
+    renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def post(self, request):
         Serializer = Citizen_Post_Serializer(data=request.data)
         if Serializer.is_valid():
@@ -3896,6 +3913,9 @@ class Citizen_Post_Api(APIView):
             return Response(Serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 class Workshop_Post_Api(APIView):
+    renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def post(self, request):
         Serializer = Workshop_Post_Serializer(data=request.data)
         if Serializer.is_valid():
@@ -3906,6 +3926,9 @@ class Workshop_Post_Api(APIView):
 
 
 class Workshop_Get_Api(APIView):
+    renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def get(self, request):
         snippet = Workshop.objects.all()
         serializers = Workshop_Get_Serializer(snippet, many=True)
@@ -3913,6 +3936,9 @@ class Workshop_Get_Api(APIView):
     
 
 class Workshop_Update_API(APIView):
+    renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def get(self, request, ws_pk_id):
         try:
             workshop = Workshop.objects.get(ws_pk_id=ws_pk_id, is_deleted=False)
@@ -3935,6 +3961,9 @@ class Workshop_Update_API(APIView):
     
 
 class Workshop_Delete_API(APIView):
+    renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def delete(self, request, ws_pk_id):
         snippet = Workshop.objects.filter(ws_pk_id=ws_pk_id).first()
         if snippet:
@@ -3947,6 +3976,9 @@ class Workshop_Delete_API(APIView):
 
     
 class Citizen_Get_Api(APIView):
+    renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def get(self, request):
         snippet = Citizen.objects.filter(is_deleted=False)
         serializers = Citizen_Get_Serializer(snippet, many=True)
@@ -3954,6 +3986,9 @@ class Citizen_Get_Api(APIView):
     
 
 class Category_Get_Api(APIView):
+    renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def get(self, request):
         snippet = Category.objects.all()
         serializers = Category_Get_Serializer(snippet, many=True)
@@ -3961,6 +3996,9 @@ class Category_Get_Api(APIView):
 
     
 class Citizen_idwise_data_Get_Api(APIView):
+    renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def get(self,request,citizens_pk_id):
         snippet = Citizen.objects.filter(citizens_pk_id=citizens_pk_id)
         serializers = Citizen_idwise_data_Get_Serializer(snippet, many=True)
@@ -3968,6 +4006,9 @@ class Citizen_idwise_data_Get_Api(APIView):
 
 
 class Citizen_Update_API(APIView):
+    renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, citizens_pk_id):
         try:
@@ -3995,6 +4036,9 @@ class Citizen_Update_API(APIView):
 
 
 class CitizenDeleteAPI(APIView):
+    renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def get(self, request, citizens_pk_id):
         try:
             citizen = Citizen.objects.get(citizens_pk_id=citizens_pk_id, is_deleted=False)
@@ -4017,6 +4061,9 @@ class CitizenDeleteAPI(APIView):
 
 
 class CheckCitizenScreening(APIView):
+    renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticated]
     # ------------------------
     # GET → Check existing screening
     # ------------------------
@@ -4082,6 +4129,9 @@ class CheckCitizenScreening(APIView):
 
 
 class BasicInfoSaveAPI(APIView):
+    renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def post(self, request, pk_id):
         try:
             # 1️⃣ Fetch Screening record
@@ -4153,6 +4203,9 @@ class BasicInfoSaveAPI(APIView):
 
 
 class EmergencyInfoSaveAPI(APIView):
+    renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def post(self, request, pk_id):
         try:
             # 1️⃣ Fetch Screening record
@@ -4226,6 +4279,9 @@ class EmergencyInfoSaveAPI(APIView):
 
 
 class GrowthMonitoringInfoSaveAPI(APIView):
+    renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def post(self, request, pk_id):
         try:
             # 1️⃣ Fetch Screening record
@@ -4304,6 +4360,9 @@ class GrowthMonitoringInfoSaveAPI(APIView):
 
 
 class Citizen_BasicInfo_Update_API(APIView):
+    renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def put(self, request, citizen_pk_id):
         try:
             # ✅ Step 1: Update Citizen table
@@ -4374,6 +4433,9 @@ class Citizen_BasicInfo_Update_API(APIView):
         
 
 class Emergency_Info_Update_API(APIView):
+    renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def put(self, request, citizen_pk_id):
         try:
             # ✅ Step 1: Update Citizen table
@@ -4446,6 +4508,9 @@ class Emergency_Info_Update_API(APIView):
             
 
 class GrowthMonitoringInfoUpdateAPI(APIView):
+    renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def get(self, request, growth_pk_id):
         """Retrieve record by growth_pk_id"""
         try:
@@ -4495,6 +4560,7 @@ from rest_framework.response import Response
 
 class pulse_get_api(APIView):
     renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
     permission_classes = [IsAuthenticated]
     def get(self, request, pulse, year):
         if year <= 18:  #for Child
@@ -4522,6 +4588,7 @@ class pulse_get_api(APIView):
             
 class rr_get_api(APIView):
     renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
     permission_classes = [IsAuthenticated]
     def get(self, request, rr, year):
 
@@ -4549,6 +4616,7 @@ class rr_get_api(APIView):
             
 class temp_get_api(APIView):
     renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
     permission_classes = [IsAuthenticated]
     def get(self, request, temp, year):
 
@@ -4632,6 +4700,7 @@ class temp_get_api(APIView):
 
 class sys_get_api(APIView):
     renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
     permission_classes = [IsAuthenticated]
     def get(self, request, sys, year):
         if year <= 18:  #for Child
@@ -4660,6 +4729,7 @@ class sys_get_api(APIView):
             
 class dys_get_api(APIView):
     renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
     permission_classes = [IsAuthenticated]
     def get(self, request, dys, year):
         if year <= 18:  #for Child
@@ -4687,6 +4757,7 @@ class dys_get_api(APIView):
             
 class o2sat_get_api(APIView):
     renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
     permission_classes = [IsAuthenticated]
     def get(self, request, o2sat, year):
         if year <= 18:  #for Child
@@ -4721,6 +4792,9 @@ from rest_framework.response import Response
 from rest_framework import status
 
 class DeviceDataView(APIView):
+    renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticated]
     ALLOWED_TYPES = {"ECG", "SPO2", "BG", "BP", "TEMPERATURE"}
 
     def get(self, request):
@@ -4772,6 +4846,9 @@ class DeviceDataView(APIView):
            
 
 class Vital_Post_Api(APIView):
+    renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def post(self, request, pk_id):
         try:
             # Get Screening record
@@ -4872,6 +4949,9 @@ class Vital_Post_Api(APIView):
 
 
 class Vital_info_Get_api(APIView):
+    renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def get(self, request, pk_id):
         snippet = vital_info.objects.filter(screening_citizen_id=pk_id)
         serializers = vital_info_Get_Serializer(snippet, many=True)
@@ -4880,6 +4960,9 @@ class Vital_info_Get_api(APIView):
 
 
 class Genral_Examination_Post_API(APIView):
+    renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def post(self, request, pk_id):
         try:
             # Get Screening record
@@ -4917,6 +5000,9 @@ class Genral_Examination_Post_API(APIView):
             return Response({"success": False, "error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class Genral_Examination_Get_Api(APIView):
+    renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def get(self, request, pk_id):
         snippet = genral_examination.objects.filter(screening_citizen_id=pk_id)
         serializers = Genral_Examination_Get_Serializer(snippet, many=True)
@@ -4929,6 +5015,9 @@ class Genral_Examination_Get_Api(APIView):
         
         
 class Systemic_Examination_Post_API(APIView):
+    renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def post(self, request, pk_id):
         try:
             # Get Screening record
@@ -4967,6 +5056,9 @@ class Systemic_Examination_Post_API(APIView):
 
 
 class Systemic_Examination_Get_API(APIView):
+    renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def get(self, request, pk_id):
         snippet = systemic_exam.objects.filter(screening_citizen_id=pk_id)
         serializers = Systemic_Exam_Get_Serializer(snippet, many=True)
@@ -4977,6 +5069,9 @@ class Systemic_Examination_Get_API(APIView):
 
 
 class Female_Screening_Post_API(APIView):
+    renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def post(self, request, pk_id):
         try:
             # Get Screening record
@@ -5015,6 +5110,9 @@ class Female_Screening_Post_API(APIView):
 
 
 class Female_Screening_Get_API(APIView):
+    renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def get(self, request, pk_id):
         snippet = female_screening.objects.filter(screening_citizen_id=pk_id)
         serializers = Female_Screening_Get_Serializer(snippet, many=True)
@@ -5022,6 +5120,9 @@ class Female_Screening_Get_API(APIView):
     
 
 class Disability_Screening_Post_API(APIView):
+    renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def post(self, request, pk_id):
         try:
             # Get Screening record
@@ -5061,6 +5162,9 @@ class Disability_Screening_Post_API(APIView):
 
 
 class Disability_Screening_Get_API(APIView):
+    renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def get(self, request, pk_id):
         snippet = disability_screening.objects.filter(screening_citizen_id=pk_id)
         serializers = Disability_Screening_Get_Serializer(snippet, many=True)
@@ -5068,6 +5172,9 @@ class Disability_Screening_Get_API(APIView):
     
 
 class Birth_Defect_Post_API(APIView):
+    renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def post(self, request, pk_id):
         try:
             # Get Screening record
@@ -5105,6 +5212,9 @@ class Birth_Defect_Post_API(APIView):
             return Response({"success": False, "error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
 class Birth_Defect_Get_API(APIView):
+    renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def get(self, request, pk_id):
         snippet = birth_defect.objects.filter(screening_citizen_id=pk_id)
         serializers = Birth_Defect_Get_Serializer(snippet, many=True)
@@ -5113,6 +5223,9 @@ class Birth_Defect_Get_API(APIView):
 
 
 class Childhood_Diseases_Post_API(APIView):
+    renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def post(self, request, pk_id):
         try:
             # Get Screening record
@@ -5150,6 +5263,9 @@ class Childhood_Diseases_Post_API(APIView):
             return Response({"success": False, "error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class Childhood_Disease_Get_API(APIView):
+    renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def get(self, request, pk_id):
         snippet = childhood_diseases.objects.filter(screening_citizen_id=pk_id)
         serializers = Childhood_Diseases_Get_Serializer(snippet, many=True)
@@ -5157,6 +5273,9 @@ class Childhood_Disease_Get_API(APIView):
     
 
 class Deficiencies_Post_API(APIView):
+    renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def post(self, request, pk_id):
         try:
             # Get Screening record
@@ -5195,6 +5314,9 @@ class Deficiencies_Post_API(APIView):
 
 
 class Deficiencies_Get_API(APIView):
+    renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def get(self, request, pk_id):
         snippet = deficiencies.objects.filter(screening_citizen_id=pk_id)
         serializers = Deficiencies_Get_Serializer(snippet, many=True)
@@ -5203,6 +5325,9 @@ class Deficiencies_Get_API(APIView):
 
 
 class SkinCondition_Post_API(APIView):
+    renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def post(self, request, pk_id):
         try:
             # Get Screening record
@@ -5241,6 +5366,9 @@ class SkinCondition_Post_API(APIView):
 
 
 class SkinCondition_Get_API(APIView):
+    renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def get(self, request, pk_id):
         snippet = skin_conditions.objects.filter(screening_citizen_id=pk_id)
         serializers = Skin_Conditions_Get_Serializer(snippet, many=True)
@@ -5249,6 +5377,9 @@ class SkinCondition_Get_API(APIView):
 
 
 class Diagnosis_Post_API(APIView):
+    renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def post(self, request, pk_id):
         try:
             # Get Screening record
@@ -5287,6 +5418,9 @@ class Diagnosis_Post_API(APIView):
 
 
 class Diagnosis_Get_API(APIView):
+    renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def get(self, request, pk_id):
         snippet = diagnosis.objects.filter(screening_citizen_id=pk_id)
         serializers = Diagnosis_Get_Serializer(snippet, many=True)
@@ -5295,6 +5429,9 @@ class Diagnosis_Get_API(APIView):
     
 
 class CheckBoxIfNormal_Post_API(APIView):
+    renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def post(self, request, pk_id):
         try:
             # Get Screening record
@@ -5333,6 +5470,9 @@ class CheckBoxIfNormal_Post_API(APIView):
 
 
 class CheckBoxIfNormal_Get_API(APIView):
+    renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def get(self, request, pk_id):
         snippet = check_box_if_normal.objects.filter(screening_citizen_id=pk_id)
         serializers = CheckBoxIfNormal_Get_Serializer(snippet, many=True)
@@ -5341,6 +5481,9 @@ class CheckBoxIfNormal_Get_API(APIView):
 
 
 class Treatment_Post_API(APIView):
+    renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def post(self, request, pk_id):
         try:
             # ✅ Get screening record
@@ -5436,6 +5579,9 @@ class Treatment_Post_API(APIView):
 
 
 class Treatment_Get_API(APIView):
+    renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def get(self, request, pk_id):
         snippet = treatement.objects.filter(screening_citizen_id=pk_id)
         serializers = Treatment_Get_Serializer(snippet, many=True)
@@ -5444,6 +5590,9 @@ class Treatment_Get_API(APIView):
 
 
 class Auditory_Post_API(APIView):
+    renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def post(self, request, pk_id):
         try:
             # ✅ Get screening record
@@ -5536,6 +5685,9 @@ class Auditory_Post_API(APIView):
             print("Follow-up logic error:", str(e))
 
 class Auditory_Get_API(APIView):
+    renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def get(self, request, pk_id):
         snippet = auditory_info.objects.filter(screening_citizen_id=pk_id)
         serializers = Auditory_Info_Get_Serializer(snippet, many=True)
@@ -5544,6 +5696,9 @@ class Auditory_Get_API(APIView):
 
 
 class Vision_Info_Post_Api(APIView):
+    renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def post(self, request, pk_id):
         try:
             screening_obj = Screening_citizen.objects.get(pk_id=pk_id)
@@ -5633,6 +5788,9 @@ class Vision_Info_Post_Api(APIView):
             print("Follow-up logic error:", str(e))
             
 class Vision_Info_Get_API(APIView):
+    renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def get(self, request, pk_id):
         snippet = vision_info.objects.filter(screening_citizen_id=pk_id)
         serializers = Vision_Info_Get_Serializer(snippet, many=True)
@@ -5641,6 +5799,9 @@ class Vision_Info_Get_API(APIView):
 
 
 class Medical_history_info_Post_API(APIView):
+    renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def post(self, request, pk_id):
         try:
             # Get Screening record
@@ -5679,6 +5840,9 @@ class Medical_history_info_Post_API(APIView):
 
 
 class Medical_history_info_Get_API(APIView):
+    renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def get(self, request, pk_id):
         snippet = medical_history_info.objects.filter(screening_citizen_id=pk_id)
         serializers = MedicalHistoryInfo_Get_Serializer(snippet, many=True)
@@ -5687,6 +5851,7 @@ class Medical_history_info_Get_API(APIView):
 
 class pft_get_api(APIView):
     renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
     permission_classes = [IsAuthenticated]
     def get(self, request,reading):
             if(reading>=60 and reading<=249):
@@ -5701,6 +5866,9 @@ class pft_get_api(APIView):
 
 
 class PFT_Post_info_Post_API(APIView):
+    renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def post(self, request, pk_id):
         try:
             # Get Screening record
@@ -5738,6 +5906,9 @@ class PFT_Post_info_Post_API(APIView):
             return Response({"success": False, "error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 class PFT_Info_Get_API(APIView):
+    renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def get(self, request, pk_id):
         snippet = pft_info.objects.filter(screening_citizen_id=pk_id)
         serializers = PFT_Info_Get_Serializer(snippet, many=True)
@@ -5746,6 +5917,9 @@ class PFT_Info_Get_API(APIView):
 
 
 class Dental_Info_Post_Api(APIView):
+    renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def post(self, request, pk_id):
         try:
             # ✅ Get Screening record
@@ -5840,6 +6014,9 @@ class Dental_Info_Post_Api(APIView):
             
             
 class Dental_Info_Get_API(APIView):
+    renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def get(self, request, pk_id):
         snippet = dental_info.objects.filter(screening_citizen_id=pk_id)
         serializers = Dental_Info_Get_Serializer(snippet, many=True)
@@ -5849,6 +6026,9 @@ class Dental_Info_Get_API(APIView):
 
 
 class Immunisation_Info_Post_Api(APIView):
+    renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def post(self, request, pk_id):
         try:
             # Get Screening record
@@ -5887,6 +6067,9 @@ class Immunisation_Info_Post_Api(APIView):
 
 
 class Immunisation_Info_Get_API(APIView):
+    renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def get(self, request, pk_id):
         snippet = immunisation_info.objects.filter(screening_citizen_id=pk_id)
         serializers = Immunisation_Info_Get_Serializer(snippet, many=True)
@@ -5896,6 +6079,9 @@ class Immunisation_Info_Get_API(APIView):
 
 from rest_framework.parsers import MultiPartParser, FormParser
 class Investigation_Info_Post_Api(APIView):
+    renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticated]
     parser_classes = (MultiPartParser, FormParser)
 
     def post(self, request, pk_id):
@@ -5950,6 +6136,9 @@ class Investigation_Info_Get_API(APIView):
 
 
 class TotalDriverReg_Dashboard_API(APIView):
+    renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def get(self, request):
         try:
             dt = request.query_params.get('dt')
@@ -6088,6 +6277,9 @@ class TotalDriverReg_Dashboard_API(APIView):
 
 
 class Health_Score_API(APIView):
+    renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
         try:
@@ -6159,6 +6351,9 @@ class Health_Score_API(APIView):
 
 
 class BMI_Vitals_dashboard_API(APIView):
+    renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def get(self, request):
         try:
             dt = request.query_params.get('dt')
@@ -6224,6 +6419,9 @@ class BMI_Vitals_dashboard_API(APIView):
 
 
 class workshop_dashboard_API(APIView):
+    renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def get(self, request):
         try:
             dt = request.query_params.get('dt')
@@ -6251,6 +6449,9 @@ class workshop_dashboard_API(APIView):
 
 
 class Healthcard_Citizen_List(APIView):
+    renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def get(self, request):
         # Getting query parameters from the URL
         source_pk_id = request.query_params.get('source_pk_id')
@@ -6295,8 +6496,9 @@ class Healthcard_Citizen_List(APIView):
 
 
 class Screening_Count_API(APIView):
-    # renderer_classes = [UserRenderer]
-    # permission_classes = [IsAuthenticated]
+    renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def get(self, request, *args, **kwargs):
         citizen_id = request.GET.get('citizen_id')
         
@@ -6329,6 +6531,9 @@ class Screening_Count_API(APIView):
 
 
 class Healthcard_Download_API(APIView):
+    renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def get(self, request, *args, **kwargs):
         try:
             citizen_id = self.kwargs.get('citizen_id')
@@ -6415,8 +6620,9 @@ class Healthcard_Download_API(APIView):
 #-----------kirti--------
 
 class FollowupPOST(APIView):
-    # permission_classes = [IsAuthenticated]
-    # renderer_classes = [JSONRenderer]
+    renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def post(self, request, follow_up_pk_id):
 
         follow_up_obj = get_object_or_404(follow_up, follow_up_pk_id=follow_up_pk_id)
@@ -6497,6 +6703,9 @@ class FollowupPOST(APIView):
 
 
 class WorkshopFilterAPIView(APIView):
+    renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def get(self, request):
         try:
             date_filter = request.GET.get("date_filter")       
@@ -6542,6 +6751,9 @@ class WorkshopFilterAPIView(APIView):
 
 
 class Workshop_list_get_api(APIView):
+    renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def get(self, request,ws_taluka):
         workshop_qs = Workshop.objects.filter(ws_taluka=ws_taluka,is_deleted=False)
         serializer = Workshop_list_get_Serializer(workshop_qs, many=True)
@@ -6550,7 +6762,44 @@ class Workshop_list_get_api(APIView):
 
 
 class Doctor_List_API(APIView):
+    renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticated]
     def get(self, request):
         doctor_qs = doctor_list.objects.filter(is_deleted=False)
         serializer = Doctor_List_Serializer(doctor_qs, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+from django.db.models import Q
+class CitizensFilterAPIView(APIView):
+    renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        try:
+            citizen_id = request.GET.get('citizen_id', None)
+            gender = request.GET.get('gender', None)  
+            category = request.GET.get('category', None)  
+
+            filters = Q(is_deleted=False)
+
+            if citizen_id:
+                filters &= Q(citizen_id__icontains=citizen_id)
+
+            if gender:
+                filters &= Q(gender__pk=gender)
+
+            if category:
+                filters &= Q(category=category)
+
+            queryset = Citizen.objects.filter(filters).order_by('-citizens_pk_id')
+
+            serializer = Citizen_Filter_Serializer(queryset, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return Response(
+                {"error": str(e)},
+                status=status.HTTP_400_BAD_REQUEST
+            )
