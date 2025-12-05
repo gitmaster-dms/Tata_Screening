@@ -4061,9 +4061,9 @@ class CitizenDeleteAPI(APIView):
 
 
 class CheckCitizenScreening(APIView):
-    renderer_classes = [UserRenderer]
-    authentication_classes = [CustomJWTAuthentication]
-    permission_classes = [IsAuthenticated]
+    # renderer_classes = [UserRenderer]
+    # authentication_classes = [CustomJWTAuthentication]
+    # permission_classes = [IsAuthenticated]
     # ------------------------
     # GET → Check existing screening
     # ------------------------
@@ -4111,8 +4111,8 @@ class CheckCitizenScreening(APIView):
                 citizen_pk_id_id=citizen_pk_id,
                 screening_count=next_count,
                 citizen_id=citizen_obj.citizen_id,
-                added_by=request.data.get('added_by', 'Mohin'),
-                modify_by=request.data.get('modify_by', 'Mohin')
+                added_by_id=citizen_obj.added_by_id,
+                modify_by_id=citizen_obj.added_by_id,
             )
 
             serializer = ScreeningCitizenSerializer(new_screening)
