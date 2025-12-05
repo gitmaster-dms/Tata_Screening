@@ -4846,9 +4846,10 @@ class DeviceDataView(APIView):
            
 
 class Vital_Post_Api(APIView):
-    renderer_classes = [UserRenderer]
-    authentication_classes = [CustomJWTAuthentication]
-    permission_classes = [IsAuthenticated]
+    # renderer_classes = [UserRenderer]
+    # authentication_classes = [CustomJWTAuthentication]
+    # permission_classes = [IsAuthenticated]
+
     def post(self, request, pk_id):
         try:
             # Get Screening record
@@ -4862,67 +4863,76 @@ class Vital_Post_Api(APIView):
                 'screening_citizen_id': screening_obj.pk_id,
             }
 
-            # Check if vital_info already exists
+            # Check if record exists
             vital_obj = vital_info.objects.filter(screening_citizen_id=screening_obj).first()
 
             if vital_obj:
-                # Update existing record
-                serializer = vital_info_Serializer(vital_obj, data={**request.data, **vital_data}, partial=True)
+                # -------- UPDATE --------
+                serializer = vital_info_Serializer(
+                    vital_obj,
+                    data={**request.data, **vital_data},
+                    partial=True
+                )
                 if serializer.is_valid():
-                    updated_obj = serializer.save(modify_by=request.data.get('modify_by'))
+                    updated_obj = serializer.save(
+                        modify_by_id=request.data.get('modify_by')
+                    )
                     self.handle_follow_up_logic(updated_obj, request, screening_obj)
+
                     return Response({
                         "message": "Vital info updated successfully",
                         "data": serializer.data,
-                        "is_updated": True,
-                        "is_created": False
                     }, status=status.HTTP_200_OK)
+
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
             else:
-                # Create new record
-                serializer = vital_info_Serializer(data={**request.data, **vital_data})
+                # -------- CREATE --------
+                serializer = vital_info_Serializer(
+                    data={**request.data, **vital_data}
+                )
                 if serializer.is_valid():
-                    created_obj = serializer.save(added_by=request.data.get('added_by'))
+                    created_obj = serializer.save(
+                        added_by_id=request.data.get('added_by')
+                    )
                     self.handle_follow_up_logic(created_obj, request, screening_obj)
+
                     return Response({
                         "message": "Vital info created successfully",
                         "data": serializer.data,
-                        "is_updated": False,
-                        "is_created": True
                     }, status=status.HTTP_201_CREATED)
+
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         except Screening_citizen.DoesNotExist:
             return Response({"error": "Invalid pk_id — screening record not found"}, status=status.HTTP_404_NOT_FOUND)
+
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     # -------------------------------------------------------
-    # 🧩 Helper method: handle follow-up logic automatically
+    # 🧩 Follow-up logic
     # -------------------------------------------------------
     def handle_follow_up_logic(self, vital_obj, request, screening_obj):
-        """Handles auto creation or soft delete in follow_up based on reffered_to_specialist value."""
         try:
             reffer_value = request.data.get('reffered_to_specialist')
             modify_by = request.data.get('modify_by')
             added_by = request.data.get('added_by')
 
-            # Only handle if reffered_to_specialist is passed
             if reffer_value is not None:
                 reffer_value = int(reffer_value)
 
-                # Try to get existing follow-up record for this screening
                 follow_obj = follow_up.objects.filter(
                     screening_citizen_id=screening_obj,
                     vital_refer__isnull=False
                 ).first()
 
-                # Case 1: referred_to_specialist == 1 → create/update follow_up
+                # Case 1️⃣: referred_to_specialist = 1
                 if reffer_value == 1:
                     if follow_obj:
                         follow_obj.vital_refer = 1
                         follow_obj.is_deleted = False
-                        follow_obj.modify_by = modify_by
+                        follow_obj.modify_by_id = modify_by
                         follow_obj.save()
                     else:
                         follow_up.objects.create(
@@ -4932,19 +4942,20 @@ class Vital_Post_Api(APIView):
                             screening_citizen_id=screening_obj,
                             vital_refer=1,
                             is_deleted=False,
-                            added_by=added_by,
-                            modify_by=modify_by
+                            added_by_id=added_by,
+                            modify_by_id=modify_by
                         )
 
-                # Case 2: referred_to_specialist == 0 → mark as deleted in follow_up
+                # Case 2️⃣: referred_to_specialist = 0
                 elif reffer_value == 0 and follow_obj:
                     follow_obj.is_deleted = True
                     follow_obj.vital_refer = 0
-                    follow_obj.modify_by = modify_by
+                    follow_obj.modify_by_id = modify_by
                     follow_obj.save()
 
         except Exception as e:
             print("Follow-up logic error:", str(e))
+
 
 
 
