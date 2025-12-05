@@ -688,6 +688,8 @@ class Citizen_Get_Serializer(serializers.ModelSerializer):
     immunisation_info_form_submit = serializers.SerializerMethodField()
     investigation_info_form_submit = serializers.SerializerMethodField()
     gender_name = serializers.CharField(source='gender.gender', allow_null=True)
+    modify_by = agg_com_colleague_Serializer()
+    added_by = agg_com_colleague_Serializer()
 
     class Meta:
         model = Citizen
@@ -828,6 +830,8 @@ class Citizen_idwise_data_Get_Serializer(serializers.ModelSerializer):
     source_name_name = serializers.CharField(source='source_name.source_names',allow_null=True)
     source_id_name = serializers.CharField(source='source.source',allow_null=True)
     category_name = serializers.CharField(source='category.category',allow_null=True)
+    modify_by = agg_com_colleague_Serializer()
+    added_by = agg_com_colleague_Serializer()
     class Meta:
         model = Citizen
         fields = '__all__'
@@ -1697,6 +1701,8 @@ class followup_save_info_Serializer(serializers.ModelSerializer):
         fields = ['call_status','conversational_remarks','not_connected_reason','visit_status','visited_status','condition_improved','weight_gain_status','forward_to','priority','not_visited_reason','reschedule_date1','reschedule_date2','follow_up','remark','added_by','citizen_id','name','dob','parents_no','state','tehsil','district','source_name','follow_up_citizen_pk_id','followup_count','screening_citizen_id']
         
 class Workshop_Get_Serializer(serializers.ModelSerializer):
+    modify_by = agg_com_colleague_Serializer()
+    added_by = agg_com_colleague_Serializer()
     class Meta:
         model = Workshop
         # fields = ['ws_pk_id','Workshop_name']
@@ -1708,6 +1714,8 @@ class Workshop_Id_Wise_Get_Serializer(serializers.ModelSerializer):
     ws_district_name = serializers.CharField(source='ws_district.dist_name', allow_null=True)
     ws_taluka_name = serializers.CharField(source='ws_taluka.tahsil_name', allow_null=True)
     source_name = serializers.CharField(source='source.source',allow_null=True)
+    modify_by = agg_com_colleague_Serializer()
+    added_by = agg_com_colleague_Serializer()
     
     class Meta:
         model = Workshop
