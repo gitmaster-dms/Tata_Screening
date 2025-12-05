@@ -5593,12 +5593,13 @@ class Auditory_Post_API(APIView):
     renderer_classes = [UserRenderer]
     authentication_classes = [CustomJWTAuthentication]
     permission_classes = [IsAuthenticated]
+
     def post(self, request, pk_id):
         try:
             # ✅ Get screening record
             screening_obj = Screening_citizen.objects.get(pk_id=pk_id)
 
-            # ✅ Prepare base data
+            # ✅ Base Data
             auditory_data = {
                 'citizen_id': screening_obj.citizen_id,
                 'screening_count': screening_obj.screening_count,
@@ -5606,40 +5607,62 @@ class Auditory_Post_API(APIView):
                 'screening_citizen_id': screening_obj.pk_id,
             }
 
-            # ✅ Check if record already exists
-            auditory_obj = auditory_info.objects.filter(screening_citizen_id=screening_obj).first()
+            # ✅ Check existing record
+            auditory_obj = auditory_info.objects.filter(
+                screening_citizen_id=screening_obj
+            ).first()
 
+            # -------------------------------------------------------
+            # 🔄 UPDATE
+            # -------------------------------------------------------
             if auditory_obj:
-                # -------- Update existing record --------
-                serializer = Auditory_Info_Post_Serializer(auditory_obj, data={**request.data, **auditory_data}, partial=True)
+                serializer = Auditory_Info_Post_Serializer(
+                    auditory_obj,
+                    data={**request.data, **auditory_data},
+                    partial=True
+                )
                 if serializer.is_valid():
-                    updated_obj = serializer.save(modify_by=request.data.get('modify_by'))
+                    updated_obj = serializer.save(
+                        modify_by_id=request.data.get('modify_by')
+                    )
                     self.handle_follow_up_logic(updated_obj, request, screening_obj)
+
                     return Response({
                         "message": "Auditory info updated successfully",
                         "data": serializer.data,
                     }, status=status.HTTP_200_OK)
+
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+            # -------------------------------------------------------
+            # 🆕 CREATE
+            # -------------------------------------------------------
             else:
-                # -------- Create new record --------
-                serializer = Auditory_Info_Post_Serializer(data={**request.data, **auditory_data})
+                serializer = Auditory_Info_Post_Serializer(
+                    data={**request.data, **auditory_data}
+                )
                 if serializer.is_valid():
-                    created_obj = serializer.save(added_by=request.data.get('added_by'))
+                    created_obj = serializer.save(
+                        added_by_id=request.data.get('added_by')
+                    )
                     self.handle_follow_up_logic(created_obj, request, screening_obj)
+
                     return Response({
                         "message": "Auditory info created successfully",
                         "data": serializer.data,
                     }, status=status.HTTP_201_CREATED)
+
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         except Screening_citizen.DoesNotExist:
-            return Response({"error": "Invalid pk_id — screening record not found"}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"error": "Invalid pk_id — screening record not found"},
+                            status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-    # -------------------------------------------------------------
+    # ------------------------------------------------------------------
     # 🧩 Handle follow-up logic for referred_to_specialist
-    # -------------------------------------------------------------
+    # ------------------------------------------------------------------
     def handle_follow_up_logic(self, auditory_obj, request, screening_obj):
         try:
             reffer_value = request.data.get('reffered_to_specialist')
@@ -5649,18 +5672,17 @@ class Auditory_Post_API(APIView):
             if reffer_value is not None:
                 reffer_value = int(reffer_value)
 
-                # Find existing follow-up entry for this screening
                 follow_obj = follow_up.objects.filter(
                     screening_citizen_id=screening_obj,
                     auditory_refer__isnull=False
                 ).first()
 
-                # Case 1️⃣: referred_to_specialist == 1 → create/update auditory_refer = 1
+                # Case 1️⃣: referred_to_specialist == 1
                 if reffer_value == 1:
                     if follow_obj:
                         follow_obj.auditory_refer = 1
                         follow_obj.is_deleted = False
-                        follow_obj.modify_by = modify_by
+                        follow_obj.modify_by_id = modify_by
                         follow_obj.save()
                     else:
                         follow_up.objects.create(
@@ -5670,19 +5692,20 @@ class Auditory_Post_API(APIView):
                             screening_citizen_id=screening_obj,
                             auditory_refer=1,
                             is_deleted=False,
-                            added_by=added_by,
-                            modify_by=modify_by
+                            added_by_id=added_by,
+                            modify_by_id=modify_by
                         )
 
-                # Case 2️⃣: referred_to_specialist == 0 → mark deleted
+                # Case 2️⃣: referred_to_specialist == 0
                 elif reffer_value == 0 and follow_obj:
                     follow_obj.is_deleted = True
                     follow_obj.auditory_refer = 0
-                    follow_obj.modify_by = modify_by
+                    follow_obj.modify_by_id = modify_by
                     follow_obj.save()
 
         except Exception as e:
             print("Follow-up logic error:", str(e))
+
 
 class Auditory_Get_API(APIView):
     renderer_classes = [UserRenderer]
