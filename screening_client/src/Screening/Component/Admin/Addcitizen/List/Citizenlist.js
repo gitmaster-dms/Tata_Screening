@@ -205,6 +205,7 @@ const Citizenlist = () => {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedCitizenId, setSelectedCitizenId] = useState("");
 
+  
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
