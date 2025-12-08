@@ -4363,6 +4363,7 @@ class Citizen_BasicInfo_Update_API(APIView):
     renderer_classes = [UserRenderer]
     authentication_classes = [CustomJWTAuthentication]
     permission_classes = [IsAuthenticated]
+
     def put(self, request, citizen_pk_id):
         try:
             # ✅ Step 1: Update Citizen table
@@ -4380,7 +4381,6 @@ class Citizen_BasicInfo_Update_API(APIView):
             if not citizen_serializer.is_valid():
                 return Response(
                     {
-                        "success": False,
                         "message": "Citizen validation failed.",
                         "errors": citizen_serializer.errors,
                     },
@@ -4388,7 +4388,7 @@ class Citizen_BasicInfo_Update_API(APIView):
                 )
             citizen_serializer.save()
 
-            # ✅ Step 2: Get all related basic_info records
+            # ✅ Step 2: Fetch all basic_info records
             basic_info_records = basic_info.objects.filter(citizen_pk_id=citizen_pk_id)
             if not basic_info_records.exists():
                 return Response(
@@ -4396,46 +4396,48 @@ class Citizen_BasicInfo_Update_API(APIView):
                     status=status.HTTP_404_NOT_FOUND
                 )
 
-            # ✅ Step 3: Update all basic_info records
-            updated_records = []
-            for record in basic_info_records:
-                basic_serializer = basic_info_Put_Serializer(
-                    record, data=request.data, partial=True
-                )
-                if basic_serializer.is_valid():
-                    basic_serializer.save()
-                    updated_records.append(basic_serializer.data)
-                else:
-                    return Response(
-                        {
-                            "success": False,
-                            "message": "Validation failed for one or more basic_info records.",
-                            "errors": basic_serializer.errors,
-                        },
-                        status=status.HTTP_400_BAD_REQUEST,
-                    )
+            # ✅ Step 3: Get and update only latest basic_info (highest basic_pk_id)
+            latest_basic_info = basic_info_records.order_by('-basic_pk_id').first()
 
-            # ✅ Step 4: Return success
+            latest_basic_serializer = basic_info_Put_Serializer(
+                latest_basic_info, data=request.data, partial=True
+            )
+
+            if not latest_basic_serializer.is_valid():
+                return Response(
+                    {
+                        "message": "Validation failed for latest basic_info record.",
+                        "errors": latest_basic_serializer.errors,
+                    },
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
+            latest_basic_serializer.save()
+
+            # ✅ Step 4: Merge citizen data + latest basic_info data
+            final_data = {**citizen_serializer.data, **latest_basic_serializer.data}
+
             return Response(
                 {
-                    "success": True,
-                    "message": "Citizen and all linked basic_info records updated successfully.",
-                    "Citizen_Data": citizen_serializer.data,
-                    "Updated_Basic_Info_Records": updated_records,
+                    "message": "Updated successfully.",
+                    "Citizen_Data": final_data,
                 },
                 status=status.HTTP_200_OK,
             )
 
         except Exception as e:
-            return Response({"success": False, "error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
-        
-        
+            return Response(
+                {"success": False, "error": str(e)},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
         
 
 class Emergency_Info_Update_API(APIView):
-    renderer_classes = [UserRenderer]
-    authentication_classes = [CustomJWTAuthentication]
-    permission_classes = [IsAuthenticated]
+    # renderer_classes = [UserRenderer]
+    # authentication_classes = [CustomJWTAuthentication]
+    # permission_classes = [IsAuthenticated]
+
     def put(self, request, citizen_pk_id):
         try:
             # ✅ Step 1: Update Citizen table
@@ -4453,7 +4455,6 @@ class Emergency_Info_Update_API(APIView):
             if not citizen_serializer.is_valid():
                 return Response(
                     {
-                        "success": False,
                         "message": "Citizen validation failed.",
                         "errors": citizen_serializer.errors,
                     },
@@ -4461,7 +4462,7 @@ class Emergency_Info_Update_API(APIView):
                 )
             citizen_serializer.save()
 
-            # ✅ Step 2: Get all related emergency_info records
+            # ✅ Step 2: Fetch all emergency_info records
             emergency_records = emergency_info.objects.filter(citizen_pk_id=citizen_pk_id)
             if not emergency_records.exists():
                 return Response(
@@ -4469,33 +4470,31 @@ class Emergency_Info_Update_API(APIView):
                     status=status.HTTP_404_NOT_FOUND
                 )
 
-            # ✅ Step 3: Update all emergency_info records
-            updated_records = []
-            for record in emergency_records:
-                emergency_serializer = emergency_info_Put_Serializer(
-                    record, data=request.data, partial=True
-                )
-                if emergency_serializer.is_valid():
-                    emergency_serializer.save()
-                    updated_records.append(emergency_serializer.data)
-                else:
-                    return Response(
-                        {
-                            "success": False,
-                            "message": "Validation failed for one or more emergency_info records.",
-                            "errors": emergency_serializer.errors,
-                        },
-                        status=status.HTTP_400_BAD_REQUEST,
-                    )
+            # ✅ Step 3: Get and update only the latest emergency_info record (corrected field)
+            latest_emergency_info = emergency_records.order_by('-em_pk_id').first()
 
-            # ✅ Step 4: Return success response
+            latest_emergency_serializer = emergency_info_Put_Serializer(
+                latest_emergency_info, data=request.data, partial=True
+            )
+
+            if not latest_emergency_serializer.is_valid():
+                return Response(
+                    {
+                        "message": "Validation failed for latest emergency_info record.",
+                        "errors": latest_emergency_serializer.errors,
+                    },
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
+            latest_emergency_serializer.save()
+
+            # ✅ Step 4: Merge citizen + emergency info
+            final_data = {**citizen_serializer.data, **latest_emergency_serializer.data}
+
             return Response(
                 {
-                    "success": True,
-                    "message": "Citizen and all linked emergency_info records updated successfully.",
-                    "Citizen_Data": citizen_serializer.data,
-                    "Updated_Emergency_Info_Records": updated_records,
-                    "updated_records_count": len(updated_records)
+                    "message": "Emergency info updated successfully.",
+                    "Citizen_Data": final_data,
                 },
                 status=status.HTTP_200_OK,
             )
@@ -4505,6 +4504,8 @@ class Emergency_Info_Update_API(APIView):
                 {"success": False, "error": str(e)},
                 status=status.HTTP_400_BAD_REQUEST
             )
+
+
             
 
 class GrowthMonitoringInfoUpdateAPI(APIView):
