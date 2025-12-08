@@ -1402,7 +1402,7 @@ class growth_monitoring_info(models.Model):
     screening_count = models.IntegerField(null=True,blank=True)
     citizen_pk_id = models.ForeignKey(Citizen, on_delete=models.CASCADE, null=True,blank=True)
     screening_citizen_id = models.ForeignKey(Screening_citizen, on_delete=models.CASCADE, null=True,blank=True)
-    gender = models.CharField(max_length=255,null=True, blank=True)
+    gender = models.ForeignKey('agg_gender', on_delete=models.CASCADE,null=True, blank=True)
     
     dob = models.DateField(max_length=20,null=True, blank=True)
     year = models.CharField(max_length=20,null=True, blank=True)

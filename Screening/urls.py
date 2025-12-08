@@ -246,7 +246,7 @@ urlpatterns = [
     
     path('CitizenBasicInfo/<int:citizen_pk_id>/', Citizen_BasicInfo_Update_API.as_view(), name='CitizenBasicInfo'),
     path('Citizen_emergency_put/<int:citizen_pk_id>/', Emergency_Info_Update_API.as_view(), name='Citizen_emergency_put'),
-    path('Citizen_growth_monitoring_put/<int:growth_pk_id>/', GrowthMonitoringInfoUpdateAPI.as_view(), name='Citizen_growth_monitoring_put'),
+    path('Citizen_growth_monitoring_put/<int:citizen_pk_id>/', GrowthMonitoringInfoUpdateAPI.as_view(), name='Citizen_growth_monitoring_put'),
     
     
     path('pulse_get_api/<int:year>/<int:pulse>/',views.pulse_get_api.as_view()), 
