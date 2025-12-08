@@ -408,13 +408,14 @@ useEffect(() => {
       </Snackbar>
 
       <Box sx={{ backgroundColor: "#f5f5f5", py: 3 }}>
-        <Box sx={{ width: "90%", mx: "auto" }}>
+        <Box sx={{ width: "90%", mx: "auto" ,mr:6}}>
           {/* =========================== */}
           {/* DROPDOWN CARD */}
           {/* =========================== */}
           <Card
             sx={{
               p: 3,
+              
               mb: 3,
               borderRadius: 2,
               boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
@@ -435,7 +436,7 @@ useEffect(() => {
             <Grid container spacing={2}>
               {/* Source */}
               <Grid item xs={12} md={4}>
-                <FormControl fullWidth sx={{ mb: 3 }}   size="small">
+                <FormControl fullWidth sx={{ mb: 2 }}   size="small">
                   <InputLabel id="source-label">WorkShop Name</InputLabel>
                   <Select
                     labelId="source-label"

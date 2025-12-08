@@ -75,7 +75,7 @@ console.log("1111111", citizens_pk_id);
                   <Route path="/mainscreen/System User" element={<AddUser />} />
                   <Route path="/mainscreen/Schedule Screening" element={<ScheduleScreening />} />
                   <Route path="/mainscreen/Screening" element={<ScreeningList />} />
-                  <Route path="/mainscreen/Source" element={<AddSource />} />
+                  <Route path="/mainscreen/Workshop" element={<AddSource />} />
                   <Route path="/mainscreen/Report" element={<Report />} />
                   <Route path="/mainscreen/Healthcard" element={<HealthList />} />
                   <Route path="/mainscreen/body" element={<Body />} />

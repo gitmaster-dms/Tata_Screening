@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
 import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
 import "./AddUser.css";
@@ -617,7 +617,6 @@ const AddUser = () => {
     }));
   };
 
-
   const validateForm = () => {
     let tempErrors = {};
 
@@ -626,13 +625,16 @@ const AddUser = () => {
     if (!selectedState) tempErrors.clg_state = "State is required";
     if (!selectedDistrict) tempErrors.clg_district = "District is required";
     if (!selectedTaluka) tempErrors.clg_tahsil = "Tehsil is required";
-    if (!formData.clg_source_name) tempErrors.clg_source_name = "Workshop is required";
+    if (!formData.clg_source_name)
+      tempErrors.clg_source_name = "Workshop is required";
     if (!selectedRole) tempErrors.Group_id = "Role is required";
 
     // TextField validations
-    if (!formData.clg_ref_id?.trim()) tempErrors.clg_ref_id = "Name is required";
+    if (!formData.clg_ref_id?.trim())
+      tempErrors.clg_ref_id = "Name is required";
     if (!formData.clg_gender) tempErrors.clg_gender = "Gender is required";
-    if (!formData.clg_Date_of_birth) tempErrors.clg_Date_of_birth = "DOB is required";
+    if (!formData.clg_Date_of_birth)
+      tempErrors.clg_Date_of_birth = "DOB is required";
 
     if (!formData.clg_mobile_no) {
       tempErrors.clg_mobile_no = "Mobile Number is required";
@@ -646,7 +648,8 @@ const AddUser = () => {
       tempErrors.clg_email = "Invalid email format";
     }
 
-    if (!formData.clg_address?.trim()) tempErrors.clg_address = "Address is required";
+    if (!formData.clg_address?.trim())
+      tempErrors.clg_address = "Address is required";
 
     setErrors(tempErrors);
 
@@ -701,7 +704,7 @@ const AddUser = () => {
       if (!updateSrc && response.status === 201) {
         const data = await response.json();
 
-        setShowModal(true);               // OPEN REGISTER MODAL
+        setShowModal(true); // OPEN REGISTER MODAL
         showSnackbar("User Registered Successfully!", "success");
 
         setTableData((prev) => [...prev, data]);
@@ -715,7 +718,7 @@ const AddUser = () => {
       if (updateSrc && response.ok) {
         const updatedUser = await response.json();
 
-        setUpdateModel(true);             // OPEN UPDATE MODAL
+        setUpdateModel(true); // OPEN UPDATE MODAL
         showSnackbar("User Updated Successfully!", "success");
 
         setTableData((prev) => {
@@ -736,7 +739,7 @@ const AddUser = () => {
       // ❌ MISSING FIELDS ERROR (400)
       // -----------------------------------------------
       if (response.status === 400) {
-        setMandotoryModel(true);          // OPEN MANDATORY MODAL
+        setMandotoryModel(true); // OPEN MANDATORY MODAL
         showSnackbar("Please fill all required (*) fields!", "warning");
         return;
       }
@@ -745,7 +748,7 @@ const AddUser = () => {
       // ❌ USER EXIST ERROR (409)
       // -----------------------------------------------
       if (response.status === 409) {
-        setExistModel(true);              // OPEN EXIST MODAL
+        setExistModel(true); // OPEN EXIST MODAL
         showSnackbar("User already exists!", "error");
         return;
       }
@@ -754,13 +757,11 @@ const AddUser = () => {
       //
       // -----------------------------------------------
       showSnackbar("Something went wrong. Please try again.", "error");
-
     } catch (err) {
       console.error("Error:", err);
       showSnackbar("Network error! Check connection.", "error");
     }
   };
-
 
   // const handleSubmit = async (e) => {
   //   e.preventDefault();
@@ -858,9 +859,8 @@ const AddUser = () => {
         clg_district_id: data.district_id,
         clg_tehsil_id: data.tehsil_id,
         clg_source_name_id: data.source_name_id,
-        grp_id: data.group_id,  // <-- FIXED
+        grp_id: data.group_id, // <-- FIXED
         clg_genderr_id: data.gender_id,
-
       }));
       setSelectedSourcee(data.source_id);
       setSelectedState(data.state_id);
@@ -928,9 +928,7 @@ const AddUser = () => {
         },
       });
 
-      setTableData((prev) =>
-        prev.filter((item) => item.pk !== formData.pk)
-      );
+      setTableData((prev) => prev.filter((item) => item.pk !== formData.pk));
 
       // RESET FORM COMPLETELY
       resetForm();
@@ -940,15 +938,12 @@ const AddUser = () => {
 
       // SNACKBAR SUCCESS
       showSnackbar("User Deleted Successfully!", "success");
-
     } catch (error) {
       console.error("Error deleting data:", error);
 
       showSnackbar("User Failed to Delete!", "error");
     }
   };
-
-
 
   const handleClicked = () => {
     setFormEnabled(true);
@@ -972,6 +967,22 @@ const AddUser = () => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
+
+  const filteredData = useMemo(() => {
+    if (!searchQuery) return tableData;
+    const q = searchQuery.toLowerCase();
+    return tableData.filter((row) =>
+      Object.values(row).some(
+        (val) => val && val.toString().toLowerCase().includes(q)
+      )
+    );
+  }, [tableData, searchQuery]);
+
+  const startIndex = page * rowsPerPage;
+  const paginatedData = filteredData.slice(
+    startIndex,
+    startIndex + rowsPerPage
+  );
 
   const [formAction, setFormAction] = useState("");
 
@@ -1218,7 +1229,6 @@ const AddUser = () => {
                     display="flex"
                     justifyContent="space-between"
                     alignItems="center"
-                    mb={1}
                   >
                     <Typography
                       variant="h6"
@@ -1287,7 +1297,9 @@ const AddUser = () => {
                             ))}
                           </Select>
                           {errors.clg_source && (
-                            <Typography sx={{ color: "red", fontSize: "12px", mt: 0.5 }}>
+                            <Typography
+                              sx={{ color: "red", fontSize: "12px", mt: 0.5 }}
+                            >
                               {errors.clg_source}
                             </Typography>
                           )}
@@ -1694,23 +1706,32 @@ const AddUser = () => {
                   justifyContent="end"
                   sx={{ mb: 1 }}
                 >
-                  <Grid item xs={12} sm={12} md={2}>
-                    <TextField
-                      sx={{
-                        minWidth: 70,
-                        "& .MuiInputBase-input.MuiSelect-select": {
-                          color: "#000 !important",
-                        },
-                        "& .MuiSvgIcon-root": {
-                          color: "#000",
-                        },
-                      }}
-                      size="small"
-                      label="Search User"
-                      fullWidth
-                      value={searchQuery}
-                      onChange={(e) => setSearchQuery(e.target.value)}
-                    />
+                  <Grid container alignItems="center" sx={{ mt: 1 }}>
+                    {/* Empty space that pushes search field to the right */}
+                    <Grid item xs />
+
+                    {/* Search field at the end */}
+                    <Grid item xs={12} sm={6} md={3}>
+                      <TextField
+                        sx={{
+                          minWidth: 120,
+                          "& .MuiInputBase-input.MuiSelect-select": {
+                            color: "#000 !important",
+                          },
+                          "& .MuiSvgIcon-root": {
+                            color: "#000",
+                          },
+                        }}
+                        size="small"
+                        label="Search User"
+                        fullWidth
+                        value={searchQuery}
+                        onChange={(e) => {
+                          setSearchQuery(e.target.value);
+                          setPage(0); // 🔥 new search → always go to first page (0)
+                        }}
+                      />
+                    </Grid>
                   </Grid>
                 </Grid>
 
@@ -1736,46 +1757,43 @@ const AddUser = () => {
                     >
                       <TableHead>
                         <TableRow sx={{ bgcolor: "#4a7cf3ff" }}>
-                          {["Sr No", "User Name", "Mobile No", "Email ID"].map((header, i) => (
-                            <TableCell
-                              key={i}
-                              sx={{
-                                color: "#fff",
-                                fontWeight: "bold",
-                                textAlign: "center",
-                                fontSize: "12px",
-                              }}
-                              width={
-                                i === 0 ? "15%" :
-                                  i === 1 ? "30%" :
-                                    i === 2 ? "25%" :
-                                      "35%"
-                              }
-                            >
-                              {header}
-                            </TableCell>
-                          ))}
+                          {["Sr No", "User Name", "Mobile No", "Email ID"].map(
+                            (header, i) => (
+                              <TableCell
+                                key={i}
+                                sx={{
+                                  color: "#fff",
+                                  fontWeight: "bold",
+                                  textAlign: "center",
+                                  fontSize: "12px",
+                                }}
+                                width={
+                                  i === 0
+                                    ? "15%"
+                                    : i === 1
+                                    ? "30%"
+                                    : i === 2
+                                    ? "25%"
+                                    : "35%"
+                                }
+                              >
+                                {header}
+                              </TableCell>
+                            )
+                          )}
                         </TableRow>
                       </TableHead>
                     </Table>
 
                     <Box mt={1}>
-                      {tableData
-                        .filter((data) =>
-                          Object.values(data).some(
-                            (value) =>
-                              value &&
-                              value.toString().toLowerCase().includes(searchQuery.toLowerCase())
-                          )
-                        )
-                        .slice(page * rowsPerPage, (page + 1) * rowsPerPage)
-                        .map((item, index) => {
-                          const serialNumber = index + 1 + page * rowsPerPage;
+                      {paginatedData.length > 0 ? (
+                        paginatedData.map((item, index) => {
+                          const serialNumber = startIndex + index + 1;
                           const isSelected = selectedRowIndex === item.pk;
 
                           return (
                             <Card
-                              key={index}
+                              key={item.pk ?? index}
                               elevation={isSelected ? 6 : 2}
                               sx={{
                                 mb: 1,
@@ -1795,49 +1813,57 @@ const AddUser = () => {
                                 <Grid
                                   container
                                   alignItems="center"
-                                  sx={{
-                                    display: "flex",
-                                    textAlign: "center",
-                                    width: "100%",
-                                    justifyContent: "space-between",
-                                  }}
+                                  justifyContent="space-between"
+                                  textAlign="center"
                                 >
-                                  {/* Sr No */}
                                   <Grid item sx={{ width: "10%" }}>
-                                    <Typography sx={{ fontSize: "12px" }}>{serialNumber}</Typography>
+                                    <Typography sx={{ fontSize: "12px" }}>
+                                      {serialNumber}
+                                    </Typography>
                                   </Grid>
 
-                                  {/* User Name */}
                                   <Grid item sx={{ width: "30%" }}>
-                                    <Typography sx={{ fontSize: "12px" }}>{item.clg_ref_id}</Typography>
+                                    <Typography sx={{ fontSize: "12px" }}>
+                                      {item.clg_ref_id}
+                                    </Typography>
                                   </Grid>
 
-                                  {/* Mobile No */}
                                   <Grid item sx={{ width: "25%" }}>
-                                    <Typography sx={{ fontSize: "12px" }}>{item.clg_mobile_no}</Typography>
+                                    <Typography sx={{ fontSize: "12px" }}>
+                                      {item.clg_mobile_no}
+                                    </Typography>
                                   </Grid>
 
-                                  {/* Email */}
                                   <Grid item sx={{ width: "35%" }}>
-                                    <Typography sx={{ fontSize: "12px" }}>{item.clg_email}</Typography>
+                                    <Typography sx={{ fontSize: "12px" }}>
+                                      {item.clg_email}
+                                    </Typography>
                                   </Grid>
                                 </Grid>
                               </CardContent>
                             </Card>
                           );
-                        })}
+                        })
+                      ) : (
+                        <Typography align="center" sx={{ mt: 2 }}>
+                          No data found
+                        </Typography>
+                      )}
+                    </Box>
+
+                    <Box display="flex" justifyContent="flex-end" mt={1}>
+                      <TablePagination
+                        component="div"
+                        count={filteredData.length}
+                        page={page}
+                        onPageChange={handleChangePage}
+                        rowsPerPage={rowsPerPage}
+                        onRowsPerPageChange={handleChangeRowsPerPage}
+                        rowsPerPageOptions={[5, 10, 20]}
+                      />
                     </Box>
 
                     {/* PAGINATION */}
-                    <TablePagination
-                      component="div"
-                      count={tableData.length}
-                      page={page}
-                      onPageChange={handleChangePage}
-                      rowsPerPage={rowsPerPage}
-                      onRowsPerPageChange={handleChangeRowsPerPage}
-                      rowsPerPageOptions={[5, 10, 20]}
-                    />
                   </>
                 )}
               </CardContent>
