@@ -105,8 +105,39 @@ const Corporate = (props) => {
 
   const [talukaOptions, setTalukaOptions] = useState([]);
   const [selectedTahsil, setSelectedTahsil] = useState("");
+  const [errors, setErrors] = useState({});
 
   console.log(selectedAge, "Fetched Age for Corporate");
+
+  const validateForm = () => {
+    let temp = {};
+    if (!corporateForm.prefix) temp.prefix = "Prefix is required";
+    if (!corporateForm.name || corporateForm.name.trim() === "")
+      temp.name = "Name is required";
+    if (!corporateForm.blood_groups)
+      temp.blood_groups = "Blood Group is required";
+    // Date of Birth
+    // if (!corporateForm.dob) temp.dob = "Date of Birth is required";
+
+    // Mobile Number
+    if (!corporateForm.mobile_no || !/^\d{10}$/.test(corporateForm.mobile_no))
+      temp.mobile_no = "Valid 10-digit Mobile Number is required";
+    if (!selectedState) temp.state = "State is required";
+    if (!selectedDistrict) temp.district = "District is required";
+    if (!selectedTahsil) temp.tehsil = "Tehsil is required";
+    if (!corporateForm.Workshop_name)
+      temp.Workshop_name = "Workshop Name is required";
+    // if (!corporateForm.address)
+    //   temp.address = "Residential Address is required";
+    // if (!corporateForm.permanant_address)
+    //   temp.permanant_address = "Permanent Address is required";
+    if (!corporateForm.pincode || corporateForm.pincode.length !== 6)
+      temp.pincode = "Valid 6-digit pincode required";
+
+    setErrors(temp);
+
+    return Object.keys(temp).length === 0; // true if no errors
+  };
 
   const handleSiblingsCountChange = (e) => {
     setSiblingsCount(e.target.value);
@@ -627,7 +658,7 @@ const Corporate = (props) => {
     getworkshop();
   }, []);
 
-const handleSubmit = async (e, confirmed = false) => {
+  const handleSubmit = async (e, confirmed = false) => {
     e.preventDefault();
 
     // const confirmed = window.confirm(
@@ -638,7 +669,10 @@ const handleSubmit = async (e, confirmed = false) => {
       setOpenConfirm(true);
       return;
     }
-
+    if (!validateForm()) {
+      console.log("Validation failed");
+      return;
+    }
     if (confirmed) {
       const formData = new FormData();
 
@@ -854,7 +888,13 @@ const handleSubmit = async (e, confirmed = false) => {
 
             <Grid container spacing={2}>
               <Grid item xs={12} sm={4} md={3}>
-                <FormControl fullWidth size="small" variant="outlined">
+                <FormControl
+                  fullWidth
+                  size="small"
+                  variant="outlined"
+                  error={!!errors.prefix}
+                  helperText={!!errors.prefix}
+                >
                   <InputLabel id="prefix-label">Prefix</InputLabel>
                   <Select
                     sx={{
@@ -878,11 +918,6 @@ const handleSubmit = async (e, confirmed = false) => {
                       </MenuItem>
                     ))}
                   </Select>
-                  {errorMessages.prefix && (
-                    <Typography color="error" variant="caption">
-                      {errorMessages.prefix}
-                    </Typography>
-                  )}
                 </FormControl>
               </Grid>
 
@@ -897,8 +932,8 @@ const handleSubmit = async (e, confirmed = false) => {
                   onInput={(e) =>
                     (e.target.value = e.target.value.replace(/[0-9]/g, ""))
                   }
-                  error={!!errorMessages.name}
-                  helperText={errorMessages.name}
+                  error={!!errors.name}
+                  helperText={!!errors.name}
                 />
               </Grid>
 
@@ -907,7 +942,8 @@ const handleSubmit = async (e, confirmed = false) => {
                   fullWidth
                   size="small"
                   variant="outlined"
-                  error={!!errorMessages.blood_groups}
+                  error={!!errors.blood_groups}
+
                 >
                   <InputLabel id="blood-group-label">Blood Group</InputLabel>
                   <Select
@@ -936,15 +972,7 @@ const handleSubmit = async (e, confirmed = false) => {
                   </Select>
 
                   {/* Error message display */}
-                  {errorMessages.blood_groups && (
-                    <Typography
-                      variant="caption"
-                      color="error"
-                      sx={{ mt: 0.5, fontSize: "0.75rem" }}
-                    >
-                      {errorMessages.blood_groups}
-                    </Typography>
-                  )}
+              
                 </FormControl>
               </Grid>
 
@@ -962,8 +990,8 @@ const handleSubmit = async (e, confirmed = false) => {
                   //   max: getMaxAllowedDate(selectedAge),
                   //   min: getMinAllowedDate(selectedAge),
                   // }}
-                  error={!!errorMessages.dob}
-                  helperText={errorMessages.dob}
+                  // error={!!errors.dob}
+                  // helperText={!!errors.dob}
                 />
               </Grid>
 
@@ -1041,8 +1069,8 @@ const handleSubmit = async (e, confirmed = false) => {
                     if (e.target.value.length > 10)
                       e.target.value = e.target.value.slice(0, 10);
                   }}
-                  error={!!errorMessages.mobile_no}
-                  helperText={errorMessages.mobile_no}
+                  error={!!errors.mobile_no}
+                  helperText={errors.mobile_no}
                 />
               </Grid>
 
@@ -1517,7 +1545,7 @@ const handleSubmit = async (e, confirmed = false) => {
 
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
-                <FormControl fullWidth size="small">
+                <FormControl fullWidth size="small" error={!!errors.state}>
                   <InputLabel>State *</InputLabel>
                   <Select
                     onChange={(e) => setSelectedState(e.target.value)}
@@ -1543,7 +1571,7 @@ const handleSubmit = async (e, confirmed = false) => {
               </Grid>
 
               <Grid item xs={12} sm={6}>
-                <FormControl fullWidth size="small">
+                <FormControl fullWidth size="small" error={!!errors.district}>
                   <InputLabel>District *</InputLabel>
                   <Select
                     onChange={(e) => setSelectedDistrict(e.target.value)}
@@ -1569,7 +1597,7 @@ const handleSubmit = async (e, confirmed = false) => {
               </Grid>
 
               <Grid item xs={12} sm={6}>
-                <FormControl fullWidth size="small">
+                <FormControl fullWidth size="small" error={!!errors.tehsil}>
                   <InputLabel>Tehsil *</InputLabel>
                   <Select
                     onChange={(e) => setSelectedTahsil(e.target.value)}
@@ -1629,7 +1657,7 @@ const handleSubmit = async (e, confirmed = false) => {
                 <FormControl
                   fullWidth
                   size="small"
-                  error={!!errorMessages.Workshop_name}
+                  error={!!errors.Workshop_name}
                 >
                   <InputLabel>Workshop Name *</InputLabel>
                   <Select
@@ -1699,6 +1727,8 @@ const handleSubmit = async (e, confirmed = false) => {
                         e.target.value = e.target.value.slice(0, 6);
                     },
                   }}
+                  error={!!errors.pincode}
+                  helperText={errors.pincode}
                 />
               </Grid>
 
@@ -1723,7 +1753,6 @@ const handleSubmit = async (e, confirmed = false) => {
               variant="contained"
               color="primary"
               sx={{ px: 5, py: 1.2 }}
-              on
             >
               Submit
             </Button>

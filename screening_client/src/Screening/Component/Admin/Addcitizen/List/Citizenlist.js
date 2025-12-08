@@ -201,6 +201,9 @@ const Citizenlist = () => {
   const [rowsPerPage, setRowsPerPage] = useState(5);
   ///////// Loader
   const [loading, setLoading] = useState(true);
+  const [citizenId, setCitizenId] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedCitizenId, setSelectedCitizenId] = useState("");
 
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
@@ -241,24 +244,35 @@ const Citizenlist = () => {
   const handlesubmit = async () => {
     setLoading(true);
 
+    const accessToken = localStorage.getItem("token");
+
+    if (!accessToken) {
+      console.error("No token found");
+      setLoading(false);
+      return;
+    }
+
+    // ONLY include fields that backend supports
     const filters = {
-      age: selectedAge,
+      citizen_id: citizenId,
       gender: selectedGender,
-      source: selectedSource,
-      type: selectedScheduleType,
-      disease: selectedDisease,
-      Class: selectedClassNav,
-      division: selectedDivision,
-      sourceurl_id: SourceUrlId,
-      source_name: SourceNameUrlId,
+      category: selectedCategory,
     };
 
-    const accessToken = localStorage.getItem("token"); // Retrieve access token
+    // Build final URL with encoded query params
+    const queryString = Object.entries(filters)
+      .filter(
+        ([_, value]) => value !== null && value !== undefined && value !== ""
+      )
+      .map(
+        ([key, value]) =>
+          `${encodeURIComponent(key)}=${encodeURIComponent(value)}`
+      )
+      .join("&");
 
-    const url = `${Port}/Screening/filter-citizens/?${Object.entries(filters)
-      .filter(([key, value]) => value !== null && value !== undefined)
-      .map(([key, value]) => `${key}=${value}`)
-      .join("&")}`;
+    const url = `${Port}/Screening/Citizen_filter/?${queryString}`;
+
+    console.log("Final Filter URL:", url);
 
     try {
       const response = await axios.get(url, {
@@ -267,9 +281,14 @@ const Citizenlist = () => {
           "Content-Type": "application/json",
         },
       });
-      setTableFetch(response.data);
+
+      setTableFetch(
+        Array.isArray(response.data)
+          ? response.data
+          : response.data?.citizens || []
+      );
     } catch (error) {
-      console.log("Error while fetching data", error);
+      console.error("Error while fetching filtered data:", error);
     } finally {
       setLoading(false);
     }
@@ -487,7 +506,10 @@ const Citizenlist = () => {
 
   // Fetch previous screening for a citizen. If `openModalFlag` is false,
   // do not open the Previous Screening modal (useful when starting a new screening).
-  const handlePreviousClick = async (citizen = null, options = { openModalFlag: true }) => {
+  const handlePreviousClick = async (
+    citizen = null,
+    options = { openModalFlag: true }
+  ) => {
     const target = citizen || selectedCitizen;
     if (!target) return;
 
@@ -570,73 +592,72 @@ const Citizenlist = () => {
     }
   };
 
- const handleStartNewScreening = async () => {
-  if (!selectedCitizen?.citizens_pk_id) {
-    setSnackbar({
-      open: true,
-      message: "Invalid citizen data.",
-      severity: "error",
-    });
-    return;
-  }
-
-  try {
-    const response = await axios.post(
-      `${Port}/Screening/Start_Screening/${selectedCitizen.citizens_pk_id}/`,
-      {},
-      {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
-    if (response.status === 200 || response.status === 201) {
-      const result = response.data; // ⭐ Most important
-      const newPkId = result?.new_screening?.pk_id;
-
-      if (!newPkId) {
-        console.error("PK ID missing in API response:", result);
-        setSnackbar({
-          open: true,
-          message: "PK ID not found in response.",
-          severity: "error",
-        });
-        return;
-      }
-
+  const handleStartNewScreening = async () => {
+    if (!selectedCitizen?.citizens_pk_id) {
       setSnackbar({
         open: true,
-        message: "New screening started successfully!",
-        severity: "success",
+        message: "Invalid citizen data.",
+        severity: "error",
       });
-
-      navigate("/mainscreen/Body", {
-        state: {
-          citizens_pk_id: newPkId,  // ⭐ Only this is correct
-          newPkId: newPkId,
-          SourceUrlId,
-          SourceNameUrlId,
-          year: selectedCitizen?.year,
-          dob: selectedCitizen?.dob,
-          gender: selectedCitizen?.gender,
-        },
-      });
-
-      setOpenModalStart(false);
-    } else {
-      throw new Error("Failed to start new screening.");
+      return;
     }
-  } catch (error) {
-    console.error("Error starting new screening:", error);
-    setSnackbar({
-      open: true,
-      message: "Failed to start new screening. Please try again.",
-      severity: "error",
-    });
-  }
-};
 
+    try {
+      const response = await axios.post(
+        `${Port}/Screening/Start_Screening/${selectedCitizen.citizens_pk_id}/`,
+        {},
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.status === 200 || response.status === 201) {
+        const result = response.data; // ⭐ Most important
+        const newPkId = result?.new_screening?.pk_id;
+
+        if (!newPkId) {
+          console.error("PK ID missing in API response:", result);
+          setSnackbar({
+            open: true,
+            message: "PK ID not found in response.",
+            severity: "error",
+          });
+          return;
+        }
+
+        setSnackbar({
+          open: true,
+          message: "New screening started successfully!",
+          severity: "success",
+        });
+
+        navigate("/mainscreen/Body", {
+          state: {
+            citizens_pk_id: newPkId, // ⭐ Only this is correct
+            newPkId: newPkId,
+            SourceUrlId,
+            SourceNameUrlId,
+            year: selectedCitizen?.year,
+            dob: selectedCitizen?.dob,
+            gender: selectedCitizen?.gender,
+          },
+        });
+
+        setOpenModalStart(false);
+      } else {
+        throw new Error("Failed to start new screening.");
+      }
+    } catch (error) {
+      console.error("Error starting new screening:", error);
+      setSnackbar({
+        open: true,
+        message: "Failed to start new screening. Please try again.",
+        severity: "error",
+      });
+    }
+  };
 
   return (
     <div>
@@ -688,91 +709,13 @@ const Citizenlist = () => {
         </Box>
 
         <Grid container spacing={2} alignItems="left" justifyContent="left">
-          {/* <Grid item xs={12} sm={6} md="auto">
-                        <TextField
-                            select
-                            size="small"
-                            label="Age"
-                            value={selectedAge}
-                            onChange={(e) => setSelectedAge(e.target.value)}
-                            sx={{
-                                minWidth: 200,
-                                "& .MuiInputBase-input.MuiSelect-select": {
-                                    color: "#000 !important",
-                                },
-                                "& .MuiSvgIcon-root": {
-                                    color: "#000",
-                                },
-                            }}
-                        >
-                            <MenuItem value="">Select Age</MenuItem>
-                            {ListAgeNav.map((drop) => (
-                                <MenuItem key={drop.age_pk_id} value={drop.age_pk_id}>
-                                    {drop.age}
-                                </MenuItem>
-                            ))}
-                        </TextField>
-                    </Grid> */}
-
-          <Grid item xs={12} sm={6} md="auto">
-            <TextField
-              select
-              size="small"
-              label="Gender"
-              value={selectedGender}
-              onChange={(e) => setSelectedGender(e.target.value)}
-              sx={{
-                minWidth: 200,
-                "& .MuiInputBase-input.MuiSelect-select": {
-                  color: "#000 !important",
-                },
-                "& .MuiSvgIcon-root": {
-                  color: "#000",
-                },
-              }}
-            >
-              <MenuItem value="">Select Gender</MenuItem>
-              {ListGenderNav.map((drop) => (
-                <MenuItem key={drop.gender_pk_id} value={drop.gender_pk_id}>
-                  {drop.gender}
-                </MenuItem>
-              ))}
-            </TextField>
-          </Grid>
-
-          {/* <Grid item xs={12} sm={6} md="auto">
-                        <TextField
-                            select
-                            size="small"
-                            label="Workshop"
-                            value={selectedSource}
-                            onChange={(e) => setSelectedSource(e.target.value)}
-                            sx={{
-                                minWidth: 200,
-                                "& .MuiInputBase-input.MuiSelect-select": {
-                                    color: "#000 !important",
-                                },
-                                "& .MuiSvgIcon-root": {
-                                    color: "#000",
-                                },
-                            }}
-                        >
-                            <MenuItem value="">Select Source</MenuItem>
-                            {ListSourceNav.map((drop) => (
-                                <MenuItem key={drop.source_pk_id} value={drop.source_pk_id}>
-                                    {drop.source}
-                                </MenuItem>
-                            ))}
-                        </TextField>
-                    </Grid> */}
-
           <Grid item xs={12} sm={6} md="auto">
             <TextField
               select
               size="small"
               label="Category"
-              value={selectedScheduleType}
-              onChange={(e) => setSelectedScheduleType(e.target.value)}
+              value={selectedCategory}
+              onChange={(e) => setSelectedCategory(e.target.value)}
               sx={{
                 minWidth: 200,
                 "& .MuiInputBase-input.MuiSelect-select": {
@@ -798,8 +741,8 @@ const Citizenlist = () => {
               label="Citizen ID"
               placeholder="Enter Citizen ID"
               size="small"
-              // value={citizenId}
-              // onChange={(e) => setCitizenId(e.target.value)}
+              value={citizenId}
+              onChange={(e) => setCitizenId(e.target.value)}
               sx={{
                 minWidth: 200,
                 "& .MuiInputBase-input": {
@@ -807,6 +750,33 @@ const Citizenlist = () => {
                 },
               }}
             />
+          </Grid>
+
+          <Grid item xs={12} sm={6} md="auto">
+            <TextField
+              select
+              size="small"
+              label="Gender"
+              value={selectedGender}
+              onChange={(e) => setSelectedGender(e.target.value)}
+              sx={{
+                minWidth: 200,
+                "& .MuiInputBase-input.MuiSelect-select": {
+                  color: "#000 !important",
+                },
+                "& .MuiSvgIcon-root": {
+                  color: "#000",
+                },
+              }}
+            >
+              <MenuItem value="">Select Gender</MenuItem>
+
+              {ListGenderNav.map((drop) => (
+                <MenuItem key={drop.gender_pk_id} value={drop.gender_pk_id}>
+                  {drop.gender}
+                </MenuItem>
+              ))}
+            </TextField>
           </Grid>
 
           {/* <Grid item xs={12} sm={6} md="auto">
@@ -927,23 +897,20 @@ const Citizenlist = () => {
 
         <TableContainer>
           <Table>
-            <TableHead
-              sx={{
-                background: "linear-gradient(90deg, #2FB3F5 0%, #1439A4 100%)",
-              }}
-            >
+            <TableHead>
               <TableRow
                 sx={{
                   background:
                     "linear-gradient(90deg, #2FB3F5 0%, #1439A4 100%)",
-                  height: "45px",
+                  height: "auto",
                   "& th": {
                     color: "white",
                     fontWeight: 600,
                     fontSize: "0.8rem",
                     border: "none",
-                    py: 0.5,
-                    px: 5,
+                    // py: 0.5,
+                    px: 1,
+                    textAlign: "center",
                   },
                   "& th:first-of-type": {
                     borderTopLeftRadius: "40px",
@@ -955,12 +922,43 @@ const Citizenlist = () => {
                   },
                 }}
               >
-                <TableCell sx={{ flex: 0.5 }}>Sr No.</TableCell>
-                <TableCell sx={{ flex: 2 }}>Citizen Name</TableCell>
-                <TableCell sx={{ flex: 1 }}>Mobile Number</TableCell>
-                <TableCell sx={{ flex: 2 }}>Adhar Number</TableCell>
-                <TableCell sx={{ flex: 1.5 }}>Added By</TableCell>
-                <TableCell sx={{ flex: 1 }}>Action</TableCell>
+                <TableCell colSpan={6} sx={{ p: 0 }}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "center",
+                      px: 0,
+                    }}
+                  >
+                    <CardContent sx={{ flex: 0.6 }}>
+                      <Typography variant="subtitle2">Sr. No</Typography>
+                    </CardContent>
+
+                    <CardContent sx={{ flex: 1.5 }}>
+                      <Typography variant="subtitle2">Citizen Name</Typography>
+                    </CardContent>
+
+                    <CardContent sx={{ flex: 1.5 }}>
+                      <Typography variant="subtitle2">Citizen ID</Typography>
+                    </CardContent>
+
+                    <CardContent sx={{ flex: 1.5 }}>
+                      <Typography variant="subtitle2">Mobile Number</Typography>
+                    </CardContent>
+
+                    <CardContent sx={{ flex: 1 }}>
+                      <Typography variant="subtitle2">Adhar Number</Typography>
+                    </CardContent>
+
+                    <CardContent sx={{ flex: 1 }}>
+                      <Typography variant="subtitle2">Added By</Typography>
+                    </CardContent>
+
+                    <CardContent sx={{ flex: 0.7 }}>
+                      <Typography variant="subtitle2">Action</Typography>
+                    </CardContent>
+                  </Box>
+                </TableCell>
               </TableRow>
             </TableHead>
 
@@ -1005,7 +1003,7 @@ const Citizenlist = () => {
                               boxShadow: 2,
                               "&:hover": { boxShadow: 4 },
                               transition: "0.3s",
-                              mt: 1,
+                              mt: 0.6,
                               height: "45px",
                             }}
                           >
@@ -1017,24 +1015,27 @@ const Citizenlist = () => {
                                 textAlign: "center",
                                 height: "100%",
                                 py: 3,
+                                // textAlign:"center"
                               }}
                             >
-                              <Box sx={{ flex: 0.5 }}>{serialNumber}</Box>
-                              <Box sx={{ flex: 2 }}>{data.name || "-"}</Box>
-                              <Box sx={{ flex: 1 }}>
-                                {" "}
-                                {data.mobile_no || "-"}
-                              </Box>
-                              <Box sx={{ flex: 2 }}>
-                                {data.aadhar_id || "-"}
+                              <Box sx={{ flex: 0.6 }}>{serialNumber}</Box>
+                              <Box sx={{ flex: 1.5 }}>{data.name || "-"}</Box>
+                              <Box sx={{ flex: 1.5 }}>
+                                {data.citizen_id || "-"}
                               </Box>
                               <Box sx={{ flex: 1.5 }}>
-                                {" "}
-                                {data.added_by || "-"}
+                                {data.mobile_no || "-"}
+                              </Box>
+                              <Box sx={{ flex: 1 }}>
+                                {data.aadhar_id || "-"}
+                              </Box>
+
+                              <Box sx={{ flex: 1 }}>
+                                {data?.added_by?.clg_ref_id || "-"}
                               </Box>
                               <Box
                                 sx={{
-                                  flex: 1,
+                                  flex: 0.7,
                                   display: "flex",
                                   justifyContent: "center",
                                 }}
@@ -1122,7 +1123,7 @@ const Citizenlist = () => {
                                       <ListItemText primary="Previous Screening" />
                                     </MenuItem>
                                   )}
-                                  
+
                                   <MenuItem
                                     onClick={async () => {
                                       handleMenuClose();
@@ -1145,7 +1146,9 @@ const Citizenlist = () => {
                                       // fetch previous screening data silently (don't open the previous modal)
                                       setOpenModalStart(true);
                                       setLoadingPrevious(true);
-                                      await handlePreviousClick(data, { openModalFlag: false });
+                                      await handlePreviousClick(data, {
+                                        openModalFlag: false,
+                                      });
                                       setLoadingPrevious(false);
                                     }}
                                   >

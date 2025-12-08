@@ -13,7 +13,6 @@ import {
   Snackbar,
   Alert,
 } from "@mui/material";
-import { API_URL } from "../../../../../../Config/api";
 
 const FamilyInfo = ({
   citizensPkId,
@@ -25,7 +24,7 @@ const FamilyInfo = ({
   const [nextName, setNextName] = useState("");
   const [updateId, setUpdateId] = useState("");
   const [familyData, setFamilyData] = useState({});
-  console.log(pkid, "pkidssssss");
+  console.log(familyData, "familydata");
 
   const [openConfirm, setOpenConfirm] = useState(false);
 
@@ -38,7 +37,7 @@ const FamilyInfo = ({
   const userID = localStorage.getItem("userID");
   const accessToken = localStorage.getItem("token");
   const source = localStorage.getItem("source");
-  // const API_URL = process.env.REACT_APP_API_KEY;
+  const Port = process.env.REACT_APP_API_KEY;
 
   // Get next name in list
   useEffect(() => {
@@ -62,7 +61,7 @@ const FamilyInfo = ({
   const fetchData = async () => {
     try {
       const response = await fetch(
-        `${API_URL}/Screening/SaveEmergencyInfo/${pkid}/`,
+        `${Port}/Screening/SaveEmergencyInfo/${pkid}/`,
         {
           method: "POST",
           headers: {
@@ -77,7 +76,7 @@ const FamilyInfo = ({
       if (res?.data) {
         setFamilyData(res.data); // store entire object
         setUpdateId(res.data?.citizen_id); // correct key sent by backend
-        setEmpKID(res.data?.em_pk_id)
+        setEmpKID(res.data?.citizen_pk_id)
       }
     } catch (error) {
       console.error("Error fetching family data", error);
@@ -92,7 +91,7 @@ const FamilyInfo = ({
   const updateDataInDatabase = async (citizen_id) => {
     try {
       const response = await fetch(
-        `${API_URL}/Screening/Citizen_emergency_put/${empkid}/`,
+        `${Port}/Screening/Citizen_emergency_put/${empkid}/`,
         {
           method: "PUT",
           headers: {
@@ -255,7 +254,7 @@ const FamilyInfo = ({
             </Grid>
 
             {/* Email */}
-            <Grid item xs={12} sm={6}>
+            {/* <Grid item xs={12} sm={6}>
               <TextField
                 fullWidth
                 label="Email"
@@ -268,7 +267,7 @@ const FamilyInfo = ({
                   })
                 }
               />
-            </Grid>
+            </Grid> */}
 
             {/* Relationship */}
             <Grid item xs={12} sm={6}>
@@ -305,7 +304,7 @@ const FamilyInfo = ({
             </Grid>
 
             {/* Address */}
-            <Grid item xs={12}>
+            <Grid item xs={12} sm={6} md={6}>
               <TextField
                 fullWidth
                 label="Address"

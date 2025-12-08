@@ -771,6 +771,8 @@ const HealthList = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredResults, setFilteredResults] = useState(searchResults);
 
+
+  // new code
   useEffect(() => {
     const filtered = searchResults.filter(
       (result) =>
@@ -780,6 +782,23 @@ const HealthList = () => {
     );
     setFilteredResults(filtered);
   }, [searchQuery, searchResults]);
+
+// old code for search
+//   useEffect(() => {
+//   if (!Array.isArray(searchResults)) {
+//     setFilteredResults([]);
+//     return;
+//   }
+
+//   const filtered = searchResults.filter(
+//     (result) =>
+//       (result.name &&
+//         result.name.toLowerCase().includes(searchQuery.toLowerCase())) ||
+//       (result.aadhar_id && result.aadhar_id.includes(searchQuery))
+//   );
+
+//   setFilteredResults(filtered);
+// }, [searchQuery, searchResults]);
 
   const handleSearchChange = (event) => {
     setSearchQuery(event.target.value);
@@ -1005,11 +1024,11 @@ const HealthList = () => {
                 }}
               >
                 <MenuItem value="">Select Source</MenuItem>
-                {sourceNav.map((drop) => (
+                {/* {sourceNav.map((drop) => (
                   <MenuItem key={drop.source_pk_id} value={drop.source_pk_id}>
                     {drop.source}
                   </MenuItem>
-                ))}
+                ))} */}
               </TextField>
             </Grid>
 

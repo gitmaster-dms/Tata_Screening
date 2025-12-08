@@ -34,7 +34,13 @@ const Dashboard = () => {
   }, [tabValue]);
   const stateget = async () => {
     try {
-      const response = await axios.get(`${port}/Screening/State_Get/`);
+      const response = await axios.get(`${port}/Screening/State_Get/`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
       console.log("response state", response.data);
       setStateList(response.data || []); // ✅ store list
     } catch (error) {
@@ -54,7 +60,12 @@ const Dashboard = () => {
   const getDistricts = async (stateId) => {
     try {
       const response = await axios.get(
-        `${port}/Screening/District_Get/${stateId}/`
+        `${port}/Screening/District_Get/${stateId}/`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
       );
       console.log("District List:", response.data);
 
@@ -86,7 +97,13 @@ const Dashboard = () => {
       setLoading(true);
       const dtValue = tabValue === 0 ? 1 : tabValue === 1 ? 2 : 3; // example
       const response = await axios.get(
-        `${port}/Screening/total_driver_count/?dt=${dtValue}/state=${selectedState}`
+        `${port}/Screening/total_driver_count/?dt=${dtValue}/state=${selectedState}`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+          },
+        }
       );
       setDashboardData(response.data);
       console.log("response--", response.data);
@@ -107,7 +124,13 @@ const Dashboard = () => {
       setLoading(true);
       const dtValue = tabValue === 0 ? 1 : tabValue === 1 ? 2 : 3; // example
       const response = await axios.get(
-        `${port}/Screening/bmi_vitals_count/?dt=${dtValue}/state=${selectedState}`
+        `${port}/Screening/bmi_vitals_count/?dt=${dtValue}/state=${selectedState}`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+          },
+        }
       );
       setVitalsData(response.data);
       console.log("response vitals", response.data);
@@ -128,7 +151,19 @@ const Dashboard = () => {
       setLoading(true);
       const dtValue = tabValue === 0 ? 1 : tabValue === 1 ? 2 : 3; // example
       const response = await axios.get(
-        `${port}/Screening/health_score_count/?dt=${dtValue}/state=${selectedState}`
+        `${port}/Screening/health_score_count/?dt=${dtValue}/state=${selectedState}`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+          },
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+          },
+        }
       );
       setHealthStatusData(response.data);
       console.log("response vitals", response.data);

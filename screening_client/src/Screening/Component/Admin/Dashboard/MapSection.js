@@ -131,9 +131,6 @@
 
 // export default MapSection;
 
-
-
-
 import React, { useEffect, useRef, useState } from "react";
 import {
   Card,
@@ -205,12 +202,9 @@ const MapSection = ({ selectedState }) => {
   useEffect(() => {
     if (!mapContainerRef.current || mapRef.current) return;
 
-  mapRef.current = L.map(mapContainerRef.current, {
-  attributionControl: false   // 🚀 disable Leaflet attribution
-}).setView(
-  [19.076, 72.8777], 
-  8
-);
+    mapRef.current = L.map(mapContainerRef.current, {
+      attributionControl: false, // 🚀 disable Leaflet attribution
+    }).setView([19.076, 72.8777], 8);
 
     L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
       maxZoom: 19,
@@ -226,10 +220,10 @@ const MapSection = ({ selectedState }) => {
 
   useEffect(() => {
     if (!mapRef.current) return;
- if (!dateFilter) {
-    console.log("No tab selected → No markers displayed");
-    return;
-  }
+    if (!dateFilter) {
+      console.log("No tab selected → No markers displayed");
+      return;
+    }
     // Clear previous markers
     workshopMarkers.current.forEach((marker) => marker.remove());
     workshopMarkers.current = [];
@@ -260,7 +254,6 @@ const MapSection = ({ selectedState }) => {
         padding: [50, 50], // smooth zoom with padding
       });
     }
-    
   }, [workshops]);
 
   return (
@@ -322,12 +315,11 @@ const MapSection = ({ selectedState }) => {
               displayEmpty
               value={selectedDistrict}
               onChange={(e) => {
-  const value = e.target.value;
-  setSelectedDistrict(value);     // UI update
-  setDistrictFilter(value);       // CONTEXT update (important)
-  console.log("District Selected →", value);
-}}
-
+                const value = e.target.value;
+                setSelectedDistrict(value); // UI update
+                setDistrictFilter(value); // CONTEXT update (important)
+                console.log("District Selected →", value);
+              }}
               inputProps={{ "aria-label": "Select District" }}
               sx={{
                 height: "2.5rem",
@@ -394,7 +386,7 @@ const MapSection = ({ selectedState }) => {
         >
           <div
             ref={mapContainerRef}
-            style={{ width: "100%", height: "300px" }}
+            style={{ width: "100%", height: "220px" }}
           ></div>
         </Box>
       </CardContent>
@@ -403,10 +395,3 @@ const MapSection = ({ selectedState }) => {
 };
 
 export default MapSection;
-
-
-
-
-
-
-
