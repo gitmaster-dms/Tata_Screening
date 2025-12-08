@@ -902,7 +902,20 @@ class growth_monitoring_info_Get_Serializer(serializers.ModelSerializer):
     class Meta:
         model = growth_monitoring_info
         fields = ['growth_pk_id','gender','dob','year','months','days','height','weight','weight_for_age','height_for_age','weight_for_height','bmi','arm_size','symptoms','remark','reffered_to_specialist','modify_by','is_deleted','modify_date','refer_doctor','doctor_name']
-        
+
+
+
+
+class Citizen_Growth_Update_Serializer(serializers.ModelSerializer):
+    class Meta:
+        model = Citizen
+        fields = [
+            'gender', 'dob', 'year', 'months', 'days',
+            'height', 'weight', 'weight_for_age', 'height_for_age',
+            'weight_for_height', 'bmi', 'arm_size', 'symptoms',
+            'modify_by', 'modify_date'
+        ]
+
         
 
 class vital_info_Serializer(serializers.ModelSerializer):

@@ -4515,45 +4515,64 @@ class GrowthMonitoringInfoUpdateAPI(APIView):
 
     def put(self, request, citizen_pk_id):
         try:
-            records = growth_monitoring_info.objects.filter(citizen_pk_id=citizen_pk_id)
-
-            if not records.exists():
+            # -------- STEP 1: Update Citizen table --------
+            try:
+                citizen = Citizen.objects.get(citizens_pk_id=citizen_pk_id)
+            except Citizen.DoesNotExist:
                 return Response(
-                    {"success": False, "message": "No growth monitoring records found."},
+                    {"message": "Citizen not found"},
                     status=status.HTTP_404_NOT_FOUND
                 )
 
-            latest_record = records.order_by('-growth_pk_id').first()
-
-            serializer = growth_monitoring_info_Put_Serializer(
-                latest_record, data=request.data, partial=True
+            citizen_serializer = Citizen_Growth_Update_Serializer(
+                citizen, data=request.data, partial=True
             )
 
-            if not serializer.is_valid():
+            if not citizen_serializer.is_valid():
+                return Response({
+                    "message": "Citizen validation failed",
+                    "errors": citizen_serializer.errors
+                }, status=status.HTTP_400_BAD_REQUEST)
+
+            citizen_serializer.save()
+
+            # -------- STEP 2: Update latest growth_monitoring_info --------
+            latest_growth = (
+                growth_monitoring_info.objects
+                .filter(citizen_pk_id=citizen_pk_id)
+                .order_by('-growth_pk_id')
+                .first()
+            )
+
+            if not latest_growth:
                 return Response(
-                    {"success": False, "errors": serializer.errors},
-                    status=status.HTTP_400_BAD_REQUEST
+                    {"message": "No growth monitoring records found"},
+                    status=status.HTTP_404_NOT_FOUND
                 )
 
-            serializer.save()
-
-            response_data = growth_monitoring_info_Get_Serializer(latest_record).data
-
-            return Response(
-                {
-                    "message": "Growth monitoring info updated successfully.",
-                    "Citizen_Data": response_data
-                },
-                status=status.HTTP_200_OK
+            growth_serializer = growth_monitoring_info_Put_Serializer(
+                latest_growth, data=request.data, partial=True
             )
+
+            if not growth_serializer.is_valid():
+                return Response({
+                    "message": "Growth record validation failed",
+                    "errors": growth_serializer.errors
+                }, status=status.HTTP_400_BAD_REQUEST)
+
+            growth_serializer.save()
+
+            # -------- STEP 3: Return ONLY growth data --------
+            final_growth_data = growth_monitoring_info_Get_Serializer(latest_growth).data
+
+            return Response({
+                "message": "Growth data updated successfully",
+                "Citizen_Data": final_growth_data
+            }, status=status.HTTP_200_OK)
 
         except Exception as e:
-            return Response(
-                {"success": False, "error": str(e)},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-
+            return Response({"success": False, "error": str(e)},
+                            status=status.HTTP_400_BAD_REQUEST)
 
 
 
