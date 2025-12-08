@@ -1167,32 +1167,33 @@ const AddUser = () => {
               </TextField>
             </Grid>
 
-            <Grid item xs={12} sm={6} md={2}>
-              <TextField
-                sx={{
-                  minWidth: 120,
-                  "& .MuiInputBase-input.MuiSelect-select": {
-                    color: "#000 !important",
-                  },
-                  "& .MuiSvgIcon-root": {
-                    color: "#000",
-                  },
-                }}
-                select
-                fullWidth
-                size="small"
-                label="workshop Name"
-                value={selectedTalukaNav || ""}
-                onChange={(e) => setSelectedNameNav(e.target.value)}
-              >
-                <MenuItem value="">Select workshop Name</MenuItem>
-                {sourceNameOptionsNav.map((drop) => (
-                  <MenuItem key={drop.ws_pk_id} value={drop.ws_pk_id}>
-                    {drop.Workshop_name}
-                  </MenuItem>
-                ))}
-              </TextField>
-            </Grid>
+           <Grid item xs={12} sm={6} md={2}>
+  <TextField
+    sx={{
+      minWidth: 120,
+      "& .MuiInputBase-input.MuiSelect-select": {
+        color: "#000 !important",
+      },
+      "& .MuiSvgIcon-root": {
+        color: "#000",
+      },
+    }}
+    select
+    fullWidth
+    size="small"
+    label="Workshop Name"
+    value={selectedNameNav}
+    onChange={(e) => setSelectedNameNav(e.target.value)}
+  >
+    <MenuItem value="">Select workshop Name</MenuItem>
+
+    {sourceNameOptionsNav.map((drop) => (
+      <MenuItem key={drop.ws_pk_id} value={drop.ws_pk_id}>
+        {drop.Workshop_name}
+      </MenuItem>
+    ))}
+  </TextField>
+</Grid>
 
             <Grid item xs={6} sm={3} md={1}>
               <Button
