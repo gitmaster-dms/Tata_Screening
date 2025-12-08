@@ -4542,7 +4542,7 @@ class GrowthMonitoringInfoUpdateAPI(APIView):
             return Response(
                 {
                     "message": "Growth monitoring info updated successfully.",
-                    "data": response_data
+                    "Citizen_Data": response_data
                 },
                 status=status.HTTP_200_OK
             )
