@@ -860,7 +860,7 @@ class emergency_info_Save_Serializer(serializers.ModelSerializer):
 
 
 class growth_monitoring_info_Save_Serializer(serializers.ModelSerializer):
-    doctor_name = serializers.CharField(source='refer_doctor.doctor_name', allow_null=True)
+    doctor_name = serializers.CharField(source='refer_doctor.doctor_name', allow_null=True, read_only=True)
     class Meta:
         model = growth_monitoring_info
         fields = ['growth_pk_id','citizen_id','screening_count','citizen_pk_id','screening_citizen_id','gender','dob','year','months','days','height','weight','weight_for_age','height_for_age','weight_for_height','bmi','arm_size','symptoms','remark','reffered_to_specialist','form_submit','is_deleted','added_by','added_date','modify_by','modify_date','refer_doctor','doctor_name']
