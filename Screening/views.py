@@ -1436,11 +1436,11 @@ class Workshop_get_APi2(APIView):
 
 
 
-# class follow_up_refer_citizen(APIView):
-#     def get(self, request):
-#         snippets = agg_sc_follow_up_citizen.objects.all()
-#         serializer = followup_refer_to_specalist_citizens_infoSerializer(snippets, many=True)
-#         return Response(serializer.data)
+class follow_up_refer_citizen(APIView):
+    def get(self, request):
+        snippets = follow_up.objects.all()
+        serializer = followup_refer_to_specalist_citizens_infoSerializer(snippets, many=True)
+        return Response(serializer.data)
 
 # class follow_up_get_citizen(APIView):
 #     def get(self, request, follow_up=None, follow_up_id=None, source_name=None):

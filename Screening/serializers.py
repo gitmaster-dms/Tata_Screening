@@ -501,7 +501,13 @@ class FollowupstatusinfoSerializer(serializers.ModelSerializer):
         model = agg_sc_follow_up_status
         fields = ['followup_status_pk_id','followup_status']
         
-   
+
+
+class followup_refer_to_specalist_citizens_infoSerializer(serializers.ModelSerializer):
+    citizen_name = serializers.CharField(source='citizen_pk_id.name', allow_null=True)
+    class Meta:
+        model = follow_up
+        fields = '__all__'
         
 #-------------------mayank-----------------------------------------
 from rest_framework import serializers
