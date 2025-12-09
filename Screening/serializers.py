@@ -869,7 +869,7 @@ class growth_monitoring_info_Save_Serializer(serializers.ModelSerializer):
 class basic_info_Put_Serializer(serializers.ModelSerializer):
     class Meta:
         model = basic_info
-        fields = ['basic_pk_id','screening_count','citizen_pk_id','screening_citizen_id','prefix','name','gender','blood_group','dob','year','months','days','aadhar_id','phone_no','added_by','modify_by','form_submit','is_deleted']
+        fields = ['basic_pk_id','screening_count','citizen_pk_id','screening_citizen_id','prefix','name','gender','blood_group','dob','year','months','days','aadhar_id','phone_no','added_by','modify_by','form_submit','is_deleted','citizen_id']
         
 
 class basic_info_Citizen_Put_Serializer(serializers.ModelSerializer):
