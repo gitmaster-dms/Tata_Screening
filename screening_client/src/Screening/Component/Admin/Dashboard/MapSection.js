@@ -263,6 +263,7 @@ const MapSection = ({ selectedState }) => {
         boxShadow: "0 2px 10px rgba(0,0,0,0.08)",
         background: "#F8FAFCB2",
         border: "2px solid #fff",
+        height: "100%",
       }}
     >
       <CardContent sx={{ p: 1 }}>
@@ -386,7 +387,7 @@ const MapSection = ({ selectedState }) => {
         >
           <div
             ref={mapContainerRef}
-            style={{ width: "100%", height: "220px" }}
+            style={{ width: "100%", height: "230px" }}
           ></div>
         </Box>
       </CardContent>

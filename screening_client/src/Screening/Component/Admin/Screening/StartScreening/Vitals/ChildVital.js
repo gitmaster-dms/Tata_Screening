@@ -41,24 +41,28 @@ const Childvital = ({
   const [designation, setDesignation] = useState([]);
   const [nextName, setNextName] = useState("");
   const [updateId, setUpdateId] = useState("");
-  const [childData, setChildData] = useState({
-    citizen_id: "",
-    schedule_id: "",
-    name: "",
-    gender: "",
-    blood_groups: "",
-    dob: "",
-    year: "",
-    months: "",
-    days: "",
-    aadhar_id: "",
-    email_id: "",
-    emp_mobile_no: null,
-    employee_id: "",
-    department: "",
-    designation: "",
-    doj: "",
-  });
+
+  // previous code for child
+  // const [childData, setChildData] = useState({
+  //   citizen_id: "",
+  //   schedule_id: "",
+  //   name: "",
+  //   gender: "",
+  //   blood_groups: "",
+  //   dob: "",
+  //   year: "",
+  //   months: "",
+  //   days: "",
+  //   aadhar_id: "",
+  //   email_id: "",
+  //   emp_mobile_no: null,
+  //   employee_id: "",
+  //   department: "",
+  //   designation: "",
+  //   doj: "",
+  // });
+// new code for child
+  const [childData, setChildData] = useState({});
 
   useEffect(() => {
     if (fetchVital && selectedName) {
@@ -122,32 +126,39 @@ const Childvital = ({
     fetchDesignation();
   }, [selectedDepartment]);
 
-  const [basicpkid , setBasicpkid] = useState(null);
+  const [basicpkid, setBasicpkid] = useState(null);
   console.log(basicpkid, "basicpkid");
-  
+
   const fetchData = async () => {
     try {
-      const response = await fetch(`${API_URL}/Screening/SaveBasicInfo/${pkid}/`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}`,
-        },
-        body: JSON.stringify({
-          pkid: pkid,
-          // send anything required by backend
-        }),
-      });
+      const response = await fetch(
+        `${API_URL}/Screening/SaveBasicInfo/${pkid}/`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${accessToken}`,
+          },
+          body: JSON.stringify({
+            // ...childData.citizen_info, // sending citizen_info data
+            added_by: userID,
+            modify_by: userID,
+            form_submit: false, // form not submitted yet
+          }),
+        }
+      );
 
       const res = await response.json();
 
       if (res?.data) {
         const childData = res.data;
-        setChildData(childData);
-        setSelectedDepartment(childData?.citizen_info?.department);
-        setBasicpkid(childData?.basic_pk_id);
-        console.log(childData?.basic_pk_id,"baiscpkid");
-        
+        setChildData({
+          citizen_info: childData, // Wrap inside citizen_info
+        });
+        // setSelectedDepartment(childData?.citizen_info?.department);
+        setBasicpkid(childData?.citizen_pk_id);
+        console.log(childData?.citizen_pk_id, "baiscpkid");
+
         localStorage.setItem("citizenGender", childData?.citizen_info?.gender);
       }
     } catch (error) {
@@ -159,36 +170,35 @@ const Childvital = ({
     fetchData();
   }, [pkid]);
 
-const updateDataInDatabase = async (confirmationStatus) => {
-  try {
-    const response = await fetch(
-      `${API_URL}/Screening/CitizenBasicInfo/${childData?.basic_pk_id}/`,
-      {
-        method: "PUT",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          ...childData.citizen_info,
-          form_submit: confirmationStatus,
-          added_by: userID,
-          modify_by: userID,
-        }),
+  const updateDataInDatabase = async (confirmationStatus) => {
+    try {
+      const response = await fetch(
+        `${API_URL}/Screening/CitizenBasicInfo/${basicpkid}/`,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            ...childData.citizen_info,
+            form_submit: true,
+            added_by: userID,
+            modify_by: userID,
+          }),
+        }
+      );
+
+      if (response.status === 200) {
+        setChildData({ ...childData });
+        onAcceptClick(nextName);
+      } else {
+        alert(`Failed to update data. Status: ${response.status}`);
       }
-    );
-
-    if (response.status === 200) {
-      setChildData({ ...childData });
-      onAcceptClick(nextName);
-    } else {
-      alert(`Failed to update data. Status: ${response.status}`);
+    } catch (error) {
+      console.error("Error updating data", error);
     }
-  } catch (error) {
-    console.error("Error updating data", error);
-  }
-};
-
+  };
 
   const [openConfirmDialog, setOpenConfirmDialog] = useState(false);
   const [snackbar, setSnackbar] = useState({
@@ -197,16 +207,9 @@ const updateDataInDatabase = async (confirmationStatus) => {
     severity: "success",
   });
 
-  const handleConfirmSubmit = async () => {
+  const handleConfirmSubmit = () => {
     setOpenConfirmDialog(false);
-    if (updateId) {
-      await updateDataInDatabase(updateId, "True");
-      setSnackbar({
-        open: true,
-        message: "Child Info Form Submitted Successfully!",
-        severity: "success",
-      });
-    }
+    updateDataInDatabase();
   };
 
   const handleSubmit = async () => {
@@ -294,44 +297,49 @@ const updateDataInDatabase = async (confirmationStatus) => {
             <Grid item xs={12}>
               <Grid container spacing={2}>
                 <Grid item xs={12} sm={2}>
-  <FormControl fullWidth size="small">
-    <InputLabel>Prefix</InputLabel>
-    <Select
-      sx={{
-        "& .MuiInputBase-input.MuiSelect-select": {
-          color: "#000 !important",
-        },
-        "& .MuiSvgIcon-root": {
-          color: "#000",
-        },
-      }}
-      label="Prefix"
-      value={childData?.prefix || ""}
-      onChange={(e) =>
-        setChildData((prev) => ({
-          ...prev,
-          prefix: e.target.value,
-        }))
-      }
-    >
-      <MenuItem value="">Select</MenuItem>
-      <MenuItem value="Mr.">Mr.</MenuItem>
-      <MenuItem value="Ms.">Ms.</MenuItem>
-      <MenuItem value="Mrs.">Mrs.</MenuItem>
-      <MenuItem value="Adv.">Adv.</MenuItem>
-      <MenuItem value="Col.">Col.</MenuItem>
-      <MenuItem value="Dr.">Dr.</MenuItem>
-    </Select>
-  </FormControl>
-</Grid>
-
+                  <FormControl fullWidth size="small">
+                    <InputLabel>Prefix</InputLabel>
+                    <Select
+                      sx={{
+                        "& .MuiInputBase-input.MuiSelect-select": {
+                          color: "#000 !important",
+                        },
+                        "& .MuiSvgIcon-root": {
+                          color: "#000",
+                        },
+                      }}
+                      label="Prefix"
+                      value={childData?.prefix || ""}
+                      onChange={(e) =>
+                        setChildData((prev) => ({
+                          ...prev,
+                          prefix: e.target.value,
+                        }))
+                      }
+                    >
+                      <MenuItem value="">Select</MenuItem>
+                      <MenuItem value="Mr.">Mr.</MenuItem>
+                      <MenuItem value="Ms.">Ms.</MenuItem>
+                      <MenuItem value="Mrs.">Mrs.</MenuItem>
+                      <MenuItem value="Adv.">Adv.</MenuItem>
+                      <MenuItem value="Col.">Col.</MenuItem>
+                      <MenuItem value="Dr.">Dr.</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Grid>
 
                 <Grid item xs={12} sm={10}>
                   <TextField
                     fullWidth
                     size="small"
                     label="Citizen ID"
-                    value={childData?.citizen_id || ""}
+                    value={childData?.citizen_info?.citizen_id || ""}
+                    onChange={(e) =>
+                      setChildData({
+                        ...childData,
+                        citizen_id: e.target.value,
+                      })
+                    }
                     InputProps={{ readOnly: true }}
                   />
                 </Grid>
@@ -351,7 +359,7 @@ const updateDataInDatabase = async (confirmationStatus) => {
                     fullWidth
                     size="small"
                     label={source === "1" ? "Citizen Name" : "Citizen Name"}
-                    value={childData?.name || ""}
+                    value={childData?.citizen_info?.name || ""}
                     onChange={(e) =>
                       setChildData({
                         ...childData,
@@ -377,7 +385,7 @@ const updateDataInDatabase = async (confirmationStatus) => {
                         },
                       }}
                       label="Gender"
-                      value={childData?.gender || ""}
+                      value={childData?.citizen_info?.gender || ""}
                       onChange={(e) =>
                         setChildData({
                           ...childData,
@@ -409,13 +417,13 @@ const updateDataInDatabase = async (confirmationStatus) => {
                         },
                       }}
                       label="Blood Group"
-                      value={childData?.blood_group || ""}
+                      value={childData?.citizen_info?.blood_group || ""}
                       onChange={(e) =>
                         setChildData({
                           ...childData,
                           citizen_info: {
                             ...childData.citizen_info,
-                            blood_groups: e.target.value,
+                            blood_group: e.target.value,
                           },
                         })
                       }
@@ -439,7 +447,7 @@ const updateDataInDatabase = async (confirmationStatus) => {
                     label="Aadhar ID"
                     type="number"
                     inputProps={{ maxLength: 12 }}
-                    value={childData?.aadhar_id || ""}
+                    value={childData?.citizen_info?.aadhar_id || ""}
                     onChange={(e) =>
                       setChildData({
                         ...childData,
@@ -451,18 +459,21 @@ const updateDataInDatabase = async (confirmationStatus) => {
                     }
                   />
                 </Grid>
+
                 <Grid item xs={12} sm={6}>
                   <TextField
                     fullWidth
                     size="small"
                     label="Phone Number"
-                    value={childData?.phone_no || ""}
+                    type="number"
+                    inputProps={{ maxLength: 10 }}
+                    value={childData?.citizen_info?.phone_no || ""}
                     onChange={(e) =>
                       setChildData((prev) => ({
                         ...prev,
                         citizen_info: {
                           ...prev.citizen_info,
-                          emp_mobile_no: e.target.value,
+                          phone_no: e.target.value,
                         },
                       }))
                     }
@@ -504,6 +515,8 @@ const updateDataInDatabase = async (confirmationStatus) => {
                         fullWidth
                         size="small"
                         label="Mobile Number"
+                        inputProps={{ maxLength: 10 }}
+                        type="number"
                         value={childData?.citizen_info?.emp_mobile_no || ""}
                         onChange={(e) =>
                           setChildData({

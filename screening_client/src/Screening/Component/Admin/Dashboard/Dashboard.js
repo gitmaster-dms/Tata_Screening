@@ -23,6 +23,7 @@ const Dashboard = () => {
   const { setDateFilter } = useSourceContext();
   const port = process.env.REACT_APP_API_KEY;
   const accessToken = localStorage.getItem("accessToken");
+  const refreshToken = localStorage.getItem("refreshToken");
   const [tabValue, setTabValue] = useState(0);
   const [dashboardData, setDashboardData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -34,13 +35,11 @@ const Dashboard = () => {
   }, [tabValue]);
   const stateget = async () => {
     try {
-      const response = await axios.get(`${port}/Screening/State_Get/`,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
+      const response = await axios.get(`${port}/Screening/State_Get/`, {
+        headers: {
+          Authorization: `Bearer ${accessToken || refreshToken}`,
+        },
+      });
       console.log("response state", response.data);
       setStateList(response.data || []); // ✅ store list
     } catch (error) {
@@ -63,7 +62,7 @@ const Dashboard = () => {
         `${port}/Screening/District_Get/${stateId}/`,
         {
           headers: {
-            Authorization: `Bearer ${accessToken}`,
+            Authorization: `Bearer ${accessToken || refreshToken}`,
           },
         }
       );
@@ -100,7 +99,7 @@ const Dashboard = () => {
         `${port}/Screening/total_driver_count/?dt=${dtValue}/state=${selectedState}`,
         {
           headers: {
-            Authorization: `Bearer ${accessToken}`,
+            Authorization: `Bearer ${accessToken || refreshToken}`,
             "Content-Type": "application/json",
           },
         }
@@ -127,7 +126,7 @@ const Dashboard = () => {
         `${port}/Screening/bmi_vitals_count/?dt=${dtValue}/state=${selectedState}`,
         {
           headers: {
-            Authorization: `Bearer ${accessToken}`,
+            Authorization: `Bearer ${accessToken || refreshToken}`,
             "Content-Type": "application/json",
           },
         }
@@ -154,13 +153,7 @@ const Dashboard = () => {
         `${port}/Screening/health_score_count/?dt=${dtValue}/state=${selectedState}`,
         {
           headers: {
-            Authorization: `Bearer ${accessToken}`,
-            "Content-Type": "application/json",
-          },
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
+            Authorization: `Bearer ${accessToken || refreshToken}`,
             "Content-Type": "application/json",
           },
         }
@@ -185,14 +178,17 @@ const Dashboard = () => {
   return (
     <Box
       sx={{
+        height: "calc(100vh - 40px - 50px)", // 64px header + 50px footer
+        overflowY: "auto",
         backgroundImage: `url(${dashbordbg})`,
         backgroundSize: "cover",
         backgroundRepeat: "no-repeat",
         backgroundPosition: "center",
         bgcolor: "#F0F6FB",
-        minHeight: "100vh",
+        // minHeight: "100vh",
+        width: "100%",
         pl: { md: 10, sm: 2, xs: 1 },
-        pr: { md: 4, sm: 2, xs: 1 },
+        pr: { md: 1, sm: 2, xs: 1 },
         pt: 2,
       }}
     >
@@ -201,10 +197,16 @@ const Dashboard = () => {
         sx={{
           display: "flex",
           alignItems: "center",
-          gap: 1, // ✅ small gap between tabs and dropdown
+          gap: 1,
           mb: 1,
-          pl: 1,
+          // pl: 1,
           flexWrap: "wrap",
+          position: "sticky",
+          top: 0,
+          // backgroundColor: "#F0F6FB",
+          zIndex: 2,
+          pt: 1,
+          pb: 1,
         }}
       >
         <Tabs
@@ -273,7 +275,6 @@ const Dashboard = () => {
 
         {/* --- Select State Dropdown --- */}
         <Box>
-         
           <Select
             value={selectedState}
             onChange={(e) => {
@@ -329,15 +330,18 @@ const Dashboard = () => {
           <Grid container spacing={1}>
             {/* Row 1: Driver Stats + Health Status */}
             <Grid item xs={12} md={6} sm={12}>
-              <DriverStatsCards data={dashboardData} />
+              <DriverStatsCards data={dashboardData} sx={{ height: "100%" }} />
             </Grid>
 
             <Grid item xs={12} md={6} sm={12}>
-              <HealthStatusCard healthStatusData={healthStatusData} />
+              <HealthStatusCard
+                healthStatusData={healthStatusData}
+                sx={{ height: "100%" }}
+              />
             </Grid>
 
             {/* Row 2: Medical Staff + Follow-up (stacked vertically) + Map */}
-            <Grid item xs={12} md={4} sm={12}>
+            <Grid item xs={12} md={4} sm={12} sx={{ height: "100%" }}>
               <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
                 <MedicalStaff data={dashboardData} />
                 <FollowUpCard data={dashboardData} />

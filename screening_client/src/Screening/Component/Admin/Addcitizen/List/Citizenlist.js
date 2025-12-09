@@ -205,7 +205,7 @@ const Citizenlist = () => {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedCitizenId, setSelectedCitizenId] = useState("");
 
-  
+
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -897,19 +897,19 @@ const Citizenlist = () => {
         </Grid>
 
         <TableContainer>
-          <Table>
+          <Table size="small">
             <TableHead>
               <TableRow
                 sx={{
                   background:
                     "linear-gradient(90deg, #2FB3F5 0%, #1439A4 100%)",
-                  height: "auto",
+                  // height: "auto",
                   "& th": {
                     color: "white",
                     fontWeight: 600,
                     fontSize: "0.8rem",
                     border: "none",
-                    // py: 0.5,
+                    py: 0.5,
                     px: 1,
                     textAlign: "center",
                   },

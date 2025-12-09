@@ -28,6 +28,7 @@ import {
 const Desk = () => {
   const Port = process.env.REACT_APP_API_KEY;
   const accessToken = localStorage.getItem("token");
+  const newToken = localStorage.getItem("refreshToken");
 
   const [canView, setCanView] = useState(false);
   const [canEdit, setCanEdit] = useState(false);
@@ -61,6 +62,7 @@ const Desk = () => {
 
   const [followUpStatusOptions, setFollowUpStatusOptions] = useState([]);
   const [selectedFollowUpStatus, setSelectedFollowUpStatus] = useState("");
+  console.log(selectedFollowUpStatus, "selectedFollowUpStatus");
 
   const [followUpFor, setFollowUpFor] = useState([]);
   const [selectedFollowUpFor, setSelectedFollowUpFor] = useState("");
@@ -121,27 +123,25 @@ const Desk = () => {
   }, [Port]);
 
   //////////// source Name
+  const [workshop, setWorkshop] = useState([]);
+  const [selectedWorkshop, setSelectedWorkshop] = useState(null);
+  const getworkshop = async () => {
+    try {
+      const response = await fetch(`${Port}/Screening/Workshop_Get/`, {
+        headers: {
+          Authorization: `Bearer ${accessToken || newToken}`,
+        },
+      });
+      const data = await response.json();
+      setWorkshop(data);
+      console.log(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
   useEffect(() => {
-    const fetchSourceName = async () => {
-      try {
-        const response = await fetch(`${Port}/Screening/source_name_get/`, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
-        if (response.ok) {
-          const data = await response.json();
-          setSourceName(data);
-        } else {
-          throw new Error("Failed to fetch follow up status options");
-        }
-      } catch (error) {
-        console.error("Error Fetching Data:", error);
-      }
-    };
-    fetchSourceName();
-  }, [Port]);
-
+    getworkshop();
+  }, []);
   const handleFollowUpStatusChange = (event) => {
     setSelectedFollowUpStatus(event.target.value);
   };
@@ -151,7 +151,7 @@ const Desk = () => {
   };
 
   const handleSourceNameChange = (event) => {
-    setselectedFollowUpForName(event.target.value);
+    setSelectedWorkshop(event.target.value);
   };
 
   const handleSearch = () => {
@@ -173,8 +173,8 @@ const Desk = () => {
         url += `${selectedFollowUpFor}/`;
       }
 
-      if (selectedFollowUpForName) {
-        url += `${selectedFollowUpForName}/`;
+      if (selectedWorkshop) {
+        url += `${selectedWorkshop}/`;
       }
 
       const response = await fetch(url, {
@@ -203,13 +203,22 @@ const Desk = () => {
         <div
           className="card deskcard m-2"
           style={{
-            background: "linear-gradient(90deg, #2FB3F5 0%, #1439A4 100%)",
+            background: "#fff",
             color: "white",
           }}
         >
           <div class="row">
             <div class="col">
-              <h5 className="desktitle">FollowUp Desk</h5>
+              <h5
+                className="desktitle"
+                style={{
+                  color: "black",
+                  fontWeight: "550",
+                  fontFamily: "Roboto",
+                }}
+              >
+                FollowUp Desk
+              </h5>
             </div>
           </div>
 
@@ -228,7 +237,7 @@ const Desk = () => {
                     sx: {
                       fontWeight: 100,
                       fontSize: "14px",
-                      color: "white !important",
+                      color: "black !important",
                     },
                   }}
                   SelectProps={{
@@ -237,13 +246,14 @@ const Desk = () => {
                     },
                   }}
                   sx={{
-                    "& .MuiInputBase-input": { color: "white" },
+                    "& .MuiInputBase-input": { color: "black" },
+                    "& .MuiSelect-select": { color: "black !important" }, // <-- FIXEDss
                     "& .MuiOutlinedInput-root": {
-                      "& fieldset": { borderColor: "white" },
-                      "&:hover fieldset": { borderColor: "white" },
-                      "&.Mui-focused fieldset": { borderColor: "white" },
+                      "& fieldset": { borderColor: "black" },
+                      "&:hover fieldset": { borderColor: "black" },
+                      "&.Mui-focused fieldset": { borderColor: "black" },
                     },
-                    "& .MuiSvgIcon-root": { color: "white" },
+                    "& .MuiSvgIcon-root": { color: "black" },
                   }}
                 >
                   {followUpStatusOptions.map((option) => (
@@ -270,7 +280,7 @@ const Desk = () => {
                     sx: {
                       fontWeight: 100,
                       fontSize: "14px",
-                      color: "white !important",
+                      color: "black !important",
                     },
                   }}
                   SelectProps={{
@@ -279,13 +289,14 @@ const Desk = () => {
                     },
                   }}
                   sx={{
-                    "& .MuiInputBase-input": { color: "white" },
+                    "& .MuiInputBase-input": { color: "black" },
+                    "& .MuiSelect-select": { color: "black !important" }, // <-- FIXEDss
                     "& .MuiOutlinedInput-root": {
-                      "& fieldset": { borderColor: "white" },
-                      "&:hover fieldset": { borderColor: "white" },
-                      "&.Mui-focused fieldset": { borderColor: "white" },
+                      "& fieldset": { borderColor: "black" },
+                      "&:hover fieldset": { borderColor: "black" },
+                      "&.Mui-focused fieldset": { borderColor: "black" },
                     },
-                    "& .MuiSvgIcon-root": { color: "white" },
+                    "& .MuiSvgIcon-root": { color: "black" },
                   }}
                 >
                   {followUpFor.map((option) => (
@@ -306,13 +317,13 @@ const Desk = () => {
                   fullWidth
                   size="small"
                   label="Source Name"
-                  value={selectedFollowUpForName}
+                  value={selectedWorkshop}
                   onChange={handleSourceNameChange}
                   InputLabelProps={{
                     sx: {
                       fontWeight: 100,
                       fontSize: "14px",
-                      color: "white !important",
+                      color: "black !important",
                     },
                   }}
                   SelectProps={{
@@ -321,19 +332,20 @@ const Desk = () => {
                     },
                   }}
                   sx={{
-                    "& .MuiInputBase-input": { color: "white" },
+                    "& .MuiInputBase-input": { color: "black" },
+                    "& .MuiSelect-select": { color: "black !important" }, // <-- FIXEDss
                     "& .MuiOutlinedInput-root": {
-                      "& fieldset": { borderColor: "white" },
-                      "&:hover fieldset": { borderColor: "white" },
-                      "&.Mui-focused fieldset": { borderColor: "white" },
+                      "& fieldset": { borderColor: "black" },
+                      "&:hover fieldset": { borderColor: "black" },
+                      "&.Mui-focused fieldset": { borderColor: "black" },
                     },
-                    "& .MuiSvgIcon-root": { color: "white" },
+                    "& .MuiSvgIcon-root": { color: "black" },
                   }}
                 >
                   <MenuItem value="">Select Source Name</MenuItem>
-                  {sourceName.map((opt) => (
-                    <MenuItem key={opt.source_pk_id} value={opt.source_pk_id}>
-                      {opt.source_names}
+                  {workshop.map((opt) => (
+                    <MenuItem key={opt.ws_pk_id} value={opt.ws_pk_id}>
+                      {opt.Workshop_name}
                     </MenuItem>
                   ))}
                 </TextField>
@@ -346,9 +358,13 @@ const Desk = () => {
                   size="small"
                   onClick={handleSearch}
                   sx={{
-                    backgroundColor: "white",
-                    color: "#313774",
-                    "&:hover": { backgroundColor: "#f0f0f0" },
+                    background:
+                      "linear-gradient(135deg, #2B7FFF 0%, #0092B8 100%)",
+                    color: "#fff",
+                    "&:hover": {
+                      background:
+                        "linear-gradient(135deg, #2B7FFF 0%, #0092B8 100%)",
+                    },
                   }}
                 >
                   Search
@@ -401,7 +417,7 @@ const Desk = () => {
                               <TableCell
                                 key={i}
                                 sx={{
-                                  color: "white",
+                                  color: "#ffffff",
                                   fontWeight: 600,
                                   fontSize: "14px",
                                 }}
@@ -642,19 +658,14 @@ const Desk = () => {
                         overflow: "hidden",
                       }}
                     >
-                      <Table>
-                        <TableHead
-                          sx={{
-                            background:
-                              "linear-gradient(90deg, #2FB3F5 0%, #1439A4 100%)",
-                          }}
-                        >
+                      <Table size="small">
+                        <TableHead>
                           <TableRow>
                             <TableCell
                               sx={{
                                 fontWeight: "bold",
                                 color: "#fff",
-                                width: "80px",
+                                // width: "80px",
                               }}
                             >
                               Sr No.
@@ -733,7 +744,7 @@ const Desk = () => {
                       elevation={1}
                       sx={{ borderRadius: "10px", overflow: "hidden", mt: 1 }}
                     >
-                      <Table>
+                      <Table size="small">
                         <TableHead>
                           <TableRow
                             sx={{
@@ -744,25 +755,35 @@ const Desk = () => {
                             <TableCell
                               sx={{
                                 fontWeight: "bold",
-                                width: "80px",
-                                color: "#f44",
+                                // width: "80px",
+                                color: "#fff",
                               }}
                             >
                               Sr No.
                             </TableCell>
-                            <TableCell sx={{ fontWeight: "bold" }}>
+                            <TableCell
+                              sx={{ fontWeight: "bold", color: "#fff" }}
+                            >
                               Citizen ID
                             </TableCell>
-                            <TableCell sx={{ fontWeight: "bold" }}>
+                            <TableCell
+                              sx={{ fontWeight: "bold", color: "#fff" }}
+                            >
                               Screening ID
                             </TableCell>
-                            <TableCell sx={{ fontWeight: "bold" }}>
+                            <TableCell
+                              sx={{ fontWeight: "bold", color: "#fff" }}
+                            >
                               Citizen Name
                             </TableCell>
-                            <TableCell sx={{ fontWeight: "bold" }}>
+                            <TableCell
+                              sx={{ fontWeight: "bold", color: "#fff" }}
+                            >
                               MAM
                             </TableCell>
-                            <TableCell sx={{ fontWeight: "bold" }}>
+                            <TableCell
+                              sx={{ fontWeight: "bold", color: "#fff" }}
+                            >
                               Action
                             </TableCell>
                           </TableRow>
@@ -812,44 +833,70 @@ const Desk = () => {
                     <TableContainer
                       component={Paper}
                       elevation={1}
-                      sx={{ borderRadius: "10px", overflow: "hidden", mt: 1 ,background: "linear-gradient(90deg, #2FB3F5 0%, #1439A4 100%)"}}
+                      sx={{
+                        borderRadius: "10px",
+                        overflow: "hidden",
+                        mt: 1,
+                        background:
+                          "linear-gradient(90deg, #2FB3F5 0%, #1439A4 100%)",
+                      }}
                     >
                       <Table>
-                        <TableHead sx={{ }}>
+                        <TableHead>
                           <TableRow>
                             <TableCell
-                              sx={{ fontWeight: "bold", width: "50px" }}
+                              sx={{ fontWeight: "bold", color: "#fff" }}
                             >
                               Sr No.
                             </TableCell>
-                            <TableCell sx={{ fontWeight: "bold" }}>
+                            <TableCell
+                              sx={{ fontWeight: "bold", color: "#fff" }}
+                            >
                               Citizen ID
                             </TableCell>
-                            <TableCell sx={{ fontWeight: "bold" }}>
+                            <TableCell
+                              sx={{ fontWeight: "bold", color: "#fff" }}
+                            >
                               Screening ID
                             </TableCell>
-                            <TableCell sx={{ fontWeight: "bold" }}>
+                            <TableCell
+                              sx={{ fontWeight: "bold", color: "#fff" }}
+                            >
                               Citizen Name
                             </TableCell>
-                            <TableCell sx={{ fontWeight: "bold" }}>
+                            <TableCell
+                              sx={{ fontWeight: "bold", color: "#fff" }}
+                            >
                               Vital
                             </TableCell>
-                            <TableCell sx={{ fontWeight: "bold" }}>
+                            <TableCell
+                              sx={{ fontWeight: "bold", color: "#fff" }}
+                            >
                               Basic Screening
                             </TableCell>
-                            <TableCell sx={{ fontWeight: "bold" }}>
+                            <TableCell
+                              sx={{ fontWeight: "bold", color: "#fff" }}
+                            >
                               Auditory
                             </TableCell>
-                            <TableCell sx={{ fontWeight: "bold" }}>
+                            <TableCell
+                              sx={{ fontWeight: "bold", color: "#fff" }}
+                            >
                               Dental
                             </TableCell>
-                            <TableCell sx={{ fontWeight: "bold" }}>
+                            <TableCell
+                              sx={{ fontWeight: "bold", color: "#fff" }}
+                            >
                               Vision
                             </TableCell>
-                            <TableCell sx={{ fontWeight: "bold" }}>
+                            <TableCell
+                              sx={{ fontWeight: "bold", color: "#fff" }}
+                            >
                               Psychological
                             </TableCell>
-                            <TableCell sx={{ fontWeight: "bold" }}>
+                            <TableCell
+                              sx={{ fontWeight: "bold", color: "#fff" }}
+                            >
                               Action
                             </TableCell>
                           </TableRow>
@@ -918,29 +965,48 @@ const Desk = () => {
                     <TableContainer
                       component={Paper}
                       elevation={1}
-                      sx={{ borderRadius: "10px", overflow: "hidden",mt:1 }}
+                      sx={{ borderRadius: "10px", overflow: "hidden", mt: 1 }}
                     >
-                      <Table>
-                        <TableHead sx={{ background: "linear-gradient(90deg, #2FB3F5 0%, #1439A4 100%)" }}>
+                      <Table size="small">
+                        <TableHead
+                          sx={{
+                            background:
+                              "linear-gradient(90deg, #2FB3F5 0%, #1439A4 100%)",
+                          }}
+                        >
                           <TableRow>
                             <TableCell
-                              sx={{ fontWeight: "bold", width: "80px",color:"#fff" }}
+                              sx={{
+                                fontWeight: "bold",
+                                // width: "80px",
+                                color: "#fff",
+                              }}
                             >
                               Sr No.
                             </TableCell>
-                            <TableCell sx={{ fontWeight: "bold" ,color:"#fff"}}>
+                            <TableCell
+                              sx={{ fontWeight: "bold", color: "#fff" }}
+                            >
                               Citizen ID
                             </TableCell>
-                            <TableCell sx={{ fontWeight: "bold",color:"#fff" }}>
+                            <TableCell
+                              sx={{ fontWeight: "bold", color: "#fff" }}
+                            >
                               Screening ID
                             </TableCell>
-                            <TableCell sx={{ fontWeight: "bold" ,color:"#fff"}}>
+                            <TableCell
+                              sx={{ fontWeight: "bold", color: "#fff" }}
+                            >
                               Citizen Name
                             </TableCell>
-                            <TableCell sx={{ fontWeight: "bold" ,color:"#fff"}}>
+                            <TableCell
+                              sx={{ fontWeight: "bold", color: "#fff" }}
+                            >
                               SAM
                             </TableCell>
-                            <TableCell sx={{ fontWeight: "bold" ,color:"#fff"}}>
+                            <TableCell
+                              sx={{ fontWeight: "bold", color: "#fff" }}
+                            >
                               Action
                             </TableCell>
                           </TableRow>
@@ -991,27 +1057,42 @@ const Desk = () => {
                       elevation={1}
                       sx={{ borderRadius: "10px", overflow: "hidden", mt: 1 }}
                     >
-                      <Table>
-                        <TableHead sx={{ backgroundColor: "#f6f6f6" }}>
+                      <Table size="small">
+                        <TableHead
+                          sx={{
+                            background:
+                              "linear-gradient(90deg, #2FB3F5 0%, #1439A4 100%)",
+                          }}
+                        >
                           <TableRow>
                             <TableCell
-                              sx={{ fontWeight: "bold", width: "80px" }}
+                              sx={{ fontWeight: "bold", color: "#fff" }}
                             >
                               Sr No.
                             </TableCell>
-                            <TableCell sx={{ fontWeight: "bold" }}>
+                            <TableCell
+                              sx={{ fontWeight: "bold", color: "#fff" }}
+                            >
                               Citizen ID
                             </TableCell>
-                            <TableCell sx={{ fontWeight: "bold" }}>
+                            <TableCell
+                              sx={{ fontWeight: "bold", color: "#fff" }}
+                            >
                               Screening ID
                             </TableCell>
-                            <TableCell sx={{ fontWeight: "bold" }}>
+                            <TableCell
+                              sx={{ fontWeight: "bold", color: "#fff" }}
+                            >
                               Citizen Name
                             </TableCell>
-                            <TableCell sx={{ fontWeight: "bold" }}>
+                            <TableCell
+                              sx={{ fontWeight: "bold", color: "#fff" }}
+                            >
                               MAM
                             </TableCell>
-                            <TableCell sx={{ fontWeight: "bold" }}>
+                            <TableCell
+                              sx={{ fontWeight: "bold", color: "#fff" }}
+                            >
                               Action
                             </TableCell>
                           </TableRow>
@@ -1062,42 +1143,67 @@ const Desk = () => {
                       elevation={1}
                       sx={{ borderRadius: "10px", overflow: "hidden", mt: 1 }}
                     >
-                      <Table>
-                        <TableHead sx={{ backgroundColor: "#f6f6f6" }}>
+                      <Table size="small">
+                        <TableHead
+                          sx={{
+                            background:
+                              "linear-gradient(90deg, #2FB3F5 0%, #1439A4 100%)",
+                          }}
+                        >
                           <TableRow>
                             <TableCell
-                              sx={{ fontWeight: "bold", width: "50px" }}
+                              sx={{ fontWeight: "bold", color: "#fff" }}
                             >
                               Sr No.
                             </TableCell>
-                            <TableCell sx={{ fontWeight: "bold" }}>
+                            <TableCell
+                              sx={{ fontWeight: "bold", color: "#fff" }}
+                            >
                               Citizen ID
                             </TableCell>
-                            <TableCell sx={{ fontWeight: "bold" }}>
+                            <TableCell
+                              sx={{ fontWeight: "bold", color: "#fff" }}
+                            >
                               Screening ID
                             </TableCell>
-                            <TableCell sx={{ fontWeight: "bold" }}>
+                            <TableCell
+                              sx={{ fontWeight: "bold", color: "#fff" }}
+                            >
                               Citizen Name
                             </TableCell>
-                            <TableCell sx={{ fontWeight: "bold" }}>
+                            <TableCell
+                              sx={{ fontWeight: "bold", color: "#fff" }}
+                            >
                               Vital
                             </TableCell>
-                            <TableCell sx={{ fontWeight: "bold" }}>
+                            <TableCell
+                              sx={{ fontWeight: "bold", color: "#fff" }}
+                            >
                               Basic Screening
                             </TableCell>
-                            <TableCell sx={{ fontWeight: "bold" }}>
+                            <TableCell
+                              sx={{ fontWeight: "bold", color: "#fff" }}
+                            >
                               Auditory
                             </TableCell>
-                            <TableCell sx={{ fontWeight: "bold" }}>
+                            <TableCell
+                              sx={{ fontWeight: "bold", color: "#fff" }}
+                            >
                               Dental
                             </TableCell>
-                            <TableCell sx={{ fontWeight: "bold" }}>
+                            <TableCell
+                              sx={{ fontWeight: "bold", color: "#fff" }}
+                            >
                               Vision
                             </TableCell>
-                            <TableCell sx={{ fontWeight: "bold" }}>
+                            <TableCell
+                              sx={{ fontWeight: "bold", color: "#fff" }}
+                            >
                               Psychological
                             </TableCell>
-                            <TableCell sx={{ fontWeight: "bold" }}>
+                            <TableCell
+                              sx={{ fontWeight: "bold", color: "#fff" }}
+                            >
                               Action
                             </TableCell>
                           </TableRow>

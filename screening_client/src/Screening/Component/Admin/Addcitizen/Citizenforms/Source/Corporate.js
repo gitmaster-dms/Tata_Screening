@@ -646,7 +646,11 @@ const Corporate = (props) => {
   const [selectedWorkshop, setSelectedWorkshop] = useState(null);
   const getworkshop = async () => {
     try {
-      const response = await fetch(`${Port}/Screening/Workshop_Get/`);
+      const response = await fetch(`${Port}/Screening/Workshop_Get/`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
       const data = await response.json();
       setWorkshop(data);
       console.log(data);
@@ -943,7 +947,6 @@ const Corporate = (props) => {
                   size="small"
                   variant="outlined"
                   error={!!errors.blood_groups}
-
                 >
                   <InputLabel id="blood-group-label">Blood Group</InputLabel>
                   <Select
@@ -972,7 +975,6 @@ const Corporate = (props) => {
                   </Select>
 
                   {/* Error message display */}
-              
                 </FormControl>
               </Grid>
 
@@ -1657,7 +1659,7 @@ const Corporate = (props) => {
                 <FormControl
                   fullWidth
                   size="small"
-                  error={!!errors.Workshop_name}
+                  error={!!errorMessages.Workshop_name}
                 >
                   <InputLabel>Workshop Name *</InputLabel>
                   <Select
