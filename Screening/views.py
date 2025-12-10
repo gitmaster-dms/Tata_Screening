@@ -1438,9 +1438,25 @@ class Workshop_get_APi2(APIView):
 
 class follow_up_refer_citizen(APIView):
     def get(self, request):
-        snippets = follow_up.objects.all()
-        serializer = followup_refer_to_specalist_citizens_infoSerializer(snippets, many=True)
+
+        qs = follow_up.objects.filter(is_deleted=False)
+
+        # Get params
+        follow_up_param = request.GET.get("follow_up")
+        workshop_id = request.GET.get("workshop_id")   # FK ID
+
+        # Filter follow_up
+        if follow_up_param:
+            qs = qs.filter(follow_up=follow_up_param)
+
+        # Filter by Workshop PK (source_name)
+        if workshop_id:
+            qs = qs.filter(citizen_pk_id__source_name=workshop_id)
+
+        serializer = followup_refer_to_specalist_citizens_infoSerializer(qs, many=True)
         return Response(serializer.data)
+
+
 
 # class follow_up_get_citizen(APIView):
 #     def get(self, request, follow_up=None, follow_up_id=None, source_name=None):
