@@ -1423,7 +1423,7 @@ class followup_dropdown_get(APIView):
 
 class followup_for_get(APIView):
     def get(self, request):
-        snippets = agg_sc_followup_for.objects.all()
+        snippets = agg_sc_followup_for.objects.filter(is_deleted=False)
         serializer = Followup_for_infoSerializer(snippets, many=True)
         return Response(serializer.data)
     
