@@ -1456,7 +1456,6 @@ class follow_up_refer_citizen(APIView):
         basic_screening_refer = request.GET.get("basic_screening_refer")
         auditory_refer = request.GET.get("auditory_refer")
         dental_refer = request.GET.get("dental_refer")
-        dental_refer_hospital = request.GET.get("dental_refer_hospital")
         vision_refer = request.GET.get("vision_refer")
         pycho_refer = request.GET.get("pycho_refer")
         reffered_to_sam_mam = request.GET.get("reffered_to_sam_mam")
