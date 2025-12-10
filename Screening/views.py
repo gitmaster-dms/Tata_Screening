@@ -1441,20 +1441,59 @@ class follow_up_refer_citizen(APIView):
 
         qs = follow_up.objects.filter(is_deleted=False)
 
-        # Get params
+        # ----------------- MAIN FILTERS -----------------
         follow_up_param = request.GET.get("follow_up")
-        workshop_id = request.GET.get("workshop_id")   # FK ID
+        workshop_id = request.GET.get("workshop_id")    # FK ID
 
-        # Filter follow_up
-        if follow_up_param:
+        if follow_up_param is not None:
             qs = qs.filter(follow_up=follow_up_param)
 
-        # Filter by Workshop PK (source_name)
         if workshop_id:
             qs = qs.filter(citizen_pk_id__source_name=workshop_id)
 
+        # ----------------- REFER FILTERS -----------------
+        vital_refer = request.GET.get("vital_refer")
+        basic_screening_refer = request.GET.get("basic_screening_refer")
+        auditory_refer = request.GET.get("auditory_refer")
+        dental_refer = request.GET.get("dental_refer")
+        dental_refer_hospital = request.GET.get("dental_refer_hospital")
+        vision_refer = request.GET.get("vision_refer")
+        pycho_refer = request.GET.get("pycho_refer")
+        reffered_to_sam_mam = request.GET.get("reffered_to_sam_mam")
+        weight_for_height = request.GET.get("weight_for_height")
+
+        # Apply filters only if parameter exists (this supports 0, 1, null correctly)
+        if vital_refer is not None:
+            qs = qs.filter(vital_refer=vital_refer)
+
+        if basic_screening_refer is not None:
+            qs = qs.filter(basic_screening_refer=basic_screening_refer)
+
+        if auditory_refer is not None:
+            qs = qs.filter(auditory_refer=auditory_refer)
+
+        if dental_refer is not None:
+            qs = qs.filter(dental_refer=dental_refer)
+
+        if dental_refer_hospital:
+            qs = qs.filter(dental_refer_hospital__icontains=dental_refer_hospital)
+
+        if vision_refer is not None:
+            qs = qs.filter(vision_refer=vision_refer)
+
+        if pycho_refer is not None:
+            qs = qs.filter(pycho_refer=pycho_refer)
+
+        if reffered_to_sam_mam is not None:
+            qs = qs.filter(reffered_to_sam_mam=reffered_to_sam_mam)
+
+        if weight_for_height:
+            qs = qs.filter(weight_for_height=weight_for_height)
+
+        # ------------------- RESPONSE -------------------
         serializer = followup_refer_to_specalist_citizens_infoSerializer(qs, many=True)
         return Response(serializer.data)
+
 
 
 
