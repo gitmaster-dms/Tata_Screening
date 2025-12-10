@@ -1474,9 +1474,6 @@ class follow_up_refer_citizen(APIView):
         if dental_refer is not None:
             qs = qs.filter(dental_refer=dental_refer)
 
-        if dental_refer_hospital:
-            qs = qs.filter(dental_refer_hospital__icontains=dental_refer_hospital)
-
         if vision_refer is not None:
             qs = qs.filter(vision_refer=vision_refer)
 
