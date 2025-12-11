@@ -1341,6 +1341,7 @@ class Treatment_Serializer(serializers.ModelSerializer):
             'reffered_to_specialist', 'form_submit', 'is_deleted',
             'added_by', 'added_date', 'modify_by', 'modify_date','refer_doctor'
         ]
+        read_only_fields = ['added_by', 'modify_by', 'added_date', 'modify_date']
         
 
 class Treatment_Get_Serializer(serializers.ModelSerializer):

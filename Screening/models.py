@@ -1891,7 +1891,8 @@ class follow_up(models.Model):
     vision_refer = models.IntegerField(blank=True,null=True)
     pycho_refer = models.IntegerField(blank=True,null=True)
     reffered_to_sam_mam = models.IntegerField(blank=True,null=True) 
-    weight_for_height = models.CharField(max_length=255,blank=True,null=True) 
+    weight_for_height = models.CharField(max_length=255,blank=True,null=True)
+    refer_doctor = models.ForeignKey('doctor_list', on_delete=models.CASCADE,null=True, blank=True)
     
     
     citizen_id = models.CharField(max_length=255) 

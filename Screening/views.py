@@ -4920,9 +4920,9 @@ class DeviceDataView(APIView):
            
 
 class Vital_Post_Api(APIView):
-    # renderer_classes = [UserRenderer]
-    # authentication_classes = [CustomJWTAuthentication]
-    # permission_classes = [IsAuthenticated]
+    renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticated]
 
     def post(self, request, pk_id):
         try:
@@ -4992,6 +4992,7 @@ class Vital_Post_Api(APIView):
             reffer_value = request.data.get('reffered_to_specialist')
             modify_by = request.data.get('modify_by')
             added_by = request.data.get('added_by')
+            refer_doctor = request.data.get('refer_doctor')  # <-- New
 
             if reffer_value is not None:
                 reffer_value = int(reffer_value)
@@ -5001,13 +5002,18 @@ class Vital_Post_Api(APIView):
                     vital_refer__isnull=False
                 ).first()
 
-                # Case 1️⃣: referred_to_specialist = 1
+                # Case 1️⃣: referred_to_specialist = 1  --------------------------
                 if reffer_value == 1:
                     if follow_obj:
                         follow_obj.vital_refer = 1
                         follow_obj.is_deleted = False
                         follow_obj.modify_by_id = modify_by
+
+                        # Save refer doctor if provided
+                        if refer_doctor:
+                            follow_obj.refer_doctor_id = refer_doctor
                         follow_obj.save()
+
                     else:
                         follow_up.objects.create(
                             citizen_id=screening_obj.citizen_id,
@@ -5016,19 +5022,22 @@ class Vital_Post_Api(APIView):
                             screening_citizen_id=screening_obj,
                             vital_refer=1,
                             is_deleted=False,
+                            refer_doctor_id=refer_doctor if refer_doctor else None,
                             added_by_id=added_by,
                             modify_by_id=modify_by
                         )
 
-                # Case 2️⃣: referred_to_specialist = 0
+                # Case 2️⃣: referred_to_specialist = 0  --------------------------
                 elif reffer_value == 0 and follow_obj:
                     follow_obj.is_deleted = True
                     follow_obj.vital_refer = 0
+                    follow_obj.refer_doctor = None  # Remove doctor selection
                     follow_obj.modify_by_id = modify_by
                     follow_obj.save()
 
         except Exception as e:
             print("Follow-up logic error:", str(e))
+
 
 
 
@@ -5571,10 +5580,10 @@ class Treatment_Post_API(APIView):
     permission_classes = [IsAuthenticated]
     def post(self, request, pk_id):
         try:
-            # ✅ Get screening record
+            # Get Screening
             screening_obj = Screening_citizen.objects.get(pk_id=pk_id)
 
-            # ✅ Prepare base data
+            # Base data
             treatment_data = {
                 'citizen_id': screening_obj.citizen_id,
                 'screening_count': screening_obj.screening_count,
@@ -5582,37 +5591,60 @@ class Treatment_Post_API(APIView):
                 'screening_citizen_id': screening_obj.pk_id,
             }
 
-            # ✅ Check if record exists
+            # Fetch existing
             treatment_obj = treatement.objects.filter(screening_citizen_id=screening_obj).first()
 
+            # -------------------------------
+            # FIX: Convert FK IDs to objects
+            # -------------------------------
+
+            added_by_id = request.data.get('added_by')
+            modify_by_id = request.data.get('modify_by')
+
+            added_by_obj = agg_com_colleague.objects.filter(pk=added_by_id).first() if added_by_id else None
+            modify_by_obj = agg_com_colleague.objects.filter(pk=modify_by_id).first() if modify_by_id else None
+
+            # --------------------------------------------------
+
             if treatment_obj:
-                # -------- Update Existing --------
-                serializer = Treatment_Serializer(treatment_obj, data={**request.data, **treatment_data}, partial=True)
+                # Update
+                serializer = Treatment_Serializer(
+                    treatment_obj, 
+                    data={**request.data, **treatment_data}, 
+                    partial=True
+                )
+
                 if serializer.is_valid():
-                    updated_obj = serializer.save(modify_by=request.data.get('modify_by'))
+                    updated_obj = serializer.save(modify_by=modify_by_obj)
                     self.handle_follow_up_logic(updated_obj, request, screening_obj)
                     return Response({
                         "message": "Treatment updated successfully",
                         "data": serializer.data,
-                    }, status=status.HTTP_200_OK)
-                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                    }, status=200)
+
+                return Response(serializer.errors, status=400)
 
             else:
-                # -------- Create New --------
-                serializer = Treatment_Serializer(data={**request.data, **treatment_data})
+                # Create
+                serializer = Treatment_Serializer(
+                    data={**request.data, **treatment_data}
+                )
+
                 if serializer.is_valid():
-                    created_obj = serializer.save(added_by=request.data.get('added_by'))
+                    created_obj = serializer.save(added_by=added_by_obj)
                     self.handle_follow_up_logic(created_obj, request, screening_obj)
                     return Response({
                         "message": "Treatment created successfully",
                         "data": serializer.data,
-                    }, status=status.HTTP_201_CREATED)
-                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+                    }, status=201)
+
+                return Response(serializer.errors, status=400)
 
         except Screening_citizen.DoesNotExist:
-            return Response({"error": "Invalid pk_id — screening record not found"}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"error": "Invalid pk_id — screening not found"}, status=404)
+
         except Exception as e:
-            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return Response({"error": str(e)}, status=500)
 
 
     # ---------------------------------------------
@@ -5623,6 +5655,7 @@ class Treatment_Post_API(APIView):
             reffer_value = request.data.get('reffered_to_specialist')
             modify_by = request.data.get('modify_by')
             added_by = request.data.get('added_by')
+            refer_doctor = request.data.get('refer_doctor')  # <-- New
 
             if reffer_value is not None:
                 reffer_value = int(reffer_value)
@@ -5633,13 +5666,18 @@ class Treatment_Post_API(APIView):
                     basic_screening_refer__isnull=False
                 ).first()
 
-                # Case 1️⃣: referred_to_specialist == 1 → create/update basic_screening_refer = 1
+                # Case 1️⃣: referred_to_specialist == 1 → update/create follow-up
                 if reffer_value == 1:
                     if follow_obj:
                         follow_obj.basic_screening_refer = 1
                         follow_obj.is_deleted = False
-                        follow_obj.modify_by = modify_by
+                        follow_obj.modify_by_id = modify_by
+
+                        # Save refer_doctor (ForeignKey)
+                        if refer_doctor:
+                            follow_obj.refer_doctor_id = refer_doctor
                         follow_obj.save()
+
                     else:
                         follow_up.objects.create(
                             citizen_id=screening_obj.citizen_id,
@@ -5647,20 +5685,23 @@ class Treatment_Post_API(APIView):
                             citizen_pk_id=screening_obj.citizen_pk_id,
                             screening_citizen_id=screening_obj,
                             basic_screening_refer=1,
+                            refer_doctor_id=refer_doctor if refer_doctor else None,
                             is_deleted=False,
-                            added_by=added_by,
-                            modify_by=modify_by
+                            added_by_id=added_by,
+                            modify_by_id=modify_by
                         )
 
-                # Case 2️⃣: referred_to_specialist == 0 → mark deleted
+                # Case 2️⃣: referred_to_specialist == 0 → mark deleted + remove doctor
                 elif reffer_value == 0 and follow_obj:
                     follow_obj.is_deleted = True
                     follow_obj.basic_screening_refer = 0
-                    follow_obj.modify_by = modify_by
+                    follow_obj.refer_doctor = None  # Remove doctor assignment
+                    follow_obj.modify_by_id = modify_by
                     follow_obj.save()
 
         except Exception as e:
             print("Follow-up logic error:", str(e))
+
 
 
 class Treatment_Get_API(APIView):
@@ -5681,10 +5722,10 @@ class Auditory_Post_API(APIView):
 
     def post(self, request, pk_id):
         try:
-            # ✅ Get screening record
+            # Get screening record
             screening_obj = Screening_citizen.objects.get(pk_id=pk_id)
 
-            # ✅ Base Data
+            # Base data
             auditory_data = {
                 'citizen_id': screening_obj.citizen_id,
                 'screening_count': screening_obj.screening_count,
@@ -5692,26 +5733,32 @@ class Auditory_Post_API(APIView):
                 'screening_citizen_id': screening_obj.pk_id,
             }
 
-            # ✅ Check existing record
+            # Fetch existing record
             auditory_obj = auditory_info.objects.filter(
                 screening_citizen_id=screening_obj
             ).first()
 
-            # -------------------------------------------------------
+            # --------------------------------------------------
+            # Convert FK IDs to objects (same logic as Treatment API)
+            # --------------------------------------------------
+            added_by_id = request.data.get('added_by')
+            modify_by_id = request.data.get('modify_by')
+
+            added_by_obj = agg_com_colleague.objects.filter(pk=added_by_id).first() if added_by_id else None
+            modify_by_obj = agg_com_colleague.objects.filter(pk=modify_by_id).first() if modify_by_id else None
+            # --------------------------------------------------
+
             # 🔄 UPDATE
-            # -------------------------------------------------------
             if auditory_obj:
                 serializer = Auditory_Info_Post_Serializer(
                     auditory_obj,
                     data={**request.data, **auditory_data},
                     partial=True
                 )
-                if serializer.is_valid():
-                    updated_obj = serializer.save(
-                        modify_by_id=request.data.get('modify_by')
-                    )
-                    self.handle_follow_up_logic(updated_obj, request, screening_obj)
 
+                if serializer.is_valid():
+                    updated_obj = serializer.save(modify_by=modify_by_obj)
+                    self.handle_follow_up_logic(updated_obj, request, screening_obj)
                     return Response({
                         "message": "Auditory info updated successfully",
                         "data": serializer.data,
@@ -5719,17 +5766,14 @@ class Auditory_Post_API(APIView):
 
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-            # -------------------------------------------------------
             # 🆕 CREATE
-            # -------------------------------------------------------
             else:
                 serializer = Auditory_Info_Post_Serializer(
                     data={**request.data, **auditory_data}
                 )
+
                 if serializer.is_valid():
-                    created_obj = serializer.save(
-                        added_by_id=request.data.get('added_by')
-                    )
+                    created_obj = serializer.save(added_by=added_by_obj)
                     self.handle_follow_up_logic(created_obj, request, screening_obj)
 
                     return Response({
@@ -5746,29 +5790,37 @@ class Auditory_Post_API(APIView):
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     # ------------------------------------------------------------------
-    # 🧩 Handle follow-up logic for referred_to_specialist
+    # 🧩 Follow-up logic — SAME AS TREATMENT API
     # ------------------------------------------------------------------
     def handle_follow_up_logic(self, auditory_obj, request, screening_obj):
         try:
             reffer_value = request.data.get('reffered_to_specialist')
             modify_by = request.data.get('modify_by')
             added_by = request.data.get('added_by')
+            refer_doctor = request.data.get('refer_doctor')  # NEW
 
             if reffer_value is not None:
                 reffer_value = int(reffer_value)
 
+                # Existing follow-up record
                 follow_obj = follow_up.objects.filter(
                     screening_citizen_id=screening_obj,
                     auditory_refer__isnull=False
                 ).first()
 
-                # Case 1️⃣: referred_to_specialist == 1
+                # Case 1️⃣: referred_to_specialist == 1 → update/create
                 if reffer_value == 1:
                     if follow_obj:
                         follow_obj.auditory_refer = 1
                         follow_obj.is_deleted = False
                         follow_obj.modify_by_id = modify_by
+
+                        # Save doctor FK
+                        if refer_doctor:
+                            follow_obj.refer_doctor_id = refer_doctor
+
                         follow_obj.save()
+
                     else:
                         follow_up.objects.create(
                             citizen_id=screening_obj.citizen_id,
@@ -5776,20 +5828,23 @@ class Auditory_Post_API(APIView):
                             citizen_pk_id=screening_obj.citizen_pk_id,
                             screening_citizen_id=screening_obj,
                             auditory_refer=1,
+                            refer_doctor_id=refer_doctor if refer_doctor else None,
                             is_deleted=False,
                             added_by_id=added_by,
                             modify_by_id=modify_by
                         )
 
-                # Case 2️⃣: referred_to_specialist == 0
+                # Case 2️⃣: referred_to_specialist == 0 → soft delete + remove doctor
                 elif reffer_value == 0 and follow_obj:
                     follow_obj.is_deleted = True
                     follow_obj.auditory_refer = 0
+                    follow_obj.refer_doctor = None  # REMOVE doctor assignment
                     follow_obj.modify_by_id = modify_by
                     follow_obj.save()
 
         except Exception as e:
             print("Follow-up logic error:", str(e))
+
 
 
 class Auditory_Get_API(APIView):
@@ -5807,10 +5862,12 @@ class Vision_Info_Post_Api(APIView):
     renderer_classes = [UserRenderer]
     authentication_classes = [CustomJWTAuthentication]
     permission_classes = [IsAuthenticated]
+
     def post(self, request, pk_id):
         try:
             screening_obj = Screening_citizen.objects.get(pk_id=pk_id)
 
+            # Auto-fill fields
             vision_data = {
                 'citizen_id': screening_obj.citizen_id,
                 'screening_count': screening_obj.screening_count,
@@ -5818,82 +5875,125 @@ class Vision_Info_Post_Api(APIView):
                 'screening_citizen_id': screening_obj.pk_id,
             }
 
-            vision_obj = vision_info.objects.filter(screening_citizen_id=screening_obj).first()
+            # Existing?
+            vision_obj = vision_info.objects.filter(
+                screening_citizen_id=screening_obj
+            ).first()
 
+            # FK conversions
+            added_by_id = request.data.get("added_by")
+            modify_by_id = request.data.get("modify_by")
+
+            added_by_obj = agg_com_colleague.objects.filter(pk=added_by_id).first() if added_by_id else None
+            modify_by_obj = agg_com_colleague.objects.filter(pk=modify_by_id).first() if modify_by_id else None
+
+            # ---------------------------------------------------
+            # UPDATE
+            # ---------------------------------------------------
             if vision_obj:
-                # -------- Update existing record --------
-                serializer = Vision_Info_Post_Serializer(vision_obj, data={**request.data, **vision_data}, partial=True)
+                serializer = Vision_Info_Post_Serializer(
+                    vision_obj,
+                    data={**request.data, **vision_data},
+                    partial=True
+                )
+
                 if serializer.is_valid():
-                    updated_obj = serializer.save(modify_by=request.data.get('modify_by'))
+                    updated_obj = serializer.save(modify_by=modify_by_obj)
                     self.handle_follow_up_logic(updated_obj, request, screening_obj)
                     return Response({
                         "message": "Vision info updated successfully",
-                        "data": serializer.data,
+                        "data": serializer.data
                     }, status=status.HTTP_200_OK)
+
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-            else:
-                # -------- Create new record --------
-                serializer = Vision_Info_Post_Serializer(data={**request.data, **vision_data})
-                if serializer.is_valid():
-                    created_obj = serializer.save(added_by=request.data.get('added_by'))
-                    self.handle_follow_up_logic(created_obj, request, screening_obj)
-                    return Response({
-                        "message": "Vision info created successfully",
-                        "data": serializer.data,
-                    }, status=status.HTTP_201_CREATED)
-                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+            # ---------------------------------------------------
+            # CREATE
+            # ---------------------------------------------------
+            serializer = Vision_Info_Post_Serializer(data={**request.data, **vision_data})
+
+            if serializer.is_valid():
+                created_obj = serializer.save(added_by=added_by_obj)
+                self.handle_follow_up_logic(created_obj, request, screening_obj)
+
+                return Response({
+                    "message": "Vision info created successfully",
+                    "data": serializer.data
+                }, status=status.HTTP_201_CREATED)
+
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         except Screening_citizen.DoesNotExist:
             return Response({"error": "Invalid pk_id — screening record not found"}, status=status.HTTP_404_NOT_FOUND)
+
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     # -------------------------------------------------------------
-    # 🧩 Handle follow-up logic for referred_to_specialist
+    # FOLLOW-UP LOGIC (Same as Auditory API + Doctor saving)
     # -------------------------------------------------------------
     def handle_follow_up_logic(self, vision_obj, request, screening_obj):
         try:
-            reffer_value = request.data.get('reffered_to_specialist')
-            modify_by = request.data.get('modify_by')
-            added_by = request.data.get('added_by')
+            reffer_value = request.data.get("reffered_to_specialist")
+            modify_by = request.data.get("modify_by")
+            added_by = request.data.get("added_by")
+            refer_doctor = request.data.get("refer_doctor")  # doctor PK from API
 
-            if reffer_value is not None:
-                reffer_value = int(reffer_value)
+            if reffer_value is None:
+                return
 
-                # Find existing follow-up entry for this screening
-                follow_obj = follow_up.objects.filter(
-                    screening_citizen_id=screening_obj,
-                    vision_refer__isnull=False
-                ).first()
+            reffer_value = int(reffer_value)
 
-                # Case 1️⃣: referred_to_specialist == 1 → create/update vision_refer = 1
-                if reffer_value == 1:
-                    if follow_obj:
-                        follow_obj.vision_refer = 1
-                        follow_obj.is_deleted = False
-                        follow_obj.modify_by = modify_by
-                        follow_obj.save()
-                    else:
-                        follow_up.objects.create(
-                            citizen_id=screening_obj.citizen_id,
-                            screening_count=screening_obj.screening_count,
-                            citizen_pk_id=screening_obj.citizen_pk_id,
-                            screening_citizen_id=screening_obj,
-                            vision_refer=1,
-                            is_deleted=False,
-                            added_by=added_by,
-                            modify_by=modify_by
-                        )
+            # Try converting doctor ID → instance
+            doctor_instance = None
+            if refer_doctor:
+                try:
+                    doctor_instance = doctor_list.objects.get(pk=refer_doctor)
+                except doctor_list.DoesNotExist:
+                    doctor_instance = None
 
-                # Case 2️⃣: referred_to_specialist == 0 → mark deleted
-                elif reffer_value == 0 and follow_obj:
-                    follow_obj.is_deleted = True
-                    follow_obj.vision_refer = 0
-                    follow_obj.modify_by = modify_by
+            # Existing follow-up record for vision
+            follow_obj = follow_up.objects.filter(
+                screening_citizen_id=screening_obj,
+                vision_refer__isnull=False
+            ).first()
+
+            # ---------------------------------------------------
+            # Case 1️⃣ REFFERED = YES
+            # ---------------------------------------------------
+            if reffer_value == 1:
+                if follow_obj:
+                    follow_obj.vision_refer = 1
+                    follow_obj.is_deleted = False
+                    follow_obj.modify_by_id = modify_by
+                    follow_obj.refer_doctor = doctor_instance
                     follow_obj.save()
+                else:
+                    follow_up.objects.create(
+                        citizen_id=screening_obj.citizen_id,
+                        screening_count=screening_obj.screening_count,
+                        citizen_pk_id=screening_obj.citizen_pk_id,
+                        screening_citizen_id=screening_obj,
+                        vision_refer=1,
+                        refer_doctor=doctor_instance,
+                        is_deleted=False,
+                        added_by_id=added_by,
+                        modify_by_id=modify_by
+                    )
+
+            # ---------------------------------------------------
+            # Case 2️⃣ REFFERED = NO (soft delete)
+            # ---------------------------------------------------
+            elif reffer_value == 0 and follow_obj:
+                follow_obj.is_deleted = True
+                follow_obj.vision_refer = 0
+                follow_obj.refer_doctor = None
+                follow_obj.modify_by_id = modify_by
+                follow_obj.save()
 
         except Exception as e:
-            print("Follow-up logic error:", str(e))
+            print("Follow-up logic error:", e)
+
             
 class Vision_Info_Get_API(APIView):
     renderer_classes = [UserRenderer]
@@ -6028,12 +6128,13 @@ class Dental_Info_Post_Api(APIView):
     renderer_classes = [UserRenderer]
     authentication_classes = [CustomJWTAuthentication]
     permission_classes = [IsAuthenticated]
+
     def post(self, request, pk_id):
         try:
-            # ✅ Get Screening record
+            # Get Screening record
             screening_obj = Screening_citizen.objects.get(pk_id=pk_id)
 
-            # ✅ Auto-fill backend data
+            # Auto-fill backend data
             dental_data = {
                 'citizen_id': screening_obj.citizen_id,
                 'screening_count': screening_obj.screening_count,
@@ -6041,63 +6142,92 @@ class Dental_Info_Post_Api(APIView):
                 'screening_citizen_id': screening_obj.pk_id,
             }
 
-            # ✅ Check existing record
-            dental_obj = dental_info.objects.filter(screening_citizen_id=screening_obj).first()
+            # Fetch existing dental record
+            dental_obj = dental_info.objects.filter(
+                screening_citizen_id=screening_obj
+            ).first()
 
+            # --------------------------------------------------
+            # Convert FK IDs to actual objects (same as Treatment API)
+            # --------------------------------------------------
+            added_by_id = request.data.get('added_by')
+            modify_by_id = request.data.get('modify_by')
+
+            added_by_obj = agg_com_colleague.objects.filter(pk=added_by_id).first() if added_by_id else None
+            modify_by_obj = agg_com_colleague.objects.filter(pk=modify_by_id).first() if modify_by_id else None
+            # --------------------------------------------------
+
+            # -------- UPDATE --------
             if dental_obj:
-                # -------- Update existing record --------
-                serializer = Dental_Info_Post_Serializer(dental_obj, data={**request.data, **dental_data}, partial=True)
+                serializer = Dental_Info_Post_Serializer(
+                    dental_obj,
+                    data={**request.data, **dental_data},
+                    partial=True
+                )
+
                 if serializer.is_valid():
-                    updated_obj = serializer.save(modify_by=request.data.get('modify_by'))
+                    updated_obj = serializer.save(modify_by=modify_by_obj)
                     self.handle_follow_up_logic(updated_obj, request, screening_obj)
                     return Response({
                         "message": "Dental info updated successfully",
                         "data": serializer.data,
                     }, status=status.HTTP_200_OK)
+
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+            # -------- CREATE --------
             else:
-                # -------- Create new record --------
-                serializer = Dental_Info_Post_Serializer(data={**request.data, **dental_data})
+                serializer = Dental_Info_Post_Serializer(
+                    data={**request.data, **dental_data}
+                )
+
                 if serializer.is_valid():
-                    created_obj = serializer.save(added_by=request.data.get('added_by'))
+                    created_obj = serializer.save(added_by=added_by_obj)
                     self.handle_follow_up_logic(created_obj, request, screening_obj)
                     return Response({
                         "message": "Dental info created successfully",
                         "data": serializer.data,
                     }, status=status.HTTP_201_CREATED)
+
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
         except Screening_citizen.DoesNotExist:
-            return Response({"error": "Invalid pk_id — screening record not found"}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"error": "Invalid pk_id — screening record not found"},
+                            status=status.HTTP_404_NOT_FOUND)
+
         except Exception as e:
             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-    # -------------------------------------------------------------
-    # 🦷 Handle follow-up logic for reffered_to_specialist
     # -------------------------------------------------------------
     def handle_follow_up_logic(self, dental_obj, request, screening_obj):
         try:
             reffer_value = request.data.get('reffered_to_specialist')
             modify_by = request.data.get('modify_by')
             added_by = request.data.get('added_by')
+            refer_doctor = request.data.get('refer_doctor')  # NEW
 
             if reffer_value is not None:
                 reffer_value = int(reffer_value)
 
-                # Find existing follow-up entry for this screening
+                # Find existing follow-up entry
                 follow_obj = follow_up.objects.filter(
                     screening_citizen_id=screening_obj,
                     dental_refer__isnull=False
                 ).first()
 
-                # Case 1️⃣: referred_to_specialist == 1 → create/update dental_refer = 1
+                # Case 1️⃣: referred_to_specialist == 1
                 if reffer_value == 1:
                     if follow_obj:
                         follow_obj.dental_refer = 1
                         follow_obj.is_deleted = False
-                        follow_obj.modify_by = modify_by
+                        follow_obj.modify_by_id = modify_by
+
+                        # Save refer_doctor if given
+                        if refer_doctor:
+                            follow_obj.refer_doctor_id = refer_doctor
+
                         follow_obj.save()
+
                     else:
                         follow_up.objects.create(
                             citizen_id=screening_obj.citizen_id,
@@ -6105,20 +6235,23 @@ class Dental_Info_Post_Api(APIView):
                             citizen_pk_id=screening_obj.citizen_pk_id,
                             screening_citizen_id=screening_obj,
                             dental_refer=1,
+                            refer_doctor_id=refer_doctor if refer_doctor else None,
                             is_deleted=False,
-                            added_by=added_by,
-                            modify_by=modify_by
+                            added_by_id=added_by,
+                            modify_by_id=modify_by
                         )
 
-                # Case 2️⃣: referred_to_specialist == 0 → mark deleted
+                # Case 2️⃣: referred_to_specialist == 0
                 elif reffer_value == 0 and follow_obj:
                     follow_obj.is_deleted = True
                     follow_obj.dental_refer = 0
-                    follow_obj.modify_by = modify_by
+                    follow_obj.refer_doctor = None  # Remove doctor assignment
+                    follow_obj.modify_by_id = modify_by
                     follow_obj.save()
 
         except Exception as e:
             print("Follow-up logic error:", str(e))
+
             
             
 class Dental_Info_Get_API(APIView):
