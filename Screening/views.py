@@ -1444,12 +1444,16 @@ class follow_up_refer_citizen(APIView):
         # ----------------- MAIN FILTERS -----------------
         follow_up_param = request.GET.get("follow_up")
         workshop_id = request.GET.get("workshop_id")    # FK ID
+        refer_doctor = request.GET.get("refer_doctor")
 
         if follow_up_param is not None:
             qs = qs.filter(follow_up=follow_up_param)
 
         if workshop_id:
             qs = qs.filter(citizen_pk_id__source_name=workshop_id)
+        
+        if refer_doctor:
+            qs = qs.filter(refer_doctor=refer_doctor)
 
         # ----------------- REFER FILTERS -----------------
         vital_refer = request.GET.get("vital_refer")
