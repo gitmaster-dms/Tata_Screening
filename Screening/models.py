@@ -1888,7 +1888,6 @@ class follow_up(models.Model):
     basic_screening_refer = models.IntegerField(blank=True,null=True)
     auditory_refer = models.IntegerField(blank=True,null=True)
     dental_refer = models.IntegerField(blank=True,null=True)
-    dental_refer_hospital = models.CharField(max_length=255,blank=True,null=True)
     vision_refer = models.IntegerField(blank=True,null=True)
     pycho_refer = models.IntegerField(blank=True,null=True)
     reffered_to_sam_mam = models.IntegerField(blank=True,null=True) 
