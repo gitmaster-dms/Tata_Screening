@@ -505,6 +505,11 @@ class FollowupstatusinfoSerializer(serializers.ModelSerializer):
 
 class followup_refer_to_specalist_citizens_infoSerializer(serializers.ModelSerializer):
     citizen_name = serializers.CharField(source='citizen_pk_id.name', allow_null=True)
+    doctor_name = serializers.CharField(source='refer_doctor.doctor_name', allow_null=True)
+    citizen_id = serializers.CharField(source='citizen_pk_id.citizen_id', allow_null=True)
+    mobile_number=serializers.CharField(source='citizen_pk_id.mobile_no', allow_null=True)
+    aadhar_no = serializers.CharField(source='citizen_pk_id.aadhar_id', allow_null=True)
+
     class Meta:
         model = follow_up
         fields = '__all__'
