@@ -509,6 +509,10 @@ class followup_refer_to_specalist_citizens_infoSerializer(serializers.ModelSeria
     citizen_id = serializers.CharField(source='citizen_pk_id.citizen_id', allow_null=True)
     mobile_number=serializers.CharField(source='citizen_pk_id.mobile_no', allow_null=True)
     aadhar_no = serializers.CharField(source='citizen_pk_id.aadhar_id', allow_null=True)
+    dob = serializers.DateField(source='citizen_pk_id.dob', allow_null=True)
+    # email_id=serializers.CharField(source='citizen_pk_id.email_id', allow_null=True)
+    blood_group = serializers.CharField(source='citizen_pk_id.blood_groups', allow_null=True)   
+
 
     class Meta:
         model = follow_up
