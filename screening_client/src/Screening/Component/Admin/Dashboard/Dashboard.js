@@ -22,7 +22,9 @@ import { useSourceContext } from "../../../../contexts/SourceContext";
 const Dashboard = () => {
   const { setDateFilter } = useSourceContext();
   const port = process.env.REACT_APP_API_KEY;
-  const accessToken = localStorage.getItem("accessToken");
+  const accessToken = localStorage.getItem("token");
+  console.log("token from storage:", accessToken);
+
   const refreshToken = localStorage.getItem("refreshToken");
   const [tabValue, setTabValue] = useState(0);
   const [dashboardData, setDashboardData] = useState(null);
@@ -36,9 +38,9 @@ const Dashboard = () => {
   const stateget = async () => {
     try {
       const response = await axios.get(`${port}/Screening/State_Get/`, {
-        headers: {
-          Authorization: `Bearer ${accessToken || refreshToken}`,
-        },
+        // headers: {
+        //   Authorization: `Bearer ${accessToken}`,
+        // },
       });
       console.log("response state", response.data);
       setStateList(response.data || []); // ✅ store list
@@ -63,6 +65,7 @@ const Dashboard = () => {
         {
           headers: {
             Authorization: `Bearer ${accessToken || refreshToken}`,
+            "Content-Type": "application/json",
           },
         }
       );
@@ -95,15 +98,19 @@ const Dashboard = () => {
     try {
       setLoading(true);
       const dtValue = tabValue === 0 ? 1 : tabValue === 1 ? 2 : 3; // example
-      const response = await axios.get(
+      const response = fetch(
         `${port}/Screening/total_driver_count/?dt=${dtValue}/state=${selectedState}`,
         {
           headers: {
-            Authorization: `Bearer ${accessToken || refreshToken}`,
+            Authorization: `Bearer ${accessToken }`,
             "Content-Type": "application/json",
           },
+          
         }
+        
       );
+      console.log("token", accessToken);
+
       setDashboardData(response.data);
       console.log("response--", response.data);
     } catch (error) {
@@ -122,7 +129,7 @@ const Dashboard = () => {
     try {
       setLoading(true);
       const dtValue = tabValue === 0 ? 1 : tabValue === 1 ? 2 : 3; // example
-      const response = await axios.get(
+      const response = fetch(
         `${port}/Screening/bmi_vitals_count/?dt=${dtValue}/state=${selectedState}`,
         {
           headers: {
@@ -149,7 +156,7 @@ const Dashboard = () => {
     try {
       setLoading(true);
       const dtValue = tabValue === 0 ? 1 : tabValue === 1 ? 2 : 3; // example
-      const response = await axios.get(
+      const response = fetch(
         `${port}/Screening/health_score_count/?dt=${dtValue}/state=${selectedState}`,
         {
           headers: {
@@ -178,16 +185,18 @@ const Dashboard = () => {
   return (
     <Box
       sx={{
-        height: "calc(100vh - 40px - 50px)", // 64px header + 50px footer
-        overflowY: "auto",
+        // height: "calc(100vh - 40px - 50px)", // 64px header + 50px footer
+        // overflowY: "auto",
         backgroundImage: `url(${dashbordbg})`,
         backgroundSize: "cover",
         backgroundRepeat: "no-repeat",
         backgroundPosition: "center",
         bgcolor: "#F0F6FB",
+        overflowY: "auto", // scroll inside dashboard only
+
         // minHeight: "100vh",
         width: "100%",
-        pl: { md: 10, sm: 2, xs: 1 },
+        pl: { md: 7, sm: 2, xs: 1 },
         pr: { md: 1, sm: 2, xs: 1 },
         pt: 2,
       }}
@@ -324,7 +333,7 @@ const Dashboard = () => {
         </Box>
       </Box>
 
-      <Grid container spacing={1}>
+      <Grid container spacing={1} alignItems="stretch">
         {/* Left 9-column section */}
         <Grid item xs={12} md={9} sm={12}>
           <Grid container spacing={1}>
@@ -355,7 +364,8 @@ const Dashboard = () => {
         </Grid>
 
         {/* Right 3-column section for Vitals */}
-        <Grid item xs={12} md={3} sm={12}>
+        
+        <Grid item xs={12} md={3} sm={12} sx={{ height: "auto" }}>
           <VitalsCard vitalsData={vitalsData} />
         </Grid>
       </Grid>

@@ -35,7 +35,7 @@ const BmiVital = ({
   selectedName,
 }) => {
   //_________________________________START
-  console.log(selectedName, "Present name");
+  console.log(pkid, "pkidpkidpkid");
   console.log(fetchVital, "Overall GET API");
   const [nextName, setNextName] = useState("");
   console.log(nextName, "nextName");
@@ -134,6 +134,7 @@ console.log("Selected doctor:", selectedDoctor);
   refer_doctor: "",
   reffered_to_specialist: "",
 });
+console.log(bmiData);
 
 
   const [snackbar, setSnackbar] = useState({
@@ -179,7 +180,7 @@ console.log("Selected doctor:", selectedDoctor);
             "Content-Type": "application/json",
             Authorization: `Bearer ${accessToken}`,
           },
-          body: JSON.stringify({ pkid }),
+          body: JSON.stringify({ ...bmiData, added_by: userID, modify_by: userID }),
         }
       );
 
@@ -273,15 +274,20 @@ console.log("Selected doctor:", selectedDoctor);
     setOpenConfirm(true);
   };
 
-  const handleConfirmSubmit = async () => {
-    setOpenConfirm(false);
-    const confirmationStatus = "True";
+const handleConfirmSubmit = async () => {
+  if (!growthId) {
+    openSnackbar("Please wait, data is still loading", "warning");
+    return;
+  }
 
-    if (updateId) {
-      await updateDataInDatabase(updateId, confirmationStatus);
-    }
-    console.log("Move to Vital button clicked");
-  };
+  setOpenConfirm(false);
+  const confirmationStatus = "True";
+
+  if (updateId) {
+    await updateDataInDatabase(updateId, confirmationStatus);
+  }
+};
+
 
   const handleCancelSubmit = () => {
     setOpenConfirm(false);

@@ -35,6 +35,8 @@ const Updatecitizen = () => {
     const [GenderNav, setGenderNav] = useState([]);
     const [SourceNav, setSourceNav] = useState([]);
     const [screeningFor, setScreeningFor] = useState([]);
+    console.log(screeningFor,"screeningForv");
+    
     const [DiseaseNav, setDiseaseNav] = useState([]);
 
     const [ageError, setAgeError] = useState('');
@@ -70,7 +72,7 @@ const Updatecitizen = () => {
                 });
 
                 axios
-                    .get(`${API_URL}/Screening/source_and_pass_state_Get/${response.data.source}`, {
+                    .get(`${API_URL}/Screening/State_Get/${response.data.source}`, {
                         headers: {
                             Authorization: `Bearer ${accessToken}`,
                             'Content-Type': 'application/json',
@@ -112,7 +114,10 @@ const Updatecitizen = () => {
                         'Content-Type': 'application/json',
                     },
                 })
-                .then((res) => setScreeningFor(res.data))
+                .then((res) => {
+                    const data = res.data;
+                    setScreeningFor(Array.isArray(data) ? data : data ? [data] : []);
+                })
                 .catch((err) => console.error('Error fetching type:', err));
         }
     }, [selectedAge1.source.id, API_URL, accessToken]);
@@ -150,7 +155,10 @@ const Updatecitizen = () => {
         if (name === 'source') {
             axios
                 .get(`${API_URL}/Screening/Category_Get/${selectedOption.id}`)
-                .then((res) => setScreeningFor(res.data))
+                .then((res) => {
+                    const data = res.data;
+                    setScreeningFor(Array.isArray(data) ? data : data ? [data] : []);
+                })
                 .catch((err) => console.error('Error fetching type:', err));
         }
     };
@@ -165,7 +173,8 @@ const Updatecitizen = () => {
         })
         .then((res) => {
             console.log("Category Loaded:", res.data);
-            setScreeningFor(res.data);
+            const data = res.data;
+            setScreeningFor(Array.isArray(data) ? data : data ? [data] : []);
         })
         .catch((err) =>
             console.error('Error fetching categories:', err)
@@ -177,7 +186,13 @@ const [citizenData, setCitizenData] = useState({});
 
   const fetchCitizenData = async () => {
     try {
-      const response = await fetch(`${API_URL}/Screening/Citizen_Put_api/${id}/`);
+      const response = await fetch(`${API_URL}/Screening/Citizen_Put_api/${id}/`,{
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+      });
 
       const data = await response.json();
       console.log("Citizen Data:", data);
@@ -201,7 +216,7 @@ const [citizenData, setCitizenData] = useState({});
     fetchCitizenData();
   }, [id]);
     return (
-        <Box sx={{ p: 3, minHeight: '100vh', m: "0.1em 0em 0em 3em", }}>
+        <Box sx={{ p: 2, minHeight: '100vh', m: "0.1em 0em 0em 2.5em", }}>
             <Paper elevation={2} sx={{ p: 1, borderRadius: 3 }}>
                 <Grid container alignItems="center" spacing={1} sx={{ mb: 2 }}>
                     <Grid item>
@@ -303,7 +318,7 @@ const [citizenData, setCitizenData] = useState({});
                         <TextField
                             select
                             name="type"
-                            value={selectedAge1.type.name}
+                            value={selectedAge1.type?.name}
                             onChange={handleChange}
                             size="small"
                             fullWidth
@@ -321,11 +336,15 @@ const [citizenData, setCitizenData] = useState({});
                                 },
                             }}
                         >
-                            {screeningFor.map((drop) => (
-                                <MenuItem key={drop.pk_id} value={drop.category}>
-                                    {drop.category}
-                                </MenuItem>
-                            ))}
+                            {Array.isArray(screeningFor) && screeningFor.length > 0 ? (
+                                screeningFor.map((drop) => (
+                                    <MenuItem key={drop.pk_id} value={drop.category}>
+                                        {drop.category}
+                                    </MenuItem>
+                                ))
+                            ) : (
+                                <MenuItem value="">No types available</MenuItem>
+                            )}
                         </TextField>
                     </Grid>
 

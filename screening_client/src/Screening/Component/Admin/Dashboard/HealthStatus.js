@@ -80,7 +80,7 @@ const HealthStatusCard = ({ healthStatusData }) => {
       >
         <Box
           sx={{
-            background: "#087ED3", // "linear-gradient(140deg, #FF9843 0%, #FF6A00 100%)",
+            background: "linear-gradient(90deg, #2FB3F5 0%, #1439A4 94%)",
             borderRadius: "40%",
             width: { xs: 26, sm: 28, md: 30 },
             height: { xs: 26, sm: 28, md: 30 },

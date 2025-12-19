@@ -9,7 +9,15 @@ import SummarizeIcon from "@mui/icons-material/Summarize";
 import MapsHomeWorkIcon from "@mui/icons-material/MapsHomeWork";
 import HealthAndSafetyIcon from "@mui/icons-material/HealthAndSafety";
 import FollowTheSignsIcon from "@mui/icons-material/FollowTheSigns";
-
+import PeopleAltOutlinedIcon from "@mui/icons-material/PeopleAltOutlined";
+import MapsHomeWorkOutlinedIcon from "@mui/icons-material/MapsHomeWorkOutlined";
+import EventAvailableOutlinedIcon from "@mui/icons-material/EventAvailableOutlined";
+import DescriptionOutlinedIcon from "@mui/icons-material/DescriptionOutlined";
+import CoPresentOutlinedIcon from "@mui/icons-material/CoPresentOutlined";
+import HealthAndSafetyOutlinedIcon from "@mui/icons-material/HealthAndSafetyOutlined";
+import ManageAccountsOutlinedIcon from "@mui/icons-material/ManageAccountsOutlined";
+import SecurityOutlinedIcon from "@mui/icons-material/SecurityOutlined";
+import FollowTheSignsOutlinedIcon from "@mui/icons-material/FollowTheSignsOutlined";
 const Sidebarnew = () => {
   const [selectedItem, setSelectedItem] = useState("Dashboard");
   const [permission, setPermission] = useState([]);
@@ -20,19 +28,34 @@ const Sidebarnew = () => {
     setPermission(parsedPermissions);
   }, []);
 
-  const iconMapping = {
-    Dashboard: <SpaceDashboardIcon />,
-    Citizen: <PersonAddAltOutlinedIcon />,
-    Source: <MapsHomeWorkIcon />,
-    "Schedule Screening": <SummarizeIcon />,
-    Report: <SummarizeIcon />,
-    Screening: <CoPresentIcon />,
-    HealthCard: <HealthAndSafetyIcon />,
-    "System User": <SummarizeIcon />,
-    Permission: <SummarizeIcon />,
-    "Follow-Up": <FollowTheSignsIcon />,
-  };
+  // old icons
+  // const iconMapping = {
+  //   Dashboard: <SpaceDashboardIcon />,
+  //   Citizen: <PersonAddAltOutlinedIcon />,
+  //   "Workshop": <MapsHomeWorkIcon />,
+  //   "Schedule Screening": <SummarizeIcon />,
+  //   Report: <SummarizeIcon />,
+  //   Screening: <CoPresentIcon />,
+  //   HealthCard: <HealthAndSafetyIcon />,
+  //   "System User": <SummarizeIcon />,
+  //   Permission: <SummarizeIcon />,
+  //   "Follow-Up": <FollowTheSignsIcon />,
+  // };
 
+
+// new icons
+  const iconMapping = {
+  Dashboard: <SpaceDashboardIcon />,
+  Citizen: <PeopleAltOutlinedIcon />,
+  Workshop: <MapsHomeWorkOutlinedIcon />,
+  "Schedule Screening": <EventAvailableOutlinedIcon />,
+  Report: <DescriptionOutlinedIcon />,
+  Screening: <CoPresentOutlinedIcon />,
+  HealthCard: <HealthAndSafetyOutlinedIcon />,
+  "System User": <ManageAccountsOutlinedIcon />,
+  Permission: <SecurityOutlinedIcon />,
+  "Follow-Up": <FollowTheSignsOutlinedIcon />,
+};
   const handleItemClick = (item) => {
     setSelectedItem(item);
   };

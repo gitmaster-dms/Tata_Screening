@@ -83,10 +83,13 @@ const Vitals = ({ vitalsData }) => {
       sx={{
         background: "#F8FAFCB2 70%",
         borderRadius: "16px",
-        p: 2, // reduced padding
+        p: 2,
         width: "100%",
+        height: "100%", // 🔥 REQUIRED
+        minHeight: { xs: "100%", sm: "100%", md: 450 }, // 🔥 increase card height
         border: "2px solid #fff",
-        height: { md: "93%", sm: "100%", xs: "100%" },
+        display: "flex",
+        flexDirection: "column",
       }}
     >
       {/* ---------- Title ---------- */}
@@ -125,7 +128,7 @@ const Vitals = ({ vitalsData }) => {
       </Stack>
 
       {/* ---------- List ---------- */}
-      <Stack spacing={1.1} mt={1.3}>
+      <Stack spacing={1} mt={1.3}>
         {vitalsResult.map((item, index) => (
           <Box key={index}>
             <Stack

@@ -773,32 +773,32 @@ const HealthList = () => {
 
 
   // new code
-  useEffect(() => {
-    const filtered = searchResults.filter(
-      (result) =>
-        (result.name &&
-          result.name.toLowerCase().includes(searchQuery.toLowerCase())) ||
-        (result.aadhar_id && result.aadhar_id.includes(searchQuery))
-    );
-    setFilteredResults(filtered);
-  }, [searchQuery, searchResults]);
+  // useEffect(() => {
+  //   const filtered = searchResults.filter(
+  //     (result) =>
+  //       (result.name &&
+  //         result.name.toLowerCase().includes(searchQuery.toLowerCase())) ||
+  //       (result.aadhar_id && result.aadhar_id.includes(searchQuery))
+  //   );
+  //   setFilteredResults(filtered);
+  // }, [searchQuery, searchResults]);
 
 // old code for search
-//   useEffect(() => {
-//   if (!Array.isArray(searchResults)) {
-//     setFilteredResults([]);
-//     return;
-//   }
+  useEffect(() => {
+  if (!Array.isArray(searchResults)) {
+    setFilteredResults([]);
+    return;
+  }
 
-//   const filtered = searchResults.filter(
-//     (result) =>
-//       (result.name &&
-//         result.name.toLowerCase().includes(searchQuery.toLowerCase())) ||
-//       (result.aadhar_id && result.aadhar_id.includes(searchQuery))
-//   );
+  const filtered = searchResults.filter(
+    (result) =>
+      (result.name &&
+        result.name.toLowerCase().includes(searchQuery.toLowerCase())) ||
+      (result.aadhar_id && result.aadhar_id.includes(searchQuery))
+  );
 
-//   setFilteredResults(filtered);
-// }, [searchQuery, searchResults]);
+  setFilteredResults(filtered);
+}, [searchQuery, searchResults]);
 
   const handleSearchChange = (event) => {
     setSearchQuery(event.target.value);
@@ -983,7 +983,7 @@ const HealthList = () => {
   // }, []);
 
   return (
-    <Box sx={{ m: "0.1em 1em 0 4.5em" }}>
+    <Box sx={{ m: "0.1em 1em 0 3.5em" }}>
       <Card
         sx={{
           p: 2,
@@ -1015,7 +1015,7 @@ const HealthList = () => {
                 select
                 fullWidth
                 size="small"
-                label="Source"
+                label="Workshop"
                 variant="outlined"
                 value={selectedSource}
                 onChange={(e) => setSelectedSource(e.target.value)}
@@ -1023,7 +1023,7 @@ const HealthList = () => {
                   style: { fontWeight: 100, fontSize: "14px" },
                 }}
               >
-                <MenuItem value="">Select Source</MenuItem>
+                <MenuItem value="">Select Workshop</MenuItem>
                 {/* {sourceNav.map((drop) => (
                   <MenuItem key={drop.source_pk_id} value={drop.source_pk_id}>
                     {drop.source}
@@ -1038,7 +1038,7 @@ const HealthList = () => {
                 select
                 fullWidth
                 size="small"
-                label="Source State"
+                label=" State"
                 variant="outlined"
                 value={selectedStateNav}
                 onChange={(e) => setSelectedStateNav(e.target.value)}
@@ -1046,7 +1046,7 @@ const HealthList = () => {
                   style: { fontWeight: 100, fontSize: "14px" },
                 }}
               >
-                <MenuItem value="">Select Source State</MenuItem>
+                <MenuItem value="">Select  State</MenuItem>
                 {sourceStateNav.map((drop) => (
                   <MenuItem key={drop.source_state} value={drop.source_state}>
                     {drop.state_name}
@@ -1061,7 +1061,7 @@ const HealthList = () => {
                 select
                 fullWidth
                 size="small"
-                label="Source District"
+                label=" District"
                 variant="outlined"
                 value={selectedDistrictNav}
                 onChange={(e) => setSelectedDistrictNav(e.target.value)}
@@ -1069,7 +1069,7 @@ const HealthList = () => {
                   style: { fontWeight: 100, fontSize: "14px" },
                 }}
               >
-                <MenuItem value="">Select Source District</MenuItem>
+                <MenuItem value="">Select  District</MenuItem>
                 {sourceDistrictNav.map((drop) => (
                   <MenuItem
                     key={drop.source_district}
@@ -1087,7 +1087,7 @@ const HealthList = () => {
                 select
                 fullWidth
                 size="small"
-                label="Source Tehsil"
+                label=" Tehsil"
                 variant="outlined"
                 value={selectedTehsilNav}
                 onChange={(e) => setSelectedTehsilNav(e.target.value)}
@@ -1095,7 +1095,7 @@ const HealthList = () => {
                   style: { fontWeight: 100, fontSize: "14px" },
                 }}
               >
-                <MenuItem value="">Select Source Tehsil</MenuItem>
+                <MenuItem value="">Select Tehsil</MenuItem>
                 {sourceTehsilNav.map((drop) => (
                   <MenuItem key={drop.source_taluka} value={drop.source_taluka}>
                     {drop.tahsil_name}
@@ -1110,7 +1110,7 @@ const HealthList = () => {
                 select
                 fullWidth
                 size="small"
-                label="Source Name"
+                label="Workshop Name"
                 variant="outlined"
                 value={selectedName}
                 onChange={(e) => setSelectedName(e.target.value)}
@@ -1118,7 +1118,7 @@ const HealthList = () => {
                   style: { fontWeight: 100, fontSize: "14px" },
                 }}
               >
-                <MenuItem value="">Select Source Name</MenuItem>
+                <MenuItem value="">Select Name</MenuItem>
                 {sourceName.map((drop) => (
                   <MenuItem key={drop.source_pk_id} value={drop.source_pk_id}>
                     {drop.source_names}

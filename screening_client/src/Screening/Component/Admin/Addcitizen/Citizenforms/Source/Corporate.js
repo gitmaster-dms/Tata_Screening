@@ -14,6 +14,8 @@ import {
   Button,
   Card,
   FormHelperText,
+  Snackbar,
+  Alert,
 } from "@mui/material";
 import {
   Dialog,
@@ -116,6 +118,10 @@ const Corporate = (props) => {
       temp.name = "Name is required";
     if (!corporateForm.blood_groups)
       temp.blood_groups = "Blood Group is required";
+
+    if (!corporateForm.aadhar_id || !/^\d{12}$/.test(corporateForm.aadhar_id)) {
+      temp.aadhar_id = "Valid 12-digit Aadhar ID is required";
+    }
     // Date of Birth
     // if (!corporateForm.dob) temp.dob = "Date of Birth is required";
 
@@ -451,125 +457,6 @@ const Corporate = (props) => {
     fetchDesignation();
   }, [selectedDepartment]);
 
-  ////////////// POST API
-  // const [corporateForm, setCorporateForm] = useState({
-  //   name: "",
-  //   blood_groups: "",
-  //   aadhar_id: null,
-  //   email_id: "",
-  //   emp_mobile_no: "",
-  //   employee_id: "",
-
-  //   father_name: "",
-  //   mother_name: "",
-  //   occupation_of_father: "",
-  //   occupation_of_mother: "",
-  //   marital_status: "",
-  //   parents_mobile: "",
-  //   spouse_name: "",
-  //   sibling_count: "",
-  //   arm_size: null,
-  //   symptoms: "",
-
-  //   pincode: "",
-  //   address: "",
-  //   prefix: "",
-  //   permanant_address: "",
-  //   photo: null,
-
-  //   source: selectedSource,
-  //   state: selectedStateId,
-  //   district: selectedDistrictId,
-  //   tehsil: selectedTehsilId,
-  //   source_name: selectedName,
-  //   gender: gender,
-  //   type: selectedScheduleType,
-  //   age: selectedAge,
-  //   disease: selectedDisease,
-  // })
-
-  // const handleChange = (e) => {
-  //   const { name, value } = e.target;
-  //   setCorporateForm((prevState) => ({
-  //     ...prevState,
-  //     [name]: value
-  //   }));
-  // };
-
-  // const handleChange = (e) => {
-  //   const { name, value, files } = e.target;
-  //   if (name === 'photo') {
-  //     setCorporateForm((prevState) => ({
-  //       ...prevState,
-  //       [name]: files[0] // Assuming only one file is expected
-  //     }));
-  //   } else {
-  //     setCorporateForm((prevState) => ({
-  //       ...prevState,
-  //       [name]: value
-  //     }));
-  //   }
-  // };
-
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-
-  //   const confirmed = window.confirm('Are you sure you want to submit the form?');
-
-  //   if (confirmed) {
-  //     const formData = {
-  //       ...corporateForm,
-  //       dob: dob ? dob : null,
-  //       year: age.year,
-  //       months: age.months,
-  //       days: age.days,
-  //       department: selectedDepartment,
-  //       designation: selectedDesignation,
-  //       marital_status: maritalStatus,
-  //       sibling_count: siblingsCount,
-  //       child_count: (maritalStatus === 'Widow' || maritalStatus === 'Married') ? childrenCount : null,
-  //       height: heightValue || null,
-  //       weight: weightValue || null,
-  //       bmi: bmi || null,
-  //       state: selectedStateId,
-  //       district: selectedDistrictId,
-  //       tehsil: selectedTehsilId,
-  //       source_name: selectedName,
-  //       gender: gender,
-  //       type: selectedScheduleType,
-  //       source: selectedSource,
-  //       age: selectedAge,
-  //       disease: selectedDisease,
-  //       added_by: userID
-  //     };
-
-  //     try {
-  //       const response = await fetch(`${Port}/Screening/add_employee_post/`, {
-  //         method: 'POST',
-  //         headers: {
-  //           'Content-Type': 'application/json',
-  //           'Authorization': `Bearer ${accessToken}`,
-  //         },
-  //         body: JSON.stringify(formData)
-  //       });
-
-  //       if (response.status === 201) {
-  //         navigate('/mainscreen/Citizen');
-  //       }
-  //       else if (response.status === 400) {
-  //         alert('Error Submitting the Form');
-  //       }
-  //       else if (response.status === 409) {
-  //         alert('Employee already Exists with given Aadhar ID');
-  //       }
-  //     } catch (error) {
-  //       console.error('Error:', error);
-  //     }
-  //   } else {
-  //     console.log('Form submission cancelled.');
-  //   }
-  // };
-
   const [errorMessages, setErrorMessages] = useState({
     prefix: "",
     name: "",
@@ -583,6 +470,14 @@ const Corporate = (props) => {
     // department: "",
     designation: "",
   });
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "error",
+  });
+  const handleCloseSnackbar = () => {
+    setSnackbar({ ...snackbar, open: false });
+  };
 
   const [corporateForm, setCorporateForm] = useState({
     prefix: "",
@@ -642,6 +537,14 @@ const Corporate = (props) => {
     }
   };
 
+  const showError = (message) => {
+    setSnackbar({
+      open: true,
+      message,
+      severity: "error",
+    });
+  };
+
   const [workshop, setWorkshop] = useState([]);
   const [selectedWorkshop, setSelectedWorkshop] = useState(null);
   const getworkshop = async () => {
@@ -668,15 +571,20 @@ const Corporate = (props) => {
     // const confirmed = window.confirm(
     //   "Are you sure you want to submit the form?"
     // );
+    if (!validateForm()) {
+      setSnackbar({
+        open: true,
+        message: "Please fill all required fields.",
+        severity: "error",
+      });
+      return;
+    }
+
     if (!confirmed) {
-      // If called without confirmation, just open the dialog
       setOpenConfirm(true);
       return;
     }
-    if (!validateForm()) {
-      console.log("Validation failed");
-      return;
-    }
+
     if (confirmed) {
       const formData = new FormData();
 
@@ -868,6 +776,17 @@ const Corporate = (props) => {
 
   return (
     <Box component="form" onSubmit={handleSubmit} encType="multipart/form-data">
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={3000}
+        onClose={() => setSnackbar({ ...snackbar, open: false })}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert severity={snackbar.severity} variant="filled">
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
+
       <Grid container spacing={1}>
         <Grid item xs={12} md={6}>
           <Card
@@ -1033,15 +952,24 @@ const Corporate = (props) => {
                   size="small"
                   fullWidth
                   label="Aadhar ID"
-                  type="number"
                   name="aadhar_id"
                   value={corporateForm.aadhar_id || ""}
-                  onChange={handleChange}
-                  onInput={(e) => {
-                    if (e.target.value < 0) e.target.value = 0;
-                    if (e.target.value.length > 12)
-                      e.target.value = e.target.value.slice(0, 12);
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/\D/g, ""); // only digits
+                    if (value.length <= 12) {
+                      setCorporateForm((prev) => ({
+                        ...prev,
+                        aadhar_id: value,
+                      }));
+                    }
                   }}
+                  inputProps={{
+                    maxLength: 12,
+                    inputMode: "numeric", // mobile numeric keypad
+                    pattern: "[0-9]*",
+                  }}
+                  error={!!errors.aadhar_id}
+                  helperText={errors.aadhar_id}
                 />
               </Grid>
 

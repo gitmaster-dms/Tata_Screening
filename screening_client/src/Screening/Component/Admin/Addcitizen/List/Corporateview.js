@@ -35,8 +35,8 @@ const Corporate = ({ data }) => {
                             <Grid item xs={12} sm={3}>
                                 <FormControl fullWidth>
                                     <InputLabel>Prefix</InputLabel>
-                                    <Select size="small" value={d.prefix || ""} disabled>
-                                        <MenuItem value="Mr">Mr.</MenuItem>
+                                    <Select size="small" value={d.prefix } >
+                                        <MenuItem value="Mr. ">Mr.</MenuItem>
                                         <MenuItem value="Ms">Ms.</MenuItem>
                                         <MenuItem value="Mrs">Mrs.</MenuItem>
                                         <MenuItem value="Adv">Adv.</MenuItem>
@@ -51,7 +51,7 @@ const Corporate = ({ data }) => {
                                     label="Employee Name"
                                     fullWidth
                                     value={d.name || ""}
-                                    InputProps={{ readOnly: true }}
+                                    // InputProps={{ readOnly: true }}
                                 />
                             </Grid>
 
@@ -210,7 +210,7 @@ const Corporate = ({ data }) => {
                             <Grid item xs={12} sm={3}>
                                 <FormControl fullWidth>
                                     <InputLabel>Gender</InputLabel>
-                                    <Select size="small" value={d.emergency_gender || ""} disabled>
+                                    <Select size="small" value={d.gender_name || ""} disabled>
                                         <MenuItem value="Male">Male</MenuItem>
                                         <MenuItem value="Female">Female</MenuItem>
                                         <MenuItem value="Other">Other</MenuItem>

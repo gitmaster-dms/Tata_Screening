@@ -61,7 +61,7 @@ console.log("1111111", citizens_pk_id);
             </div>
           )}
 
-          <div className="main-content">
+          <div className={isLoggedIn ? "main-content logged-in" : "main-content"}>
             <Suspense fallback={<div>Loading...</div>}>
               <SourceProvider>
                 <Routes>
@@ -103,6 +103,10 @@ console.log("1111111", citizens_pk_id);
                   />
                   <Route
                     path="/mainscreen/Follow-Up/addFollowup/:citizenId/:scheduleId/:pkId"
+                    element={<AddFollowUp />}
+                  />
+                  <Route
+                    path="/mainscreen/viewFollowup"
                     element={<AddFollowUp />}
                   />
                 </Routes>

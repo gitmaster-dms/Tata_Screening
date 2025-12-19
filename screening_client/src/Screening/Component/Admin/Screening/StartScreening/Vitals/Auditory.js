@@ -92,6 +92,8 @@ const Auditory = ({
   const [auditoryChechBox, setAuditoryChechBox] = useState([]);
   const [referredToSpecialist, setReferredToSpecialist] = useState(null);
   const [doctorList, setDoctorList] = useState([]);
+  console.log("DoctorList", doctorList);
+  
   const [loadingDoctors, setLoadingDoctors] = useState(false);
   const [selectedDoctor, setSelectedDoctor] = useState("");
 

@@ -65,15 +65,31 @@ const Desk = () => {
   console.log(selectedFollowUpStatus, "selectedFollowUpStatus");
 
   const [followUpFor, setFollowUpFor] = useState([]);
-  const [selectedFollowUpFor, setSelectedFollowUpFor] = useState("");
+  const [selectedFollowUpFor, setSelectedFollowUpFor] = useState(4);
+  console.log(selectedFollowUpFor, "selectedFollowUpFor");
 
   const [sourceName, setSourceName] = useState([]);
   const [selectedFollowUpForName, setselectedFollowUpForName] = useState("");
 
   const [showTable, setShowTable] = useState(false);
-  console.log(selectedFollowUpFor, "jjjjjjjjjjjjjjjjjjjjjjjj");
-  console.log(selectedFollowUpForName, "nnnnnnnnnnnnnnnnnnnnnnnn");
-  console.log(selectedFollowUpStatus, "kkkkkkkkkkkkkkkkkkkkkkk");
+  console.log(showTable, "showTableshowTableshowTable");
+  console.log("selectedFollowUpFor:", selectedFollowUpFor);
+  console.log("selectedFollowUpStatus:", selectedFollowUpStatus);
+
+  const fetchFollowUpFor = async () => {
+    try {
+      const res = await axios.get(`${Port}/Screening/followupfor_get/`);
+      if (res.status === 200) {
+        setFollowUpFor(res.data);
+      }
+    } catch (error) {
+      console.error("Error fetching follow-up for:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchFollowUpFor();
+  }, []);
 
   //////////// FollowUp Status
   useEffect(() => {
@@ -142,65 +158,157 @@ const Desk = () => {
   useEffect(() => {
     getworkshop();
   }, []);
+
+  // Doctor List
+  const [doctor, setDoctor] = useState([]);
+  const [selectedDoctor, setSelectedDoctor] = useState(null);
+  const getdoctor = async () => {
+    try {
+      const response = await fetch(`${Port}/Screening/Doctor_List/`, {
+        headers: {
+          Authorization: `Bearer ${accessToken || newToken}`,
+        },
+      });
+      const data = await response.json();
+      setDoctor(data);
+      console.log(data, "123456789");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    getdoctor();
+  }, []);
+
+  const handleDoctorChange = (event) => {
+    setSelectedDoctor(event.target.value);
+  };
   const handleFollowUpStatusChange = (event) => {
-    setSelectedFollowUpStatus(event.target.value);
+    // store as number for reliable comparisons
+    setSelectedFollowUpStatus(Number(event.target.value));
   };
 
   const handleFollowUpForChange = (event) => {
-    setSelectedFollowUpFor(event.target.value);
+    setSelectedFollowUpFor(Number(event.target.value));
   };
 
   const handleSourceNameChange = (event) => {
     setSelectedWorkshop(event.target.value);
   };
 
-  const handleSearch = () => {
-    setShowTable(true); // Show the table
-    fetchData();
-  };
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "info",
+  });
+  const handleSearch = async () => {
+    const hasAnyFilter =
+      Boolean(selectedFollowUpStatus) ||
+      Boolean(selectedFollowUpFor) ||
+      Boolean(selectedWorkshop) ||
+      Boolean(selectedDoctor);
 
-  const [tableData, setTableData] = useState([]);
+    if (!hasAnyFilter) {
+      setShowTable(false); // ⛔ table hide
+      setTableData([]); // ⛔ clear data
 
-  const fetchData = async () => {
-    try {
-      let url = `${Port}/Screening/follow-up/`;
-
-      if (selectedFollowUpStatus) {
-        url += `${selectedFollowUpStatus}/`;
-      }
-
-      if (selectedFollowUpFor) {
-        url += `${selectedFollowUpFor}/`;
-      }
-
-      if (selectedWorkshop) {
-        url += `${selectedWorkshop}/`;
-      }
-
-      const response = await fetch(url, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
+      setSnackbar({
+        open: true,
+        message: "Please select at least one filter",
+        severity: "warning",
       });
-      if (response.ok) {
-        const data = await response.json();
-        setTableData(data);
-      } else {
-        throw new Error("Failed to fetch data");
-      }
-    } catch (error) {
-      console.error("Error Fetching Data:", error);
+      return; // 🔴 VERY IMPORTANT
+    }
+
+    try {
+      const data = await fetchData(); // will run ONLY if filter exists
+      setTableData(data || []);
+      setShowTable(true);
+    } catch (err) {
+      console.error("Search failed:", err);
+      setTableData([]);
+      setShowTable(true);
     }
   };
 
-  useEffect(() => {
-    fetchData();
-  }, [selectedFollowUpStatus, selectedFollowUpFor, selectedFollowUpForName]);
+  const [tableData, setTableData] = useState([]);
+  console.log("tableData:", tableData);
+
+  const fetchData = async () => {
+    try {
+      let url = `${Port}/Screening/follow_up_refer_citizen/?`;
+      let queryParams = [];
+
+      // FollowUp Status
+      if (selectedFollowUpStatus) {
+        queryParams.push(`follow_up=${selectedFollowUpStatus}`);
+      }
+
+      // 🔥 Followup For (DYNAMIC KEY)
+      if (selectedFollowUpFor) {
+        const selectedObj = followUpFor.find(
+          (item) => item.followupfor_pk_id === selectedFollowUpFor
+        );
+
+        if (selectedObj?.follow_up_for) {
+          queryParams.push(`${selectedObj.follow_up_for}=1`);
+        }
+      }
+
+      // Workshop
+      if (selectedWorkshop) {
+        queryParams.push(`workshop_id=${selectedWorkshop}`);
+      }
+
+      // Doctor
+      if (selectedDoctor) {
+        queryParams.push(`refer_doctor=${selectedDoctor}`);
+      }
+
+      url += queryParams.join("&");
+
+      console.log("FINAL URL:", url);
+
+      console.log("followUpFor options:", followUpFor);
+      const tokenToUse = accessToken || newToken;
+      console.log("Using token (accessToken || newToken):", !!tokenToUse);
+      const response = await fetch(url, {
+        headers: tokenToUse
+          ? {
+              Authorization: `Bearer ${tokenToUse}`,
+            }
+          : {},
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch data");
+      }
+
+      const data = await response.json();
+      console.log("FetchedData", data);
+      return data || [];
+    } catch (error) {
+      console.error("Error Fetching Data:", error);
+      throw error;
+    }
+  };
+
+  const bodyCellSx = {
+    color: "#000",
+    fontSize: "0.85rem",
+    whiteSpace: "nowrap",
+    borderRight: "1px solid #e0e0e0",
+  };
+
+  const lastBodyCellSx = {
+    color: "#000",
+    textAlign: "center",
+  };
 
   return (
     <div>
-      <div className="content-wrapper" style={{ marginTop: "1em" }}>
-        <div
+      <Box sx={{ p: 2, m: "0em 0em 0 2em" }}>
+        <Box
           className="card deskcard m-2"
           style={{
             background: "#fff",
@@ -223,9 +331,9 @@ const Desk = () => {
           </div>
 
           <Box className="dropdowndesk">
-            <Grid container spacing={2}>
+            <Grid container spacing={1} alignItems="center">
               {/* FollowUp Status */}
-              <Grid item xs={12} md={3}>
+              <Grid item xs={12} md={2}>
                 <TextField
                   select
                   fullWidth
@@ -268,7 +376,7 @@ const Desk = () => {
               </Grid>
 
               {/* Followup For */}
-              <Grid item xs={12} md={3}>
+              <Grid item xs={12} md={2}>
                 <TextField
                   select
                   fullWidth
@@ -316,7 +424,7 @@ const Desk = () => {
                   select
                   fullWidth
                   size="small"
-                  label="Source Name"
+                  label="Workshop Name"
                   value={selectedWorkshop}
                   onChange={handleSourceNameChange}
                   InputLabelProps={{
@@ -340,9 +448,12 @@ const Desk = () => {
                       "&.Mui-focused fieldset": { borderColor: "black" },
                     },
                     "& .MuiSvgIcon-root": { color: "black" },
+                    width: "100%",
                   }}
                 >
-                  <MenuItem value="">Select Source Name</MenuItem>
+                  <MenuItem value="" disabled>
+                    Select WorkShop Name
+                  </MenuItem>
                   {workshop.map((opt) => (
                     <MenuItem key={opt.ws_pk_id} value={opt.ws_pk_id}>
                       {opt.Workshop_name}
@@ -351,6 +462,47 @@ const Desk = () => {
                 </TextField>
               </Grid>
 
+              <Grid item xs={12} md={2}>
+                <TextField
+                  select
+                  fullWidth
+                  size="small"
+                  label="Doctor List"
+                  value={selectedDoctor}
+                  onChange={handleDoctorChange}
+                  InputLabelProps={{
+                    sx: {
+                      fontWeight: 100,
+                      fontSize: "14px",
+                      color: "black !important",
+                    },
+                  }}
+                  SelectProps={{
+                    MenuProps: {
+                      classes: { paper: "custom-menu-paper" },
+                    },
+                  }}
+                  sx={{
+                    "& .MuiInputBase-input": { color: "black" },
+                    "& .MuiSelect-select": { color: "black !important" }, // <-- FIXEDss
+                    "& .MuiOutlinedInput-root": {
+                      "& fieldset": { borderColor: "black" },
+                      "&:hover fieldset": { borderColor: "black" },
+                      "&.Mui-focused fieldset": { borderColor: "black" },
+                    },
+                    "& .MuiSvgIcon-root": { color: "black" },
+                  }}
+                >
+                  <MenuItem value="" disabled>
+                    Select Doctor
+                  </MenuItem>
+                  {doctor.map((opt) => (
+                    <MenuItem key={opt.doctor_pk_id} value={opt.doctor_pk_id}>
+                      {opt.doctor_name}
+                    </MenuItem>
+                  ))}
+                </TextField>
+              </Grid>
               {/* Search Button */}
               <Grid item xs={12} md={3} display="flex" alignItems="center">
                 <Button
@@ -382,882 +534,226 @@ const Desk = () => {
             </div>
           </div>
 
-          {/* <div className="row table-container tabledatadesk"> */}
-          {showTable && (
-            <div>
-              {selectedFollowUpStatus === 1 && (
-                <Box mt={2}>
-                  {/* =============== FOLLOWUP FOR = 4 =============== */}
-                  {selectedFollowUpFor === 4 && (
-                    <TableContainer
-                      component={Paper}
-                      sx={{ backgroundColor: "#313774" }}
-                    >
-                      <Table size="small">
-                        <TableHead>
-                          <TableRow
-                            sx={{
-                              background:
-                                "linear-gradient(90deg, #2FB3F5 0%, #1439A4 100%)",
-                            }}
-                          >
-                            {[
-                              "Sr No.",
-                              "Citizen ID",
-                              "Screening ID",
-                              "Citizen Name",
-                              "Vital",
-                              "Basic Screening",
-                              "Auditory",
-                              "Dental",
-                              "Vision",
-                              "Psychological",
-                              "Action",
-                            ].map((col, i) => (
-                              <TableCell
-                                key={i}
-                                sx={{
-                                  color: "#ffffff",
-                                  fontWeight: 600,
-                                  fontSize: "14px",
-                                }}
-                              >
-                                {col}
-                              </TableCell>
-                            ))}
-                          </TableRow>
-                        </TableHead>
-
-                        <TableBody>
-                          {tableData.map((item, index) => (
-                            <TableRow
-                              key={index}
-                              sx={{
-                                backgroundColor: "#3E4C8F",
-                                "&:hover": { backgroundColor: "#4c5bb0" },
-                              }}
-                            >
-                              <TableCell sx={{ color: "white" }}>
-                                {index + 1}
-                              </TableCell>
-                              <TableCell sx={{ color: "white" }}>
-                                {item.citizen_id}
-                              </TableCell>
-                              <TableCell sx={{ color: "white" }}>
-                                {item.schedule_id}
-                              </TableCell>
-                              <TableCell sx={{ color: "white" }}>
-                                {item.citizen_name}
-                              </TableCell>
-                              <TableCell sx={{ color: "white" }}>
-                                {item.vital_refer === 1 ? "Yes" : "No"}
-                              </TableCell>
-                              <TableCell sx={{ color: "white" }}>
-                                {item.basic_screening_refer === 1
-                                  ? "Yes"
-                                  : "No"}
-                              </TableCell>
-                              <TableCell sx={{ color: "white" }}>
-                                {item.auditory_refer === 1 ? "Yes" : "No"}
-                              </TableCell>
-                              <TableCell sx={{ color: "white" }}>
-                                {item.dental_refer === 1 ? "Yes" : "No"}
-                              </TableCell>
-                              <TableCell sx={{ color: "white" }}>
-                                {item.vision_refer === 1 ? "Yes" : "No"}
-                              </TableCell>
-                              <TableCell sx={{ color: "white" }}>
-                                {item.pycho_refer === 1 ? "Yes" : "No"}
-                              </TableCell>
-
-                              <TableCell sx={{ color: "white" }}>
-                                {canView && (
-                                  <Link
-                                    to={`/mainscreen/Follow-Up/viewFollowup/${item.citizen_id}/`}
-                                  >
-                                    <RemoveRedEyeOutlinedIcon
-                                      sx={{ color: "white", cursor: "pointer" }}
-                                    />
-                                  </Link>
-                                )}
-                              </TableCell>
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
-                  )}
-
-                  {/* =============== FOLLOWUP FOR = 1 (SAM) =============== */}
-                  {selectedFollowUpFor === 1 && (
-                    <TableContainer
-                      component={Paper}
-                      sx={{ backgroundColor: "#313774" }}
-                    >
-                      <Table size="small">
-                        <TableHead>
-                          <TableRow
-                            sx={{
-                              background:
-                                "linear-gradient(90deg, #2FB3F5 0%, #1439A4 100%)",
-                            }}
-                          >
-                            {[
-                              "Sr No.",
-                              "Citizen ID",
-                              "Screening ID",
-                              "Citizen Name",
-                              "SAM",
-                              "Action",
-                            ].map((col, i) => (
-                              <TableCell
-                                key={i}
-                                sx={{
-                                  color: "white",
-                                  fontWeight: 600,
-                                  fontSize: "14px",
-                                }}
-                              >
-                                {col}
-                              </TableCell>
-                            ))}
-                          </TableRow>
-                        </TableHead>
-
-                        <TableBody>
-                          {tableData.map((item, index) => (
-                            <TableRow
-                              key={index}
-                              sx={{
-                                backgroundColor: "#3E4C8F",
-                                "&:hover": { backgroundColor: "#4c5bb0" },
-                              }}
-                            >
-                              <TableCell sx={{ color: "white" }}>
-                                {index + 1}
-                              </TableCell>
-                              <TableCell sx={{ color: "white" }}>
-                                {item.citizen_id}
-                              </TableCell>
-                              <TableCell sx={{ color: "white" }}>
-                                {item.schedule_id}
-                              </TableCell>
-                              <TableCell sx={{ color: "white" }}>
-                                {item.citizen_name}
-                              </TableCell>
-                              <TableCell sx={{ color: "white" }}>SAM</TableCell>
-                              <TableCell sx={{ color: "white" }}>
-                                {canView && (
-                                  <Link
-                                    to={`/mainscreen/Follow-Up/viewFollowup/${item.citizen_id}/`}
-                                  >
-                                    <RemoveRedEyeOutlinedIcon
-                                      sx={{ color: "white", cursor: "pointer" }}
-                                    />
-                                  </Link>
-                                )}
-                              </TableCell>
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
-                  )}
-
-                  {/* =============== FOLLOWUP FOR = 2 (MAM) =============== */}
-                  {selectedFollowUpFor === 2 && (
-                    <TableContainer
-                      component={Paper}
+          <div>
+            {showTable && (
+              <TableContainer
+                sx={{ borderRadius: "10px", overflow: "hidden", mt: 0.7 }}
+              >
+                <Table
+                  size="small"
+                  sx={{
+                    borderCollapse: "separate",
+                    borderSpacing: "0 8px", // 👈 header & rows ke beech gap
+                  }}
+                >
+                  <TableHead>
+                    <TableRow
                       sx={{
                         background:
                           "linear-gradient(90deg, #2FB3F5 0%, #1439A4 100%)",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        height: "40px",
+                        borderRadius: "20px",
+                        textAlign: "center",
                       }}
                     >
-                      <Table size="small">
-                        <TableHead>
+                      <CardContent
+                        sx={{ flex: 0.5, borderRight: "1px solid #e0e0e0" }}
+                      >
+                        <Typography
+                          sx={{
+                            fontSize: "0.72rem",
+                            fontWeight: 600,
+                            color: "#fff",
+                            whiteSpace: "nowrap",
+                          }}
+                        >
+                          Sr.no
+                        </Typography>
+                      </CardContent>
+                      <CardContent sx={{ flex: 2 ,borderRight: "1px solid #e0e0e0"}}>
+                        <Typography
+                          sx={{
+                            fontSize: "0.72rem",
+                            fontWeight: 600,
+                            color: "#fff",
+                            whiteSpace: "nowrap",
+                          }}
+                        >
+                          Citizen ID
+                        </Typography>
+                      </CardContent>
+                      <CardContent sx={{ flex: 1.5 ,borderRight: "1px solid #e0e0e0"}}>
+                        <Typography
+                          sx={{
+                            fontSize: "0.72rem",
+                            fontWeight: 600,
+                            color: "#fff",
+                            whiteSpace: "nowrap",
+                          }}
+                        >
+                          Citizen Name
+                        </Typography>
+                      </CardContent>
+                      <CardContent sx={{ flex: 1.5 ,borderRight: "1px solid #e0e0e0"}}>
+                        <Typography
+                          sx={{
+                            fontSize: "0.72rem",
+                            fontWeight: 600,
+                            color: "#fff",
+                            whiteSpace: "nowrap",
+                          }}
+                        >
+                          Doctor Name
+                        </Typography>
+                      </CardContent>
+                      <CardContent sx={{ flex: 1 ,borderRight: "1px solid #e0e0e0"}}>
+                        <Typography
+                          sx={{
+                            fontSize: "0.72rem",
+                            fontWeight: 600,
+                            color: "#fff",
+                            whiteSpace: "nowrap",
+                          }}
+                        >
+                          Mobile Number
+                        </Typography>
+                      </CardContent>
+                      <CardContent sx={{ flex: 1 ,borderRight: "1px solid #e0e0e0"}}>
+                        <Typography
+                          sx={{
+                            fontSize: "0.72rem",
+                            fontWeight: 600,
+                            color: "#fff",
+                            whiteSpace: "nowrap",
+                          }}
+                        >
+                          DOB
+                        </Typography>
+                      </CardContent>
+                      <CardContent sx={{ flex: 1 ,borderRight: "1px solid #e0e0e0" }}>
+                        <Typography
+                          sx={{
+                            fontSize: "0.72rem",
+                            fontWeight: 600,
+                            color: "#fff",
+                            whiteSpace: "nowrap",
+                          }}
+                        >
+                          Blood Group
+                        </Typography>
+                      </CardContent>
+                      <CardContent sx={{ flex: 0.5, textAlign: "center" }}>
+                        <Typography>Action</Typography>
+                      </CardContent>
+                    </TableRow>
+                  </TableHead>
+
+                  <TableBody>
+                    {tableData && tableData.length > 0 ? (
+                      tableData
+                        .filter((item) => {
+                          if (!selectedFollowUpStatus) return true;
+                          return item.follow_up === selectedFollowUpStatus;
+                        })
+                        .map((item, index) => (
                           <TableRow
+                            key={item.follow_up_pk_id}
                             sx={{
-                              backgroundColor:
-                                "linear-gradient(90deg, #2FB3F5 0%, #1439A4 100%)",
+                              backgroundColor: "#fff",
+                              "&:hover": { backgroundColor: "#f9f9f9" },
                             }}
                           >
-                            {[
-                              "Sr No.",
-                              "Citizen ID",
-                              "Screening ID",
-                              "Citizen Name",
-                              "MAM",
-                              "Action",
-                            ].map((col, i) => (
-                              <TableCell
-                                key={i}
+                            {/* 🔹 SINGLE TABLE CELL */}
+                            <TableCell  sx={{ p: 0 }}>
+                              <Box
                                 sx={{
-                                  color: "white",
-                                  fontWeight: 600,
-                                  fontSize: "14px",
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "space-between",
+                                  px: 1,
+                                  textAlign: "center",
                                 }}
                               >
-                                {col}
-                              </TableCell>
-                            ))}
-                          </TableRow>
-                        </TableHead>
+                                <Typography
+                                  sx={{ flex: 0.5, fontSize: "0.8rem" }}
+                                >
+                                  {index + 1}
+                                </Typography>
 
-                        <TableBody>
-                          {tableData.map((item, index) => (
-                            <TableRow
-                              key={index}
-                              sx={{
-                                backgroundColor: "#ffffff",
-                                "&:hover": { backgroundColor: "#ffffff" },
-                              }}
-                            >
-                              <TableCell sx={{ color: "white" }}>
-                                {index + 1}
-                              </TableCell>
-                              <TableCell sx={{ color: "white" }}>
-                                {item.childId}
-                              </TableCell>
-                              <TableCell sx={{ color: "white" }}>
-                                {item.screeningId}
-                              </TableCell>
-                              <TableCell sx={{ color: "white" }}>
-                                {item.citizenName}
-                              </TableCell>
-                              <TableCell sx={{ color: "white" }}>MAM</TableCell>
-                              <TableCell sx={{ color: "white" }}>
-                                {canView && (
-                                  <Link
-                                    to={`/mainscreen/Follow-Up/viewFollowup/${item.citizen_id}/`}
-                                  >
-                                    <RemoveRedEyeOutlinedIcon
-                                      sx={{ color: "white", cursor: "pointer" }}
-                                    />
-                                  </Link>
-                                )}
-                              </TableCell>
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
-                  )}
-                </Box>
-              )}
+                                <Typography
+                                  sx={{ flex: 2, fontSize: "0.8rem" }}
+                                >
+                                  {item.citizen_id}
+                                </Typography>
 
-              {selectedFollowUpStatus === 3 && (
-                <>
-                  {/* -------------------- SAM -------------------- */}
-                  {selectedFollowUpFor === 1 && (
-                    <TableContainer
-                      elevation={1}
-                      sx={{
-                        borderRadius: "10px",
-                        background:
-                          "linear-gradient(90deg, #2FB3F5 0%, #1439A4 100%)", // gradient background
-                        overflow: "hidden",
-                      }}
-                    >
-                      <Table size="small">
-                        <TableHead>
-                          <TableRow>
-                            <TableCell
-                              sx={{
-                                fontWeight: "bold",
-                                color: "#fff",
-                                // width: "80px",
-                              }}
-                            >
-                              Sr No.
-                            </TableCell>
-                            <TableCell
-                              sx={{ fontWeight: "bold", color: "#fff" }}
-                            >
-                              Citizen ID
-                            </TableCell>
-                            <TableCell
-                              sx={{ fontWeight: "bold", color: "#fff" }}
-                            >
-                              Screening ID
-                            </TableCell>
-                            <TableCell
-                              sx={{ fontWeight: "bold", color: "#fff" }}
-                            >
-                              Citizen Name
-                            </TableCell>
-                            <TableCell
-                              sx={{ fontWeight: "bold", color: "#fff" }}
-                            >
-                              SAM
-                            </TableCell>
-                            <TableCell
-                              sx={{ fontWeight: "bold", color: "#fff" }}
-                            >
-                              Action
+                                <Typography
+                                  sx={{ flex: 1.5, fontSize: "0.8rem" }}
+                                >
+                                  {item.citizen_name}
+                                </Typography>
+
+                                <Typography
+                                  sx={{ flex: 1.5, fontSize: "0.8rem" }}
+                                >
+                                  {item.doctor_name || "N/A"}
+                                </Typography>
+
+                                <Typography
+                                  sx={{ flex: 1.2, fontSize: "0.8rem" }}
+                                >
+                                  {item.mobile_number}
+                                </Typography>
+
+                                <Typography
+                                  sx={{ flex: 1.2, fontSize: "0.8rem" }}
+                                >
+                                  {item.dob || "N/A"}
+                                </Typography>
+
+                                <Typography
+                                  sx={{ flex: 1.2, fontSize: "0.8rem" }}
+                                >
+                                  {item.blood_group || "N/A"}
+                                </Typography>
+
+                                <Box sx={{ flex: 0.5, textAlign: "center" }}>
+                                  {canView && (
+                                    <IconButton
+                                      component={Link}
+                                      to={`/mainscreen/Follow-Up/viewFollowup/${item.citizen_id}`}
+                                      size="small"
+                                    >
+                                      <RemoveRedEyeOutlinedIcon
+                                        sx={{ color: "#000" }}
+                                      />
+                                    </IconButton>
+                                  )}
+                                </Box>
+                              </Box>
                             </TableCell>
                           </TableRow>
-                        </TableHead>
+                        ))
+                    ) : (
+                      <TableRow>
+                        <TableCell align="center">
+                          <Typography>No records found</Typography>
+                        </TableCell>
+                      </TableRow>
+                    )}
+                  </TableBody>
+                </Table>
+              </TableContainer>
+            )}
+          </div>
+          {/* )} */}
+          {/* {canView && ( */}
 
-                        <TableBody>
-                          {tableData?.map((item, index) => (
-                            <TableRow key={index}>
-                              <TableCell>{index + 1}</TableCell>
-                              <TableCell>{item.citizen_id}</TableCell>
-                              <TableCell>{item.schedule_id}</TableCell>
-                              <TableCell>{item.citizen_name}</TableCell>
-                              <TableCell>
-                                {item.weight_for_height === "SAM"
-                                  ? "Yes"
-                                  : "No"}
-                              </TableCell>
-                              <TableCell>
-                                {canEdit && (
-                                  <IconButton
-                                    component={Link}
-                                    to={`/mainscreen/Follow-Up/addFollowup/${item.citizen_id}/${item.schedule_id}/${item.follow_up_ctzn_pk}`}
-                                  >
-                                    <AddIcon sx={{ color: "#313774" }} />
-                                  </IconButton>
-                                )}
-                                {canView && (
-                                  <IconButton
-                                    component={Link}
-                                    to={`/mainscreen/Follow-Up/viewFollowup/${item.citizen_id}/`}
-                                  >
-                                    <RemoveRedEyeOutlinedIcon
-                                      sx={{ color: "#313774" }}
-                                    />
-                                  </IconButton>
-                                )}
-                              </TableCell>
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
-                  )}
-
-                  {/* -------------------- MAM -------------------- */}
-                  {selectedFollowUpFor === 2 && (
-                    <TableContainer
-                      component={Paper}
-                      elevation={1}
-                      sx={{ borderRadius: "10px", overflow: "hidden", mt: 1 }}
-                    >
-                      <Table size="small">
-                        <TableHead>
-                          <TableRow
-                            sx={{
-                              background:
-                                "linear-gradient(90deg, #2FB3F5 0%, #1439A4 100%)",
-                            }}
-                          >
-                            <TableCell
-                              sx={{
-                                fontWeight: "bold",
-                                // width: "80px",
-                                color: "#fff",
-                              }}
-                            >
-                              Sr No.
-                            </TableCell>
-                            <TableCell
-                              sx={{ fontWeight: "bold", color: "#fff" }}
-                            >
-                              Citizen ID
-                            </TableCell>
-                            <TableCell
-                              sx={{ fontWeight: "bold", color: "#fff" }}
-                            >
-                              Screening ID
-                            </TableCell>
-                            <TableCell
-                              sx={{ fontWeight: "bold", color: "#fff" }}
-                            >
-                              Citizen Name
-                            </TableCell>
-                            <TableCell
-                              sx={{ fontWeight: "bold", color: "#fff" }}
-                            >
-                              MAM
-                            </TableCell>
-                            <TableCell
-                              sx={{ fontWeight: "bold", color: "#fff" }}
-                            >
-                              Action
-                            </TableCell>
-                          </TableRow>
-                        </TableHead>
-
-                        <TableBody>
-                          {tableData?.map((item, index) => (
-                            <TableRow key={index}>
-                              <TableCell>{index + 1}</TableCell>
-                              <TableCell>{item.citizen_id}</TableCell>
-                              <TableCell>{item.schedule_id}</TableCell>
-                              <TableCell>{item.citizen_name}</TableCell>
-                              <TableCell>
-                                {item.weight_for_height === "MAM"
-                                  ? "Yes"
-                                  : "No"}
-                              </TableCell>
-                              <TableCell>
-                                {canEdit && (
-                                  <IconButton
-                                    component={Link}
-                                    to={`/mainscreen/Follow-Up/addFollowup/${item.citizen_id}/${item.schedule_id}/${item.follow_up_ctzn_pk}`}
-                                  >
-                                    <AddIcon sx={{ color: "#313774" }} />
-                                  </IconButton>
-                                )}
-                                {canView && (
-                                  <IconButton
-                                    component={Link}
-                                    to={`/mainscreen/Follow-Up/viewFollowup/${item.citizen_id}/`}
-                                  >
-                                    <RemoveRedEyeOutlinedIcon
-                                      sx={{ color: "#313774" }}
-                                    />
-                                  </IconButton>
-                                )}
-                              </TableCell>
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
-                  )}
-
-                  {/* -------------------- Full Screening -------------------- */}
-                  {selectedFollowUpFor === 4 && (
-                    <TableContainer
-                      component={Paper}
-                      elevation={1}
-                      sx={{
-                        borderRadius: "10px",
-                        overflow: "hidden",
-                        mt: 1,
-                        background:
-                          "linear-gradient(90deg, #2FB3F5 0%, #1439A4 100%)",
-                      }}
-                    >
-                      <Table>
-                        <TableHead>
-                          <TableRow>
-                            <TableCell
-                              sx={{ fontWeight: "bold", color: "#fff" }}
-                            >
-                              Sr No.
-                            </TableCell>
-                            <TableCell
-                              sx={{ fontWeight: "bold", color: "#fff" }}
-                            >
-                              Citizen ID
-                            </TableCell>
-                            <TableCell
-                              sx={{ fontWeight: "bold", color: "#fff" }}
-                            >
-                              Screening ID
-                            </TableCell>
-                            <TableCell
-                              sx={{ fontWeight: "bold", color: "#fff" }}
-                            >
-                              Citizen Name
-                            </TableCell>
-                            <TableCell
-                              sx={{ fontWeight: "bold", color: "#fff" }}
-                            >
-                              Vital
-                            </TableCell>
-                            <TableCell
-                              sx={{ fontWeight: "bold", color: "#fff" }}
-                            >
-                              Basic Screening
-                            </TableCell>
-                            <TableCell
-                              sx={{ fontWeight: "bold", color: "#fff" }}
-                            >
-                              Auditory
-                            </TableCell>
-                            <TableCell
-                              sx={{ fontWeight: "bold", color: "#fff" }}
-                            >
-                              Dental
-                            </TableCell>
-                            <TableCell
-                              sx={{ fontWeight: "bold", color: "#fff" }}
-                            >
-                              Vision
-                            </TableCell>
-                            <TableCell
-                              sx={{ fontWeight: "bold", color: "#fff" }}
-                            >
-                              Psychological
-                            </TableCell>
-                            <TableCell
-                              sx={{ fontWeight: "bold", color: "#fff" }}
-                            >
-                              Action
-                            </TableCell>
-                          </TableRow>
-                        </TableHead>
-
-                        <TableBody>
-                          {tableData?.map((item, index) => (
-                            <TableRow key={index}>
-                              <TableCell>{index + 1}</TableCell>
-                              <TableCell>{item.citizen_id}</TableCell>
-                              <TableCell>{item.schedule_id}</TableCell>
-                              <TableCell>{item.citizen_name}</TableCell>
-                              <TableCell>
-                                {item.vital_refer === 1 ? "Yes" : "No"}
-                              </TableCell>
-                              <TableCell>
-                                {item.basic_screening_refer === 1
-                                  ? "Yes"
-                                  : "No"}
-                              </TableCell>
-                              <TableCell>
-                                {item.auditory_refer === 1 ? "Yes" : "No"}
-                              </TableCell>
-                              <TableCell>
-                                {item.dental_refer === 1 ? "Yes" : "No"}
-                              </TableCell>
-                              <TableCell>
-                                {item.vision_refer === 1 ? "Yes" : "No"}
-                              </TableCell>
-                              <TableCell>
-                                {item.pycho_refer === 1 ? "Yes" : "No"}
-                              </TableCell>
-                              <TableCell>
-                                {canEdit && (
-                                  <IconButton
-                                    component={Link}
-                                    to={`/mainscreen/Follow-Up/addFollowup/${item.citizen_id}/${item.schedule_id}/${item.follow_up_ctzn_pk}`}
-                                  >
-                                    <AddIcon sx={{ color: "#313774" }} />
-                                  </IconButton>
-                                )}
-                                {canView && (
-                                  <IconButton
-                                    component={Link}
-                                    to={`/mainscreen/Follow-Up/viewFollowup/${item.citizen_id}/`}
-                                  >
-                                    <RemoveRedEyeOutlinedIcon
-                                      sx={{ color: "#313774" }}
-                                    />
-                                  </IconButton>
-                                )}
-                              </TableCell>
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
-                  )}
-                </>
-              )}
-
-              {selectedFollowUpStatus === 2 && (
-                <>
-                  {/* -------------------- SAM -------------------- */}
-                  {selectedFollowUpFor === 1 && (
-                    <TableContainer
-                      component={Paper}
-                      elevation={1}
-                      sx={{ borderRadius: "10px", overflow: "hidden", mt: 1 }}
-                    >
-                      <Table size="small">
-                        <TableHead
-                          sx={{
-                            background:
-                              "linear-gradient(90deg, #2FB3F5 0%, #1439A4 100%)",
-                          }}
-                        >
-                          <TableRow>
-                            <TableCell
-                              sx={{
-                                fontWeight: "bold",
-                                // width: "80px",
-                                color: "#fff",
-                              }}
-                            >
-                              Sr No.
-                            </TableCell>
-                            <TableCell
-                              sx={{ fontWeight: "bold", color: "#fff" }}
-                            >
-                              Citizen ID
-                            </TableCell>
-                            <TableCell
-                              sx={{ fontWeight: "bold", color: "#fff" }}
-                            >
-                              Screening ID
-                            </TableCell>
-                            <TableCell
-                              sx={{ fontWeight: "bold", color: "#fff" }}
-                            >
-                              Citizen Name
-                            </TableCell>
-                            <TableCell
-                              sx={{ fontWeight: "bold", color: "#fff" }}
-                            >
-                              SAM
-                            </TableCell>
-                            <TableCell
-                              sx={{ fontWeight: "bold", color: "#fff" }}
-                            >
-                              Action
-                            </TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {tableData?.map((item, index) => (
-                            <TableRow key={index}>
-                              <TableCell>{index + 1}</TableCell>
-                              <TableCell>{item.citizen_id}</TableCell>
-                              <TableCell>{item.schedule_id}</TableCell>
-                              <TableCell>{item.citizen_name}</TableCell>
-                              <TableCell>
-                                {item.weight_for_height === "SAM"
-                                  ? "Yes"
-                                  : "No"}
-                              </TableCell>
-                              <TableCell>
-                                {canEdit && (
-                                  <IconButton
-                                    component={Link}
-                                    to={`/mainscreen/Follow-Up/addFollowup/${item.citizen_id}/${item.schedule_id}/${item.follow_up_ctzn_pk}`}
-                                  >
-                                    <AddIcon sx={{ color: "#313774" }} />
-                                  </IconButton>
-                                )}
-                                {canView && (
-                                  <IconButton
-                                    component={Link}
-                                    to={`/mainscreen/Follow-Up/viewFollowup/${item.citizen_id}/`}
-                                  >
-                                    <RemoveRedEyeOutlinedIcon
-                                      sx={{ color: "#313774" }}
-                                    />
-                                  </IconButton>
-                                )}
-                              </TableCell>
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
-                  )}
-
-                  {/* -------------------- MAM -------------------- */}
-                  {selectedFollowUpFor === 2 && (
-                    <TableContainer
-                      component={Paper}
-                      elevation={1}
-                      sx={{ borderRadius: "10px", overflow: "hidden", mt: 1 }}
-                    >
-                      <Table size="small">
-                        <TableHead
-                          sx={{
-                            background:
-                              "linear-gradient(90deg, #2FB3F5 0%, #1439A4 100%)",
-                          }}
-                        >
-                          <TableRow>
-                            <TableCell
-                              sx={{ fontWeight: "bold", color: "#fff" }}
-                            >
-                              Sr No.
-                            </TableCell>
-                            <TableCell
-                              sx={{ fontWeight: "bold", color: "#fff" }}
-                            >
-                              Citizen ID
-                            </TableCell>
-                            <TableCell
-                              sx={{ fontWeight: "bold", color: "#fff" }}
-                            >
-                              Screening ID
-                            </TableCell>
-                            <TableCell
-                              sx={{ fontWeight: "bold", color: "#fff" }}
-                            >
-                              Citizen Name
-                            </TableCell>
-                            <TableCell
-                              sx={{ fontWeight: "bold", color: "#fff" }}
-                            >
-                              MAM
-                            </TableCell>
-                            <TableCell
-                              sx={{ fontWeight: "bold", color: "#fff" }}
-                            >
-                              Action
-                            </TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {tableData?.map((item, index) => (
-                            <TableRow key={index}>
-                              <TableCell>{index + 1}</TableCell>
-                              <TableCell>{item.citizen_id}</TableCell>
-                              <TableCell>{item.schedule_id}</TableCell>
-                              <TableCell>{item.citizen_name}</TableCell>
-                              <TableCell>
-                                {item.weight_for_height === "MAM"
-                                  ? "Yes"
-                                  : "No"}
-                              </TableCell>
-                              <TableCell>
-                                {canEdit && (
-                                  <IconButton
-                                    component={Link}
-                                    to={`/mainscreen/Follow-Up/addFollowup/${item.citizen_id}/${item.schedule_id}/${item.follow_up_ctzn_pk}`}
-                                  >
-                                    <AddIcon sx={{ color: "#313774" }} />
-                                  </IconButton>
-                                )}
-                                {canView && (
-                                  <IconButton
-                                    component={Link}
-                                    to={`/mainscreen/Follow-Up/viewFollowup/${item.citizen_id}/`}
-                                  >
-                                    <RemoveRedEyeOutlinedIcon
-                                      sx={{ color: "#313774" }}
-                                    />
-                                  </IconButton>
-                                )}
-                              </TableCell>
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
-                  )}
-
-                  {/* -------------------- Full Screening -------------------- */}
-                  {selectedFollowUpFor === 4 && (
-                    <TableContainer
-                      component={Paper}
-                      elevation={1}
-                      sx={{ borderRadius: "10px", overflow: "hidden", mt: 1 }}
-                    >
-                      <Table size="small">
-                        <TableHead
-                          sx={{
-                            background:
-                              "linear-gradient(90deg, #2FB3F5 0%, #1439A4 100%)",
-                          }}
-                        >
-                          <TableRow>
-                            <TableCell
-                              sx={{ fontWeight: "bold", color: "#fff" }}
-                            >
-                              Sr No.
-                            </TableCell>
-                            <TableCell
-                              sx={{ fontWeight: "bold", color: "#fff" }}
-                            >
-                              Citizen ID
-                            </TableCell>
-                            <TableCell
-                              sx={{ fontWeight: "bold", color: "#fff" }}
-                            >
-                              Screening ID
-                            </TableCell>
-                            <TableCell
-                              sx={{ fontWeight: "bold", color: "#fff" }}
-                            >
-                              Citizen Name
-                            </TableCell>
-                            <TableCell
-                              sx={{ fontWeight: "bold", color: "#fff" }}
-                            >
-                              Vital
-                            </TableCell>
-                            <TableCell
-                              sx={{ fontWeight: "bold", color: "#fff" }}
-                            >
-                              Basic Screening
-                            </TableCell>
-                            <TableCell
-                              sx={{ fontWeight: "bold", color: "#fff" }}
-                            >
-                              Auditory
-                            </TableCell>
-                            <TableCell
-                              sx={{ fontWeight: "bold", color: "#fff" }}
-                            >
-                              Dental
-                            </TableCell>
-                            <TableCell
-                              sx={{ fontWeight: "bold", color: "#fff" }}
-                            >
-                              Vision
-                            </TableCell>
-                            <TableCell
-                              sx={{ fontWeight: "bold", color: "#fff" }}
-                            >
-                              Psychological
-                            </TableCell>
-                            <TableCell
-                              sx={{ fontWeight: "bold", color: "#fff" }}
-                            >
-                              Action
-                            </TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {tableData?.map((item, index) => (
-                            <TableRow key={index}>
-                              <TableCell>{index + 1}</TableCell>
-                              <TableCell>{item.citizen_id}</TableCell>
-                              <TableCell>{item.schedule_id}</TableCell>
-                              <TableCell>{item.citizen_name}</TableCell>
-                              <TableCell>
-                                {item.vital_refer === 1 ? "Yes" : "No"}
-                              </TableCell>
-                              <TableCell>
-                                {item.basic_screening_refer === 1
-                                  ? "Yes"
-                                  : "No"}
-                              </TableCell>
-                              <TableCell>
-                                {item.auditory_refer === 1 ? "Yes" : "No"}
-                              </TableCell>
-                              <TableCell>
-                                {item.dental_refer === 1 ? "Yes" : "No"}
-                              </TableCell>
-                              <TableCell>
-                                {item.vision_refer === 1 ? "Yes" : "No"}
-                              </TableCell>
-                              <TableCell>
-                                {item.pycho_refer === 1 ? "Yes" : "No"}
-                              </TableCell>
-                              <TableCell>
-                                {canEdit && (
-                                  <IconButton
-                                    component={Link}
-                                    to={`/mainscreen/Follow-Up/addFollowup/${item.citizen_id}/${item.schedule_id}/${item.follow_up_ctzn_pk}`}
-                                  >
-                                    <AddIcon sx={{ color: "#313774" }} />
-                                  </IconButton>
-                                )}
-                                {/* View button commented as in original code */}
-                              </TableCell>
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </TableContainer>
-                  )}
-                </>
-              )}
-            </div>
-          )}
-        </div>
-      </div>
+          {/* // )}  */}
+        </Box>
+      </Box>
     </div>
     // </div>
   );

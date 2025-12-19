@@ -61,7 +61,7 @@ const Childupdate = (props) => {
     useEffect(() => {
         const fetchDistrict = async () => {
             if (citizendata.source && citizendata.state) {
-                const apiUrl = `${Port}/Screening/state_and_pass_district_Get/${citizendata.source}/${citizendata.state}/`;
+                const apiUrl = `${Port}/Screening/State_Get/${citizendata.source}/${citizendata.state}/`;
                 console.log(apiUrl, 'mlophhhhhhhhhhhhhhhhh');
                 try {
                     const response = await fetch(apiUrl, {
@@ -86,7 +86,7 @@ const Childupdate = (props) => {
     useEffect(() => {
         const fetchTehsil = async () => {
             if (citizendata.source && citizendata.district) {
-                const apiUrl = `${Port}/Screening/district_and_pass_taluka_Get/${citizendata.source}/${citizendata.district}/`;
+                const apiUrl = `${Port}/Screening/Tehsil_Get/${citizendata.source}/${citizendata.district}/`;
                 console.log(apiUrl);
                 try {
                     const response = await fetch(apiUrl, {

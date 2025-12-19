@@ -62,3 +62,29 @@ body, html, #root {
   z-index: 1000;
   background-color: white;
 } */
+.app-container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.layout {
+  display: flex;
+  flex-grow: 1;
+  overflow: hidden; /* prevents whole-page scroll */
+}
+
+.sidebar-fixed {
+  width: 10px;
+  flex-shrink: 0;
+}
+
+.main-content {
+  flex-grow: 1;
+  overflow-y: auto;
+  /* height: calc(100vh - 64px - 50px);  */
+}
+.main-content.logged-in {
+  overflow-y: auto;
+  height: calc(100vh - 40px - 50px); 
+}

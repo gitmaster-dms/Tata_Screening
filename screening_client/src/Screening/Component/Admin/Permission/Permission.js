@@ -62,37 +62,34 @@ const Permission = () => {
     setSnackbarOpen(false);
   };
   //get source api
-useEffect(() => {
-  const fetchUserSourceDropdown = async () => {
-    try {
-      const response = await axios.get(`${API_URL}/Screening/source_GET/`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+  useEffect(() => {
+    const fetchUserSourceDropdown = async () => {
+      try {
+        const response = await axios.get(`${API_URL}/Screening/source_GET/`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
 
-      const sources = response.data;
-      setSource(sources);
+        const sources = response.data;
+        setSource(sources);
 
-      // 🔥 Auto-select default source
-      if (sources.length > 0) {
-        const defaultSource = sources[0].source_pk_id;
-        setSourceid(defaultSource);
+        // 🔥 Auto-select default source
+        if (sources.length > 0) {
+          const defaultSource = sources[0].source_pk_id;
+          setSourceid(defaultSource);
 
-        // Auto-fetch role based on this source
-        fetchRole(defaultSource);
+          // Auto-fetch role based on this source
+          fetchRole(defaultSource);
+        }
+      } catch (error) {
+        console.log("Error while fetching data", error);
       }
+    };
 
-    } catch (error) {
-      console.log("Error while fetching data", error);
-    }
-  };
-
-  fetchModuleSubmodule();
-  fetchUserSourceDropdown();
-}, []);
-
-
+    fetchModuleSubmodule();
+    fetchUserSourceDropdown();
+  }, []);
 
   //fetch Role API
   // const fetchRole = async (id) => {
@@ -303,57 +300,79 @@ useEffect(() => {
   //handlesubmit to POST PUT API
 
   const handleSubmit = () => {
-  const selectedData = {
-    source: sourceid,
-    role: roleid,
-    modules_submodule: [], // Initialize as an empty array
-    permission_status: 1,
-  };
-
-  moduleSubmodule.forEach((module) => {
-    const selectedModule = {
-      moduleId: module.module_id,
-      moduleName: module.name,
-      selectedSubmodules: [],
+    const selectedData = {
+      source: sourceid,
+      role: roleid,
+      modules_submodule: [], // Initialize as an empty array
+      permission_status: 1,
     };
 
-    if (moduleCheckboxes[module.module_id]) {
-      module.submodules.forEach((submodule) => {
-        if (submoduleCheckboxes[submodule.Permission_id]) {
-          selectedModule.selectedSubmodules.push({
-            submoduleId: submodule.Permission_id,
-            submoduleName: submodule.name,
-          });
+    moduleSubmodule.forEach((module) => {
+      const selectedModule = {
+        moduleId: module.module_id,
+        moduleName: module.name,
+        selectedSubmodules: [],
+      };
+
+      if (moduleCheckboxes[module.module_id]) {
+        module.submodules.forEach((submodule) => {
+          if (submoduleCheckboxes[submodule.Permission_id]) {
+            selectedModule.selectedSubmodules.push({
+              submoduleId: submodule.Permission_id,
+              submoduleName: submodule.name,
+            });
+          }
+        });
+
+        if (selectedModule.selectedSubmodules.length > 0) {
+          selectedData.modules_submodule.push(selectedModule);
         }
-      });
-
-      if (selectedModule.selectedSubmodules.length > 0) {
-        selectedData.modules_submodule.push(selectedModule);
       }
-    }
-  });
+    });
 
-  console.log(selectedData, "dddddddddddddd");
+    console.log(selectedData, "dddddddddddddd");
 
-  const resetForm = () => {
-    // setSourceid("");
-    setRoleid("");
-    setModuleCheckboxes({});
-    setSubmoduleCheckboxes({});
-    setAllPermissionChecked(false);
-    setPermission_list([]);
-  };
+    const resetForm = () => {
+      // setSourceid("");
+      setRoleid("");
+      setModuleCheckboxes({});
+      setSubmoduleCheckboxes({});
+      setAllPermissionChecked(false);
+      setPermission_list([]);
+    };
 
-  if (permission_list == "") {
-    if (selectedData.modules_submodule.length > 0) {
+    if (permission_list == "") {
+      if (selectedData.modules_submodule.length > 0) {
+        axios
+          .post(`${API_URL}/Screening/permissions/`, selectedData, {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          })
+          .then((response) => {
+            console.log("Data posted successfully", response.data);
+            setSnackbarOpen(true);
+
+            // Reset dropdowns and checkboxes
+            resetForm();
+          })
+          .catch((error) => {
+            console.error("Error while posting data", error);
+          });
+      } else {
+        console.error(
+          "modules_submodule cannot be empty. Please select at least one module and submodule."
+        );
+      }
+    } else {
       axios
-        .post(`${API_URL}/Screening/permissions/`, selectedData, {
+        .put(`${API_URL}/Screening/permissions/${perId}/`, selectedData, {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
         })
         .then((response) => {
-          console.log("Data posted successfully", response.data);
+          console.log("Data Updated successfully", response.data);
           setSnackbarOpen(true);
 
           // Reset dropdowns and checkboxes
@@ -362,31 +381,8 @@ useEffect(() => {
         .catch((error) => {
           console.error("Error while posting data", error);
         });
-    } else {
-      console.error(
-        "modules_submodule cannot be empty. Please select at least one module and submodule."
-      );
     }
-  } else {
-    axios
-      .put(`${API_URL}/Screening/permissions/${perId}/`, selectedData, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      })
-      .then((response) => {
-        console.log("Data Updated successfully", response.data);
-        setSnackbarOpen(true);
-
-        // Reset dropdowns and checkboxes
-        resetForm();
-      })
-      .catch((error) => {
-        console.error("Error while posting data", error);
-      });
-  }
-};
-
+  };
 
   return (
     <Box>
@@ -407,15 +403,14 @@ useEffect(() => {
         </Alert>
       </Snackbar>
 
-      <Box sx={{ backgroundColor: "#f5f5f5", py: 3 }}>
-        <Box sx={{ width: "90%", mx: "auto" ,mr:6}}>
+      <Box sx={{ backgroundColor: "#f5f5f5", py: 1 }}>
+        <Box sx={{ width: "91%", mx: "auto", mr: 2 }}>
           {/* =========================== */}
           {/* DROPDOWN CARD */}
           {/* =========================== */}
           <Card
             sx={{
-              p: 3,
-              
+              p: 2,
               mb: 3,
               borderRadius: 2,
               boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
@@ -436,7 +431,7 @@ useEffect(() => {
             <Grid container spacing={2}>
               {/* Source */}
               <Grid item xs={12} md={4}>
-                <FormControl fullWidth sx={{ mb: 2 }}   size="small">
+                <FormControl fullWidth sx={{ mb: 2 }} size="small">
                   <InputLabel id="source-label">WorkShop Name</InputLabel>
                   <Select
                     labelId="source-label"
@@ -452,15 +447,15 @@ useEffect(() => {
                       setSubmoduleCheckboxes({});
                       setPermission_list([]);
                     }}
-                      sx={{
-                minWidth: 200,
-                "& .MuiInputBase-input.MuiSelect-select": {
-                  color: "#000 !important",
-                },
-                "& .MuiSvgIcon-root": {
-                  color: "#000",
-                },
-              }}
+                    sx={{
+                      minWidth: 200,
+                      "& .MuiInputBase-input.MuiSelect-select": {
+                        color: "#000 !important",
+                      },
+                      "& .MuiSvgIcon-root": {
+                        color: "#000",
+                      },
+                    }}
                   >
                     {source.map((item) => (
                       <MenuItem
@@ -476,7 +471,7 @@ useEffect(() => {
 
               {/* Roles */}
               <Grid item xs={12} md={4}>
-                <FormControl fullWidth sx={{ mb: 3 }}   size="small">
+                <FormControl fullWidth sx={{ mb: 3 }} size="small">
                   <InputLabel id="role-label">Select Role</InputLabel>
                   <Select
                     labelId="role-label"
@@ -488,15 +483,15 @@ useEffect(() => {
                       fetchRoleid(id);
                       setAllPermissionChecked(false);
                     }}
-                     sx={{
-                minWidth: 200,
-                "& .MuiInputBase-input.MuiSelect-select": {
-                  color: "#000 !important",
-                },
-                "& .MuiSvgIcon-root": {
-                  color: "#000",
-                },
-              }}
+                    sx={{
+                      minWidth: 200,
+                      "& .MuiInputBase-input.MuiSelect-select": {
+                        color: "#000 !important",
+                      },
+                      "& .MuiSvgIcon-root": {
+                        color: "#000",
+                      },
+                    }}
                   >
                     {role.map((item) => (
                       <MenuItem key={item.Group_id} value={item.Group_id}>
@@ -537,14 +532,14 @@ useEffect(() => {
             {/* Sticky Header */}
             <Grid
               container
-              spacing={2}
+              spacing={1}
               sx={{
                 position: "sticky",
                 top: 0,
                 zIndex: 20,
                 background: "linear-gradient(90deg, #2FB3F5 0%, #1439A4 100%)",
-                py: 1,
-                px: 2,
+                py: 0.1,
+                px: 1,
                 borderBottom: "1px solid rgba(255,255,255,0.25)",
               }}
             >
@@ -650,7 +645,7 @@ useEffect(() => {
             </Box>
 
             {/* Submit */}
-            <Box sx={{ textAlign: "center", p: 2 }}>
+            <Box sx={{ textAlign: "center", p: 1 }}>
               <Button
                 variant="contained"
                 color="primary"

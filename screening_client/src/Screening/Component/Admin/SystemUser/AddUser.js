@@ -140,15 +140,15 @@ const AddUser = () => {
   );
 
   const [stateOptionsNav, setStateOptionsNav] = useState([]);
-  const [selectedStateNav, setSelectedStateNav] = useState(State || "");
+  const [selectedStateNav, setSelectedStateNav] = useState("");
 
   const [districtOptionsNav, setDistrictOptionsNav] = useState([]);
   const [selectedDistrictNav, setSelectedDistrictNav] = useState(
-    District || ""
+   
   );
 
   const [talukaOptionsNav, setTalukaOptionsNav] = useState([]);
-  const [selectedTalukaNav, setSelectedTalukaNav] = useState(Tehsil || "");
+  const [selectedTalukaNav, setSelectedTalukaNav] = useState("");
 
   const [sourceNameOptionsNav, setSourceNameNav] = useState([]);
   const [selectedNameNav, setSelectedNameNav] = useState("");
@@ -987,7 +987,7 @@ const AddUser = () => {
   const [formAction, setFormAction] = useState("");
 
   return (
-    <Box sx={{ p: 2, m: "0em 0em 0 3.5em" }}>
+    <Box sx={{ p: 2, m: "0em 0em 0 2.6em" }}>
       <Snackbar
         open={snackbar.open}
         autoHideDuration={3000}
@@ -1067,7 +1067,7 @@ const AddUser = () => {
                 value={selectedSourceeNav}
                 onChange={(e) => setSelectedSourceeNav(e.target.value)}
               >
-                <MenuItem value="">Select Source</MenuItem>
+                <MenuItem value="">Select Workshop</MenuItem>
                 {sourceOptionNav.map((drop) => (
                   <MenuItem key={drop.clg_source} value={drop.source_pk_id}>
                     {drop.source}
@@ -1090,7 +1090,7 @@ const AddUser = () => {
                 select
                 fullWidth
                 size="small"
-                label="Source State"
+                label=" State"
                 value={selectedStateNav}
                 onChange={(e) => setSelectedStateNav(e.target.value)}
               >
@@ -1118,7 +1118,7 @@ const AddUser = () => {
                 select
                 fullWidth
                 size="small"
-                label="Source District"
+                label=" District"
                 value={selectedDistrictNav}
                 onChange={(e) => setSelectedDistrictNav(e.target.value)}
               >
@@ -1167,33 +1167,33 @@ const AddUser = () => {
               </TextField>
             </Grid>
 
-           <Grid item xs={12} sm={6} md={2}>
-  <TextField
-    sx={{
-      minWidth: 120,
-      "& .MuiInputBase-input.MuiSelect-select": {
-        color: "#000 !important",
-      },
-      "& .MuiSvgIcon-root": {
-        color: "#000",
-      },
-    }}
-    select
-    fullWidth
-    size="small"
-    label="Workshop Name"
-    value={selectedNameNav}
-    onChange={(e) => setSelectedNameNav(e.target.value)}
-  >
-    <MenuItem value="">Select workshop Name</MenuItem>
+            <Grid item xs={12} sm={6} md={2}>
+              <TextField
+                sx={{
+                  minWidth: 120,
+                  "& .MuiInputBase-input.MuiSelect-select": {
+                    color: "#000 !important",
+                  },
+                  "& .MuiSvgIcon-root": {
+                    color: "#000",
+                  },
+                }}
+                select
+                fullWidth
+                size="small"
+                label="Workshop Name"
+                value={selectedNameNav}
+                onChange={(e) => setSelectedNameNav(e.target.value)}
+              >
+                <MenuItem value="">Select workshop Name</MenuItem>
 
-    {sourceNameOptionsNav.map((drop) => (
-      <MenuItem key={drop.ws_pk_id} value={drop.ws_pk_id}>
-        {drop.Workshop_name}
-      </MenuItem>
-    ))}
-  </TextField>
-</Grid>
+                {sourceNameOptionsNav.map((drop) => (
+                  <MenuItem key={drop.ws_pk_id} value={drop.ws_pk_id}>
+                    {drop.Workshop_name}
+                  </MenuItem>
+                ))}
+              </TextField>
+            </Grid>
 
             <Grid item xs={6} sm={3} md={1}>
               <Button
@@ -1268,7 +1268,7 @@ const AddUser = () => {
                     <Grid container spacing={2}>
                       <Grid item xs={12} md={6}>
                         <FormControl fullWidth>
-                          <InputLabel>Source</InputLabel>
+                          <InputLabel>Workshop</InputLabel>
                           <Select
                             sx={{
                               minWidth: 120,
@@ -1310,7 +1310,7 @@ const AddUser = () => {
                       {/* State */}
                       <Grid item xs={12} md={6}>
                         <FormControl fullWidth error={!!errors.clg_state}>
-                          <InputLabel>Source State</InputLabel>
+                          <InputLabel> State</InputLabel>
                           <Select
                             sx={{
                               minWidth: 120,
@@ -1350,7 +1350,7 @@ const AddUser = () => {
                       {/* District */}
                       <Grid item xs={12} md={6}>
                         <FormControl fullWidth error={!!errors.clg_district}>
-                          <InputLabel>Source District</InputLabel>
+                          <InputLabel> District</InputLabel>
                           <Select
                             sx={{
                               minWidth: 120,
@@ -1390,7 +1390,7 @@ const AddUser = () => {
                       {/* Tehsil */}
                       <Grid item xs={12} md={6}>
                         <FormControl fullWidth error={!!errors.clg_tahsil}>
-                          <InputLabel>Source Tehsil</InputLabel>
+                          <InputLabel> Tehsil</InputLabel>
                           <Select
                             sx={{
                               minWidth: 120,
@@ -1754,29 +1754,31 @@ const AddUser = () => {
                         borderSpacing: 0,
                         borderRadius: "20px",
                         overflow: "hidden",
+                        size: "small",
                       }}
                     >
                       <TableHead>
-                        <TableRow sx={{ bgcolor: "#4a7cf3ff" }}>
+                        <TableRow
+                          sx={{
+                            background:
+                              "linear-gradient(90deg, #2FB3F5 0%, #1439A4 100%)",
+                          }}
+                        >
                           {["Sr No", "User Name", "Mobile No", "Email ID"].map(
                             (header, i) => (
                               <TableCell
                                 key={i}
                                 sx={{
+                                  fontSize: "0.72rem",
+                                  fontWeight: 600,
+                                  lineHeight: 1,
                                   color: "#fff",
-                                  fontWeight: "bold",
-                                  textAlign: "center",
-                                  fontSize: "12px",
+                                  whiteSpace: "nowrap",
+                                  borderRight:
+                                    i !== 3 ? "1px solid #fff" : "none",
+                                  py: 2,
                                 }}
-                                width={
-                                  i === 0
-                                    ? "15%"
-                                    : i === 1
-                                    ? "30%"
-                                    : i === 2
-                                    ? "25%"
-                                    : "35%"
-                                }
+                                align="center"
                               >
                                 {header}
                               </TableCell>
@@ -1794,15 +1796,15 @@ const AddUser = () => {
 
                           return (
                             <Card
-                              key={item.pk ?? index}
+                              // key={item.pk ?? index}
                               elevation={isSelected ? 6 : 2}
                               sx={{
                                 mb: 1,
                                 cursor: "pointer",
-                                bgcolor: isSelected ? "#E3F2FD" : "#fff",
-                                transition: "all 0.2s ease-in-out",
-                                "&:hover": { boxShadow: 6 },
-                                borderRadius: "20px",
+                                // bgcolor: isSelected ? "#E3F2FD" : "#fff",
+                                // transition: "all 0.2s ease-in-out",
+                                // "&:hover": { boxShadow: 6 },
+                                borderRadius: "2px",
                                 fontSize: "12px",
                               }}
                               onClick={() => {
@@ -1814,28 +1816,28 @@ const AddUser = () => {
                                 <Grid
                                   container
                                   alignItems="center"
-                                  justifyContent="space-between"
+                                  justifyContent="center"
                                   textAlign="center"
                                 >
-                                  <Grid item sx={{ width: "10%" }}>
+                                  <Grid item sx={{ flex: 2 }}>
                                     <Typography sx={{ fontSize: "12px" }}>
                                       {serialNumber}
                                     </Typography>
                                   </Grid>
 
-                                  <Grid item sx={{ width: "30%" }}>
+                                  <Grid item sx={{ flex: 5 }}>
                                     <Typography sx={{ fontSize: "12px" }}>
                                       {item.clg_ref_id}
                                     </Typography>
                                   </Grid>
 
-                                  <Grid item sx={{ width: "25%" }}>
+                                  <Grid item sx={{ flex: 3 }}>
                                     <Typography sx={{ fontSize: "12px" }}>
                                       {item.clg_mobile_no}
                                     </Typography>
                                   </Grid>
 
-                                  <Grid item sx={{ width: "35%" }}>
+                                  <Grid item sx={{ flex: 3.5 }}>
                                     <Typography sx={{ fontSize: "12px" }}>
                                       {item.clg_email}
                                     </Typography>

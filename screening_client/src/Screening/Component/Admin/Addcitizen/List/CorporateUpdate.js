@@ -209,7 +209,12 @@ const CorporateUpdate = (props) => {
         };
 
         const response = await axios.put(
-          `${API_URL}/Screening/Citizen_Put_api/${corporateData.citizens_pk_id}/`,
+          `${API_URL}/Screening/Citizen_Put_api/${corporateData.citizens_pk_id}/`,{
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+              "Content-Type": "application/json",
+            },
+          },
           updatedDataWithDepartment,
           {
             headers: {
@@ -377,82 +382,7 @@ const CorporateUpdate = (props) => {
   //     fetchState();
   // }, [updatedData.source]);
 
-  // useEffect(() => {
-  //     const fetchState = async () => {
-  //         if (updatedData.source && updatedData.state) {
-  //             const apiUrl = `${API_URL}/Screening/state_and_pass_district_Get/${updatedData.state}/${updatedData.state}/`;
-  //             console.log(apiUrl);
-  //             try {
-  //                 const response = await fetch(apiUrl, {
-  //                     headers: {
-  //                         'Authorization': `Bearer ${accessToken}`,
-  //                         'Content-Type': 'application/json'
-  //                     }
-  //                 });
-  //                 const data = await response.json();
-  //                 console.log(data);
-  //                 setDistrict(data);
-  //             } catch (error) {
-  //                 console.log('Error Fetching Data');
-  //             }
-  //         } else {
-  //             console.log('Error Fetching Data');
-  //         }
-  //     };
-  //     fetchState();
-  // }, [updatedData.source, updatedData.state]);
-
-  // useEffect(() => {
-  //     const fetchTehsil = async () => {
-  //         if (updatedData.source && updatedData.district) {
-  //             const apiUrl = `${API_URL}/Screening/district_and_pass_taluka_Get/${updatedData.source}/${updatedData.district}/`;
-  //             console.log(apiUrl);
-  //             try {
-  //                 const response = await fetch(apiUrl, {
-  //                     headers: {
-  //                         'Authorization': `Bearer ${accessToken}`,
-  //                         'Content-Type': 'application/json'
-  //                     }
-  //                 });
-  //                 const data = await response.json();
-  //                 console.log(data);
-  //                 setTehsil(data);
-  //             } catch (error) {
-  //                 console.log('Error Fetching Data');
-  //             }
-  //         } else {
-  //             console.log('Error Fetching Data');
-  //         }
-  //     };
-  //     fetchTehsil();
-  // }, [updatedData.source, updatedData.district]);
-
-  // useEffect(() => {
-  //     const fetchName = async () => {
-  //         if (updatedData.source && updatedData.tehsil) {
-  //             // const apiUrl = `${API_URL}/Screening/taluka_and_pass_SourceName_Get/${updatedData.source}/${updatedData.tehsil}/`;
-  //             const apiUrl = `${API_URL}/Screening/taluka_and_pass_SourceName_Get/?SNid=${updatedData.tehsil}&So=${updatedData.source}&source_pk_id=${SourceNameUrlId}`;
-  //             console.log(apiUrl);
-  //             try {
-  //                 const response = await fetch(apiUrl, {
-  //                     headers: {
-  //                         'Authorization': `Bearer ${accessToken}`,
-  //                         'Content-Type': 'application/json'
-  //                     }
-  //                 });
-  //                 const data = await response.json();
-  //                 console.log(data);
-  //                 setSourceName(data);
-  //             } catch (error) {
-  //                 console.log('Error Fetching Data');
-  //             }
-  //         } else {
-  //             console.log('Error Fetching Data');
-  //         }
-  //     };
-  //     fetchName();
-  // }, [updatedData.source, updatedData.tehsil]);
-
+ 
   useEffect(() => {
     const fetchState = async () => {
       try {

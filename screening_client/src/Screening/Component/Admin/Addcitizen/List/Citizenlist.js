@@ -205,7 +205,6 @@ const Citizenlist = () => {
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedCitizenId, setSelectedCitizenId] = useState("");
 
-
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -668,7 +667,7 @@ const Citizenlist = () => {
           borderRadius: 2,
           boxShadow: 1,
           backgroundColor: "#fff",
-          m: "0.1em 1em 0 4.5em",
+          m: "0.0em 0.5em 0 3.5em",
         }}
       >
         <Box
@@ -828,7 +827,7 @@ const Citizenlist = () => {
         </Grid>
       </Card>
 
-      <Box sx={{ p: 1, m: "0.1em 0em 0 4.5em" }}>
+      <Box sx={{ p: 1, m: "0.0em 0.0em 0 3.1em" }}>
         <Grid container spacing={2} alignItems="center" sx={{ mb: 2 }}>
           <Grid item xs={12} sm={6} md={3}>
             <Card
@@ -897,21 +896,24 @@ const Citizenlist = () => {
         </Grid>
 
         <TableContainer>
-          <Table size="small">
+          <Table
+            size="small"
+            sx={{
+              borderCollapse: "separate",
+              borderSpacing: "0 6px",
+            }}
+          >
             <TableHead>
               <TableRow
                 sx={{
                   background:
                     "linear-gradient(90deg, #2FB3F5 0%, #1439A4 100%)",
-                  // height: "auto",
+                  height: "25px",
                   "& th": {
                     color: "white",
                     fontWeight: 600,
                     fontSize: "0.8rem",
                     border: "none",
-                    py: 0.5,
-                    px: 1,
-                    textAlign: "center",
                   },
                   "& th:first-of-type": {
                     borderTopLeftRadius: "40px",
@@ -923,41 +925,58 @@ const Citizenlist = () => {
                   },
                 }}
               >
-                <TableCell colSpan={6} sx={{ p: 0 }}>
+                <TableCell
+                  align="center"
+                  sx={{
+                    p: 0,
+                    border: "none",
+                  }}
+                >
                   <Box
                     sx={{
                       display: "flex",
                       alignItems: "center",
-                      px: 0,
+                      height: "45px", // ✅ uniform height
                     }}
                   >
-                    <CardContent sx={{ flex: 0.6 }}>
-                      <Typography variant="subtitle2">Sr. No</Typography>
-                    </CardContent>
-
-                    <CardContent sx={{ flex: 1.5 }}>
-                      <Typography variant="subtitle2">Citizen Name</Typography>
-                    </CardContent>
-
-                    <CardContent sx={{ flex: 1.5 }}>
-                      <Typography variant="subtitle2">Citizen ID</Typography>
-                    </CardContent>
-
-                    <CardContent sx={{ flex: 1.5 }}>
-                      <Typography variant="subtitle2">Mobile Number</Typography>
-                    </CardContent>
-
-                    <CardContent sx={{ flex: 1 }}>
-                      <Typography variant="subtitle2">Adhar Number</Typography>
-                    </CardContent>
-
-                    <CardContent sx={{ flex: 1 }}>
-                      <Typography variant="subtitle2">Added By</Typography>
-                    </CardContent>
-
-                    <CardContent sx={{ flex: 0.7 }}>
-                      <Typography variant="subtitle2">Action</Typography>
-                    </CardContent>
+                    {/* COMMON HEADER CELL STYLE */}
+                    {[
+                      { label: "Sr. No", flex: 0.6 },
+                      { label: "Citizen Name", flex: 1.5 },
+                      { label: "Citizen ID", flex: 1.5 },
+                      { label: "Mobile Number", flex: 1.5 },
+                      { label: "Adhar Number", flex: 1 },
+                      { label: "Added By", flex: 1 },
+                      { label: "Action", flex: 0.7 },
+                    ].map((item, index, arr) => (
+                      <Box
+                        key={item.label}
+                        sx={{
+                          flex: item.flex,
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          height: "100%",
+                          borderRight:
+                            index !== arr.length - 1
+                              ? "1px solid #fff"
+                              : "none", 
+                          px: 1,
+                        }}
+                      >
+                        <Typography
+                          sx={{
+                            fontSize: "0.72rem",
+                            fontWeight: 600,
+                            lineHeight: 1,
+                            color: "#fff",
+                            whiteSpace: "nowrap",
+                          }}
+                        >
+                          {item.label}
+                        </Typography>
+                      </Box>
+                    ))}
                   </Box>
                 </TableCell>
               </TableRow>
@@ -994,13 +1013,12 @@ const Citizenlist = () => {
                         key={data.citizens_pk_id}
                         sx={{
                           height: "45px",
-                          "& td": { border: "none", p: 0.5 },
+                          "& td": { border: "none", p: 0.1 },
                         }}
                       >
                         <TableCell colSpan={6}>
                           <Card
                             sx={{
-                              borderRadius: "20px",
                               boxShadow: 2,
                               "&:hover": { boxShadow: 4 },
                               transition: "0.3s",

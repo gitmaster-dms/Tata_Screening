@@ -54,7 +54,15 @@ const Viewcitizen = () => {
 
   const fetchCitizenData = async () => {
     try {
-      const response = await fetch(`${API_URL}/Screening/Citizen_Put_api/${id}/`);
+      const response = await fetch(`${API_URL}/Screening/Citizen_Put_api/${id}/`,
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
       const data = await response.json();
       console.log("Citizen Data:", data);
@@ -83,7 +91,7 @@ const Viewcitizen = () => {
       sx={{
         p: 3,
         minHeight: "100vh",
-        m: "0em 0em 0 3em",
+        m: "0em 0em 0 2em",
         // pl: { md: 10, sm: 2, xs: 1 }, // ⭐ fixed spacing
         // pr: { md: 10, sm: 2, xs: 1 },
       }}
@@ -91,7 +99,7 @@ const Viewcitizen = () => {
       <Paper
         elevation={2}
         sx={{
-          p: 1.5,
+          p: 1,
           borderRadius: 2,
           backgroundColor: "#fff",
         }}
