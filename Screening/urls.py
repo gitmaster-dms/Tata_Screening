@@ -321,6 +321,8 @@ urlpatterns = [
     path('investigation_post_api/<int:pk_id>/', Investigation_Info_Post_Api.as_view(), name='investigation_post_api'),
     path('investigation_get_api/<int:pk_id>/', Investigation_Info_Get_API.as_view(), name='investigation_get_api'),
     
+
+    path('workshop_filter_api/', Workshop_filter_APIView.as_view(), name='workshop_filter_api'),
     
     # *******************************************Dashboard APIs******************************************
     path('total_driver_count/', TotalDriverReg_Dashboard_API.as_view(), name='TotalDriverReg_Dashboard_API'),

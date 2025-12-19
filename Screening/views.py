@@ -7048,3 +7048,37 @@ class CitizensFilterAPIView(APIView):
                 {"error": str(e)},
                 status=status.HTTP_400_BAD_REQUEST
             )
+
+
+class Workshop_filter_APIView(APIView):
+    def get(self, request):
+        try:
+            ws_pk_id = request.GET.get('ws_pk_id')
+            ws_state = request.GET.get('ws_state')
+            ws_district = request.GET.get('ws_district')
+            ws_taluka = request.GET.get('ws_taluka')
+
+            filters = Q(is_deleted=False)
+
+            if ws_pk_id:
+                filters &= Q(ws_pk_id=ws_pk_id)
+
+            if ws_state:
+                filters &= Q(ws_state__pk=ws_state)
+
+            if ws_district:
+                filters &= Q(ws_district__pk=ws_district)
+
+            if ws_taluka:
+                filters &= Q(ws_taluka__pk=ws_taluka)
+
+            queryset = Workshop.objects.filter(filters).order_by('-ws_pk_id')
+
+            serializer = filter_workshop_Serializer(queryset, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return Response(
+                {"error": str(e)},
+                status=status.HTTP_400_BAD_REQUEST
+            )

@@ -1788,3 +1788,13 @@ class Citizen_Filter_Serializer(serializers.ModelSerializer):
      class Meta:
         model = Citizen
         fields = '__all__'
+
+
+
+class filter_workshop_Serializer(serializers.ModelSerializer):
+    state_name = serializers.CharField(source='ws_state.state_name', allow_null=True)
+    district_name = serializers.CharField(source='ws_district.dist_name', allow_null=True)
+    taluka_name = serializers.CharField(source='ws_taluka.tahsil_name', allow_null=True)
+    class Meta:
+        model = Workshop
+        fields = '__all__'
