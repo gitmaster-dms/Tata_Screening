@@ -1039,7 +1039,7 @@ const AddSource = () => {
                     },
                   }}
                 >
-                  <MenuItem value="" disabled>Workshop State</MenuItem>
+                  <MenuItem value="" >Workshop State</MenuItem>
                   {sourceStateNav.map((drop) => (
                     <MenuItem key={drop.state_id} value={drop.state_id}>
                       {drop.state_name}
@@ -1687,11 +1687,11 @@ const AddSource = () => {
                         "linear-gradient(90deg, #2FB3F5 0%, #1439A4 100%)",
                       color: "white",
                       borderRadius: "20px",
-                      px: 2,
-                      // py: 1,
+                      px: 1,
+                      py: 0.5,
                       mb: 2,
                       fontFamily: "Roboto",
-                      fontWeight: 600,
+                      // fontWeight: 600,
                       textAlign: "center",
                     }}
                   >
@@ -1701,7 +1701,7 @@ const AddSource = () => {
                     <Box sx={{ flex: 2, borderRight: "1px solid white" }}>
                       Workshop Name
                     </Box>
-                    <Box sx={{ flex: 1 }}>Registration Number</Box>
+                    <Box sx={{ flex: 2 }}>Registration Number</Box>
                   </Box>
 
                   <Box>
@@ -1744,7 +1744,7 @@ const AddSource = () => {
                           >
                             <Box sx={{ flex: 0.8 }}>{serialNumber}</Box>
                             <Box sx={{ flex: 2 }}>{info.Workshop_name}</Box>
-                            <Box sx={{ flex: 1 }}>{info.registration_no}</Box>
+                            <Box sx={{ flex: 2 }}>{info.registration_no}</Box>
                           </Card>
                         );
                       })}

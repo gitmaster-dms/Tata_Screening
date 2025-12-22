@@ -9,6 +9,9 @@ import {
   Typography,
   Snackbar,
   Alert,
+  Dialog,  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
 
 const Difieciency = ({
@@ -77,7 +80,7 @@ const Difieciency = ({
   }, []);
 
   const [formData, setFormData] = useState({
-    checkboxes:[],
+    checkboxes: [],
     selectedIds: [],
     citizen_pk_id: citizensPkId,
     modify_by: userID,
@@ -97,35 +100,36 @@ const Difieciency = ({
     }));
   };
 
- 
-
-
-   const [allData, setAllData] = useState([]);
-    const fetchAllData = async () => {
-      try {
-        const response = await axios.get(
-          `${Port}/Screening/deficiencies_get_api/${pkid}/`,
-          {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
-        setAllData(response.data);
-        console.log("Fetched screening deficiencies for pkid:", response.data);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
+  const [allData, setAllData] = useState([]);
+  const fetchAllData = async () => {
+    try {
+      const response = await axios.get(
+        `${Port}/Screening/deficiencies_get_api/${pkid}/`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      setAllData(response.data);
+      console.log("Fetched screening deficiencies for pkid:", response.data);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
+  };
 
   useEffect(() => {
     fetchAllData();
-  },[pkid]);
+  }, [pkid]);
 
   // Initialize checkboxes/selected IDs when master list AND screening data are available
   useEffect(() => {
-    if (deficiencies.length > 0 && Array.isArray(allData) && allData.length > 0) {
+    if (
+      deficiencies.length > 0 &&
+      Array.isArray(allData) &&
+      allData.length > 0
+    ) {
       const screeningInfo = allData[0];
       const selectedIds = (screeningInfo.deficiencies || [])
         .filter((id) => id != null)
@@ -142,7 +146,15 @@ const Difieciency = ({
       }));
     }
   }, [deficiencies, allData]);
+    const [openDialog, setOpenDialog] = useState(false);
+      const handleCancel = () => {
+        setOpenDialog(false);
+      };
+      const handleOpenDialog = () => {
+        setOpenDialog(true);
+      }
   const handleSubmit = async (e) => {
+    setOpenDialog(true);
     e.preventDefault();
     const selectedIdsClean = (formData.selectedIds || [])
       .filter((id) => id != null)
@@ -183,8 +195,6 @@ const Difieciency = ({
       console.error("Error posting data:", error);
     }
   };
-
- 
 
   return (
     <Box>
@@ -244,10 +254,32 @@ const Difieciency = ({
             variant="contained"
             size="small"
             sx={{ bgcolor: "#1439A4", textTransform: "none" }}
-            onClick={handleSubmit}
-          >
+            onClick={handleOpenDialog}
+            type="button">
             Submit
           </Button>
+          <Dialog open={openDialog} onClose={handleCancel}>
+            <DialogTitle>Confirm Submission</DialogTitle>
+
+            <DialogContent>
+              <Typography>
+                Are you sure you want to submit this General Examination form?
+              </Typography>
+            </DialogContent>
+
+            <DialogActions>
+              <Button onClick={handleCancel} color="error">
+                Cancel
+              </Button>
+              <Button
+                onClick={handleSubmit}
+                color="primary"
+                variant="contained"
+              >
+                Confirm
+              </Button>
+            </DialogActions>
+          </Dialog>
         </Box>
       </Box>
     </Box>

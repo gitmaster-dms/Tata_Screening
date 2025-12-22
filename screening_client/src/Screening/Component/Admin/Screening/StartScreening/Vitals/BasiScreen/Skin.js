@@ -9,6 +9,9 @@ import {
   Typography,
   Snackbar,
   Alert,
+  Dialog,  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
 
 const Skin = ({
@@ -212,7 +215,15 @@ const Skin = ({
   //     }
   // };
 
+  const [openDialog, setOpenDialog] = useState(false);
+  const handleCancel = () => {
+    setOpenDialog(false);
+  };
+  const handleOpenDialog = () => {
+    setOpenDialog(true);
+  };
   const handleSubmit = async (e) => {
+    setOpenDialog(true);
         e.preventDefault();
         const postData = {
             skin_conditions: formData.selectedNames,
@@ -241,6 +252,8 @@ const Skin = ({
             console.error("Error posting data:", error);
         }
     };
+
+     
   return (
     <Box>
       <Snackbar
@@ -303,7 +316,7 @@ const Skin = ({
         {/* Submit Button - Center Aligned */}
         <Box sx={{ mt: 3, display: "flex", justifyContent: "center" }}>
           <Button
-            type="submit"
+            type="button"
             variant="contained"
             size="small"
             sx={{
@@ -315,9 +328,32 @@ const Skin = ({
                 backgroundColor: "#1565c0",
               },
             }}
+            onClick={handleOpenDialog}
           >
             Submit
           </Button>
+           <Dialog open={openDialog} onClose={handleCancel}>
+                      <DialogTitle>Confirm Submission</DialogTitle>
+          
+                      <DialogContent>
+                        <Typography>
+                          Are you sure you want to submit this General Examination form?
+                        </Typography>
+                      </DialogContent>
+          
+                      <DialogActions>
+                        <Button onClick={handleCancel} color="error">
+                          Cancel
+                        </Button>
+                        <Button
+                          onClick={handleSubmit}
+                          color="primary"
+                          variant="contained"
+                        >
+                          Confirm
+                        </Button>
+                      </DialogActions>
+                    </Dialog>
         </Box>
       </Box>
     </Box>

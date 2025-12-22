@@ -10,6 +10,10 @@ import {
   Button,
   Snackbar,
   Alert,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
 
 const Systematic = ({
@@ -24,25 +28,25 @@ const Systematic = ({
   console.log(subVitalList, "Overall GET API");
   const [nextName, setNextName] = useState("");
 
-    useEffect(() => {
-      if (subVitalList && selectedTab) {
-        const currentIndex = subVitalList.findIndex(
-          (item) => item.sub_list === selectedTab
-        );
+  useEffect(() => {
+    if (subVitalList && selectedTab) {
+      const currentIndex = subVitalList.findIndex(
+        (item) => item.sub_list === selectedTab
+      );
 
-        console.log("Current Index:", currentIndex);
+      console.log("Current Index:", currentIndex);
 
-        if (currentIndex !== -1 && currentIndex < subVitalList.length - 1) {
-          const nextItem = subVitalList[currentIndex + 1];
-          const nextName = nextItem.sub_list;
-          setNextName(nextName);
-          console.log("Next Name Set:", nextName);
-        } else {
-          setNextName("");
-          console.log("No next item or selectedTab not found");
-        }
+      if (currentIndex !== -1 && currentIndex < subVitalList.length - 1) {
+        const nextItem = subVitalList[currentIndex + 1];
+        const nextName = nextItem.sub_list;
+        setNextName(nextName);
+        console.log("Next Name Set:", nextName);
+      } else {
+        setNextName("");
+        console.log("No next item or selectedTab not found");
       }
-    }, [selectedTab, subVitalList]);
+    }
+  }, [selectedTab, subVitalList]);
   //_________________________________END
 
   // console.log('Systematic ID :', basicScreeningPkId);
@@ -180,8 +184,18 @@ const Systematic = ({
     }));
   };
 
+  const [openDialog, setOpenDialog] = useState(false);
+  const handleCancel = () => {
+    setOpenDialog(false);
+  };
+
+  const handleOpenDialog = () => {
+    setOpenDialog(true);
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setOpenDialog(true);
+
     const formData = {
       ...systematicExam,
     };
@@ -201,18 +215,16 @@ const Systematic = ({
             ...formData,
             modify_by: userID,
           }),
-                    // body: JSON.stringify(formData),
-
+          // body: JSON.stringify(formData),
         }
       );
 
       if (response.ok) {
         const data = await response.json();
-        console.log(data,"nextcount");
+        console.log(data, "nextcount");
 
         // Backend se next count aata hai
         const nextCount = data.data?.screening_count;
-        
 
         // SubVitalList me us count ka screen nikaalo
         const nextScreen = subVitalList?.find(
@@ -549,7 +561,7 @@ const Systematic = ({
         </Alert>
       </Snackbar>
 
-      <form onSubmit={handleSubmit}>
+      <form>
         <Grid container spacing={2}>
           <Grid item xs={12} md={4}>
             <FormControl fullWidth size="small">
@@ -1175,11 +1187,31 @@ const Systematic = ({
         <Button
           variant="contained"
           size="small"
-          type="submit"
+          type="button"
           sx={{ mt: 3, backgroundColor: "#1976d2", textTransform: "none" }}
+          onClick={handleOpenDialog}
         >
           Submit
         </Button>
+
+        <Dialog open={openDialog} onClose={handleCancel}>
+          <DialogTitle>Confirm Submission</DialogTitle>
+
+          <DialogContent>
+            <Typography>
+              Are you sure you want to submit this General Examination form?
+            </Typography>
+          </DialogContent>
+
+          <DialogActions>
+            <Button onClick={handleCancel} color="error">
+              Cancel
+            </Button>
+            <Button onClick={handleSubmit} color="primary" variant="contained">
+              Confirm
+            </Button>
+          </DialogActions>
+        </Dialog>
       </form>
     </div>
   );

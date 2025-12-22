@@ -10,6 +10,9 @@ import {
   Paper,
   Snackbar,
   Alert,
+  Dialog,  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
 
 const Diagnosis = ({
@@ -104,7 +107,10 @@ const Diagnosis = ({
             const selectedDiagnosisIds = (screeningInfo.diagnosis || [])
               .filter((id) => id != null)
               .map((id) => Number(id));
-            console.log("Existing screening diagnosis IDs:", selectedDiagnosisIds);
+            console.log(
+              "Existing screening diagnosis IDs:",
+              selectedDiagnosisIds
+            );
 
             const initialCheckboxes = diagnosis.map((item) =>
               selectedDiagnosisIds.includes(item.diagnosis_id)
@@ -147,9 +153,18 @@ const Diagnosis = ({
     }));
   };
 
+
+    const [openDialog, setOpenDialog] = useState(false);
+      const handleCancel = () => {
+        setOpenDialog(false);
+      };
+      const handleOpenDialog = () => {
+        setOpenDialog(true);
+      };
   // ---------------- SUBMIT HANDLER ----------------
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setOpenDialog(true);
     // Use selected diagnosis IDs directly, filter out null/undefined & coerce to Number
     const selectedIdsClean = (formData.selectedIds || [])
       .filter((id) => id != null)
@@ -161,7 +176,10 @@ const Diagnosis = ({
     console.log("Submitting Diagnosis POST: ", postData);
 
     if (!postData.diagnosis || postData.diagnosis.length === 0) {
-      openSnackbar("Please select at least one diagnosis before submitting", "warning");
+      openSnackbar(
+        "Please select at least one diagnosis before submitting",
+        "warning"
+      );
       return;
     }
 
@@ -178,7 +196,7 @@ const Diagnosis = ({
       );
 
       if (response.status === 200) {
-        // if (window.confirm("Submit Diagnosis Form")) 
+        // if (window.confirm("Submit Diagnosis Form"))
         {
           console.log("Diagnosis Form Submitted Successfully");
           console.log("Diagnosis POST response:", response.data);
@@ -189,8 +207,14 @@ const Diagnosis = ({
         console.error("Unexpected status:", response.status);
       }
     } catch (error) {
-      console.error("Error posting diagnosis data:", error.response ? error.response.data : error.message);
-      openSnackbar("Error saving diagnosis. Check console for details.", "error");
+      console.error(
+        "Error posting diagnosis data:",
+        error.response ? error.response.data : error.message
+      );
+      openSnackbar(
+        "Error saving diagnosis. Check console for details.",
+        "error"
+      );
     }
   };
 
@@ -261,10 +285,32 @@ const Diagnosis = ({
             variant="contained"
             size="small"
             sx={{ bgcolor: "#1439A4", textTransform: "none" }}
-            onClick={handleSubmit}
+            onClick={handleOpenDialog}
           >
             Submit
           </Button>
+          <Dialog open={openDialog} onClose={handleCancel}>
+            <DialogTitle>Confirm Submission</DialogTitle>
+
+            <DialogContent>
+              <Typography>
+                Are you sure you want to submit this General Examination form?
+              </Typography>
+            </DialogContent>
+
+            <DialogActions>
+              <Button onClick={handleCancel} color="error">
+                Cancel
+              </Button>
+              <Button
+                onClick={handleSubmit}
+                color="primary"
+                variant="contained"
+              >
+                Confirm
+              </Button>
+            </DialogActions>
+          </Dialog>
         </Box>
       </form>
     </Box>

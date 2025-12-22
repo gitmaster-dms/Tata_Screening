@@ -12,6 +12,10 @@ import {
   FormControl,
   Snackbar,
   Alert,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
 
 const Disability = ({
@@ -109,10 +113,12 @@ const Disability = ({
     });
   };
 
+  const [openDialog, setOpenDialog] = useState(false);
+
   // ✅ Submit Form
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+setOpenDialog(true);
     try {
       const response = await fetch(
         `${Port}/Screening/disability_screening_post_api/${pkid}/`,
@@ -171,6 +177,14 @@ const Disability = ({
     fetchDropdowns();
   }, [Port, accessToken]);
 
+
+    const handleCancel = () => {
+    setOpenDialog(false);
+  };
+
+  const handleOpenDialog = () => {
+    setOpenDialog(true);
+  };
   return (
     <Box>
       <Snackbar
@@ -313,11 +327,11 @@ const Disability = ({
           }}
         >
           <Button
-            type="submit"
+            type="button"
             variant="contained"
             color="primary"
             size="medium"
-            onClick={handleSubmit}
+            onClick={handleOpenDialog}
             sx={{
               textTransform: "none",
               borderRadius: 2,
@@ -325,6 +339,24 @@ const Disability = ({
           >
             Submit
           </Button>
+          <Dialog open={openDialog} onClose={handleCancel}>
+                    <DialogTitle>Confirm Submission</DialogTitle>
+          
+                    <DialogContent>
+                      <Typography>
+                        Are you sure you want to submit this General Examination form?
+                      </Typography>
+                    </DialogContent>
+          
+                    <DialogActions>
+                      <Button onClick={handleCancel} color="error">
+                        Cancel
+                      </Button>
+                      <Button onClick={handleSubmit} color="primary" variant="contained">
+                        Confirm
+                      </Button>
+                    </DialogActions>
+                  </Dialog>
         </Grid>
       </Grid>
     </Box>

@@ -10,6 +10,9 @@ import {
   Paper,
   Snackbar,
   Alert,
+  Dialog,  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
 
 const Checkbox = ({
@@ -140,9 +143,16 @@ const Checkbox = ({
   };
 
   // ---------- SUBMIT ----------
+    const [openDialog, setOpenDialog] = useState(false);
+    const handleCancel = () => {
+      setOpenDialog(false);
+    };
+    const handleOpenDialog = () => {
+      setOpenDialog(true);
+    };
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+setOpenDialog(true);
     const postData = {
       check_box_if_normal: formData.selectedNames,
     };
@@ -243,10 +253,32 @@ const Checkbox = ({
             variant="contained"
             size="small"
             sx={{ bgcolor: "#1439A4", textTransform: "none" }}
-            onClick={handleSubmit}
+            onClick={handleOpenDialog}
           >
             Submit
           </Button>
+             <Dialog open={openDialog} onClose={handleCancel}>
+                                <DialogTitle>Confirm Submission</DialogTitle>
+                    
+                                <DialogContent>
+                                  <Typography>
+                                    Are you sure you want to submit this General Examination form?
+                                  </Typography>
+                                </DialogContent>
+                    
+                                <DialogActions>
+                                  <Button onClick={handleCancel} color="error">
+                                    Cancel
+                                  </Button>
+                                  <Button
+                                    onClick={handleSubmit}
+                                    color="primary"
+                                    variant="contained"
+                                  >
+                                    Confirm
+                                  </Button>
+                                </DialogActions>
+                              </Dialog>
         </Box>
       </form>
     </Box>

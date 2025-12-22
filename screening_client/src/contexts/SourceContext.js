@@ -67,10 +67,10 @@ const buildUrl = () => {
   if (districtFilter) params.push(`ws_district=${districtFilter}`);
 
   if (params.length > 0) {
-    url += "?" + params.join("&");
+    url  += "?" + params.join("&");
   }
 
-  return url;
+  return url ;
 };
 const fetchWorkshops = () => {
   const url = buildUrl();
@@ -87,12 +87,6 @@ const fetchWorkshops = () => {
 useEffect(() => {
   fetchWorkshops();
 }, [dateFilter, districtFilter]);
-
-
-
-
-
-
 
 
 

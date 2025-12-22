@@ -202,7 +202,7 @@ const Generalexam = ({
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setOpenDialog(false);
+    setOpenDialog(true);
 
     // const isConfirmed = openSnackbar("Submit Basic Screen Form");
     // if (!isConfirmed) return;
@@ -605,7 +605,7 @@ const Generalexam = ({
       </Typography>
       <Box sx={{ borderBottom: "2px solid #ddd", mb: 2 }} />
 
-      <form onSubmit={handleSubmit}>
+      <form >
         <Grid container spacing={2} sx={{ mb: 2 }}>
           <Grid item xs={12} md={4}>
             <Card sx={{ display: "flex", alignItems: "center" }}>
@@ -1219,7 +1219,8 @@ const Generalexam = ({
           }}
         >
           <Button
-            type="submit"
+            type="button"
+
             variant="contained"
             color="primary"
             size="medium"

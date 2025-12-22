@@ -10,7 +10,10 @@ import {
   Button,
   Paper,
   Snackbar,
-  Alert
+  Alert,
+  Dialog,  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
 
 const Childhood = ({
@@ -116,9 +119,11 @@ const Childhood = ({
     });
   };
 
+  const [openDialog, setOpenDialog] = useState(false);
   // 🔹 Submit form
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setOpenDialog(true);
     const selectedIdsClean = (formData.selectedIds || [])
       .filter((id) => id != null)
       .map((id) => Number(id));
@@ -175,6 +180,13 @@ const Childhood = ({
     }
   }, [childhoodList, screeningData]);
 
+     const handleCancel = () => {
+    setOpenDialog(false);
+  };
+
+  const handleOpenDialog = () => {
+    setOpenDialog(true);
+  };
   return (
     <Box
       sx={{
@@ -239,7 +251,7 @@ const Childhood = ({
 
         <Box textAlign="center" mt={3}>
           <Button
-            type="submit"
+            type="button"
             variant="contained"
             size="small"
             sx={{
@@ -252,9 +264,28 @@ const Childhood = ({
               borderRadius: 2,
               px: 3,
             }}
+            onClick={handleOpenDialog}
           >
             Submit
           </Button>
+           <Dialog open={openDialog} onClose={handleCancel}>
+                                        <DialogTitle>Confirm Submission</DialogTitle>
+                              
+                                        <DialogContent>
+                                          <Typography>
+                                            Are you sure you want to submit this General Examination form?
+                                          </Typography>
+                                        </DialogContent>
+                              
+                                        <DialogActions>
+                                          <Button onClick={handleCancel} color="error">
+                                            Cancel
+                                          </Button>
+                                          <Button onClick={handleSubmit} color="primary" variant="contained">
+                                            Confirm
+                                          </Button>
+                                        </DialogActions>
+                                      </Dialog>
         </Box>
       </Box>
     </Box>

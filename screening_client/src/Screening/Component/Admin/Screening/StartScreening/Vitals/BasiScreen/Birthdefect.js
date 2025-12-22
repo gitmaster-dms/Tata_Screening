@@ -10,6 +10,9 @@ import {
   Paper,
   Snackbar,
   Alert,
+  Dialog,  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
 
 const Birthdefect = ({
@@ -129,9 +132,11 @@ const Birthdefect = ({
     });
   };
 
+  const [openDialog, setOpenDialog] = useState(false);
   // ✅ Submit Handler
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setOpenDialog(false);
     const postData = { birth_defects: formData.selectedNames };
 
     try {
@@ -161,6 +166,13 @@ const Birthdefect = ({
     }
   };
 
+     const handleCancel = () => {
+    setOpenDialog(false);
+  };
+
+  const handleOpenDialog = () => {
+    setOpenDialog(true);
+  };
   return (
     <Box>
       <Typography
@@ -219,11 +231,11 @@ const Birthdefect = ({
           }}
         >
           <Button
-            type="submit"
+            type="button"
             variant="contained"
             color="primary"
             size="medium"
-            onClick={handleSubmit}
+            onClick={handleOpenDialog}
             sx={{
               textTransform: "none",
               borderRadius: 2,
@@ -231,6 +243,24 @@ const Birthdefect = ({
           >
             Submit
           </Button>
+            <Dialog open={openDialog} onClose={handleCancel}>
+                              <DialogTitle>Confirm Submission</DialogTitle>
+                    
+                              <DialogContent>
+                                <Typography>
+                                  Are you sure you want to submit this General Examination form?
+                                </Typography>
+                              </DialogContent>
+                    
+                              <DialogActions>
+                                <Button onClick={handleCancel} color="error">
+                                  Cancel
+                                </Button>
+                                <Button onClick={handleSubmit} color="primary" variant="contained">
+                                  Confirm
+                                </Button>
+                              </DialogActions>
+                            </Dialog>
         </Grid>
       </Grid>
     </Box>

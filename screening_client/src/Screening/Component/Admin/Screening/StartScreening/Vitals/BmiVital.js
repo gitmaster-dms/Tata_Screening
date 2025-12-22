@@ -39,7 +39,6 @@ const BmiVital = ({
   console.log(fetchVital, "Overall GET API");
   const [nextName, setNextName] = useState("");
   console.log(nextName, "nextName");
-  
 
   useEffect(() => {
     if (fetchVital && selectedName) {
@@ -82,60 +81,58 @@ const BmiVital = ({
   console.log(pkid);
 
   const [isFormBlurred, setIsFormBlurred] = useState(true);
- 
+
   const [referredToSpecialist, setReferredToSpecialist] = useState(null);
-const [doctorList, setDoctorList] = useState([]);
-const [loadingDoctors, setLoadingDoctors] = useState(false);
-const [selectedDoctor, setSelectedDoctor] = useState(""); 
+  const [doctorList, setDoctorList] = useState([]);
+  const [loadingDoctors, setLoadingDoctors] = useState(false);
+  const [selectedDoctor, setSelectedDoctor] = useState("");
 
+  useEffect(() => {
+    if (referredToSpecialist === 1) {
+      fetchDoctors();
+    } else {
+      setDoctorList([]);
+    }
+  }, [referredToSpecialist]);
 
-useEffect(() => {
-  if (referredToSpecialist === 1) {
-    fetchDoctors();
-  } else {
-    setDoctorList([]);
-  }
-}, [referredToSpecialist]);
+  const fetchDoctors = async () => {
+    try {
+      setLoadingDoctors(true);
 
-const fetchDoctors = async () => {
-  try {
-    setLoadingDoctors(true);
+      const res = await fetch(`${API_URL}/Screening/Doctor_List/`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
 
-    const res = await fetch(`${API_URL}/Screening/Doctor_List/`, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`,
-      },
-    });
-
-    const data = await res.json();
-    setDoctorList(data || []);
-  } catch (error) {
-    console.error("Error fetching doctors:", error);
-  } finally {
-    setLoadingDoctors(false);
-  }
-};
-console.log("Selected doctor:", selectedDoctor);
+      const data = await res.json();
+      setDoctorList(data || []);
+    } catch (error) {
+      console.error("Error fetching doctors:", error);
+    } finally {
+      setLoadingDoctors(false);
+    }
+  };
+  console.log("Selected doctor:", selectedDoctor);
 
   const [bmiData, setBmiData] = useState({
-  citizen_info: {
-    gender: "",
-    dob: "",
-    height: null,
-    weight: null,
-    year: "0",
-    months: "0",
-    days: "0",
-    arm_size: "",
-    bmi: null,
-  },
-  symptoms_if_any: "",
-  remark: "",
-  refer_doctor: "",
-  reffered_to_specialist: "",
-});
-console.log(bmiData);
-
+    citizen_info: {
+      gender: "",
+      dob: "",
+      height: null,
+      weight: null,
+      year: "0",
+      months: "0",
+      days: "0",
+      arm_size: "",
+      bmi: null,
+    },
+    symptoms_if_any: "",
+    remark: "",
+    refer_doctor: "",
+    reffered_to_specialist: "",
+  });
+  console.log(bmiData);
 
   const [snackbar, setSnackbar] = useState({
     open: false,
@@ -168,19 +165,23 @@ console.log(bmiData);
   };
 
   const [growthId, setGrowthId] = useState(null);
-  console.log(growthId,"growthId");
-  
+  console.log(growthId, "growthId");
+
   const postBmiData = async () => {
     try {
       const response = await fetch(
         `${API_URL}/Screening/SaveGrowthMonitoringInfo/${pkid}/`,
         {
-          method: "POST",   
+          method: "POST",
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${accessToken}`,
           },
-          body: JSON.stringify({ ...bmiData, added_by: userID, modify_by: userID }),
+          body: JSON.stringify({
+            ...bmiData,
+            added_by: userID,
+            modify_by: userID,
+          }),
         }
       );
 
@@ -205,13 +206,13 @@ console.log(bmiData);
           },
           symptoms_if_any: d.symptoms,
           remark: d.remark,
-          refer_doctor : d.refer_doctor,
+          refer_doctor: d.refer_doctor,
           reffered_to_specialist: d.reffered_to_specialist,
         });
         setGrowthId(d.citizen_pk_id);
 
-      setReferredToSpecialist(Number(d.reffered_to_specialist));
-        selectedDoctor(Number(d.refer_doctor || ""));
+        setReferredToSpecialist(Number(d.reffered_to_specialist));
+        setSelectedDoctor(Number(d.refer_doctor || ""));
         setUpdateId(d.citizen_id);
       }
       console.log("POST BMI:", data);
@@ -224,8 +225,6 @@ console.log(bmiData);
     postBmiData();
   }, []);
 
-
- 
   const updateDataInDatabase = async (citizen_id, confirmationStatus) => {
     try {
       const response = await fetch(
@@ -240,11 +239,9 @@ console.log(bmiData);
             ...bmiData,
             added_by: userID,
             modify_by: userID,
-            refer_doctor : selectedDoctor,
+            refer_doctor: selectedDoctor,
             form_submit: confirmationStatus,
             reffered_to_specialist: referredToSpecialist,
-
-            
           }),
         }
       );
@@ -274,20 +271,19 @@ console.log(bmiData);
     setOpenConfirm(true);
   };
 
-const handleConfirmSubmit = async () => {
-  if (!growthId) {
-    openSnackbar("Please wait, data is still loading", "warning");
-    return;
-  }
+  const handleConfirmSubmit = async () => {
+    if (!growthId) {
+      openSnackbar("Please wait, data is still loading", "warning");
+      return;
+    }
 
-  setOpenConfirm(false);
-  const confirmationStatus = "True";
+    setOpenConfirm(false);
+    const confirmationStatus = "True";
 
-  if (updateId) {
-    await updateDataInDatabase(updateId, confirmationStatus);
-  }
-};
-
+    if (growthId) {
+      await updateDataInDatabase(growthId, confirmationStatus);
+    }
+  };
 
   const handleCancelSubmit = () => {
     setOpenConfirm(false);
@@ -316,8 +312,6 @@ const handleConfirmSubmit = async () => {
       },
     }));
   }, [enteredWeight]);
-
-  
 
   // useEffect(() => {
   //     const fetchOtherData = async () => {
@@ -802,7 +796,7 @@ const handleConfirmSubmit = async () => {
           </Grid>
 
           {/* Referred to Specialist */}
-       {/* <Grid container alignItems="center" mt={2}>
+          {/* <Grid container alignItems="center" mt={2}>
   <Grid item xs={12} sm={4}>
     <Typography variant="body1">Referred To Specialist</Typography>
   </Grid>
@@ -819,71 +813,84 @@ const handleConfirmSubmit = async () => {
   </Grid>
 </Grid> */}
 
-{/* Dropdown auto-renders after selecting “Yes” */}
-{referredToSpecialist !== null && (
-  <Grid container spacing={2} alignItems="center" sx={{ mt: 2 }}>
-    {/* Radio Group */}
-    <Grid item xs={12} sm={6}>
-      <FormControl component="fieldset" fullWidth>
-        <Typography variant="body2" sx={{ fontWeight: 600 }}>
-          Referred To Specialist
-        </Typography>
-        <RadioGroup
-          row
-          value={referredToSpecialist}
-          onChange={(e) => setReferredToSpecialist(Number(e.target.value))}
-        >
-          <FormControlLabel value={1} control={<Radio />} label="Yes" />
-          <FormControlLabel value={2} control={<Radio />} label="No" />
-        </RadioGroup>
-      </FormControl>
-    </Grid>
+          {/* Dropdown auto-renders after selecting “Yes” */}
+          {referredToSpecialist !== null && (
+            <Grid container spacing={2} alignItems="center" sx={{ mt: 2 }}>
+              {/* Radio Group */}
+              <Grid item xs={12} sm={6}>
+                <FormControl component="fieldset" fullWidth>
+                  <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                    Referred To Specialist
+                  </Typography>
+                  <RadioGroup
+                    row
+                    value={referredToSpecialist}
+                    onChange={(e) =>
+                      setReferredToSpecialist(Number(e.target.value))
+                    }
+                  >
+                    <FormControlLabel
+                      value={1}
+                      control={<Radio />}
+                      label="Yes"
+                    />
+                    <FormControlLabel
+                      value={2}
+                      control={<Radio />}
+                      label="No"
+                    />
+                  </RadioGroup>
+                </FormControl>
+              </Grid>
 
-    {/* Dropdown (only show if Yes) */}
-    {referredToSpecialist === 1 && (
-      <Grid item xs={12} sm={6}>
-        <FormControl fullWidth size="small">
-          <InputLabel>Choose Specialist</InputLabel>
-          <Select
-            label="Choose Specialist"
-            value={selectedDoctor}
-            onChange={(e) => setSelectedDoctor(Number(e.target.value))}
-            disabled={loadingDoctors}
-            sx={{
-              "& .MuiInputBase-input.MuiSelect-select": {
-                color: "#000 !important",
-                fontSize: "0.85rem", // smaller font to fit nicely
-              },
-              "& .MuiSvgIcon-root": {
-                color: "#000",
-              },
-            }}
-          >
-            {loadingDoctors && (
-              <MenuItem value="">
-                <em>Loading...</em>
-              </MenuItem>
-            )}
+              {/* Dropdown (only show if Yes) */}
+              {referredToSpecialist === 1 && (
+                <Grid item xs={12} sm={6}>
+                  <FormControl fullWidth size="small">
+                    <InputLabel>Choose Specialist</InputLabel>
+                    <Select
+                      label="Choose Specialist"
+                      value={selectedDoctor}
+                      onChange={(e) =>
+                        setSelectedDoctor(Number(e.target.value))
+                      }
+                      disabled={loadingDoctors}
+                      sx={{
+                        "& .MuiInputBase-input.MuiSelect-select": {
+                          color: "#000 !important",
+                          fontSize: "0.85rem", // smaller font to fit nicely
+                        },
+                        "& .MuiSvgIcon-root": {
+                          color: "#000",
+                        },
+                      }}
+                    >
+                      {loadingDoctors && (
+                        <MenuItem value="">
+                          <em>Loading...</em>
+                        </MenuItem>
+                      )}
 
-            {doctorList.length > 0
-              ? doctorList.map((doc) => (
-                  <MenuItem key={doc.doctor_pk_id} value={doc.doctor_pk_id}>
-                    {doc.doctor_name}
-                  </MenuItem>
-                ))
-              : !loadingDoctors && (
-                  <MenuItem value="">
-                    <em>No Doctors Found</em>
-                  </MenuItem>
-                )}
-          </Select>
-        </FormControl>
-      </Grid>
-    )}
-  </Grid>
-)}
-
-
+                      {doctorList.length > 0
+                        ? doctorList.map((doc) => (
+                            <MenuItem
+                              key={doc.doctor_pk_id}
+                              value={doc.doctor_pk_id}
+                            >
+                              {doc.doctor_name}
+                            </MenuItem>
+                          ))
+                        : !loadingDoctors && (
+                            <MenuItem value="">
+                              <em>No Doctors Found</em>
+                            </MenuItem>
+                          )}
+                    </Select>
+                  </FormControl>
+                </Grid>
+              )}
+            </Grid>
+          )}
         </Card>
 
         <Box textAlign="center" mt={1} mb={2}>

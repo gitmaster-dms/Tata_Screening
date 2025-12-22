@@ -6,11 +6,12 @@ import PendingActionsIcon from "@mui/icons-material/PendingActions";
 import LocalHospitalIcon from "@mui/icons-material/LocalHospital";
 
 const DriverStatsCards = ({ data }) => {
+  console.log("Driver Stats Data:", data);
   // fallback to 0 if any key missing
   const cardData = [
     {
       title: "Total Drivers Added",
-      value: data?.Total_Drivers_Registered ?? 0,
+      value: data?.Total_Drivers_Added ?? 0,
       icon: <PersonAddIcon sx={{ color: "#fff", fontSize: 20 }} />,
       iconBg: "linear-gradient(140deg, #2FE5B5 0%, #0A8059 100%)",
     },

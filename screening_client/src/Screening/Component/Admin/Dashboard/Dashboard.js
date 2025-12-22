@@ -28,6 +28,7 @@ const Dashboard = () => {
   const refreshToken = localStorage.getItem("refreshToken");
   const [tabValue, setTabValue] = useState(0);
   const [dashboardData, setDashboardData] = useState(null);
+  console.log("dashboardData", dashboardData);
   const [loading, setLoading] = useState(true);
 
   const [stateList, setStateList] = useState([]);
@@ -97,24 +98,30 @@ const Dashboard = () => {
   const fetchDashboardData = async () => {
     try {
       setLoading(true);
-      const dtValue = tabValue === 0 ? 1 : tabValue === 1 ? 2 : 3; // example
-      const response = fetch(
-        `${port}/Screening/total_driver_count/?dt=${dtValue}/state=${selectedState}`,
+
+      const dtValue = tabValue === 0 ? 1 : tabValue === 1 ? 2 : 3;
+
+      const response = await fetch(
+        `${port}/Screening/total_driver_count/?dt=${dtValue}&state=${selectedState}`,
         {
           headers: {
-            Authorization: `Bearer ${accessToken }`,
+            Authorization: `Bearer ${accessToken}`,
             "Content-Type": "application/json",
           },
-          
         }
-        
       );
-      console.log("token", accessToken);
 
-      setDashboardData(response.data);
-      console.log("response--", response.data);
+      if (!response.ok) {
+        throw new Error("API failed");
+      }
+
+      const data = await response.json(); // ✅ VERY IMPORTANT
+
+      console.log("Dashboard API response:", data);
+      setDashboardData(data); // ✅ NOW IT WILL WORK
     } catch (error) {
-      console.error("Error fetching dashboard data:", error);
+      console.error("Dashboard API error:", error);
+      setDashboardData(null);
     } finally {
       setLoading(false);
     }
@@ -128,9 +135,11 @@ const Dashboard = () => {
   const fetchVitalsData = async () => {
     try {
       setLoading(true);
-      const dtValue = tabValue === 0 ? 1 : tabValue === 1 ? 2 : 3; // example
-      const response = fetch(
-        `${port}/Screening/bmi_vitals_count/?dt=${dtValue}/state=${selectedState}`,
+
+      const dtValue = tabValue === 0 ? 1 : tabValue === 1 ? 2 : 3;
+
+      const response = await fetch(
+        `${port}/Screening/bmi_vitals_count/?dt=${dtValue}&state=${selectedState}`,
         {
           headers: {
             Authorization: `Bearer ${accessToken || refreshToken}`,
@@ -138,10 +147,18 @@ const Dashboard = () => {
           },
         }
       );
-      setVitalsData(response.data);
-      console.log("response vitals", response.data);
+
+      if (!response.ok) {
+        throw new Error("Vitals API failed");
+      }
+
+      const data = await response.json(); // ✅ REQUIRED
+      console.log("Vitals API data:", data);
+
+      setVitalsData(data); // ✅ NOW IT WILL NOT BE UNDEFINED
     } catch (error) {
-      console.error("Error fetching dashboard data:", error);
+      console.error("Error fetching vitals data:", error);
+      setVitalsData(null);
     } finally {
       setLoading(false);
     }
@@ -155,9 +172,10 @@ const Dashboard = () => {
   const healthStatus = async () => {
     try {
       setLoading(true);
-      const dtValue = tabValue === 0 ? 1 : tabValue === 1 ? 2 : 3; // example
-      const response = fetch(
-        `${port}/Screening/health_score_count/?dt=${dtValue}/state=${selectedState}`,
+      const dtValue = tabValue === 0 ? 1 : tabValue === 1 ? 2 : 3;
+
+      const response = await fetch(
+        `${port}/Screening/health_score_count/?dt=${dtValue}&state=${selectedState}`,
         {
           headers: {
             Authorization: `Bearer ${accessToken || refreshToken}`,
@@ -165,14 +183,22 @@ const Dashboard = () => {
           },
         }
       );
-      setHealthStatusData(response.data);
-      console.log("response vitals", response.data);
+
+      if (!response.ok) {
+        throw new Error("Health Score API failed");
+      }
+
+      const data = await response.json(); // ✅ this is the actual JSON
+      setHealthStatusData(data); // ✅ now state is set correctly
+      console.log("Health Score Data:", data);
     } catch (error) {
-      console.error("Error fetching dashboard data:", error);
+      console.error("Error fetching health status:", error);
+      setHealthStatusData(null);
     } finally {
       setLoading(false);
     }
   };
+
   // refresh content while loading
   // if (loading || !dashboardData || !vitalsData) {
   //   return (
@@ -364,7 +390,7 @@ const Dashboard = () => {
         </Grid>
 
         {/* Right 3-column section for Vitals */}
-        
+
         <Grid item xs={12} md={3} sm={12} sx={{ height: "auto" }}>
           <VitalsCard vitalsData={vitalsData} />
         </Grid>
