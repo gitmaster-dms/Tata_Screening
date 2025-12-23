@@ -9,7 +9,8 @@ import {
   Typography,
   Snackbar,
   Alert,
-  Dialog,  DialogTitle,
+  Dialog,
+  DialogTitle,
   DialogContent,
   DialogActions,
 } from "@mui/material";
@@ -224,36 +225,40 @@ const Skin = ({
   };
   const handleSubmit = async (e) => {
     setOpenDialog(true);
-        e.preventDefault();
-        const postData = {
-            skin_conditions: formData.selectedNames,
-        };
-
-        try {
-            const response = await axios.post(
-                `${Port}/Screening/skincondition_post_api/${pkid}/`,
-                postData,
-                {
-                    headers: {
-                        Authorization: `Bearer ${accessToken}`,
-                        "Content-Type": "application/json",
-                    },
-                }
-            );
-
-            if ( response.status === 200) {
-              const responseData = response.data && response.data.data ? response.data.data : response.data;
-              const basicScreeningPkId = responseData.skin_pk_id || (response.data && response.data.skin_pk_id);
-                console.log("Skin Form Submitted Successfully");
-                openSnackbar("Skin Form Submitted Successfully.");
-                onAcceptClick(nextName, basicScreeningPkId);
-            }
-        } catch (error) {
-            console.error("Error posting data:", error);
-        }
+    e.preventDefault();
+    const postData = {
+      skin_conditions: formData.selectedNames,
     };
 
-     
+    try {
+      const response = await axios.post(
+        `${Port}/Screening/skincondition_post_api/${pkid}/`,
+        postData,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.status === 200) {
+        const responseData =
+          response.data && response.data.data
+            ? response.data.data
+            : response.data;
+        const basicScreeningPkId =
+          responseData.skin_pk_id ||
+          (response.data && response.data.skin_pk_id);
+        console.log("Skin Form Submitted Successfully");
+        openSnackbar("Skin Form Submitted Successfully.");
+        onAcceptClick(nextName, basicScreeningPkId);
+      }
+    } catch (error) {
+      console.error("Error posting data:", error);
+    }
+  };
+
   return (
     <Box>
       <Snackbar
@@ -304,7 +309,9 @@ const Skin = ({
                 label={item.skin_conditions}
                 sx={{
                   "& .MuiFormControlLabel-label": {
-                    fontSize: "0.9rem",
+                    fontWeight: 500,
+                    fontSize: "14px",
+                    fontFamily: "Roboto",
                     color: "#000",
                   },
                 }}
@@ -332,28 +339,28 @@ const Skin = ({
           >
             Submit
           </Button>
-           <Dialog open={openDialog} onClose={handleCancel}>
-                      <DialogTitle>Confirm Submission</DialogTitle>
-          
-                      <DialogContent>
-                        <Typography>
-                          Are you sure you want to submit this General Examination form?
-                        </Typography>
-                      </DialogContent>
-          
-                      <DialogActions>
-                        <Button onClick={handleCancel} color="error">
-                          Cancel
-                        </Button>
-                        <Button
-                          onClick={handleSubmit}
-                          color="primary"
-                          variant="contained"
-                        >
-                          Confirm
-                        </Button>
-                      </DialogActions>
-                    </Dialog>
+          <Dialog open={openDialog} onClose={handleCancel}>
+            <DialogTitle>Confirm Submission</DialogTitle>
+
+            <DialogContent>
+              <Typography>
+                Are you sure you want to submit this General Examination form?
+              </Typography>
+            </DialogContent>
+
+            <DialogActions>
+              <Button onClick={handleCancel} color="error">
+                Cancel
+              </Button>
+              <Button
+                onClick={handleSubmit}
+                color="primary"
+                variant="contained"
+              >
+                Confirm
+              </Button>
+            </DialogActions>
+          </Dialog>
         </Box>
       </Box>
     </Box>

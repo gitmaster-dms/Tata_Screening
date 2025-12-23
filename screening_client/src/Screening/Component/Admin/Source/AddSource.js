@@ -1688,10 +1688,11 @@ const AddSource = () => {
                       color: "white",
                       borderRadius: "20px",
                       px: 1,
-                      py: 0.5,
+                      py: 1,
                       mb: 2,
                       fontFamily: "Roboto",
-                      // fontWeight: 600,
+                      fontSize: "14px",
+                      fontWeight: 600,
                       textAlign: "center",
                     }}
                   >
@@ -1742,9 +1743,9 @@ const AddSource = () => {
                               },
                             }}
                           >
-                            <Box sx={{ flex: 0.8 }}>{serialNumber}</Box>
-                            <Box sx={{ flex: 2 }}>{info.Workshop_name}</Box>
-                            <Box sx={{ flex: 2 }}>{info.registration_no}</Box>
+                            <Box sx={{ flex: 0.8 , }}>{serialNumber}</Box>
+                            <Box sx={{ flex: 2 ,}}>{info.Workshop_name}</Box>
+                            <Box sx={{ flex: 2 ,}}>{info.registration_no}</Box>
                           </Card>
                         );
                       })}

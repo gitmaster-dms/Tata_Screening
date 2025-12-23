@@ -25,6 +25,36 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
+
+const selectSx = {
+  "& .MuiInputBase-input.MuiSelect-select": {
+    fontSize: { xs: "13px", sm: "14px" },
+    color: "#000",
+  },
+  "& .MuiSvgIcon-root": {
+    color: "#000",
+  },
+};
+
+const sectionTitleSx = {
+  fontSize: { xs: "14px", sm: "15px", md: "16px" },
+  fontWeight: 600,
+};
+
+const iconSx = {
+  height: { xs: "32px", sm: "36px" },
+  mr: 1.5,
+};
+
+const sectionCardSx = {
+  display: "flex",
+  alignItems: "center",
+  px: 1.5,
+  py: 1,
+  mb: 2,
+  width: "fit-content",
+  minWidth: { xs: "100%", sm: "12rem" },
+};
 const Generalexam = ({
   pkid,
   onAcceptClick,
@@ -613,9 +643,9 @@ const Generalexam = ({
                 component="img"
                 src={headpic}
                 alt="head"
-                sx={{ width: 50, mr: 2, backgroundColor: "#9ACAA1" }}
+                sx={{ width: 50, mr: 2, backgroundColor: "#9ACAA1" ,padding:"5px"}}
               />
-              <Typography variant="subtitle1">Head / Scalp</Typography>
+              <Typography sx={{fontSize:"16px",fontWeight:500,fontFamily:"Roboto"}}>Head / Scalp</Typography>
             </Card>
           </Grid>
         </Grid>
@@ -838,9 +868,9 @@ const Generalexam = ({
               component="img"
               src={dermatology}
               alt="skin"
-              sx={{ height: "2.5em", mr: 2, backgroundColor: "#F3D8A5" }}
+              sx={{ height: "2.5em", mr: 2, backgroundColor: "#F3D8A5" ,padding:"0.3em",}}
             />
-            <Typography variant="subtitle1">Skin</Typography>
+            <Typography sx={{fontSize:"16px",fontWeight:500,fontFamily:"Roboto"}}>Skin</Typography>
           </Card>
         </Box>
 
@@ -943,9 +973,9 @@ const Generalexam = ({
               component="img"
               src={mouth}
               alt="skin"
-              sx={{ height: "2.5em", mr: 2, backgroundColor: "#F3D8A5" }}
+              sx={{ height: "2.5em", mr: 2, backgroundColor: "#D27E7B" ,padding:"4px"}}
             />
-            <Typography variant="subtitle1">Mouth</Typography>
+            <Typography sx={{fontSize:"16px",fontWeight:500,fontFamily:"Roboto",}}>Mouth</Typography>
           </Card>
         </Box>
 
@@ -1101,9 +1131,9 @@ const Generalexam = ({
               component="img"
               src={torso}
               alt="skin"
-              sx={{ height: "2.5em", mr: 2, backgroundColor: "#F3D8A5" }}
+              sx={{ height: "2.5em", mr: 2, backgroundColor: "#6790D8" ,padding:"4px"}}
             />
-            <Typography variant="subtitle1">Other</Typography>
+            <Typography  sx={{fontSize:"16px",fontWeight:500,fontFamily:"Roboto"}}>Other</Typography>
           </Card>
         </Box>
 

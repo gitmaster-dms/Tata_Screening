@@ -385,7 +385,7 @@ const Permission = () => {
   };
 
   return (
-    <Box>
+    <Box sx={{ m: "0.0em 0em 0 1em" }}>
       {/* Snackbar */}
       <Snackbar
         open={snackbarOpen}
@@ -404,7 +404,7 @@ const Permission = () => {
       </Snackbar>
 
       <Box sx={{ backgroundColor: "#f5f5f5", py: 1 }}>
-        <Box sx={{ width: "91%", mx: "auto", mr: 2 }}>
+        <Box sx={{ width: "95%", mx: "auto", mr: 2 }}>
           {/* =========================== */}
           {/* DROPDOWN CARD */}
           {/* =========================== */}

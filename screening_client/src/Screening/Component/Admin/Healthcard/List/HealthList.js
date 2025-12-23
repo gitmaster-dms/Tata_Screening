@@ -35,6 +35,16 @@ import PftHealth from "../HealthcardVitals/PftHealth";
 import EmailIcon from "@mui/icons-material/Email";
 import LanguageIcon from "@mui/icons-material/Language";
 import sperologo from "../../../../Images/Spero Logo ©-03 2.png";
+import {
+  TableContainer,
+  Table,
+  TableHead,
+  TableBody,
+  TableRow,
+  TableCell,
+  Paper,
+  TableFooter,
+} from "@mui/material";
 
 const HealthList = () => {
   const Port = process.env.REACT_APP_API_KEY;
@@ -771,7 +781,6 @@ const HealthList = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [filteredResults, setFilteredResults] = useState(searchResults);
 
-
   // new code
   // useEffect(() => {
   //   const filtered = searchResults.filter(
@@ -783,22 +792,22 @@ const HealthList = () => {
   //   setFilteredResults(filtered);
   // }, [searchQuery, searchResults]);
 
-// old code for search
+  // old code for search
   useEffect(() => {
-  if (!Array.isArray(searchResults)) {
-    setFilteredResults([]);
-    return;
-  }
+    if (!Array.isArray(searchResults)) {
+      setFilteredResults([]);
+      return;
+    }
 
-  const filtered = searchResults.filter(
-    (result) =>
-      (result.name &&
-        result.name.toLowerCase().includes(searchQuery.toLowerCase())) ||
-      (result.aadhar_id && result.aadhar_id.includes(searchQuery))
-  );
+    const filtered = searchResults.filter(
+      (result) =>
+        (result.name &&
+          result.name.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        (result.aadhar_id && result.aadhar_id.includes(searchQuery))
+    );
 
-  setFilteredResults(filtered);
-}, [searchQuery, searchResults]);
+    setFilteredResults(filtered);
+  }, [searchQuery, searchResults]);
 
   const handleSearchChange = (event) => {
     setSearchQuery(event.target.value);
@@ -1046,7 +1055,7 @@ const HealthList = () => {
                   style: { fontWeight: 100, fontSize: "14px" },
                 }}
               >
-                <MenuItem value="">Select  State</MenuItem>
+                <MenuItem value="">Select State</MenuItem>
                 {sourceStateNav.map((drop) => (
                   <MenuItem key={drop.source_state} value={drop.source_state}>
                     {drop.state_name}
@@ -1069,7 +1078,7 @@ const HealthList = () => {
                   style: { fontWeight: 100, fontSize: "14px" },
                 }}
               >
-                <MenuItem value="">Select  District</MenuItem>
+                <MenuItem value="">Select District</MenuItem>
                 {sourceDistrictNav.map((drop) => (
                   <MenuItem
                     key={drop.source_district}
@@ -1166,71 +1175,103 @@ const HealthList = () => {
             onChange={handleSearchChange}
           />
 
-          <table className="table table-borderless">
-            <thead>
-              <tr className="card cardheadhealthcard">
-                <th className="col">Citizen Name</th>
-                <th className="col">Aadhar ID</th>
-                <th className="col">Action</th>
-              </tr>
-            </thead>
-
-            <tbody>
-              {loading ? (
-                <tr>
-                  <td colSpan="3" className="text-center">
-                    <CircularProgress
-                      className="circular-progress-containerscreeninglist"
-                      style={{ margin: "auto" }}
-                    />
-                  </td>
-                </tr>
-              ) : filteredResults.length === 0 ? (
-                <tr>
-                  <td className="nodatafounddddd" colSpan="3">
-                    No data found
-                  </td>
-                </tr>
-              ) : (
-                slicedResults.map((result, index) => (
-                  <tr
-                    key={index}
-                    className={`card cardbodyhealthcard ${
-                      result.citizen_id === selectedCitizenId ? "hovered" : ""
-                    }`}
-                    onClick={() => handleEyeClick(result.citizen_id)}
+          <TableContainer component={Paper} sx={{ borderRadius: 2 }}>
+            <Table size="small">
+              {/* Table Head */}
+              <TableHead>
+                <TableRow
+                  sx={{
+                    background:
+                      "linear-gradient(90deg, #2FB3F5 0%, #1439A4 100%)",
+                  }}
+                >
+                  <TableCell
+                    sx={{
+                      color: "white",
+                      borderRight: "1px solid white",
+                      fontWeight: 600,
+                      fontSize: "16px",
+                      fontFamily: "Robot",
+                    }}
                   >
-                    <td className="col">
-                      {result.name.charAt(0).toUpperCase() +
-                        result.name.slice(1).toLowerCase()}
-                    </td>
-                    <td className="col">{result.aadhar_id}</td>
-                    <td className="col">
-                      <RemoveRedEyeOutlinedIcon />
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
+                    Citizen Name
+                  </TableCell>
+                  <TableCell
+                    sx={{
+                      color: "white",
+                      borderRight: "1px solid white",
+                      fontWeight: 600,
+                      fontSize: "16px",
+                      fontFamily: "Roboto",
+                    }}
+                  >
+                    Aadhar ID
+                  </TableCell>
+                  <TableCell
+                    align="center"
+                    sx={{
+                      color: "white",
+                      fontWeight: 600,
+                      fontSize: "16px",
+                      fontFamily: "Roboto",
+                    }}
+                  >
+                    Action
+                  </TableCell>
+                </TableRow>
+              </TableHead>
 
-            <tfoot>
-              <tr>
-                <td colSpan="3">
-                  <div className="paginationnew" style={{ marginTop: "0%" }}>
-                    <TablePagination
-                      component="div"
-                      count={filteredResults.length}
-                      page={page}
-                      onPageChange={handleChangePage}
-                      rowsPerPage={rowsPerPage}
-                      onRowsPerPageChange={handleChangeRowsPerPage}
-                      rowsPerPageOptions={[5, 10, 20]}
-                    />
-                  </div>
-                </td>
-              </tr>
-            </tfoot>
-          </table>
+              {/* Table Body */}
+              <TableBody>
+                {loading ? (
+                  <TableRow>
+                    <TableCell colSpan={3} align="center">
+                      <CircularProgress />
+                    </TableCell>
+                  </TableRow>
+                ) : filteredResults.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={3} align="center">
+                      No data found
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  slicedResults.map((result, index) => (
+                    <TableRow
+                      key={index}
+                      hover
+                      selected={result.citizen_id === selectedCitizenId}
+                      sx={{ cursor: "pointer" }}
+                      onClick={() => handleEyeClick(result.citizen_id)}
+                    >
+                      <TableCell>
+                        {result.name.charAt(0).toUpperCase() +
+                          result.name.slice(1).toLowerCase()}
+                      </TableCell>
+                      <TableCell>{result.aadhar_id}</TableCell>
+                      <TableCell align="center">
+                        <RemoveRedEyeOutlinedIcon />
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
+              </TableBody>
+
+              {/* Table Footer / Pagination */}
+              <TableFooter>
+                <TableRow>
+                  <TablePagination
+                    count={filteredResults.length}
+                    page={page}
+                    onPageChange={handleChangePage}
+                    rowsPerPage={rowsPerPage}
+                    onRowsPerPageChange={handleChangeRowsPerPage}
+                    rowsPerPageOptions={[5, 10, 20]}
+                  />
+                </TableRow>
+              </TableFooter>
+            </Table>
+          </TableContainer>
         </Grid>
 
         {/* RIGHT PANEL – MAIN CONTENT */}

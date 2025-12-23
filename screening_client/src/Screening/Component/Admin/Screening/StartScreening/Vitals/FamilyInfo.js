@@ -179,6 +179,7 @@ const FamilyInfo = ({
                   "& .MuiOutlinedInput-input": {
                     // targets displayed text
                     color: "#000 !important",
+                                
                   },
                 }}
               >

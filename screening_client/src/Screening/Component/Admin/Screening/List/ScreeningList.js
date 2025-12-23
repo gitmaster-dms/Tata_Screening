@@ -298,7 +298,7 @@ const ScreeningList = () => {
                       select
                       fullWidth
                       size="small"
-                      label="Workshop Type"
+                      label="Category Type"
                       value={selectedType}
                       onChange={(event) => setSelectedType(event.target.value)}
                      InputLabelProps={{

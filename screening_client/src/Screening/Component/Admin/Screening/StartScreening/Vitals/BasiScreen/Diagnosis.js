@@ -10,7 +10,8 @@ import {
   Paper,
   Snackbar,
   Alert,
-  Dialog,  DialogTitle,
+  Dialog,
+  DialogTitle,
   DialogContent,
   DialogActions,
 } from "@mui/material";
@@ -153,14 +154,13 @@ const Diagnosis = ({
     }));
   };
 
-
-    const [openDialog, setOpenDialog] = useState(false);
-      const handleCancel = () => {
-        setOpenDialog(false);
-      };
-      const handleOpenDialog = () => {
-        setOpenDialog(true);
-      };
+  const [openDialog, setOpenDialog] = useState(false);
+  const handleCancel = () => {
+    setOpenDialog(false);
+  };
+  const handleOpenDialog = () => {
+    setOpenDialog(true);
+  };
   // ---------------- SUBMIT HANDLER ----------------
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -268,8 +268,9 @@ const Diagnosis = ({
                   <Typography
                     sx={{
                       color: "#000",
-                      fontSize: "0.9rem",
-                      fontFamily: "Playfair Display",
+                      fontWeight: 500,
+                      fontSize: "14px",
+                      fontFamily: "Roboto",
                     }}
                   >
                     {item.diagnosis}

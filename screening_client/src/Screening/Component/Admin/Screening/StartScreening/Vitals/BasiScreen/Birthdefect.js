@@ -10,7 +10,8 @@ import {
   Paper,
   Snackbar,
   Alert,
-  Dialog,  DialogTitle,
+  Dialog,
+  DialogTitle,
   DialogContent,
   DialogActions,
 } from "@mui/material";
@@ -166,7 +167,7 @@ const Birthdefect = ({
     }
   };
 
-     const handleCancel = () => {
+  const handleCancel = () => {
     setOpenDialog(false);
   };
 
@@ -213,7 +214,9 @@ const Birthdefect = ({
                 />
               }
               label={
-                <Typography variant="body2" sx={{ color: "#000" }}>
+                <Typography variant="body2" sx={{ color: "#000" ,
+                fontWeight: 500,fontSize:"14px" ,fontFamily:"Roboto"
+                }}>
                   {item.birth_defects}
                 </Typography>
               }
@@ -243,24 +246,28 @@ const Birthdefect = ({
           >
             Submit
           </Button>
-            <Dialog open={openDialog} onClose={handleCancel}>
-                              <DialogTitle>Confirm Submission</DialogTitle>
-                    
-                              <DialogContent>
-                                <Typography>
-                                  Are you sure you want to submit this General Examination form?
-                                </Typography>
-                              </DialogContent>
-                    
-                              <DialogActions>
-                                <Button onClick={handleCancel} color="error">
-                                  Cancel
-                                </Button>
-                                <Button onClick={handleSubmit} color="primary" variant="contained">
-                                  Confirm
-                                </Button>
-                              </DialogActions>
-                            </Dialog>
+          <Dialog open={openDialog} onClose={handleCancel}>
+            <DialogTitle>Confirm Submission</DialogTitle>
+
+            <DialogContent>
+              <Typography>
+                Are you sure you want to submit this General Examination form?
+              </Typography>
+            </DialogContent>
+
+            <DialogActions>
+              <Button onClick={handleCancel} color="error">
+                Cancel
+              </Button>
+              <Button
+                onClick={handleSubmit}
+                color="primary"
+                variant="contained"
+              >
+                Confirm
+              </Button>
+            </DialogActions>
+          </Dialog>
         </Grid>
       </Grid>
     </Box>

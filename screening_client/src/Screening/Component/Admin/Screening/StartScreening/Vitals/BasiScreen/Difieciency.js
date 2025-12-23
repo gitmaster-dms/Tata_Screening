@@ -9,7 +9,8 @@ import {
   Typography,
   Snackbar,
   Alert,
-  Dialog,  DialogTitle,
+  Dialog,
+  DialogTitle,
   DialogContent,
   DialogActions,
 } from "@mui/material";
@@ -146,13 +147,13 @@ const Difieciency = ({
       }));
     }
   }, [deficiencies, allData]);
-    const [openDialog, setOpenDialog] = useState(false);
-      const handleCancel = () => {
-        setOpenDialog(false);
-      };
-      const handleOpenDialog = () => {
-        setOpenDialog(true);
-      }
+  const [openDialog, setOpenDialog] = useState(false);
+  const handleCancel = () => {
+    setOpenDialog(false);
+  };
+  const handleOpenDialog = () => {
+    setOpenDialog(true);
+  };
   const handleSubmit = async (e) => {
     setOpenDialog(true);
     e.preventDefault();
@@ -241,8 +242,10 @@ const Difieciency = ({
                 label={item.deficiencies}
                 sx={{
                   "& .MuiFormControlLabel-label": {
-                    fontSize: "0.9rem",
                     color: "#000",
+                    fontWeight: 500,
+                    fontSize: "14px",
+                    fontFamily: "Roboto",
                   },
                 }}
               />
@@ -255,7 +258,8 @@ const Difieciency = ({
             size="small"
             sx={{ bgcolor: "#1439A4", textTransform: "none" }}
             onClick={handleOpenDialog}
-            type="button">
+            type="button"
+          >
             Submit
           </Button>
           <Dialog open={openDialog} onClose={handleCancel}>

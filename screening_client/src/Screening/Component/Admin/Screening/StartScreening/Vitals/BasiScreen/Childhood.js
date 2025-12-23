@@ -11,7 +11,8 @@ import {
   Paper,
   Snackbar,
   Alert,
-  Dialog,  DialogTitle,
+  Dialog,
+  DialogTitle,
   DialogContent,
   DialogActions,
 } from "@mui/material";
@@ -62,28 +63,30 @@ const Childhood = ({
     }
   }, [selectedTab, subVitalList]);
 
-
-    useEffect(() => {
-      const fetchChildhoodList = async () => {
-        try {
-          const response = await axios.get(`${Port}/Screening/childhood_disease/`, {
+  useEffect(() => {
+    const fetchChildhoodList = async () => {
+      try {
+        const response = await axios.get(
+          `${Port}/Screening/childhood_disease/`,
+          {
             headers: {
               Authorization: `Bearer ${accessToken}`,
               "Content-Type": "application/json",
             },
-          });
-          setChildhoodList(response.data);
-          setFormData((prev) => ({
-            ...prev,
-            checkboxes: new Array(response.data.length).fill(false),
-          }));
-          console.log("Fetched childhood master list:", response.data.length);
-        } catch (error) {
-          console.error("Error fetching master childhood list:", error);
-        }
-      };
-      fetchChildhoodList();
-    }, [Port, accessToken]);
+          }
+        );
+        setChildhoodList(response.data);
+        setFormData((prev) => ({
+          ...prev,
+          checkboxes: new Array(response.data.length).fill(false),
+        }));
+        console.log("Fetched childhood master list:", response.data.length);
+      } catch (error) {
+        console.error("Error fetching master childhood list:", error);
+      }
+    };
+    fetchChildhoodList();
+  }, [Port, accessToken]);
   // 🔹 Fetch childhood disease options
   useEffect(() => {
     const fetchChildhoodScreeningData = async () => {
@@ -131,7 +134,7 @@ const Childhood = ({
     const postData = {
       childhood_diseases: selectedIdsClean,
     };
-    console.log("Submitting Childhood POST:", postData)
+    console.log("Submitting Childhood POST:", postData);
 
     try {
       const response = await axios.post(
@@ -162,7 +165,11 @@ const Childhood = ({
 
   // 🔹 Initialize checkbox selection from the screening GET API
   useEffect(() => {
-    if (childhoodList.length > 0 && Array.isArray(screeningData) && screeningData.length > 0) {
+    if (
+      childhoodList.length > 0 &&
+      Array.isArray(screeningData) &&
+      screeningData.length > 0
+    ) {
       const screeningInfo = screeningData[0];
       const childHoodDisease = (screeningInfo.childhood_diseases || [])
         .filter((id) => id != null)
@@ -180,7 +187,7 @@ const Childhood = ({
     }
   }, [childhoodList, screeningData]);
 
-     const handleCancel = () => {
+  const handleCancel = () => {
     setOpenDialog(false);
   };
 
@@ -239,7 +246,15 @@ const Childhood = ({
                     />
                   }
                   label={
-                    <Typography variant="body2" color="textPrimary">
+                    <Typography
+                      variant="body2"
+                      sx={{
+                        color: "#000",
+                        fontWeight: 500,
+                        fontSize: "14px",
+                        fontFamily: "Roboto",
+                      }}
+                    >
                       {item.childhood_disease}
                     </Typography>
                   }
@@ -268,24 +283,28 @@ const Childhood = ({
           >
             Submit
           </Button>
-           <Dialog open={openDialog} onClose={handleCancel}>
-                                        <DialogTitle>Confirm Submission</DialogTitle>
-                              
-                                        <DialogContent>
-                                          <Typography>
-                                            Are you sure you want to submit this General Examination form?
-                                          </Typography>
-                                        </DialogContent>
-                              
-                                        <DialogActions>
-                                          <Button onClick={handleCancel} color="error">
-                                            Cancel
-                                          </Button>
-                                          <Button onClick={handleSubmit} color="primary" variant="contained">
-                                            Confirm
-                                          </Button>
-                                        </DialogActions>
-                                      </Dialog>
+          <Dialog open={openDialog} onClose={handleCancel}>
+            <DialogTitle>Confirm Submission</DialogTitle>
+
+            <DialogContent>
+              <Typography>
+                Are you sure you want to submit this General Examination form?
+              </Typography>
+            </DialogContent>
+
+            <DialogActions>
+              <Button onClick={handleCancel} color="error">
+                Cancel
+              </Button>
+              <Button
+                onClick={handleSubmit}
+                color="primary"
+                variant="contained"
+              >
+                Confirm
+              </Button>
+            </DialogActions>
+          </Dialog>
         </Box>
       </Box>
     </Box>

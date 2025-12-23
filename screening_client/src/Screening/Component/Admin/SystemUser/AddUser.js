@@ -143,9 +143,7 @@ const AddUser = () => {
   const [selectedStateNav, setSelectedStateNav] = useState("");
 
   const [districtOptionsNav, setDistrictOptionsNav] = useState([]);
-  const [selectedDistrictNav, setSelectedDistrictNav] = useState(
-   
-  );
+  const [selectedDistrictNav, setSelectedDistrictNav] = useState();
 
   const [talukaOptionsNav, setTalukaOptionsNav] = useState([]);
   const [selectedTalukaNav, setSelectedTalukaNav] = useState("");
@@ -1749,6 +1747,7 @@ const AddUser = () => {
                   <>
                     {/* TABLE HEADER */}
                     <Table
+                      size="small"
                       sx={{
                         borderCollapse: "separate",
                         borderSpacing: 0,
@@ -1762,6 +1761,14 @@ const AddUser = () => {
                           sx={{
                             background:
                               "linear-gradient(90deg, #2FB3F5 0%, #1439A4 100%)",
+                            "& th:first-of-type": {
+                              borderTopLeftRadius: "40px",
+                              borderBottomLeftRadius: "40px",
+                            },
+                            "& th:last-of-type": {
+                              borderTopRightRadius: "40px",
+                              borderBottomRightRadius: "40px",
+                            },
                           }}
                         >
                           {["Sr No", "User Name", "Mobile No", "Email ID"].map(
@@ -1769,8 +1776,9 @@ const AddUser = () => {
                               <TableCell
                                 key={i}
                                 sx={{
-                                  fontSize: "0.72rem",
+                                  fontSize: "14px",
                                   fontWeight: 600,
+                                  fontFamily: "Roboto",
                                   lineHeight: 1,
                                   color: "#fff",
                                   whiteSpace: "nowrap",
@@ -1805,7 +1813,9 @@ const AddUser = () => {
                                 // transition: "all 0.2s ease-in-out",
                                 // "&:hover": { boxShadow: 6 },
                                 borderRadius: "2px",
-                                fontSize: "12px",
+                                fontSize: "13px",
+                                fontWeight: 500,
+                                fontFamily: "Roboto",
                               }}
                               onClick={() => {
                                 handleTableRowClick(item.pk);
@@ -1820,25 +1830,49 @@ const AddUser = () => {
                                   textAlign="center"
                                 >
                                   <Grid item sx={{ flex: 2 }}>
-                                    <Typography sx={{ fontSize: "12px" }}>
+                                    <Typography
+                                      sx={{
+                                        fontSize: "15px",
+                                        fontWeight: 500,
+                                        fontFamily: "Roboto",
+                                      }}
+                                    >
                                       {serialNumber}
                                     </Typography>
                                   </Grid>
 
                                   <Grid item sx={{ flex: 5 }}>
-                                    <Typography sx={{ fontSize: "12px" }}>
+                                    <Typography
+                                      sx={{
+                                        fontSize: "15px",
+                                        fontWeight: 500,
+                                        fontFamily: "Roboto",
+                                      }}
+                                    >
                                       {item.clg_ref_id}
                                     </Typography>
                                   </Grid>
 
                                   <Grid item sx={{ flex: 3 }}>
-                                    <Typography sx={{ fontSize: "12px" }}>
+                                    <Typography
+                                      sx={{
+                                        fontSize: "15px",
+                                        fontWeight: 500,
+                                        fontFamily: "Roboto",
+                                      }}
+                                    >
                                       {item.clg_mobile_no}
                                     </Typography>
                                   </Grid>
 
                                   <Grid item sx={{ flex: 3.5 }}>
-                                    <Typography sx={{ fontSize: "12px" }}>
+                                    <Typography
+                                      sx={{
+                                        fontSize: "15px",
+                                        fontWeight: 500,
+                                        fontFamily: "Roboto",
+                                      }}
+                                    >
                                       {item.clg_email}
                                     </Typography>
                                   </Grid>
@@ -1848,7 +1882,10 @@ const AddUser = () => {
                           );
                         })
                       ) : (
-                        <Typography align="center" sx={{ mt: 2 }}>
+                        <Typography
+                          align="center"
+                          sx={{ mt: 2, textAlign: "center" }}
+                        >
                           No data found
                         </Typography>
                       )}

@@ -236,8 +236,8 @@ setOpenDialog(true);
                   <Typography
                     sx={{
                       color: "#000",
-                      fontSize: "0.9rem",
-                      fontFamily: "Playfair Display",
+                                      fontWeight: 500,fontSize:"14px" ,fontFamily:"Roboto",
+
                     }}
                   >
                     {item.check_box_if_normal}

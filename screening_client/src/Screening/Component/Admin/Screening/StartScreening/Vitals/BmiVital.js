@@ -254,7 +254,7 @@ const BmiVital = ({
         openSnackbar("Data updated successfully!", "success");
         onAcceptClick(nextName);
       } else if (response.status === 400) {
-        openSnackbar("Bad request. Please check your data.", "error");
+        openSnackbar("Plese Select Doctor", "error");
       } else if (response.status === 500) {
         openSnackbar("Internal Server Error. Try again later.", "error");
       } else {
@@ -641,75 +641,90 @@ const BmiVital = ({
             <Grid item xs={12} sm={7}>
               <Card
                 sx={{
-                  p: 2,
-                  height: "auto",
+                  p: 2.5,
+                  borderRadius: "12px",
                   background:
                     "linear-gradient(180deg, #039BEF 0%, #1439A4 100%)",
                   color: "white",
+                  position: "relative",
                 }}
               >
-                <Typography variant="subtitle2" fontWeight="bold" mb={1}>
-                  Body Mass Index (BMI)
+                {/* Title */}
+                <Typography variant="subtitle2" fontWeight="bold">
+                  Body Mass Index
                 </Typography>
-                <Typography variant="h6" color="white">
+
+                {/* BMI Value */}
+                <Typography variant="h4" fontWeight="bold" mt={0.5}>
                   {bmiData.citizen_info.bmi || "--"}
                 </Typography>
 
-                <Typography variant="body2" mt={1} sx={{ color: "white" }}>
+                {/* Status Text */}
+                <Typography variant="body2" mt={0.5}>
                   {bmiData.citizen_info.bmi < 18.5
-                    ? "You are Underweight."
+                    ? "You're Underweight"
                     : bmiData.citizen_info.bmi < 25
-                    ? "You are Normal."
+                    ? "You're Healthy"
                     : bmiData.citizen_info.bmi < 30
-                    ? "You are Overweight."
-                    : "Obese."}
+                    ? "You're Overweight"
+                    : "You're Obese"}
                 </Typography>
 
-                <Divider sx={{ my: 2 }} />
+                <Typography variant="caption" sx={{ opacity: 0.9 }}>
+                  By maintaining a healthy weight, you lower your risk of
+                  developing serious health problems.
+                </Typography>
 
+                {/* BMI Scale */}
+                <Box sx={{ mt: 3, position: "relative" }}>
+                  {/* Color Bar */}
+                  <Box
+                    sx={{
+                      height: 10,
+                      borderRadius: 10,
+                      background:
+                        "linear-gradient(90deg, #FF3D00 0%, #FFC107 30%, #4CAF50 55%, #2E7D32 100%)",
+                    }}
+                  />
+
+                  {/* Indicator */}
+                  <Box
+                    sx={{
+                      position: "absolute",
+                      top: -8,
+                      left: `${
+                        bmiData.citizen_info.bmi < 18.5
+                          ? 15
+                          : bmiData.citizen_info.bmi < 25
+                          ? 40
+                          : bmiData.citizen_info.bmi < 30
+                          ? 65
+                          : 85
+                      }%`,
+                      transform: "translateX(-50%)",
+                    }}
+                  >
+                    <Box
+                      sx={{
+                        width: 3,
+                        height: 20,
+                        bgcolor: "yellow",
+                        borderRadius: 2,
+                      }}
+                    />
+                  </Box>
+                </Box>
+
+                {/* Labels */}
                 <Grid
                   container
                   justifyContent="space-between"
-                  sx={{ color: "white" }}
+                  sx={{ mt: 1, fontSize: 12, opacity: 0.9 }}
                 >
-                  {["Underweight", "Normal", "Overweight", "Obesity"].map(
-                    (label, index) => (
-                      <Typography
-                        key={index}
-                        sx={{
-                          fontWeight:
-                            (label === "Underweight" &&
-                              bmiData.citizen_info.bmi < 18.5) ||
-                            (label === "Normal" &&
-                              bmiData.citizen_info.bmi >= 18.5 &&
-                              bmiData.citizen_info.bmi < 25) ||
-                            (label === "Overweight" &&
-                              bmiData.citizen_info.bmi >= 25 &&
-                              bmiData.citizen_info.bmi < 30) ||
-                            (label === "Obesity" &&
-                              bmiData.citizen_info.bmi >= 30)
-                              ? "bold"
-                              : "normal",
-                          color:
-                            (label === "Underweight" &&
-                              bmiData.citizen_info.bmi < 18.5) ||
-                            (label === "Normal" &&
-                              bmiData.citizen_info.bmi >= 18.5 &&
-                              bmiData.citizen_info.bmi < 25) ||
-                            (label === "Overweight" &&
-                              bmiData.citizen_info.bmi >= 25 &&
-                              bmiData.citizen_info.bmi < 30) ||
-                            (label === "Obesity" &&
-                              bmiData.citizen_info.bmi >= 30)
-                              ? "red"
-                              : "white",
-                          fontSize: 14,
-                        }}
-                      >
-                        {label}
-                      </Typography>
-                    )
-                  )}
+                  <Typography>Underweight</Typography>
+                  <Typography>Normal</Typography>
+                  <Typography>Overweight</Typography>
+                  <Typography>Obesity</Typography>
                 </Grid>
               </Card>
 
@@ -847,7 +862,7 @@ const BmiVital = ({
               {referredToSpecialist === 1 && (
                 <Grid item xs={12} sm={6}>
                   <FormControl fullWidth size="small">
-                    <InputLabel>Choose Specialist</InputLabel>
+                    <InputLabel>Choose Doctor</InputLabel>
                     <Select
                       label="Choose Specialist"
                       value={selectedDoctor}
@@ -908,4 +923,25 @@ const BmiVital = ({
   );
 };
 
+const selectSx = {
+  "& .MuiInputBase-input.MuiSelect-select": {
+    fontSize: { xs: "13px", sm: "14px" },
+    color: "#000",
+  },
+  "& .MuiSvgIcon-root": {
+    color: "#000",
+  },
+};
+
+const titleSx = {
+  fontWeight: 600,
+  fontSize: { xs: "14px", sm: "15px", md: "16px" },
+};
+
+const pastelCard = (bg) => ({
+  p: 1,
+  mb: 1,
+  borderRadius: "14px",
+  background: bg,
+});
 export default BmiVital;

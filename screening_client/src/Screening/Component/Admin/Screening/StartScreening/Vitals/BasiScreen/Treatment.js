@@ -1,6 +1,21 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Snackbar, Alert } from "@mui/material";
+import {
+  Snackbar,
+  Alert,
+  Button,
+  Grid,
+  FormControl,
+  FormControlLabel,
+  RadioGroup,
+  Radio,
+  TextField,
+  Typography,
+  MenuItem,
+  Select,
+  InputLabel,
+} from "@mui/material";
+import { API_URL } from "../../../../../../../Config/api";
 
 const Treatment = ({
   pkid,
@@ -25,6 +40,8 @@ const Treatment = ({
   console.log(selectedTab, "Present name");
   console.log(subVitalList, "Overall GET API");
   const [nextName, setNextName] = useState("");
+  const [loadingDoctors, setLoadingDoctors] = useState(false);
+  const [selectedDoctor, setSelectedDoctor] = useState("");
 
   useEffect(() => {
     if (subVitalList && selectedTab) {
@@ -77,6 +94,36 @@ const Treatment = ({
     schedule_id: scheduleID,
     citizen_id: citizenidddddddd,
   });
+
+  const [doctorList, setDoctorList] = useState([]);
+
+  useEffect(() => {
+    if (referredToSpecialist === 1) {
+      fetchDoctors();
+    } else {
+      setDoctorList([]);
+    }
+  }, [referredToSpecialist]);
+
+  const fetchDoctors = async () => {
+    try {
+      setLoadingDoctors(true);
+
+      const res = await fetch(`${API_URL}/Screening/Doctor_List/`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      const data = await res.json();
+      setDoctorList(data || []);
+    } catch (error) {
+      console.error("Error fetching doctors:", error);
+    } finally {
+      setLoadingDoctors(false);
+    }
+  };
+  console.log("Selected doctor:", selectedDoctor);
 
   const handleChange = (e) => {
     setTreatmentForm({
@@ -167,7 +214,6 @@ const Treatment = ({
         // onAcceptClick('Female Child Screening', basicScreeningPkId);
         openSnackbar("Treatment form submitted successfully");
         onAcceptClick(nextName, basicScreeningPkId);
-
       } else if (response.status === 400) {
         console.error("Bad Request:");
       } else {
@@ -215,7 +261,8 @@ const Treatment = ({
   }, []);
 
   return (
-    <div>
+    <>
+      {/* Snackbar */}
       <Snackbar
         open={snackbar.open}
         autoHideDuration={3000}
@@ -231,135 +278,174 @@ const Treatment = ({
           {snackbar.message}
         </Alert>
       </Snackbar>
-      <h5 className="vitaltitlebasicscreen">Treatment</h5>
-      <div className="elementvital"></div>
+
+      <Typography variant="h6" sx={{ mb: 1,fontWeight: 580, fontSize: "20px",color:"black" }}>
+        Treatment
+      </Typography>
+
       <form onSubmit={handleSubmit}>
-        <div className="row headeskinvital">
-          <div className="col-md-4">
-            <label className="Visually-hidden basicscreenheadline">
-              Treatment For
-            </label>
-            <input
-              className="form-control form-control formbasiccc"
+        <Grid container spacing={2}>
+          {/* Treatment For */}
+          <Grid item xs={12} md={4}>
+            <TextField
+              fullWidth
+              size="small"
+              label="Treatment For"
               name="treatment_for"
               value={treatmentForm.treatment_for}
               onChange={handleChange}
             />
-          </div>
+          </Grid>
 
-          <div className="col-md-4">
-            <label className="Visually-hidden basicscreenheadline">
-              Referral
-            </label>
-            <select
-              className="form-control form-select form-select-sm selectdropexam"
-              onChange={handleChange}
-              name="referral"
-              value={treatmentForm.referral}
-            >
-              <option selected>Select</option>
-              {referral.map((drop) => (
-                <option key={drop.referral_id} value={drop.referral_id}>
-                  {drop.referral}
-                </option>
-              ))}
-            </select>
-          </div>
+          {/* Referral */}
+          <Grid item xs={12} md={4}>
+            <FormControl fullWidth size="small">
+              <InputLabel>Referral</InputLabel>
+              <Select
+                label="Referral"
+                name="referral"
+                value={treatmentForm.referral}
+                onChange={handleChange}
+              >
+                <MenuItem value="">
+                  <em>Select</em>
+                </MenuItem>
+                {referral.map((drop) => (
+                  <MenuItem key={drop.referral_id} value={drop.referral_id}>
+                    {drop.referral}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
 
-          <div className="col-md-4">
-            <label className="Visually-hidden basicscreenheadline">
-              Reason For Referral
-            </label>
-            <input
-              className="form-control form-control formbasiccc"
+          {/* Reason For Referral */}
+          <Grid item xs={12} md={4}>
+            <TextField
+              fullWidth
+              size="small"
+              label="Reason For Referral"
               name="reason_for_referral"
               value={treatmentForm.reason_for_referral}
               onChange={handleChange}
             />
-          </div>
+          </Grid>
 
-          <div className="col-md-4 mb-2">
-            <label className="Visually-hidden basicscreenheadline">
-              Place Referral
-            </label>
-            <select
-              className="form-control form-select form-select-sm selectdropexam"
-              onChange={handleChange}
-              name="place_referral"
-              value={treatmentForm.place_referral}
-            >
-              <option selected>Select</option>
-              {placereferaal.map((drop) => (
-                <option
-                  key={drop.place_referral_id}
-                  value={drop.place_referral_id}
-                >
-                  {drop.place_referral}
-                </option>
-              ))}
-            </select>
-          </div>
+          {/* Place Referral */}
+          <Grid item xs={12} md={4}>
+            <FormControl fullWidth size="small">
+              <InputLabel>Place Referral</InputLabel>
+              <Select
+                label="Place Referral"
+                name="place_referral"
+                value={treatmentForm.place_referral}
+                onChange={handleChange}
+              >
+                <MenuItem value="">
+                  <em>Select</em>
+                </MenuItem>
+                {placereferaal.map((drop) => (
+                  <MenuItem
+                    key={drop.place_referral_id}
+                    value={drop.place_referral_id}
+                  >
+                    {drop.place_referral}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
 
-          <div className="col-md-4">
-            <label className="Visually-hidden basicscreenheadline">
-              Outcome
-            </label>
-            <input
-              className="form-control form-control formbasiccc"
+          {/* Outcome */}
+          <Grid item xs={12} md={4}>
+            <TextField
+              fullWidth
+              size="small"
+              label="Outcome"
               name="outcome"
               value={treatmentForm.outcome}
               onChange={handleChange}
             />
-          </div>
+          </Grid>
 
-          <div className="col-md-12 mb-3 mt-2">
-            <div className="row mb-3 mt-2">
-              <div className="col-md-4">
-                <h6 className="specialistedrefrresedd">
-                  Reffered To Specialist
-                </h6>
-              </div>
+          {/* Referred To Specialist */}
+          <Grid container spacing={1} alignItems="center">
+            {/* Referred To Specialist */}
+            <Grid item xs={12} sm={6} md={4}>
+              <FormControl component="fieldset" fullWidth size="small">
+                <Typography variant="body2" sx={{ fontWeight: 600,px:2.5 ,mt:2.5}}>
+                  Referred To Specialist
+                </Typography>
 
-              <div className="col-md-1">
-                <input
-                  className="form-check-input"
-                  type="radio"
-                  id="yes"
-                  name="reffered_to_specialist"
-                  value={1}
-                  checked={referredToSpecialist === 1} // Compare with string values
-                  onChange={() => setReferredToSpecialist(1)}
-                />
-                <label className="form-check-label" htmlFor="yes">
-                  Yes
-                </label>
-              </div>
+                <RadioGroup
+                  row
+                  value={referredToSpecialist}
+                  onChange={(e) =>
+                    setReferredToSpecialist(Number(e.target.value))
+                  }
+                  sx={{px:2.5}}
+                >
+                  <FormControlLabel value={1} control={<Radio />} label="Yes" />
+                  <FormControlLabel value={2} control={<Radio />} label="No" />
+                </RadioGroup>
+              </FormControl>
+            </Grid>
 
-              <div className="col-md-1">
-                <input
-                  className="form-check-input"
-                  type="radio"
-                  id="no"
-                  name="reffered_to_specialist"
-                  value={2}
-                  checked={referredToSpecialist === 2}
-                  onChange={() => setReferredToSpecialist(2)}
-                />
-                <label className="form-check-label" htmlFor="no">
-                  No
-                </label>
-              </div>
-            </div>
-          </div>
+            {/* Choose Doctor (Same Row) */}
+            {referredToSpecialist === 1 && (
+              <Grid item xs={12} sm={6}>
+                <FormControl fullWidth size="small">
+                  <InputLabel>Choose Doctor</InputLabel>
+                  <Select
+                    label="Choose Doctor"
+                    value={selectedDoctor}
+                    onChange={(e) => setSelectedDoctor(Number(e.target.value))}
+                    disabled={loadingDoctors}
+                    sx={{
+                      "& .MuiInputBase-input.MuiSelect-select": {
+                        color: "#000",
+                        fontSize: "0.85rem",
+                      },
+                      "& .MuiSvgIcon-root": {
+                        color: "#000",
+                      },
+                    }}
+                  >
+                    {loadingDoctors && (
+                      <MenuItem value="">
+                        <em>Loading...</em>
+                      </MenuItem>
+                    )}
 
-          <div>
-            <button type="submit" className="btn btn-sm generalexambutton">
+                    {doctorList.length > 0
+                      ? doctorList.map((doc) => (
+                          <MenuItem
+                            key={doc.doctor_pk_id}
+                            value={doc.doctor_pk_id}
+                          >
+                            {doc.doctor_name}
+                          </MenuItem>
+                        ))
+                      : !loadingDoctors && (
+                          <MenuItem value="">
+                            <em>No Doctors Found</em>
+                          </MenuItem>
+                        )}
+                  </Select>
+                </FormControl>
+              </Grid>
+            )}
+          </Grid>
+
+          {/* Submit Button */}
+          <Grid item xs={12}>
+            <Button type="submit" variant="contained" size="small">
               Submit
-            </button>
-          </div>
-        </div>
+            </Button>
+          </Grid>
+        </Grid>
       </form>
-    </div>
+    </>
   );
 };
 

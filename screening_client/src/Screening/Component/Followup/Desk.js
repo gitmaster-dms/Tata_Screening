@@ -564,20 +564,22 @@ const Desk = () => {
                       >
                         <Typography
                           sx={{
-                            fontSize: "0.72rem",
+                            fontSize: "14px",
                             fontWeight: 600,
+                            fontFamily: "Roboto",
                             color: "#fff",
                             whiteSpace: "nowrap",
                           }}
                         >
-                          Sr.no
+                          Sr.No
                         </Typography>
                       </CardContent>
                       <CardContent sx={{ flex: 2 ,borderRight: "1px solid #e0e0e0"}}>
                         <Typography
                           sx={{
-                            fontSize: "0.72rem",
+                            fontSize: "14px",
                             fontWeight: 600,
+                            fontFamily: "Roboto",
                             color: "#fff",
                             whiteSpace: "nowrap",
                           }}
@@ -588,8 +590,9 @@ const Desk = () => {
                       <CardContent sx={{ flex: 1.5 ,borderRight: "1px solid #e0e0e0"}}>
                         <Typography
                           sx={{
-                            fontSize: "0.72rem",
+                            fontSize: "14px",
                             fontWeight: 600,
+                            fontFamily: "Roboto",
                             color: "#fff",
                             whiteSpace: "nowrap",
                           }}
@@ -600,8 +603,9 @@ const Desk = () => {
                       <CardContent sx={{ flex: 1.5 ,borderRight: "1px solid #e0e0e0"}}>
                         <Typography
                           sx={{
-                            fontSize: "0.72rem",
+                            fontSize: "14px",
                             fontWeight: 600,
+                            fontFamily: "Roboto",
                             color: "#fff",
                             whiteSpace: "nowrap",
                           }}
@@ -612,8 +616,9 @@ const Desk = () => {
                       <CardContent sx={{ flex: 1 ,borderRight: "1px solid #e0e0e0"}}>
                         <Typography
                           sx={{
-                            fontSize: "0.72rem",
+                            fontSize: "14px",
                             fontWeight: 600,
+                            fontFamily: "Roboto",
                             color: "#fff",
                             whiteSpace: "nowrap",
                           }}
@@ -624,8 +629,9 @@ const Desk = () => {
                       <CardContent sx={{ flex: 1 ,borderRight: "1px solid #e0e0e0"}}>
                         <Typography
                           sx={{
-                            fontSize: "0.72rem",
+                            fontSize: "14px",
                             fontWeight: 600,
+                            fontFamily: "Roboto",
                             color: "#fff",
                             whiteSpace: "nowrap",
                           }}
@@ -636,8 +642,9 @@ const Desk = () => {
                       <CardContent sx={{ flex: 1 ,borderRight: "1px solid #e0e0e0" }}>
                         <Typography
                           sx={{
-                            fontSize: "0.72rem",
+                            fontSize: "14px",
                             fontWeight: 600,
+                            fontFamily: "Roboto",
                             color: "#fff",
                             whiteSpace: "nowrap",
                           }}
@@ -667,7 +674,7 @@ const Desk = () => {
                             }}
                           >
                             {/* 🔹 SINGLE TABLE CELL */}
-                            <TableCell  sx={{ p: 0 }}>
+                            <TableCell  sx={{ p: 0 ,py:1}}>
                               <Box
                                 sx={{
                                   display: "flex",

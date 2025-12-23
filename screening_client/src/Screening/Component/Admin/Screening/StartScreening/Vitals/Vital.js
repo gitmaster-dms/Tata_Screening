@@ -650,6 +650,16 @@ const Vital = ({
     setShowVitalForm(false);
   };
 
+  const [snackbar, setSnackbar] = useState({
+    open: false,
+    message: "",
+    severity: "info",
+  });
+
+  const openSnackbar = (message, severity = "info") => {
+    setSnackbar({ open: true, message, severity });
+  };
+
   const handleSubmit = () => {
     // const isConfirmed = window.confirm('Submit Vital Form');
     const confirmationStatus = "True";
@@ -694,9 +704,9 @@ const Vital = ({
             onAcceptClick(nextName);
             return response.json();
           } else if (response.status === 400) {
-            alert("Fill the * marked Field");
+            openSnackbar("Fill the * marked Field");
           } else if (response.status === 500) {
-            alert("Error");
+            openSnackbar("Error");
           } else if (response.status === 200) {
             onAcceptClick(nextName);
           }
@@ -816,7 +826,22 @@ const Vital = ({
   }, [pkid]);
 
   return (
-    <Box sx={{ p: 2 }}>
+    <Box sx={{ p: 1 }}>
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={3000}
+        onClose={() => setSnackbar({ ...snackbar, open: false })}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        <Alert
+          onClose={() => setSnackbar({ ...snackbar, open: false })}
+          severity={snackbar.severity}
+          variant="filled"
+          sx={{ width: "100%" }}
+        >
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
       <Card
         sx={{
           borderRadius: "20px",
@@ -841,32 +866,65 @@ const Vital = ({
         sx={{
           maxHeight: "70vh",
           overflowY: "auto",
-          pr: 2,
+          pr: 1,
         }}
       >
-        <Card sx={{ p: 2, borderRadius: "20px", mb: 2 }}>
-          <Grid container spacing={2}>
+        <Card sx={{ p: 2, borderRadius: "20px", mb: 1 }}>
+          <Grid container spacing={1}>
             <Grid item xs={12} md={4}>
-              <Card sx={{ p: 2 }}>
+              <Card sx={{ p: 1 }}>
                 <Grid container spacing={1} alignItems="center">
                   <Grid item xs={3}>
-                    <Box component="img" src={redheart} sx={{ width: 40 }} />
+                    <Box
+                      component="img"
+                      src={redheart}
+                      sx={{
+                        width: 40,
+                        bgcolor: "#FBF0F3",
+                        borderRadius: "12px",
+                        p: 1,
+                      }}
+                    />
                   </Grid>
-                  <Grid item xs={9}>
+                  <Grid
+                    item
+                    xs={9}
+                    justifyContent={"center"}
+                    alignItems="center"
+                  >
                     <Typography variant="subtitle2">
                       Pulse - beats/min
                     </Typography>
                   </Grid>
                   <Grid item xs={12}>
-                    <TextField
-                      fullWidth
-                      size="small"
-                      value={pulseValue || ""}
-                      onChange={handlePulseInputChange}
-                    />
+                    <Box display="flex" justifyContent="center">
+                      <TextField
+                        fullWidth
+                        size="small"
+                        value={pulseValue || ""}
+                        onChange={handlePulseInputChange}
+                        sx={{
+                          bgcolor: "#FBF0F3",
+                          width: "35%",
+                          alignItems: "center",
+                        }}
+                      />
+                    </Box>
                   </Grid>
                   <Grid item xs={6}>
-                    <Typography variant="body2">{pulseResponse}</Typography>
+                    <Typography
+                      sx={{
+                        fontWeight: 500,
+                        bgcolor: "#FBF0F3",
+                        color: "black",
+                        fontFamily: "Mulish",
+                        borderRadius: "2px",
+                        p: 0.2,
+                        textAlign: "center",
+                      }}
+                    >
+                      {pulseResponse}
+                    </Typography>
                   </Grid>
                   <Grid item xs={6}>
                     <IconButton
@@ -882,7 +940,7 @@ const Vital = ({
 
             {/* BP Sys */}
             <Grid item xs={12} md={4}>
-              <Card sx={{ p: 2 }}>
+              <Card sx={{ p: 1 }}>
                 <Grid container spacing={1} alignItems="center">
                   <Grid item xs={3}>
                     <Box component="img" src={greenheart} sx={{ width: 40 }} />
@@ -893,15 +951,29 @@ const Vital = ({
                     </Typography>
                   </Grid>
                   <Grid item xs={12}>
-                    <TextField
-                      fullWidth
-                      size="small"
-                      value={sys || ""}
-                      onChange={handleSysInputChange}
-                    />
+                    <Box display="flex" justifyContent={"center"}>
+                      <TextField
+                        fullWidth
+                        size="small"
+                        value={sys || ""}
+                        onChange={handleSysInputChange}
+                        sx={{ width: "50px", bgcolor: "#D0FBFF" }}
+                      />
+                    </Box>
                   </Grid>
                   <Grid item xs={6}>
-                    <Typography variant="body2">{sysResponse}</Typography>
+                    <Typography
+                      sx={{
+                        fontWeight: 500,
+                        fontFamily: "Mulish",
+                        fontSize: "14px",
+                        bgcolor: "#D0FBFF",
+                        p: 0.5,
+                        textAlign: "center",
+                      }}
+                    >
+                      {sysResponse}
+                    </Typography>
                   </Grid>
                   <Grid item xs={6}>
                     <IconButton
@@ -917,7 +989,7 @@ const Vital = ({
 
             {/* BP Dys */}
             <Grid item xs={12} md={4}>
-              <Card sx={{ p: 2 }}>
+              <Card sx={{ p: 1 }}>
                 <Grid container spacing={1} alignItems="center">
                   <Grid item xs={3}>
                     <Box component="img" src={greenheart} sx={{ width: 40 }} />
@@ -928,15 +1000,32 @@ const Vital = ({
                     </Typography>
                   </Grid>
                   <Grid item xs={12}>
-                    <TextField
-                      fullWidth
-                      size="small"
-                      value={dys || ""}
-                      onChange={handleDysInputChange}
-                    />
+                    <Box sx={{ display: "flex", justifyContent: "center" }}>
+                      <TextField
+                        fullWidth
+                        size="small"
+                        value={dys || ""}
+                        onChange={handleDysInputChange}
+                        sx={{
+                          bgcolor: "#D0FBFF",
+                          width: "50px",
+                        }}
+                      />
+                    </Box>
                   </Grid>
                   <Grid item xs={6}>
-                    <Typography variant="body2">{dysResponse}</Typography>
+                    <Typography
+                      sx={{
+                        fontWeight: 500,
+                        fontSize: "14px",
+                        bgcolor: "#D0FBFF",
+                        fontFamily: "Mulish",
+                        p: 0.5,
+                        textAlign: "center",
+                      }}
+                    >
+                      {dysResponse}
+                    </Typography>
                   </Grid>
                   <Grid item xs={6}>
                     <IconButton
@@ -952,10 +1041,10 @@ const Vital = ({
           </Grid>
 
           {/* RR, O2, Temp */}
-          <Grid container spacing={2} sx={{ mt: 1 }}>
+          <Grid container spacing={1} sx={{ mt: 1 }}>
             {/* RR */}
             <Grid item xs={12} md={4}>
-              <Card sx={{ p: 2, height: "100%" }}>
+              <Card sx={{ p: 1, height: "100%" }}>
                 <Grid container spacing={1}>
                   <Grid item xs={3}>
                     <Box component="img" src={blueheart} sx={{ width: 40 }} />
@@ -964,15 +1053,28 @@ const Vital = ({
                     <Typography variant="subtitle2">RR - per min</Typography>
                   </Grid>
                   <Grid item xs={12}>
-                    <TextField
-                      fullWidth
-                      size="small"
-                      value={rr || ""}
-                      onChange={handleRrInputChange}
-                    />
+                    <Box sx={{ display: "flex", justifyContent: "center" }}>
+                      <TextField
+                        fullWidth
+                        size="small"
+                        value={rr || ""}
+                        onChange={handleRrInputChange}
+                        sx={{ width: "50px", bgcolor: "#F5F4FC" }}
+                      />
+                    </Box>
                   </Grid>
                   <Grid item xs={12}>
-                    <Typography variant="body2">{rrResponse}</Typography>
+                    <Typography
+                      sx={{
+                        bgcolor: "#F5F4FC",
+                        fontFamily: "Mulish",
+                        fontSize: "14px",
+                        textAlign: "center",
+                        p: "0.5",
+                      }}
+                    >
+                      {rrResponse}
+                    </Typography>
                   </Grid>
                 </Grid>
               </Card>
@@ -993,15 +1095,28 @@ const Vital = ({
                     <Typography variant="subtitle2">O2 Sats</Typography>
                   </Grid>
                   <Grid item xs={12}>
-                    <TextField
-                      fullWidth
-                      size="small"
-                      value={sats || ""}
-                      onChange={handleSatsInputChange}
-                    />
+                    <Box sx={{ display: "flex", justifyContent: "center" }}>
+                      <TextField
+                        fullWidth
+                        size="small"
+                        value={sats || ""}
+                        sx={{ width: "50px", bgcolor: "#E9F4EE" }}
+                        onChange={handleSatsInputChange}
+                      />
+                    </Box>
                   </Grid>
                   <Grid item xs={6}>
-                    <Typography variant="body2">{satsResponse}</Typography>
+                    <Typography
+                      sx={{
+                        font: "Mulish",
+                        fontSize: "14px",
+                        fontWeight: 500,
+                        textAlign: "center",
+                        bgcolor: "#E9F4EE",
+                      }}
+                    >
+                      {satsResponse}
+                    </Typography>
                   </Grid>
                   <Grid item xs={6}>
                     <IconButton
@@ -1026,15 +1141,29 @@ const Vital = ({
                     <Typography variant="subtitle2">Temperature</Typography>
                   </Grid>
                   <Grid item xs={12}>
+                    <Box sx={{display:"flex",justifyContent:"center"}}>
+
                     <TextField
                       fullWidth
                       size="small"
                       value={temp || ""}
                       onChange={handleTempInputChange}
+                      sx={{ width: "50px", bgcolor: "#FCF6EA" }}
                     />
+                    </Box>
                   </Grid>
                   <Grid item xs={6}>
-                    <Typography variant="body2">{tempResponse}</Typography>
+                    <Typography
+                      sx={{
+                        font: "Mulish",
+                        fontSize: "14px",
+                        fontWeight: 500,
+                        textAlign: "center",
+                        bgcolor: "#FCF6EA",
+                      }}
+                    >
+                      {tempResponse}
+                    </Typography>
                   </Grid>
                   <Grid item xs={6}>
                     <IconButton

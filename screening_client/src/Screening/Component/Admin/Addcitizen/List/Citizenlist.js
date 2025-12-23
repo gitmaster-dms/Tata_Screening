@@ -910,9 +910,10 @@ const Citizenlist = () => {
                     "linear-gradient(90deg, #2FB3F5 0%, #1439A4 100%)",
                   height: "25px",
                   "& th": {
-                    color: "white",
-                    fontWeight: 600,
-                    fontSize: "0.8rem",
+                    // color: "white",
+                    // fontWeight: 600,
+                    // fontSize: "16px",
+                    // fontFamily: "Roboto",
                     border: "none",
                   },
                   "& th:first-of-type": {
@@ -960,14 +961,15 @@ const Citizenlist = () => {
                           borderRight:
                             index !== arr.length - 1
                               ? "1px solid #fff"
-                              : "none", 
+                              : "none",
                           px: 1,
                         }}
                       >
                         <Typography
                           sx={{
-                            fontSize: "0.72rem",
+                            fontSize: "14px",
                             fontWeight: 600,
+                            fontFamily: "Roboto",
                             lineHeight: 1,
                             color: "#fff",
                             whiteSpace: "nowrap",
