@@ -179,6 +179,7 @@ const source = immunizationData;
   }
 };
 
+
 useEffect(() => {
   if (data.length === 0) return;
 
@@ -227,11 +228,11 @@ useEffect(() => {
         </Box>
       </Modal>
 
-      <Card sx={{ borderRadius: "20px", p: 1, mb: 1, background: "linear-gradient(90deg, #039BEF 0%, #1439A4 100%)" }}>
+      <Card sx={{ borderRadius: "20px", p: 0.5, mb: 1, background: "linear-gradient(90deg, #039BEF 0%, #1439A4 100%)" }}>
         <Typography sx={{ fontWeight: 600, fontFamily: "Roboto", fontSize: "16px", color: "white" }}>
           Immunisation
         </Typography>
-      </Card>
+      </Card> 
 
       {apiError && (
         <Typography color="error" variant="body2" sx={{ mb: 2 }}>
@@ -279,7 +280,7 @@ useEffect(() => {
         </Grid>
 
         {/* Given Yes/No */}
-        <Grid item xs={2}>
+        <Grid item xs={2} sm={3} md={2}>
           <Select
             size="small"
             fullWidth
@@ -310,7 +311,7 @@ useEffect(() => {
         </Grid>
 
         {/* Dates */}
-        <Grid item xs={5}>
+        <Grid item xs={5} sm={6} md={5}>
           <Grid container spacing={1}>
             {/* From Date */}
             <Grid item xs={6}>
@@ -440,7 +441,7 @@ useEffect(() => {
       variant="contained"
     >
       Confirm
-    </Button>
+    </Button> 
   </DialogActions>
 </Dialog>
     </Box >

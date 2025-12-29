@@ -653,7 +653,13 @@ const Desk = () => {
                         </Typography>
                       </CardContent>
                       <CardContent sx={{ flex: 0.5, textAlign: "center" }}>
-                        <Typography>Action</Typography>
+                        <Typography sx={{
+                            fontSize: "14px",
+                            fontWeight: 600,
+                            fontFamily: "Roboto",
+                            color: "#fff",
+                            whiteSpace: "nowrap",
+                          }}>Action</Typography>
                       </CardContent>
                     </TableRow>
                   </TableHead>
@@ -685,48 +691,57 @@ const Desk = () => {
                                 }}
                               >
                                 <Typography
-                                  sx={{ flex: 0.5, fontSize: "0.8rem" }}
+                                  sx={{ flex: 0.5, fontSize: "14px" ,fontFamily: "Roboto" ,
+                                    fontWeight: 500,textAlign: "center",
+                                  }}
                                 >
                                   {index + 1}
                                 </Typography>
 
                                 <Typography
-                                  sx={{ flex: 2, fontSize: "0.8rem" }}
+                                  sx={{ flex: 2, fontSize: "14px" ,fontFamily: "Roboto" ,
+                                    fontWeight: 500,textAlign: "center",}}
                                 >
                                   {item.citizen_id}
                                 </Typography>
 
                                 <Typography
-                                  sx={{ flex: 1.5, fontSize: "0.8rem" }}
+                                  sx={{ flex: 1.5, fontSize: "14px" ,fontFamily: "Roboto" ,
+                                    fontWeight: 500,textAlign: "center",}}
                                 >
                                   {item.citizen_name}
                                 </Typography>
 
                                 <Typography
-                                  sx={{ flex: 1.5, fontSize: "0.8rem" }}
+                                  sx={{ flex: 1.5, fontSize: "14px" ,fontFamily: "Roboto" ,
+                                    fontWeight: 500,textAlign: "center",}}
                                 >
                                   {item.doctor_name || "N/A"}
                                 </Typography>
 
                                 <Typography
-                                  sx={{ flex: 1.2, fontSize: "0.8rem" }}
+                                  sx={{ flex: 1.2, fontSize: "14px" ,fontFamily: "Roboto" ,
+                                    fontWeight: 500,textAlign: "center",}}
                                 >
                                   {item.mobile_number}
                                 </Typography>
 
                                 <Typography
-                                  sx={{ flex: 1.2, fontSize: "0.8rem" }}
+                                  sx={{ flex: 1.2, fontSize: "14px" ,fontFamily: "Roboto" ,
+                                    fontWeight: 500,textAlign: "center",}}
                                 >
                                   {item.dob || "N/A"}
                                 </Typography>
 
                                 <Typography
-                                  sx={{ flex: 1.2, fontSize: "0.8rem" }}
+                                  sx={{ flex: 1.2, fontSize: "14px" ,fontFamily: "Roboto" ,
+                                    fontWeight: 500,textAlign: "center",}}
                                 >
                                   {item.blood_group || "N/A"}
                                 </Typography>
 
-                                <Box sx={{ flex: 0.5, textAlign: "center" }}>
+                                <Box sx={{ flex: 0.5, textAlign: "center" ,fontSize: "14px" ,fontFamily: "Roboto" ,
+                                    fontWeight: 500,}}>
                                   {canView && (
                                     <IconButton
                                       component={Link}

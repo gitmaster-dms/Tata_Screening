@@ -1039,19 +1039,19 @@ const Citizenlist = () => {
                                 // textAlign:"center"
                               }}
                             >
-                              <Box sx={{ flex: 0.6 }}>{serialNumber}</Box>
-                              <Box sx={{ flex: 1.5 }}>{data.name || "-"}</Box>
-                              <Box sx={{ flex: 1.5 }}>
+                              <Box sx={{ flex: 0.6 ,fontSize:"14px"}}>{serialNumber}</Box>
+                              <Box sx={{ flex: 1.5 ,fontSize:"14px"}}>{data.name || "-"}</Box>
+                              <Box sx={{ flex: 1.5 ,fontSize:"14px"}}>
                                 {data.citizen_id || "-"}
                               </Box>
-                              <Box sx={{ flex: 1.5 }}>
+                              <Box sx={{ flex: 1.5 ,fontSize:"14px"}}>
                                 {data.mobile_no || "-"}
                               </Box>
-                              <Box sx={{ flex: 1 }}>
+                              <Box sx={{ flex: 1 ,fontSize:"14px"}}>
                                 {data.aadhar_id || "-"}
                               </Box>
 
-                              <Box sx={{ flex: 1 }}>
+                              <Box sx={{ flex: 1 ,fontSize:"14px"}}>
                                 {data?.added_by?.clg_ref_id || "-"}
                               </Box>
                               <Box

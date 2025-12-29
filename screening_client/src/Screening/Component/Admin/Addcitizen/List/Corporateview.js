@@ -130,7 +130,7 @@ const Corporate = ({ data }) => {
                                 <TextField size="small"
                                     label="Mobile Number"
                                     fullWidth
-                                    value={d.emp_mobile_no || ""}
+                                    value={d.mobile_no || ""}
                                     InputProps={{ readOnly: true }}
                                 />
                             </Grid>

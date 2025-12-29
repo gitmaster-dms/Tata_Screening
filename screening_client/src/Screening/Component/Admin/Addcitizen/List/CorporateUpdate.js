@@ -527,11 +527,11 @@ const CorporateUpdate = (props) => {
                       },
                     }}
                     name="prefix"
-                    value={updatedData.prefix || ""}
+                    value={updatedData?.prefix || ""}
                     onChange={handleInputChange}
                     label="Prefix"
                   >
-                    <MenuItem value="">Prefix</MenuItem>
+                    {/* <MenuItem value="">Prefix</MenuItem> */}
                     <MenuItem value="Mr">Mr.</MenuItem>
                     <MenuItem value="Ms">Ms.</MenuItem>
                     <MenuItem value="Mrs">Mrs.</MenuItem>
@@ -658,7 +658,7 @@ const CorporateUpdate = (props) => {
                   label="Mobile Number"
                   type="number"
                   name="emp_mobile_no"
-                  value={updatedData.emp_mobile_no || ""}
+                  value={updatedData.mobile_no || ""}
                   onChange={handleInputChange}
                   inputProps={{ maxLength: 10 }}
                 />

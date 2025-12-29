@@ -639,94 +639,94 @@ const BmiVital = ({
 
             {/* BMI Data */}
             <Grid item xs={12} sm={7}>
-              <Card
-                sx={{
-                  p: 2.5,
-                  borderRadius: "12px",
-                  background:
-                    "linear-gradient(180deg, #039BEF 0%, #1439A4 100%)",
-                  color: "white",
-                  position: "relative",
-                }}
-              >
-                {/* Title */}
-                <Typography variant="subtitle2" fontWeight="bold">
-                  Body Mass Index
-                </Typography>
+            <Card
+  sx={{
+    p: 2.5,
+    borderRadius: "12px",
+    background: "linear-gradient(180deg, #039BEF 0%, #1439A4 100%)",
+    color: "white",
+    position: "relative",
+  }}
+>
+  {/* Title */}
+  <Typography variant="subtitle2" fontWeight="bold">
+    Body Mass Index
+  </Typography>
 
-                {/* BMI Value */}
-                <Typography variant="h4" fontWeight="bold" mt={0.5}>
-                  {bmiData.citizen_info.bmi || "--"}
-                </Typography>
+  {/* BMI Value */}
+  <Typography variant="h4" fontWeight="bold" mt={0.5}>
+    {bmiData.citizen_info.bmi || "--"}
+  </Typography>
 
-                {/* Status Text */}
-                <Typography variant="body2" mt={0.5}>
-                  {bmiData.citizen_info.bmi < 18.5
-                    ? "You're Underweight"
-                    : bmiData.citizen_info.bmi < 25
-                    ? "You're Healthy"
-                    : bmiData.citizen_info.bmi < 30
-                    ? "You're Overweight"
-                    : "You're Obese"}
-                </Typography>
+  {/* Status Text */}
+  <Typography variant="body2" mt={0.5}>
+    {bmiData.citizen_info.bmi < 18.5
+      ? "You're Underweight"
+      : bmiData.citizen_info.bmi < 25
+      ? "You're Healthy"
+      : bmiData.citizen_info.bmi < 30
+      ? "You're Overweight"
+      : "You're Obese"}
+  </Typography>
 
-                <Typography variant="caption" sx={{ opacity: 0.9 }}>
-                  By maintaining a healthy weight, you lower your risk of
-                  developing serious health problems.
-                </Typography>
+  <Typography variant="caption" sx={{ opacity: 0.9 }}>
+    By maintaining a healthy weight, you lower your risk of developing
+    serious health problems.
+  </Typography>
 
-                {/* BMI Scale */}
-                <Box sx={{ mt: 3, position: "relative" }}>
-                  {/* Color Bar */}
-                  <Box
-                    sx={{
-                      height: 10,
-                      borderRadius: 10,
-                      background:
-                        "linear-gradient(90deg, #FF3D00 0%, #FFC107 30%, #4CAF50 55%, #2E7D32 100%)",
-                    }}
-                  />
+  {/* BMI Scale */}
+  <Box sx={{ mt: 3, position: "relative" }}>
+    {/* Color Bar */}
+    <Box
+      sx={{
+        height: 10,
+        borderRadius: 10,
+        background:
+          "linear-gradient(90deg, #FF3D00 0%, #FFC107 30%, #4CAF50 55%, #2E7D32 100%)",
+      }}
+    />
 
-                  {/* Indicator */}
-                  <Box
-                    sx={{
-                      position: "absolute",
-                      top: -8,
-                      left: `${
-                        bmiData.citizen_info.bmi < 18.5
-                          ? 15
-                          : bmiData.citizen_info.bmi < 25
-                          ? 40
-                          : bmiData.citizen_info.bmi < 30
-                          ? 65
-                          : 85
-                      }%`,
-                      transform: "translateX(-50%)",
-                    }}
-                  >
-                    <Box
-                      sx={{
-                        width: 3,
-                        height: 20,
-                        bgcolor: "yellow",
-                        borderRadius: 2,
-                      }}
-                    />
-                  </Box>
-                </Box>
+    {/* Indicator */}
+    <Box
+      sx={{
+        position: "absolute",
+        top: -8,
+        left: `${
+          bmiData.citizen_info.bmi < 18.5
+            ? 15
+            : bmiData.citizen_info.bmi < 25
+            ? 40
+            : bmiData.citizen_info.bmi < 30
+            ? 65
+            : 85
+        }%`,
+        transform: "translateX(-50%)",
+      }}
+    >
+      <Box
+        sx={{
+          width: 3,
+          height: 20,
+          bgcolor: "yellow",
+          borderRadius: 2,
+        }}
+      />
+    </Box>
+  </Box>
 
-                {/* Labels */}
-                <Grid
-                  container
-                  justifyContent="space-between"
-                  sx={{ mt: 1, fontSize: 12, opacity: 0.9 }}
-                >
-                  <Typography>Underweight</Typography>
-                  <Typography>Normal</Typography>
-                  <Typography>Overweight</Typography>
-                  <Typography>Obesity</Typography>
-                </Grid>
-              </Card>
+  {/* Labels */}
+  <Grid
+    container
+    justifyContent="space-between"
+    sx={{ mt: 1, fontSize: 12, opacity: 0.9 }}
+  >
+    <Typography>Underweight</Typography>
+    <Typography>Normal</Typography>
+    <Typography>Overweight</Typography>
+    <Typography>Obesity</Typography>
+  </Grid>
+</Card>
+
 
               <Grid container spacing={2} mt={1}>
                 <Grid item xs={12} sm={4}>

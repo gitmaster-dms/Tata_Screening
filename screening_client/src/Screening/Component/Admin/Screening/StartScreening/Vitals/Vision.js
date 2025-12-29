@@ -341,7 +341,7 @@ const Vision = ({
                       Visual Acuity Test
                     </Typography>
                     <Grid container spacing={2}>
-                      <Grid item xs={4}>
+                      <Grid item xs={4} sm={3} md={2}>
                         <FormControl fullWidth>
                           <InputLabel>Vision With Glasses</InputLabel>
                           <Select
@@ -357,7 +357,7 @@ const Vision = ({
                         </FormControl>
                       </Grid>
 
-                      <Grid item xs={4}>
+                      <Grid item xs={4} sm={3} md={2}>
                         <FormControl fullWidth>
                           <InputLabel>Vision Without Glasses</InputLabel>
                           <Select
@@ -583,7 +583,7 @@ const Vision = ({
                             name={section.near[0]}
                             value={visionForm[section.near[0]] ?? ""}
                             onChange={handleChange}
-                            InputLabelProps={{ shrink: true }}
+                            // InputLabelProps={{ shrink: false }}
                           />
                         </Grid>
 
@@ -595,7 +595,7 @@ const Vision = ({
                             name={section.near[1]}
                             value={visionForm[section.near[1]] ?? ""}
                             onChange={handleChange}
-                            InputLabelProps={{ shrink: true }}
+                            // InputLabelProps={{ shrink: true }}
                           />
                         </Grid>
                       </Grid>
@@ -621,7 +621,7 @@ const Vision = ({
                             name={section.far[0]}
                             value={visionForm[section.far[0]] ?? ""}
                             onChange={handleChange}
-                            InputLabelProps={{ shrink: true }}
+                            // InputLabelProps={{ shrink: true }}
                           />
                         </Grid>
 
@@ -633,7 +633,7 @@ const Vision = ({
                             name={section.far[1]}
                             value={visionForm[section.far[1]] ?? ""}
                             onChange={handleChange}
-                            InputLabelProps={{ shrink: true }}
+                            // InputLabelProps={{ shrink: true }}
                           />
                         </Grid>
                       </Grid>

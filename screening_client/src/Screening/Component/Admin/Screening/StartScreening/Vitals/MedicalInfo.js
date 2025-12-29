@@ -311,7 +311,7 @@ const MedicalInfo = ({
       <Card
         sx={{
           p: 1,
-          mb: 3,
+          mb: 2,
           borderRadius: "20px",
           maxHeight: "70vh",
           overflowY: "auto",
@@ -330,7 +330,7 @@ const MedicalInfo = ({
         </Typography>
         <Grid container>
           {medInfoChechBox.map((item, index) => (
-            <Grid item xs={12} sm={6} md={4} key={index}>
+            <Grid item xs={12} sm={6} md={3} key={index}>
               <FormControlLabel
                 control={
                   <Checkbox
@@ -369,7 +369,7 @@ const MedicalInfo = ({
         <FormGroup>
           <Grid container>
             {medPastInfoChechBox.map((item, index) => (
-              <Grid item xs={12} sm={6} md={4} key={index}>
+              <Grid item xs={12} sm={6} md={3} key={index}>
                 <FormControlLabel
                   control={
                     <Checkbox
