@@ -83,7 +83,6 @@ const Generalexam = ({
       if (currentIndex !== -1 && currentIndex < subVitalList.length - 1) {
         const nextItem = subVitalList[currentIndex + 1];
         const nextName = nextItem.sub_list;
-
         setNextName(nextName);
         console.log("Next Name Set:", nextName);
       } else {

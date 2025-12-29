@@ -32,6 +32,7 @@ const Report = () => {
   const [selectedTypeNav, setSelectedTypeNav] = useState("");
   const [selectedClassNav, setSelectedClassNav] = useState("");
   const [selectedCount, setSelectedCount] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
 
   /////// table start
   const [showTable, setShowTable] = useState(false);
@@ -71,6 +72,27 @@ const Report = () => {
       investigation: "1",
     },
   ]);
+
+  const [screeningFor, setScreeningFor] = useState([]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.get(`${Port}/Screening/Category_Get/`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+          },
+        });
+        setScreeningFor(response.data);
+        console.log("Fetched Categories:", response.data);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+
+    fetchCategories();
+  }, [Port, accessToken]);
 
   const handleSearch = () => {
     setShowTable(true);
@@ -147,7 +169,15 @@ const Report = () => {
             {/* Header */}
             <Grid container>
               <Grid item xs={12}>
-                <Typography variant="h6" className="Schedulelisttitle">
+                <Typography
+                  sx={{
+                    mb: 1,
+                    fontWeight: 600,
+                    fontSize: "16px",
+                    textAlign: "left",
+                    color: "black",
+                  }}
+                >
                   Report List
                 </Typography>
               </Grid>
@@ -181,22 +211,43 @@ const Report = () => {
 
                 {/* Type */}
                 <Grid item xs={12} sm={6} md={2}>
-                  <TextField
-                    select
-                    fullWidth
-                    size="small"
-                    label="Type"
-                    value={selectedTypeNav}
-                    onChange={(e) => setSelectedTypeNav(e.target.value)}
-                    {...commonTextFieldProps}
-                  >
-                    <MenuItem value="">Select Type</MenuItem>
-                    {screeningForNav.map((drop) => (
-                      <MenuItem key={drop.type_id} value={drop.type_id}>
-                        {drop.type}
-                      </MenuItem>
-                    ))}
-                  </TextField>
+                   <TextField
+                      select
+                      fullWidth
+                      size="small"
+                      label="Category"
+                      value={selectedCategory}
+                      onChange={(e) => setSelectedCategory(e.target.value)}
+                      InputLabelProps={{
+                        sx: {
+                          fontWeight: 100,
+                          fontSize: "14px",
+                          color: "black !important",
+                        },
+                      }}
+                      SelectProps={{
+                        MenuProps: {
+                          classes: { paper: "custom-menu-paper" },
+                        },
+                      }}
+                      sx={{
+                        "& .MuiInputBase-input": { color: "black" },
+                        "& .MuiSelect-select": { color: "black !important" }, // <-- FIXEDss
+                        "& .MuiOutlinedInput-root": {
+                          "& fieldset": { borderColor: "black" },
+                          "&:hover fieldset": { borderColor: "black" },
+                          "&.Mui-focused fieldset": { borderColor: "black" },
+                        },
+                        "& .MuiSvgIcon-root": { color: "black" },
+                      }}
+                    >
+                      <MenuItem value="">Select Category</MenuItem>
+                      {screeningFor.map((drop) => (
+                        <MenuItem key={drop.pk_id} value={drop.pk_id}>
+                          {drop.category}
+                        </MenuItem>
+                      ))}
+                    </TextField>
                 </Grid>
 
                 {/* Class (Conditional) */}
@@ -248,8 +299,12 @@ const Report = () => {
                     sx={{
                       height: "40px",
                       fontWeight: "bold",
-                      background: "linear-gradient(135deg, #2B7FFF 0%, #1439A4 100%)",
-                      "&:hover": { background: "linear-gradient(135deg, #2B7FFF 0%, #1439A4 100%)" },
+                      background:
+                        "linear-gradient(135deg, #2B7FFF 0%, #1439A4 100%)",
+                      "&:hover": {
+                        background:
+                          "linear-gradient(135deg, #2B7FFF 0%, #1439A4 100%)",
+                      },
                     }}
                   >
                     Search

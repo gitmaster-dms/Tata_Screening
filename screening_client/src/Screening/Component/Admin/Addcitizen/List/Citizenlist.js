@@ -937,7 +937,7 @@ const Citizenlist = () => {
                     sx={{
                       display: "flex",
                       alignItems: "center",
-                      height: "45px", // ✅ uniform height
+                      height: "40px", // ✅ uniform height
                     }}
                   >
                     {/* COMMON HEADER CELL STYLE */}
@@ -967,9 +967,9 @@ const Citizenlist = () => {
                       >
                         <Typography
                           sx={{
-                            fontSize: "14px",
-                            fontWeight: 600,
-                            fontFamily: "Roboto",
+                            fontSize: "13px",
+                            fontWeight: 550,
+                            fontFamily: "Roboto,sans-serif",
                             lineHeight: 1,
                             color: "#fff",
                             whiteSpace: "nowrap",
@@ -1039,19 +1039,65 @@ const Citizenlist = () => {
                                 // textAlign:"center"
                               }}
                             >
-                              <Box sx={{ flex: 0.6 ,fontSize:"14px"}}>{serialNumber}</Box>
-                              <Box sx={{ flex: 1.5 ,fontSize:"14px"}}>{data.name || "-"}</Box>
-                              <Box sx={{ flex: 1.5 ,fontSize:"14px"}}>
+                              <Box
+                                sx={{
+                                  flex: 0.6,
+                                  fontSize: "13px",
+                                  fontFamily: "Roboto,sans-serif",
+                                  fontWeight: 500,
+                                }}
+                              >
+                                {serialNumber}
+                              </Box>
+                              <Box
+                                sx={{
+                                  flex: 1.5,
+                                  fontSize: "13px",
+                                  fontFamily: "Roboto,sans-serif",
+                                  fontWeight: 500,
+                                }}
+                              >
+                                {data.name || "-"}
+                              </Box>
+                              <Box
+                                sx={{
+                                  flex: 1.5,
+                                  fontSize: "13px",
+                                  fontFamily: "Roboto,sans-serif",
+                                  fontWeight: 500,
+                                }}
+                              >
                                 {data.citizen_id || "-"}
                               </Box>
-                              <Box sx={{ flex: 1.5 ,fontSize:"14px"}}>
+                              <Box
+                                sx={{
+                                  flex: 1.5,
+                                  fontSize: "13px",
+                                  fontFamily: "Roboto,sans-serif",
+                                  fontWeight: 500,
+                                }}
+                              >
                                 {data.mobile_no || "-"}
                               </Box>
-                              <Box sx={{ flex: 1 ,fontSize:"14px"}}>
+                              <Box
+                                sx={{
+                                  flex: 1,
+                                  fontSize: "13px",
+                                  fontFamily: "Roboto,sans-serif",
+                                  fontWeight: 500,
+                                }}
+                              >
                                 {data.aadhar_id || "-"}
                               </Box>
 
-                              <Box sx={{ flex: 1 ,fontSize:"14px"}}>
+                              <Box
+                                sx={{
+                                  flex: 1,
+                                  fontSize: "13px",
+                                  fontFamily: "Roboto,sans-serif",
+                                  fontWeight: 500,
+                                }}
+                              >
                                 {data?.added_by?.clg_ref_id || "-"}
                               </Box>
                               <Box

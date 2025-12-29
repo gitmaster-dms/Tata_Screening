@@ -317,16 +317,19 @@ const Desk = () => {
         >
           <div class="row">
             <div class="col">
-              <h5
-                className="desktitle"
-                style={{
+              <Typography
+                sx={{
+                  mb: 1,
+                  fontWeight: 550,
+                  fontSize: "16px",
+                  fontFamily:"Roboto, sans-serif",
+                  textAlign: "left",
                   color: "black",
-                  fontWeight: "550",
-                  fontFamily: "Roboto",
+                  px: 2,
                 }}
               >
                 FollowUp Desk
-              </h5>
+              </Typography>
             </div>
           </div>
 
@@ -554,112 +557,119 @@ const Desk = () => {
                         display: "flex",
                         alignItems: "center",
                         justifyContent: "space-between",
-                        height: "40px",
+                        height: "35px",
                         borderRadius: "20px",
                         textAlign: "center",
                       }}
                     >
-                      <CardContent
-                        sx={{ flex: 0.5, borderRight: "1px solid #e0e0e0" }}
-                      >
+                      <CardContent sx={{ flex: 0.5 }}>
                         <Typography
                           sx={{
                             fontSize: "14px",
                             fontWeight: 600,
                             fontFamily: "Roboto",
                             color: "#fff",
-                            whiteSpace: "nowrap",
+                            borderRight: "1px solid #e0e0e0",
                           }}
                         >
                           Sr.No
                         </Typography>
                       </CardContent>
-                      <CardContent sx={{ flex: 2 ,borderRight: "1px solid #e0e0e0"}}>
+                      <CardContent sx={{ flex: 2 }}>
                         <Typography
                           sx={{
-                            fontSize: "14px",
-                            fontWeight: 600,
-                            fontFamily: "Roboto",
+                            fontFamily: "Roboto,sans-serif",
+                            fontSize: "13px",
+                            fontWeight: 550,
                             color: "#fff",
-                            whiteSpace: "nowrap",
+                            borderRight: "1px solid #e0e0e0",
                           }}
                         >
                           Citizen ID
                         </Typography>
                       </CardContent>
-                      <CardContent sx={{ flex: 1.5 ,borderRight: "1px solid #e0e0e0"}}>
+                      <CardContent sx={{ flex: 1.5 }}>
                         <Typography
                           sx={{
-                            fontSize: "14px",
-                            fontWeight: 600,
-                            fontFamily: "Roboto",
+                            fontFamily: "Roboto,sans-serif",
+                            fontSize: "13px",
+                            fontWeight: 550,
                             color: "#fff",
                             whiteSpace: "nowrap",
+                            borderRight: "1px solid #e0e0e0",
                           }}
                         >
                           Citizen Name
                         </Typography>
                       </CardContent>
-                      <CardContent sx={{ flex: 1.5 ,borderRight: "1px solid #e0e0e0"}}>
+                      <CardContent sx={{ flex: 1.5 }}>
                         <Typography
                           sx={{
-                            fontSize: "14px",
-                            fontWeight: 600,
-                            fontFamily: "Roboto",
+                            fontFamily: "Roboto,sans-serif",
+                            fontSize: "13px",
+                            fontWeight: 550,
                             color: "#fff",
                             whiteSpace: "nowrap",
+                            borderRight: "1px solid #e0e0e0",
                           }}
                         >
                           Doctor Name
                         </Typography>
                       </CardContent>
-                      <CardContent sx={{ flex: 1 ,borderRight: "1px solid #e0e0e0"}}>
+                      <CardContent sx={{ flex: 1.2 }}>
                         <Typography
                           sx={{
-                            fontSize: "14px",
-                            fontWeight: 600,
-                            fontFamily: "Roboto",
+                            fontFamily: "Roboto,sans-serif",
+                            fontSize: "13px",
+                            fontWeight: 550,
                             color: "#fff",
                             whiteSpace: "nowrap",
+                            borderRight: "1px solid #e0e0e0",
                           }}
                         >
                           Mobile Number
                         </Typography>
                       </CardContent>
-                      <CardContent sx={{ flex: 1 ,borderRight: "1px solid #e0e0e0"}}>
+                      <CardContent sx={{ flex: 1 }}>
                         <Typography
                           sx={{
-                            fontSize: "14px",
-                            fontWeight: 600,
-                            fontFamily: "Roboto",
+                            fontFamily: "Roboto,sans-serif",
+                            fontSize: "13px",
+                            fontWeight: 550,
                             color: "#fff",
                             whiteSpace: "nowrap",
+                            borderRight: "1px solid #e0e0e0",
                           }}
                         >
                           DOB
                         </Typography>
                       </CardContent>
-                      <CardContent sx={{ flex: 1 ,borderRight: "1px solid #e0e0e0" }}>
+                      <CardContent sx={{ flex: 1 }}>
                         <Typography
                           sx={{
-                            fontSize: "14px",
-                            fontWeight: 600,
-                            fontFamily: "Roboto",
+                            fontFamily: "Roboto,sans-serif",
+                            fontSize: "13px",
+                            fontWeight: 550,
                             color: "#fff",
                             whiteSpace: "nowrap",
+                            borderRight: "1px solid #e0e0e0",
                           }}
                         >
                           Blood Group
                         </Typography>
                       </CardContent>
                       <CardContent sx={{ flex: 0.5, textAlign: "center" }}>
-                        <Typography sx={{
-                            fontSize: "14px",
+                        <Typography
+                          sx={{
+                            fontSize: "15px",
                             fontWeight: 600,
                             fontFamily: "Roboto",
                             color: "#fff",
                             whiteSpace: "nowrap",
-                          }}>Action</Typography>
+                          }}
+                        >
+                          Action
+                        </Typography>
                       </CardContent>
                     </TableRow>
                   </TableHead>
@@ -680,7 +690,7 @@ const Desk = () => {
                             }}
                           >
                             {/* 🔹 SINGLE TABLE CELL */}
-                            <TableCell  sx={{ p: 0 ,py:1}}>
+                            <TableCell sx={{ p: 0, py: 1 }}>
                               <Box
                                 sx={{
                                   display: "flex",
@@ -691,57 +701,98 @@ const Desk = () => {
                                 }}
                               >
                                 <Typography
-                                  sx={{ flex: 0.5, fontSize: "14px" ,fontFamily: "Roboto" ,
-                                    fontWeight: 500,textAlign: "center",
+                                  sx={{
+                                    flex: 0.5,
+                                    fontSize: "14px",
+                                    fontFamily: "Roboto sans-serif",
+                                    fontWeight: 500,
+                                    textAlign: "center",
                                   }}
                                 >
                                   {index + 1}
                                 </Typography>
 
                                 <Typography
-                                  sx={{ flex: 2, fontSize: "14px" ,fontFamily: "Roboto" ,
-                                    fontWeight: 500,textAlign: "center",}}
+                                  sx={{
+                                    flex: 2,
+                                    fontSize: "14px",
+                                    fontFamily: "Roboto sans-serif",
+                                    fontWeight: 500,
+                                    textAlign: "center",
+                                  }}
                                 >
                                   {item.citizen_id}
                                 </Typography>
 
                                 <Typography
-                                  sx={{ flex: 1.5, fontSize: "14px" ,fontFamily: "Roboto" ,
-                                    fontWeight: 500,textAlign: "center",}}
+                                  sx={{
+                                    flex: 1.5,
+                                    fontSize: "14px",
+                                    fontFamily: "Roboto sans-serif",
+                                    fontWeight: 500,
+                                    textAlign: "center",
+                                  }}
                                 >
                                   {item.citizen_name}
                                 </Typography>
 
                                 <Typography
-                                  sx={{ flex: 1.5, fontSize: "14px" ,fontFamily: "Roboto" ,
-                                    fontWeight: 500,textAlign: "center",}}
+                                  sx={{
+                                    flex: 1.5,
+                                    fontSize: "14px",
+                                    fontFamily: "Roboto sans-serif",
+                                    fontWeight: 500,
+                                    textAlign: "center",
+                                  }}
                                 >
                                   {item.doctor_name || "N/A"}
                                 </Typography>
 
                                 <Typography
-                                  sx={{ flex: 1.2, fontSize: "14px" ,fontFamily: "Roboto" ,
-                                    fontWeight: 500,textAlign: "center",}}
+                                  sx={{
+                                    flex: 1.2,
+                                    fontSize: "14px",
+                                    fontFamily: "Roboto sans-serif",
+                                    fontWeight: 500,
+                                    textAlign: "center",
+                                  }}
                                 >
                                   {item.mobile_number}
                                 </Typography>
 
                                 <Typography
-                                  sx={{ flex: 1.2, fontSize: "14px" ,fontFamily: "Roboto" ,
-                                    fontWeight: 500,textAlign: "center",}}
+                                  sx={{
+                                    flex: 1.2,
+                                    fontSize: "14px",
+                                    fontFamily: "Roboto sans-serif",
+                                    fontWeight: 500,
+                                    textAlign: "center",
+                                  }}
                                 >
                                   {item.dob || "N/A"}
                                 </Typography>
 
                                 <Typography
-                                  sx={{ flex: 1.2, fontSize: "14px" ,fontFamily: "Roboto" ,
-                                    fontWeight: 500,textAlign: "center",}}
+                                  sx={{
+                                    flex: 1.2,
+                                    fontSize: "14px",
+                                    fontFamily: "Roboto sans-serif",
+                                    fontWeight: 500,
+                                    textAlign: "center",
+                                  }}
                                 >
                                   {item.blood_group || "N/A"}
                                 </Typography>
 
-                                <Box sx={{ flex: 0.5, textAlign: "center" ,fontSize: "14px" ,fontFamily: "Roboto" ,
-                                    fontWeight: 500,}}>
+                                <Box
+                                  sx={{
+                                    flex: 0.5,
+                                    textAlign: "center",
+                                    fontSize: "14px",
+                                    fontFamily: "Roboto sans-serif",
+                                    fontWeight: 500,
+                                  }}
+                                >
                                   {canView && (
                                     <IconButton
                                       component={Link}

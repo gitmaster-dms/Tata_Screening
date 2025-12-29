@@ -956,18 +956,19 @@ const AddSource = () => {
       <Card
         sx={{
           p: 1,
-          m: "0.1em 1em 0 4.5em",
+          m: "0.1em 1em 0 3.5em",
           borderRadius: "16px",
         }}
       >
         <Box className="row" sx={{ mb: 2 }}>
           <Typography
-            variant="h6"
             sx={{
+              mb: 1,
               fontWeight: 600,
-              fontFamily: "Roboto",
-              color: "#000000",
-              ml: 2,
+              fontSize: "16px",
+              textAlign: "left",
+              color: "black",
+              px: 2,
             }}
           >
             WorkShop Registration
@@ -978,7 +979,7 @@ const AddSource = () => {
           <Box sx={{ textAlign: "center" }}>
             <Grid
               container
-              spacing={2}
+              spacing={1}
               justifyContent="center"
               alignItems="center"
               sx={{
@@ -987,37 +988,7 @@ const AddSource = () => {
                 "&::-webkit-scrollbar": { display: "none" },
               }}
             >
-              {/* <Grid item xs={12} sm={6} md={2}>
-                                <TextField
-                                    fullWidth
-                                    select
-                                    size="small"
-                                    label="Workshop"
-                                    variant="outlined"
-                                    value={selectedSource}
-                                    onChange={(event) => setSelectedSource(event.target.value)}
-                                    InputLabelProps={{
-                                        style: { fontWeight: "100", fontSize: "14px" },
-                                    }}
-                                    sx={{
-                                        "& .MuiInputBase-input.MuiSelect-select": {
-                                            color: "#000 !important",
-                                        },
-                                        "& .MuiSvgIcon-root": {
-                                            color: "#000",
-                                        },
-                                    }}
-                                >
-                                    <MenuItem value="">Select Source</MenuItem>
-                                    {sourceNav.map((drop) => (
-                                        <MenuItem key={drop.source_pk_id} value={drop.source_pk_id}>
-                                            {drop.source}
-                                        </MenuItem>
-                                    ))}
-                                </TextField>
-                            </Grid> */}
-
-              <Grid item xs={12} sm={8} md={2}>
+              <Grid item xs={12} sm={8} md={2.5}>
                 <TextField
                   fullWidth
                   select
@@ -1039,7 +1010,7 @@ const AddSource = () => {
                     },
                   }}
                 >
-                  <MenuItem value="" >Workshop State</MenuItem>
+                  <MenuItem value="">Workshop State</MenuItem>
                   {sourceStateNav.map((drop) => (
                     <MenuItem key={drop.state_id} value={drop.state_id}>
                       {drop.state_name}
@@ -1048,7 +1019,7 @@ const AddSource = () => {
                 </TextField>
               </Grid>
 
-              <Grid item xs={12} sm={6} md={2}>
+              <Grid item xs={12} sm={6} md={2.5}>
                 <TextField
                   fullWidth
                   select
@@ -1072,7 +1043,9 @@ const AddSource = () => {
                     },
                   }}
                 >
-                  <MenuItem value="" disabled>Select District</MenuItem>
+                  <MenuItem value="" disabled>
+                    Select District
+                  </MenuItem>
                   {sourceDistrictNav.map((drop) => (
                     <MenuItem key={drop.dist_id} value={drop.dist_id}>
                       {drop.dist_name}
@@ -1081,7 +1054,7 @@ const AddSource = () => {
                 </TextField>
               </Grid>
 
-              <Grid item xs={12} sm={6} md={2}>
+              <Grid item xs={12} sm={6} md={2.5}>
                 <TextField
                   fullWidth
                   select
@@ -1103,7 +1076,9 @@ const AddSource = () => {
                     },
                   }}
                 >
-                  <MenuItem value="" disabled>Select Tehsil</MenuItem>
+                  <MenuItem value="" disabled>
+                    Select Tehsil
+                  </MenuItem>
                   {sourceTehsilNav.map((drop) => (
                     <MenuItem key={drop.tal_id} value={drop.tal_id}>
                       {drop.tahsil_name}
@@ -1112,7 +1087,7 @@ const AddSource = () => {
                 </TextField>
               </Grid>
 
-              <Grid item xs={12} sm={6} md={2}>
+              <Grid item xs={12} sm={6} md={2.5}>
                 <TextField
                   fullWidth
                   select
@@ -1136,7 +1111,9 @@ const AddSource = () => {
                     },
                   }}
                 >
-                  <MenuItem value="" disabled>Workshop Name</MenuItem>
+                  <MenuItem value="" disabled>
+                    Workshop Name
+                  </MenuItem>
                   {workshopList.map((drop) => (
                     <MenuItem key={drop.ws_pk_id} value={drop.ws_pk_id}>
                       {drop.Workshop_name}
@@ -1149,7 +1126,7 @@ const AddSource = () => {
                 item
                 xs={12}
                 sm={6}
-                md={1.5}
+                md={1.8}
                 display="flex"
                 justifyContent="center"
               >
@@ -1180,7 +1157,7 @@ const AddSource = () => {
       <Grid container>
         <Grid item xs={12} md={6}>
           <Box sx={{ p: 2 }}>
-            <Card sx={{ p: 2, borderRadius: "16px", ml: "3.5em" }}>
+            <Card sx={{ p: 2, borderRadius: "16px", ml: "2.5em" }}>
               <Grid
                 container
                 alignItems="center"
@@ -1188,49 +1165,50 @@ const AddSource = () => {
                 sx={{ mb: 2 }}
               >
                 <Typography
-                  variant="h6"
-                  sx={{ fontWeight: 600, fontFamily: "Roboto Sans-serif" }}
+                  sx={{ fontWeight: 550, fontFamily: "Roboto Sans-serif",
+                    fontSize: { xs: "16px", sm: "17px", md: "18px" },
+                   }}
                 >
                   Add Workshop
                 </Typography>
                 <Box>
-                  {canEdit && (
-                    <DriveFileRenameOutlineOutlined
-                      sx={{
-                        background: "rgba(10, 112, 183, 1)",
-                        cursor: "pointer",
-                        borderRadius: "6px",
-                        color: "#fff",
-                        p: "2px",
-                        mr: 1,
-                        "&:hover": {
-                          opacity: 0.8,
-                        },
-                      }}
-                      onClick={() => {
-                        setFormEnabled(true);
-                        setUpdateSrc(false);
-                      }}
-                    />
-                  )}
-                  {canDelete && (
-                    <DeleteOutlineOutlined
-                      sx={{
-                        background: "rgba(246, 92, 138, 1)",
-                        cursor: "pointer",
-                        borderRadius: "6px",
-                        color: "#fff",
-                        p: "2px",
-                        "&:hover": {
-                          opacity: 0.8,
-                        },
-                      }}
-                      onClick={() => {
-                        setDeleteSrc(false);
-                        handleDelete();
-                      }}
-                    />
-                  )}
+                  {/* {canEdit && ( */}
+                  <DriveFileRenameOutlineOutlined
+                    sx={{
+                      background: "rgba(10, 112, 183, 1)",
+                      cursor: "pointer",
+                      borderRadius: "6px",
+                      color: "#fff",
+                      p: "2px",
+                      mr: 1,
+                      "&:hover": {
+                        opacity: 0.8,
+                      },
+                    }}
+                    onClick={() => {
+                      setFormEnabled(true);
+                      setUpdateSrc(false);
+                    }}
+                  />
+                  {/* // )} */}
+                  {/* {canDelete && ( */}
+                  <DeleteOutlineOutlined
+                    sx={{
+                      background: "rgba(246, 92, 138, 1)",
+                      cursor: "pointer",
+                      borderRadius: "6px",
+                      color: "#fff",
+                      p: "2px",
+                      "&:hover": {
+                        opacity: 0.8,
+                      },
+                    }}
+                    onClick={() => {
+                      setDeleteSrc(false);
+                      handleDelete();
+                    }}
+                  />
+                  {/* )} */}
                 </Box>
               </Grid>
 
@@ -1690,9 +1668,9 @@ const AddSource = () => {
                       px: 1,
                       py: 1,
                       mb: 2,
-                      fontFamily: "Roboto",
-                      fontSize: "14px",
-                      fontWeight: 600,
+                      fontFamily: "Roboto,sans-serif",
+                      fontSize: "13px",
+                      fontWeight: 550,
                       textAlign: "center",
                     }}
                   >
@@ -1743,9 +1721,36 @@ const AddSource = () => {
                               },
                             }}
                           >
-                            <Box sx={{ flex: 0.8 , }}>{serialNumber}</Box>
-                            <Box sx={{ flex: 2 ,}}>{info.Workshop_name}</Box>
-                            <Box sx={{ flex: 2 ,}}>{info.registration_no}</Box>
+                            <Box
+                              sx={{
+                                flex: 0.8,
+                                fontFamily: "Roboto,sans-serif",
+                                fontSize: "13px",
+                                fontWeight: 50,
+                              }}
+                            >
+                              {serialNumber}
+                            </Box>
+                            <Box
+                              sx={{
+                                flex: 2,
+                                fontFamily: "Roboto,sans-serif",
+                                fontSize: "13px",
+                                fontWeight: 500,
+                              }}
+                            >
+                              {info.Workshop_name}
+                            </Box>
+                            <Box
+                              sx={{
+                                flex: 2,
+                                fontFamily: "Roboto,sans-serif",
+                                fontSize: "13px",
+                                fontWeight: 500,
+                              }}
+                            >
+                              {info.registration_no}
+                            </Box>
                           </Card>
                         );
                       })}

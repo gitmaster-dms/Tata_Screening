@@ -288,7 +288,7 @@ const Childhood = ({
 
             <DialogContent>
               <Typography>
-                Are you sure you want to submit this General Examination form?
+                Are you sure you want to submit this Childhood  form?
               </Typography>
             </DialogContent>
 

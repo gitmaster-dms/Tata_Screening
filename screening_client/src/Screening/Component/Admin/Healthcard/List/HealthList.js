@@ -1167,7 +1167,7 @@ const HealthList = () => {
 
       <Grid container spacing={0.5} sx={{ mt: 0.5 }}>
         {/* LEFT PANEL – SEARCH + TABLE */}
-        <Grid item xs={12} md={4}>
+        <Grid item xs={12} md={5.5}>
           <input
             className="form-control mb-3"
             placeholder="Search Citizen..."
@@ -1175,48 +1175,74 @@ const HealthList = () => {
             onChange={handleSearchChange}
           />
 
-          <TableContainer component={Paper} sx={{ borderRadius: 2 }}>
-            <Table size="small">
+          <TableContainer>
+            <Table
+              size="small"
+              sx={{
+                borderCollapse: "separate",
+                borderSpacing: "0 4px", // vertical gap
+              }}
+            >
               {/* Table Head */}
               <TableHead>
-                <TableRow
-                  sx={{
-                    background:
-                      "linear-gradient(90deg, #2FB3F5 0%, #1439A4 100%)",
-                  }}
-                >
-                  <TableCell
-                    sx={{
-                      color: "white",
-                      borderRight: "1px solid white",
-                      fontWeight: 600,
-                      fontSize: "16px",
-                      fontFamily: "Robot",
-                    }}
-                  >
-                    Citizen Name
-                  </TableCell>
-                  <TableCell
-                    sx={{
-                      color: "white",
-                      borderRight: "1px solid white",
-                      fontWeight: 600,
-                      fontSize: "16px",
-                      fontFamily: "Roboto",
-                    }}
-                  >
-                    Aadhar ID
-                  </TableCell>
-                  <TableCell
-                    align="center"
-                    sx={{
-                      color: "white",
-                      fontWeight: 600,
-                      fontSize: "16px",
-                      fontFamily: "Roboto",
-                    }}
-                  >
-                    Action
+                <TableRow>
+                  <TableCell colSpan={3} sx={{ p: 0, borderBottom: "none" }}>
+                    <Card
+                      sx={{
+                        background:
+                          "linear-gradient(90deg, #2FB3F5 0%, #1439A4 100%)",
+                        borderRadius: 20,
+                      }}
+                    >
+                      <Box
+                        sx={{
+                          display: "flex",
+                          alignItems: "center", // vertical center
+                          justifyContent: "space-between",
+                          px: 1,
+                          py: 1,
+                        }}
+                      >
+                        <Typography
+                          sx={{
+                            flex: 1.2,
+                            fontFamily: "Roboto",
+                            fontWeight: 600,
+                            fontSize: "14px",
+                            color: "white",
+                            borderRight: "1px solid white",
+                          }}
+                        >
+                          Citizen Name
+                        </Typography>
+                        <Typography
+                          sx={{
+                            flex: 1.5,
+                            fontFamily: "Roboto",
+                            fontWeight: 600,
+                            fontSize: "14px",
+                            color: "white",
+                            textAlign: "center",
+                                                        borderRight: "1px solid white",
+
+                          }}
+                        >
+                          Aadhar ID
+                        </Typography>
+                        <Typography
+                          sx={{
+                            flex: 0.8,
+                            fontFamily: "Roboto",
+                            fontWeight: 600,
+                            fontSize: "14px",
+                            color: "white",
+                            textAlign: "center",
+                          }}
+                        >
+                          Action
+                        </Typography>
+                      </Box>
+                    </Card>
                   </TableCell>
                 </TableRow>
               </TableHead>
@@ -1275,7 +1301,7 @@ const HealthList = () => {
         </Grid>
 
         {/* RIGHT PANEL – MAIN CONTENT */}
-        <Grid item xs={12} md={8}>
+        <Grid item xs={12} md={6.5}>
           {/* PROFILE CARD */}
           <Box className={`card ${isDataFetched ? "data-fetched" : ""}`} p={2}>
             <Grid container spacing={1}>

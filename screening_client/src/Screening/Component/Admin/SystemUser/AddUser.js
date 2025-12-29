@@ -985,7 +985,7 @@ const AddUser = () => {
   const [formAction, setFormAction] = useState("");
 
   return (
-    <Box sx={{ p: 2, m: "0em 0em 0 2.6em" }}>
+    <Box sx={{ p: 1.5, m: "0em 0em 0 2.6em" }}>
       <Snackbar
         open={snackbar.open}
         autoHideDuration={3000}
@@ -1011,8 +1011,13 @@ const AddUser = () => {
           <Grid container alignItems="center" justifyContent="space-between">
             <Grid item>
               <Typography
-                variant="h6"
-                sx={{ fontWeight: 500, color: "#1439A4", fontFamily: "Roboto" }}
+                sx={{
+                  mb: 0.5,
+                  fontWeight: 600,
+                  fontSize: "16px",
+                  textAlign: "left",
+                  color: "black",
+                }}
               >
                 User List
               </Typography>
@@ -1043,11 +1048,11 @@ const AddUser = () => {
 
           <Grid
             container
-            spacing={2}
+            spacing={1}
             alignItems="center"
             justifyContent="center"
           >
-            <Grid item xs={12} sm={6} md={2}>
+            <Grid item xs={12} sm={6} md={2.5}>
               <TextField
                 sx={{
                   minWidth: 120,
@@ -1074,7 +1079,7 @@ const AddUser = () => {
               </TextField>
             </Grid>
 
-            <Grid item xs={12} sm={6} md={2}>
+            <Grid item xs={12} sm={6} md={2.5}>
               <TextField
                 sx={{
                   minWidth: 120,
@@ -1237,7 +1242,7 @@ const AddUser = () => {
                     </Typography>
                     <Box
                       sx={{
-                        p: 2,
+                        p: 0.1,
                       }}
                     >
                       <IconButton
@@ -1776,15 +1781,15 @@ const AddUser = () => {
                               <TableCell
                                 key={i}
                                 sx={{
-                                  fontSize: "14px",
-                                  fontWeight: 600,
-                                  fontFamily: "Roboto",
+                                  fontFamily: "Roboto,sans-serif",
+                                  fontSize: "13px",
+                                  fontWeight: 550,
                                   lineHeight: 1,
                                   color: "#fff",
                                   whiteSpace: "nowrap",
                                   borderRight:
                                     i !== 3 ? "1px solid #fff" : "none",
-                                  py: 2,
+                                  py: 1.5,
                                 }}
                                 align="center"
                               >
@@ -1805,10 +1810,12 @@ const AddUser = () => {
                           return (
                             <Card
                               // key={item.pk ?? index}
-                              elevation={isSelected ? 6 : 2}
+                              // elevation={isSelected ? 6 : 2}
                               sx={{
-                                mb: 1,
-                                cursor: "pointer",
+                                mb: 2,
+                                height: "40px",
+                                // p: 1,
+                                // cursor: "pointer",
                                 // bgcolor: isSelected ? "#E3F2FD" : "#fff",
                                 // transition: "all 0.2s ease-in-out",
                                 // "&:hover": { boxShadow: 6 },
@@ -1825,16 +1832,15 @@ const AddUser = () => {
                               <CardContent sx={{ p: 1 }}>
                                 <Grid
                                   container
-                                  alignItems="center"
-                                  justifyContent="center"
                                   textAlign="center"
+                                  justifyContent={"center"}
                                 >
                                   <Grid item sx={{ flex: 2 }}>
                                     <Typography
                                       sx={{
-                                        fontSize: "15px",
+                                        fontSize: "14px",
                                         fontWeight: 500,
-                                        fontFamily: "Roboto",
+                                        fontFamily: "Roboto,sans-serif",
                                       }}
                                     >
                                       {serialNumber}
@@ -1844,9 +1850,9 @@ const AddUser = () => {
                                   <Grid item sx={{ flex: 5 }}>
                                     <Typography
                                       sx={{
-                                        fontSize: "15px",
+                                        fontSize: "14px",
                                         fontWeight: 500,
-                                        fontFamily: "Roboto",
+                                        fontFamily: "Roboto,sans-serif",
                                       }}
                                     >
                                       {item.clg_ref_id}
@@ -1856,9 +1862,9 @@ const AddUser = () => {
                                   <Grid item sx={{ flex: 3 }}>
                                     <Typography
                                       sx={{
-                                        fontSize: "15px",
+                                        fontSize: "14px",
                                         fontWeight: 500,
-                                        fontFamily: "Roboto",
+                                        fontFamily: "Roboto,sans-serif",
                                       }}
                                     >
                                       {item.clg_mobile_no}
@@ -1868,7 +1874,7 @@ const AddUser = () => {
                                   <Grid item sx={{ flex: 3.5 }}>
                                     <Typography
                                       sx={{
-                                        fontSize: "15px",
+                                        fontSize: "14px",
                                         fontWeight: 500,
                                         fontFamily: "Roboto",
                                       }}

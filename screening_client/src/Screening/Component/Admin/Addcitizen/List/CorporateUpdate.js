@@ -42,13 +42,14 @@ const CorporateUpdate = (props) => {
   const mainCorporate = props.main;
   console.log(mainCorporate, "mmmmmmoooooooooooooooooooo");
   console.log(mainCorporate.gender.id, "mmmmmmoooooooooooooooooooo");
-
+  console.log(mainCorporate.type.id, "typetypetypetypetype");
   ///////////////////// passed Source and State id name
   const stateCorporate = props.state;
   console.log(stateCorporate, "sssssssssssssssssssssssssssoooooooooooooooooo");
 
   /////////////////////////////// UPDATE FORM
   const [updatedData, setUpdatedData] = useState({
+    prefix: "",
     name: "",
     blood_groups: "",
     dob: "",
@@ -117,6 +118,7 @@ const CorporateUpdate = (props) => {
             }
           );
           const options = response.data;
+
           setUpdatedData((prevState) => ({
             ...prevState,
             bmi: options.bmi,
@@ -192,62 +194,48 @@ const CorporateUpdate = (props) => {
   const handleUpdate = async (e) => {
     e.preventDefault();
 
-    // const isConfirmed = window.confirm(
-    //   "Are you sure you want to update employee details?"
-    // );
-    if (true) {
-      try {
-        const updatedDataWithDepartment = {
-          ...updatedData,
-          age: mainCorporate.age.id,
-          gender: mainCorporate.gender.id,
-          type: mainCorporate.type.id,
-          disease: mainCorporate.disease.id,
-          modify_by: userID,
-          source_name: updatedData.source_id,
-          tehsil: updatedData.tehsil,
-        };
+    try {
+      const updatedDataWithDepartment = {
+        ...updatedData,
+        age: mainCorporate.age.id,
+        gender: mainCorporate.gender.id,
+        type: mainCorporate.type.id,
+        disease: mainCorporate.disease.id,
+        modify_by: userID,
+        source_name: updatedData.source_id,
+        tehsil: updatedData.tehsil,
+      };
 
-        const response = await axios.put(
-          `${API_URL}/Screening/Citizen_Put_api/${corporateData.citizens_pk_id}/`,{
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-              "Content-Type": "application/json",
-            },
+      const response = await axios.put(
+        `${API_URL}/Screening/Citizen_Put_api/${corporateData.citizens_pk_id}/`,
+        updatedDataWithDepartment, // ✅ DATA
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
           },
-          updatedDataWithDepartment,
-          {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        }
+      );
 
-        if (response.status === 200) {
-          setSnackMessage("Citizen updated successfully");
-          setSnackSeverity("success");
-          setSnackOpen(true);
-          console.log("Data updated successfully:", response.data);
-          navigate("/mainscreen/Citizen");
-        } else {
-          setSnackMessage("Unexpected response.");
-          setSnackSeverity("warning");
-          setSnackOpen(true);
-        }
-      } catch (error) {
-        if (error.response && error.response.status === 409) {
-          setSnackMessage("Employee already registered with this employee ID.");
-          setSnackSeverity("error");
-          setSnackOpen(true);
-        } else {
-          setSnackMessage("Error updating data.");
-          setSnackSeverity("error");
-          setSnackOpen(true);
-        }
+      if (response.status === 200) {
+        setSnackMessage("Citizen updated successfully");
+        setSnackSeverity("success");
+        setSnackOpen(true);
+        navigate("/mainscreen/Citizen");
       }
-    } else {
-      console.log("Update cancelled by user.");
+    } catch (error) {
+      console.error("Update Error:", error.response || error);
+
+      if (error.response?.status === 409) {
+        setSnackMessage("Employee already registered.");
+      } else if (error.response?.status === 400) {
+        setSnackMessage("Validation error. Please check fields.");
+      } else {
+        setSnackMessage("An error occurred.");
+      }
+
+      setSnackSeverity("error");
+      setSnackOpen(true);
     }
   };
 
@@ -357,32 +345,6 @@ const CorporateUpdate = (props) => {
   const [sourceName, setSourceName] = useState([]);
   console.log(sourceName, "sourceName");
 
-  // useEffect(() => {
-  //     const fetchState = async () => {
-  //         if (updatedData.source) {
-  //             const apiUrl = `${API_URL}/Screening/State_Get/`;
-  //             console.log(apiUrl);
-  //             try {
-  //                 const response = await fetch(apiUrl, {
-  //                     headers: {
-  //                         'Authorization': `Bearer ${accessToken}`,
-  //                         'Content-Type': 'application/json'
-  //                     }
-  //                 });
-  //                 const data = await response.json();
-  //                 console.log(data, 'fetchStatefetchState');
-  //                 setState(data);
-  //             } catch (error) {
-  //                 console.log('Error Fetching Data');
-  //             }
-  //         } else {
-  //             console.log('Error Fetching Data');
-  //         }
-  //     };
-  //     fetchState();
-  // }, [updatedData.source]);
-
- 
   useEffect(() => {
     const fetchState = async () => {
       try {
@@ -532,12 +494,12 @@ const CorporateUpdate = (props) => {
                     label="Prefix"
                   >
                     {/* <MenuItem value="">Prefix</MenuItem> */}
-                    <MenuItem value="Mr">Mr.</MenuItem>
-                    <MenuItem value="Ms">Ms.</MenuItem>
-                    <MenuItem value="Mrs">Mrs.</MenuItem>
-                    <MenuItem value="Adv">Adv.</MenuItem>
-                    <MenuItem value="Col">Col.</MenuItem>
-                    <MenuItem value="Dr">Dr.</MenuItem>
+                    <MenuItem value="Mr.">Mr.</MenuItem>
+                    <MenuItem value="Ms.">Ms.</MenuItem>
+                    <MenuItem value="Mrs.">Mrs.</MenuItem>
+                    <MenuItem value="Adv.">Adv.</MenuItem>
+                    <MenuItem value="Col.">Col.</MenuItem>
+                    <MenuItem value="Dr.">Dr.</MenuItem>
                   </Select>
                 </FormControl>
               </Grid>
@@ -1126,7 +1088,7 @@ const CorporateUpdate = (props) => {
                     <MenuItem value="">Select Source Name</MenuItem>
                     {sourceName.map((src) => (
                       <MenuItem key={src.ws_pk_id} value={src.ws_pk_id}>
-                        {src.Workshop_name}
+                        {src.workshop_name}
                       </MenuItem>
                     ))}
                   </Select>
@@ -1204,7 +1166,7 @@ const CorporateUpdate = (props) => {
           open={snackOpen}
           autoHideDuration={6000}
           onClose={() => setSnackOpen(false)}
-          anchorOrigin={{ vertical: "top", horizontal: "right" }}
+          anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
         >
           <Alert
             onClose={() => setSnackOpen(false)}

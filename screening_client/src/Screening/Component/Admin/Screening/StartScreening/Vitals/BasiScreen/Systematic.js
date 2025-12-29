@@ -14,6 +14,7 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  Box,
 } from "@mui/material";
 
 const Systematic = ({
@@ -1184,22 +1185,27 @@ const Systematic = ({
           </Grid>
         </Grid>
 
-        <Button
-          variant="contained"
-          size="small"
-          type="button"
-          sx={{ mt: 3, backgroundColor: "#1976d2", textTransform: "none" }}
-          onClick={handleOpenDialog}
-        >
-          Submit
-        </Button>
+        <Box textAlign="center" mt={1} mb={2}>
+          <Button
+            variant="contained"
+            size="small"
+            sx={{ bgcolor: "#1439A4", textTransform: "none" ,
+            "&:hover": {
+              bgcolor: "#1439A4",
+            }}}
+            onClick={handleOpenDialog}
+          >
+            Submit
+          </Button>
+        </Box>
+       
 
         <Dialog open={openDialog} onClose={handleCancel}>
           <DialogTitle>Confirm Submission</DialogTitle>
 
           <DialogContent>
             <Typography>
-              Are you sure you want to submit this General Examination form?
+              Are you sure you want to submit this systematic form?
             </Typography>
           </DialogContent>
 

@@ -208,7 +208,28 @@ const ScreeningList = () => {
 
   const [department, setDepartmenet] = useState([]);
   const [selectedDepartment, setSelectedDepartment] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
 
+  const [screeningFor, setScreeningFor] = useState([]);
+
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await axios.get(`${Port}/Screening/Category_Get/`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+          },
+        });
+        setScreeningFor(response.data);
+        console.log("Fetched Categories:", response.data);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+
+    fetchCategories();
+  }, [Port, accessToken]);
   useEffect(() => {
     const fetchDepartment = async () => {
       try {
@@ -240,12 +261,20 @@ const ScreeningList = () => {
             >
               <CardContent>
                 {/* ================= TITLE ================= */}
-                <Typography variant="h6" fontWeight="bold"  mb={2.5}>
+                <Typography
+                  sx={{
+                    mb: 1,
+                    fontWeight: 600,
+                    fontSize: "16px",
+                    textAlign: "left",
+                    color: "black",
+                  }}
+                >
                   Screening List
                 </Typography>
 
                 {/* ================= FILTER ROW ================= */}
-                <Grid container spacing={2} alignItems="center">
+                <Grid container spacing={1} alignItems="center">
                   {SourceUrlId === 1 && (
                     <Grid item xs={12} sm={6} md={2}>
                       <TextField
@@ -298,36 +327,36 @@ const ScreeningList = () => {
                       select
                       fullWidth
                       size="small"
-                      label="Category Type"
-                      value={selectedType}
-                      onChange={(event) => setSelectedType(event.target.value)}
-                     InputLabelProps={{
-                          sx: {
-                            fontWeight: 100,
-                            fontSize: "14px",
-                            color: "black !important",
-                          },
-                        }}
-                        SelectProps={{
-                          MenuProps: {
-                            classes: { paper: "custom-menu-paper" },
-                          },
-                        }}
-                        sx={{
-                          "& .MuiInputBase-input": { color: "black" },
-                          "& .MuiSelect-select": { color: "black !important" }, // <-- FIXEDss
-                          "& .MuiOutlinedInput-root": {
-                            "& fieldset": { borderColor: "black" },
-                            "&:hover fieldset": { borderColor: "black" },
-                            "&.Mui-focused fieldset": { borderColor: "black" },
-                          },
-                          "& .MuiSvgIcon-root": { color: "black" },
-                        }}
+                      label="Category"
+                      value={selectedCategory}
+                      onChange={(e) => setSelectedCategory(e.target.value)}
+                      InputLabelProps={{
+                        sx: {
+                          fontWeight: 100,
+                          fontSize: "14px",
+                          color: "black !important",
+                        },
+                      }}
+                      SelectProps={{
+                        MenuProps: {
+                          classes: { paper: "custom-menu-paper" },
+                        },
+                      }}
+                      sx={{
+                        "& .MuiInputBase-input": { color: "black" },
+                        "& .MuiSelect-select": { color: "black !important" }, // <-- FIXEDss
+                        "& .MuiOutlinedInput-root": {
+                          "& fieldset": { borderColor: "black" },
+                          "&:hover fieldset": { borderColor: "black" },
+                          "&.Mui-focused fieldset": { borderColor: "black" },
+                        },
+                        "& .MuiSvgIcon-root": { color: "black" },
+                      }}
                     >
-                      <MenuItem value="">Select Type</MenuItem>
-                      {sourceType.map((drop) => (
-                        <MenuItem key={drop.type_id} value={drop.type_id}>
-                          {drop.type}
+                      <MenuItem value="">Select Category</MenuItem>
+                      {screeningFor.map((drop) => (
+                        <MenuItem key={drop.pk_id} value={drop.pk_id}>
+                          {drop.category}
                         </MenuItem>
                       ))}
                     </TextField>
@@ -344,7 +373,7 @@ const ScreeningList = () => {
                         onChange={(event) =>
                           setSelectedClass(event.target.value)
                         }
-                         InputLabelProps={{
+                        InputLabelProps={{
                           sx: {
                             fontWeight: 100,
                             fontSize: "14px",
@@ -454,10 +483,11 @@ const ScreeningList = () => {
                       variant="contained"
                       size="small"
                       sx={{
-                        background: "linear-gradient(90deg, #2FB3F5 0%, #1439A4 100%)",
+                        background:
+                          "linear-gradient(90deg, #2FB3F5 0%, #1439A4 100%)",
                         ":hover": {
-                          background: "linear-gradient(90deg, #2FB3F5 0%, #1439A4 100%)",
-                          
+                          background:
+                            "linear-gradient(90deg, #2FB3F5 0%, #1439A4 100%)",
                         },
                       }}
                       onClick={handleSearch}
@@ -476,9 +506,9 @@ const ScreeningList = () => {
         <Box className="content-header">
           <Box className="container-fluid">
             {/* ================= SEARCH + PAGINATION ================= */}
-            <Grid container spacing={2} alignItems="center" mb={2}>
+            <Grid container spacing={1} alignItems="center" mb={1}>
               <Grid item xs={12} md={3}>
-                <Box position="relative">
+                <Box position="relative" >
                   <TextField
                     fullWidth
                     size="small"

@@ -309,7 +309,7 @@ const Childvital = ({
                         },
                       }}
                       label="Prefix"
-                      value={childData?.prefix || ""}
+                      value={childData?.citizen_info?.prefix || ""}
                       onChange={(e) =>
                         setChildData((prev) => ({
                           ...prev,
