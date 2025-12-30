@@ -4061,9 +4061,9 @@ class Citizen_idwise_data_Get_Api(APIView):
 
 
 class Citizen_Update_API(APIView):
-    # renderer_classes = [UserRenderer]
-    # authentication_classes = [CustomJWTAuthentication]
-    # permission_classes = [IsAuthenticated]
+    renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, citizens_pk_id):
         try:

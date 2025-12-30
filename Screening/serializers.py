@@ -847,7 +847,7 @@ class Citizen_idwise_data_Get_Serializer(serializers.ModelSerializer):
     category_name = serializers.CharField(source='category.category',allow_null=True)
     modify_by = agg_com_colleague_Serializer()
     added_by = agg_com_colleague_Serializer()
-    Workshop_name = serializers.CharField(source='workshop_pk_id.Workshop_name',allow_null=True)
+    Workshop_name = serializers.CharField(source='source_name.Workshop_name',allow_null=True)
     class Meta:
         model = Citizen
         fields = '__all__'
