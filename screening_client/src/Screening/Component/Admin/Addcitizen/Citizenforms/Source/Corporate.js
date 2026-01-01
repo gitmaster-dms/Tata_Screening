@@ -607,7 +607,7 @@ const Corporate = (props) => {
       formData.append("state", selectedState);
       formData.append("district", selectedDistrict);
       formData.append("tehsil", selectedTahsil);
-      formData.append("source_name", SourceNameUrlId);
+      formData.append("source_name", SourceUrlId);
       formData.append("gender", gender);
       formData.append("category", selectedScheduleType);
       formData.append("source", SourceUrlId);
@@ -648,9 +648,9 @@ const Corporate = (props) => {
         newErrorMessages.mobile_no = "Mobile Number is required.";
       }
 
-      if (!dob) {
-        newErrorMessages.dob = "Date of Birth is required.";
-      }
+      // if (!dob) {
+      //   newErrorMessages.dob = "Date of Birth is required.";
+      // }
 
       if (!selectedState) {
         newErrorMessages.state = "State is required.";

@@ -225,45 +225,52 @@ const BmiVital = ({
     postBmiData();
   }, []);
 
-  const updateDataInDatabase = async (citizen_id, confirmationStatus) => {
-    try {
-      const response = await fetch(
-        `${API_URL}/Screening/Citizen_growth_monitoring_put/${growthId}/`,
-        {
-          method: "PUT",
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-            "Content-Type": "application/json", // Ensure correct content type
-          },
-          body: JSON.stringify({
-            ...bmiData,
-            added_by: userID,
-            modify_by: userID,
-            refer_doctor: selectedDoctor,
-            form_submit: confirmationStatus,
-            reffered_to_specialist: referredToSpecialist,
-          }),
-        }
-      );
+  const updateDataInDatabase = async (confirmationStatus) => {
+  try {
+    const response = await fetch(
+      `${API_URL}/Screening/Citizen_growth_monitoring_put/${growthId}/`,
+      {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          // 👇 FLAT FIELDS (IMPORTANT)
+          dob: bmiData.citizen_info.dob,
+          gender: bmiData.citizen_info.gender,
+          height: bmiData.citizen_info.height,
+          weight: bmiData.citizen_info.weight,
+          year: bmiData.citizen_info.year,
+          months: bmiData.citizen_info.months,
+          days: bmiData.citizen_info.days,
+          arm_size: bmiData.citizen_info.arm_size,
 
-      console.log(response);
+          symptoms: bmiData.symptoms_if_any,
+          remark: bmiData.remark,
 
-      if (response.ok) {
-        const updatedBmiData = await response.json();
-        setBmiData(updatedBmiData);
-        openSnackbar("Data updated successfully!", "success");
-        onAcceptClick(nextName);
-      } else if (response.status === 400) {
-        openSnackbar("Plese Select Doctor", "error");
-      } else if (response.status === 500) {
-        openSnackbar("Internal Server Error. Try again later.", "error");
-      } else {
-        openSnackbar(`Failed to update. Status: ${response.status}`, "error");
+          refer_doctor: selectedDoctor,
+          reffered_to_specialist: referredToSpecialist,
+          form_submit: confirmationStatus,
+
+          added_by: userID,
+          modify_by: userID,
+        }),
       }
-    } catch (error) {
-      console.error("Error updating data", error);
+    );
+
+    if (response.ok) {
+      const res = await response.json();
+      openSnackbar("Data updated successfully!", "success");
+      onAcceptClick(nextName);
+    } else {
+      openSnackbar("Update failed", "error");
     }
-  };
+  } catch (error) {
+    console.error(error);
+  }
+};
+
 
   const [openConfirm, setOpenConfirm] = useState(false);
 
@@ -482,6 +489,15 @@ const BmiVital = ({
           maxHeight: "70vh",
           overflowY: "auto",
           pr: 2,
+          "&::-webkit-scrollbar": {
+            display: "none",
+          },
+
+          /* Hide scrollbar - Firefox */
+          scrollbarWidth: "none",
+
+          /* Hide scrollbar - IE & old Edge */
+          msOverflowStyle: "none",
         }}
       >
         <Card sx={{ p: 2, mb: 2, borderRadius: "20px" }}>
@@ -639,145 +655,134 @@ const BmiVital = ({
 
             {/* BMI Data */}
             <Grid item xs={12} sm={7}>
-            <Card
-  sx={{
-    p: 2.5,
-    borderRadius: "12px",
-    background: "linear-gradient(180deg, #039BEF 0%, #1439A4 100%)",
-    color: "white",
-    position: "relative",
-  }}
->
-  {/* Title */}
-  <Typography variant="subtitle2" fontWeight="bold">
-    Body Mass Index
-  </Typography>
+              {bmiData.citizen_info.dob && (
+                <Card
+                  sx={{
+                    p: 2,
+                    height: "auto",
+                    background:
+                      "linear-gradient(180deg, #039BEF 0%, #1439A4 100%)",
+                    color: "white",
+                  }}
+                >
+                  <Typography variant="subtitle2" fontWeight="bold" mb={1}>
+                    Body Mass Index (BMI)
+                  </Typography>
+                  <Typography variant="h6" color="white">
+                    {bmiData.citizen_info.bmi || "--"}
+                  </Typography>
 
-  {/* BMI Value */}
-  <Typography variant="h4" fontWeight="bold" mt={0.5}>
-    {bmiData.citizen_info.bmi || "--"}
-  </Typography>
+                  <Typography variant="body2" mt={1} sx={{ color: "white" }}>
+                    {bmiData.citizen_info.bmi < 18.5
+                      ? "You are Underweight."
+                      : bmiData.citizen_info.bmi < 25
+                      ? "You are Normal."
+                      : bmiData.citizen_info.bmi < 30
+                      ? "You are Overweight."
+                      : "Obese."}
+                  </Typography>
 
-  {/* Status Text */}
-  <Typography variant="body2" mt={0.5}>
-    {bmiData.citizen_info.bmi < 18.5
-      ? "You're Underweight"
-      : bmiData.citizen_info.bmi < 25
-      ? "You're Healthy"
-      : bmiData.citizen_info.bmi < 30
-      ? "You're Overweight"
-      : "You're Obese"}
-  </Typography>
+                  <Divider sx={{ my: 2 }} />
 
-  <Typography variant="caption" sx={{ opacity: 0.9 }}>
-    By maintaining a healthy weight, you lower your risk of developing
-    serious health problems.
-  </Typography>
-
-  {/* BMI Scale */}
-  <Box sx={{ mt: 3, position: "relative" }}>
-    {/* Color Bar */}
-    <Box
-      sx={{
-        height: 10,
-        borderRadius: 10,
-        background:
-          "linear-gradient(90deg, #FF3D00 0%, #FFC107 30%, #4CAF50 55%, #2E7D32 100%)",
-      }}
-    />
-
-    {/* Indicator */}
-    <Box
-      sx={{
-        position: "absolute",
-        top: -8,
-        left: `${
-          bmiData.citizen_info.bmi < 18.5
-            ? 15
-            : bmiData.citizen_info.bmi < 25
-            ? 40
-            : bmiData.citizen_info.bmi < 30
-            ? 65
-            : 85
-        }%`,
-        transform: "translateX(-50%)",
-      }}
-    >
-      <Box
-        sx={{
-          width: 3,
-          height: 20,
-          bgcolor: "yellow",
-          borderRadius: 2,
-        }}
-      />
-    </Box>
-  </Box>
-
-  {/* Labels */}
-  <Grid
-    container
-    justifyContent="space-between"
-    sx={{ mt: 1, fontSize: 12, opacity: 0.9 }}
-  >
-    <Typography>Underweight</Typography>
-    <Typography>Normal</Typography>
-    <Typography>Overweight</Typography>
-    <Typography>Obesity</Typography>
-  </Grid>
-</Card>
-
-
-              <Grid container spacing={2} mt={1}>
-                <Grid item xs={12} sm={4}>
-                  <Card
-                    sx={{
-                      p: 1.5,
-                      textAlign: "center",
-                      height: "100%",
-                      border: "1px solid #E95D5C",
-                      borderRadius: "15px",
-                    }}
+                  <Grid
+                    container
+                    justifyContent="space-between"
+                    sx={{ color: "white" }}
                   >
-                    <Typography variant="body2">Weight for Age</Typography>
-                    <Typography variant="subtitle2">
-                      {bmiData.citizen_info.weight_for_age_label || "--"}
-                    </Typography>
-                  </Card>
+                    {["Underweight", "Normal", "Overweight", "Obesity"].map(
+                      (label, index) => (
+                        <Typography
+                          key={index}
+                          sx={{
+                            fontWeight:
+                              (label === "Underweight" &&
+                                bmiData.citizen_info.bmi < 18.5) ||
+                              (label === "Normal" &&
+                                bmiData.citizen_info.bmi >= 18.5 &&
+                                bmiData.citizen_info.bmi < 25) ||
+                              (label === "Overweight" &&
+                                bmiData.citizen_info.bmi >= 25 &&
+                                bmiData.citizen_info.bmi < 30) ||
+                              (label === "Obesity" &&
+                                bmiData.citizen_info.bmi >= 30)
+                                ? "bold"
+                                : "normal",
+                            color:
+                              (label === "Underweight" &&
+                                bmiData.citizen_info.bmi < 18.5) ||
+                              (label === "Normal" &&
+                                bmiData.citizen_info.bmi >= 18.5 &&
+                                bmiData.citizen_info.bmi < 25) ||
+                              (label === "Overweight" &&
+                                bmiData.citizen_info.bmi >= 25 &&
+                                bmiData.citizen_info.bmi < 30) ||
+                              (label === "Obesity" &&
+                                bmiData.citizen_info.bmi >= 30)
+                                ? "red"
+                                : "white",
+                            fontSize: 14,
+                          }}
+                        >
+                          {label}
+                        </Typography>
+                      )
+                    )}
+                  </Grid>
+                </Card>
+              )}
+
+              {bmiData.citizen_info.dob && (
+                <Grid container spacing={2} mt={1}>
+                  <Grid item xs={12} sm={4}>
+                    <Card
+                      sx={{
+                        p: 1.5,
+                        textAlign: "center",
+                        height: "100%",
+                        border: "1px solid #E95D5C",
+                        borderRadius: "15px",
+                      }}
+                    >
+                      <Typography variant="body2">Weight for Age</Typography>
+                      <Typography variant="subtitle2">
+                        {bmiData.citizen_info.weight_for_age_label || "--"}
+                      </Typography>
+                    </Card>
+                  </Grid>
+                  <Grid item xs={12} sm={4}>
+                    <Card
+                      sx={{
+                        p: 1.5,
+                        textAlign: "center",
+                        height: "100%",
+                        border: "1px solid #90DF9E",
+                        borderRadius: "15px",
+                      }}
+                    >
+                      <Typography variant="body2">Weight for Height</Typography>
+                      <Typography variant="subtitle2">
+                        {bmiData.citizen_info.height_for_weight_label || "--"}
+                      </Typography>
+                    </Card>
+                  </Grid>
+                  <Grid item xs={12} sm={4}>
+                    <Card
+                      sx={{
+                        p: 1.5,
+                        textAlign: "center",
+                        height: "100%",
+                        border: "1px solid #C4C4C4",
+                        borderRadius: "15px",
+                      }}
+                    >
+                      <Typography variant="body2">Height for Age</Typography>
+                      <Typography variant="subtitle2">
+                        {bmiData.citizen_info.height_for_age_label || "--"}
+                      </Typography>
+                    </Card>
+                  </Grid>
                 </Grid>
-                <Grid item xs={12} sm={4}>
-                  <Card
-                    sx={{
-                      p: 1.5,
-                      textAlign: "center",
-                      height: "100%",
-                      border: "1px solid #90DF9E",
-                      borderRadius: "15px",
-                    }}
-                  >
-                    <Typography variant="body2">Weight for Height</Typography>
-                    <Typography variant="subtitle2">
-                      {bmiData.citizen_info.height_for_weight_label || "--"}
-                    </Typography>
-                  </Card>
-                </Grid>
-                <Grid item xs={12} sm={4}>
-                  <Card
-                    sx={{
-                      p: 1.5,
-                      textAlign: "center",
-                      height: "100%",
-                      border: "1px solid #C4C4C4",
-                      borderRadius: "15px",
-                    }}
-                  >
-                    <Typography variant="body2">Height for Age</Typography>
-                    <Typography variant="subtitle2">
-                      {bmiData.citizen_info.height_for_age_label || "--"}
-                    </Typography>
-                  </Card>
-                </Grid>
-              </Grid>
+              )}
             </Grid>
           </Grid>
         </Card>

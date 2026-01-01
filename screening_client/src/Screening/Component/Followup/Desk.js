@@ -140,7 +140,7 @@ const Desk = () => {
 
   //////////// source Name
   const [workshop, setWorkshop] = useState([]);
-  const [selectedWorkshop, setSelectedWorkshop] = useState(null);
+  const [selectedWorkshop, setSelectedWorkshop] = useState("");
   const getworkshop = async () => {
     try {
       const response = await fetch(`${Port}/Screening/Workshop_Get/`, {
@@ -148,9 +148,9 @@ const Desk = () => {
           Authorization: `Bearer ${accessToken || newToken}`,
         },
       });
-      const data = await response.json();
-      setWorkshop(data);
-      console.log(data);
+      const result = await response.json();
+    setWorkshop(result || []); // ✅ FIX
+      console.log(result);
     } catch (error) {
       console.log(error);
     }
@@ -161,6 +161,8 @@ const Desk = () => {
 
   // Doctor List
   const [doctor, setDoctor] = useState([]);
+  console.log("doctor",doctor);
+  
   const [selectedDoctor, setSelectedDoctor] = useState(null);
   const getdoctor = async () => {
     try {
@@ -384,15 +386,18 @@ const Desk = () => {
                   select
                   fullWidth
                   size="small"
-                  label="Followup For"
+                  label="FollowUp For"
                   value={selectedFollowUpFor}
                   onChange={handleFollowUpForChange}
                   InputLabelProps={{
+                      shrink: Boolean(selectedFollowUpFor),   // ✅ IMPORTANT
+
                     sx: {
                       fontWeight: 100,
                       fontSize: "14px",
                       color: "black !important",
                     },
+                    
                   }}
                   SelectProps={{
                     MenuProps: {

@@ -79,6 +79,7 @@ const CorporateUpdate = (props) => {
 
     address: "",
     pincode: "",
+    ws_pk_id: "",
 
     /////// new Fields Added
     emergency_prefix: "",
@@ -93,6 +94,11 @@ const CorporateUpdate = (props) => {
   });
 
   console.log(updatedData, "updatedData");
+  console.log(
+    "Dropdown value:",
+    updatedData.ws_pk_id,
+    typeof updatedData.ws_pk_id
+  );
 
   const [bmi, setBmi] = useState([]);
   console.log(bmi);
@@ -202,7 +208,8 @@ const CorporateUpdate = (props) => {
         type: mainCorporate.type.id,
         disease: mainCorporate.disease.id,
         modify_by: userID,
-        source_name: updatedData.source_id,
+        added_by: userID,
+        source_name: updatedData.source_name,
         tehsil: updatedData.tehsil,
       };
 
@@ -342,6 +349,7 @@ const CorporateUpdate = (props) => {
 
   const [district, setDistrict] = useState([]);
   const [tehsil, setTehsil] = useState([]);
+  const [workshop, setWorkshop] = useState([]);
   const [sourceName, setSourceName] = useState([]);
   console.log(sourceName, "sourceName");
 
@@ -437,17 +445,12 @@ const CorporateUpdate = (props) => {
         });
 
         const data = await response.json();
-        console.log("Workshop List:", data);
+        console.log("wwwwwwww", data);
 
-        setSourceName(data);
+        // setSourceName(data);
+        setWorkshop(data);
 
         // ⭐ Auto-select workshop during edit
-        if (updatedData.source_name) {
-          setUpdatedData((prev) => ({
-            ...prev,
-            source_id: prev.source_name, // backend field → dropdown field
-          }));
-        }
       } catch (error) {
         console.log("Error fetching Workshop list", error);
       }
@@ -494,7 +497,7 @@ const CorporateUpdate = (props) => {
                     label="Prefix"
                   >
                     {/* <MenuItem value="">Prefix</MenuItem> */}
-                    <MenuItem value="Mr.">Mr.</MenuItem>
+                    <MenuItem value="Mr">Mr</MenuItem>
                     <MenuItem value="Ms.">Ms.</MenuItem>
                     <MenuItem value="Mrs.">Mrs.</MenuItem>
                     <MenuItem value="Adv.">Adv.</MenuItem>
@@ -1066,7 +1069,7 @@ const CorporateUpdate = (props) => {
               {/* Source Name */}
               <Grid item xs={12} sm={6}>
                 <FormControl fullWidth size="small">
-                  <InputLabel>Workshop Name</InputLabel>
+                  <InputLabel>WorkShop Name</InputLabel>
                   <Select
                     sx={{
                       "& .MuiInputBase-input.MuiSelect-select": {
@@ -1076,19 +1079,17 @@ const CorporateUpdate = (props) => {
                         color: "#000",
                       },
                     }}
-                    value={updatedData.source_id || ""}
-                    label="Source Name"
+                    value={updatedData.source_name || ""}
+                    label="WorkShop Name"
                     onChange={(e) =>
-                      setUpdatedData({
-                        ...updatedData,
-                        source_id: e.target.value,
-                      })
+                      setUpdatedData({ ...updatedData, source_name: e.target.value })
                     }
                   >
-                    <MenuItem value="">Select Source Name</MenuItem>
-                    {sourceName.map((src) => (
+                    <MenuItem value="">Select Workshop</MenuItem>
+
+                    {workshop.map((src) => (
                       <MenuItem key={src.ws_pk_id} value={src.ws_pk_id}>
-                        {src.workshop_name}
+                        {src.Workshop_name} {/* ✅ CORRECT */}
                       </MenuItem>
                     ))}
                   </Select>

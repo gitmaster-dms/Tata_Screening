@@ -37,17 +37,20 @@ const Corporate = ({ data }) => {
 
             <Grid container spacing={2}>
               <Grid item xs={12} sm={3}>
-                <FormControl fullWidth>
-                  <InputLabel>Prefix</InputLabel>
-                  <Select size="small" value={d.prefix || ""} disabled>
-                    <MenuItem value="Mr.">Mr.</MenuItem>
-                    <MenuItem value="Ms.">Ms.</MenuItem>
-                    <MenuItem value="Mrs.">Mrs.</MenuItem>
-                    <MenuItem value="Adv.">Adv.</MenuItem>
-                    <MenuItem value="Col.">Col.</MenuItem>
-                    <MenuItem value="Dr.">Dr.</MenuItem>
-                  </Select>
-                </FormControl>
+                <TextField
+                  size="small"
+                  label="Prefix"
+                  fullWidth
+                  value={d.prefix || ""}
+                  InputProps={{ readOnly: true }}
+                >
+                  <MenuItem value="Mr">Mr</MenuItem>
+                  <MenuItem value="Ms.">Ms.</MenuItem>
+                  <MenuItem value="Mrs.">Mrs.</MenuItem>
+                  <MenuItem value="Adv.">Adv.</MenuItem>
+                  <MenuItem value="Col.">Col.</MenuItem>
+                  <MenuItem value="Dr.">Dr.</MenuItem>
+                </TextField>
               </Grid>
 
               <Grid item xs={12} sm={5}>
@@ -150,39 +153,39 @@ const Corporate = ({ data }) => {
               </Grid>
 
               {/* <Grid item xs={12} sm={4}>
-                                <TextField size="small"
-                                    label="Department"
-                                    fullWidth
-                                    value={d.department_name || ""}
-                                    InputProps={{ readOnly: true }}
-                                />
-                            </Grid> */}
+                                  <TextField size="small"
+                                      label="Department"
+                                      fullWidth
+                                      value={d.department_name || ""}
+                                      InputProps={{ readOnly: true }}
+                                  />
+                              </Grid> */}
               {/* <Grid item xs={12} sm={4}>
-                                <TextField size="small"
-                                    label="Designation"
-                                    fullWidth
-                                    value={d.designation_name || ""}
-                                    InputProps={{ readOnly: true }}
-                                />
-                            </Grid> */}
+                                  <TextField size="small"
+                                      label="Designation"
+                                      fullWidth
+                                      value={d.designation_name || ""}
+                                      InputProps={{ readOnly: true }}
+                                  />
+                              </Grid> */}
               {/* <Grid item xs={12} sm={4}>
-                                <TextField size="small"
-                                    label="Employee ID"
-                                    fullWidth
-                                    value={d.employee_id || ""}
-                                    InputProps={{ readOnly: true }}
-                                />
-                            </Grid> */}
+                                  <TextField size="small"
+                                      label="Employee ID"
+                                      fullWidth
+                                      value={d.employee_id || ""}
+                                      InputProps={{ readOnly: true }}
+                                  />
+                              </Grid> */}
               {/* <Grid item xs={12} sm={4}>
-                                <TextField size="small"
-                                    label="DOJ"
-                                    type="date"
-                                    fullWidth
-                                    value={d.doj || ""}
-                                    InputLabelProps={{ shrink: true }}
-                                    InputProps={{ readOnly: true }}
-                                />
-                            </Grid> */}
+                                  <TextField size="small"
+                                      label="DOJ"
+                                      type="date"
+                                      fullWidth
+                                      value={d.doj || ""}
+                                      InputLabelProps={{ shrink: true }}
+                                      InputProps={{ readOnly: true }}
+                                  />
+                              </Grid> */}
             </Grid>
           </Card>
         </Grid>
@@ -206,21 +209,21 @@ const Corporate = ({ data }) => {
 
             <Grid container spacing={2}>
               <Grid item xs={12} sm={3}>
-                <FormControl fullWidth>
-                  <InputLabel>Prefix</InputLabel>
-                  <Select
-                    size="small"
-                    value={d.emergency_prefix || ""}
-                    disabled
-                    renderValue={(value) => value || " "}
-                  >
-                    {["Mr", "Ms", "Mrs", "Adv", "Col", "Dr"].map((p) => (
-                      <MenuItem key={p} value={p}>
-                        {p}.
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
+                <TextField
+                  size="small"
+                  label="Prefix"
+                  fullWidth
+                  value={d.emergency_prefix || ""}
+                  // InputProps={{ readOnly: true }}
+                >
+                  {" "}
+                  <MenuItem value="Mr">Mr</MenuItem>
+                  <MenuItem value="Ms.">Ms.</MenuItem>
+                  <MenuItem value="Mrs.">Mrs.</MenuItem>
+                  <MenuItem value="Adv.">Adv.</MenuItem>
+                  <MenuItem value="Col.">Col.</MenuItem>
+                  <MenuItem value="Dr.">Dr.</MenuItem>
+                </TextField>
               </Grid>
               <Grid item xs={12} sm={6}>
                 <TextField
@@ -232,14 +235,13 @@ const Corporate = ({ data }) => {
                 />
               </Grid>
               <Grid item xs={12} sm={3}>
-                <FormControl fullWidth>
-                  <InputLabel>Gender</InputLabel>
-                  <Select size="small" value={d.gender_name || ""} disabled>
-                    <MenuItem value="Male">Male</MenuItem>
-                    <MenuItem value="Female">Female</MenuItem>
-                    <MenuItem value="Other">Other</MenuItem>
-                  </Select>
-                </FormControl>
+                <TextField
+                  size="small"
+                  label="Gender"
+                  fullWidth
+                  value={d.gender_name || ""}
+                  InputProps={{ readOnly: true }}
+                />
               </Grid>
 
               <Grid item xs={12} sm={6}>
@@ -262,28 +264,28 @@ const Corporate = ({ data }) => {
               </Grid>
 
               {/* <Grid item xs={12} sm={6}>
-                                <FormControl fullWidth>
-                                    <InputLabel>Relationship</InputLabel>
-                                    <Select size="small"
-                                        value={d.relationship_with_employee || ""}
-                                        disabled
-                                    >
-                                        {[
-                                            "father",
-                                            "mother",
-                                            "brother",
-                                            "sister",
-                                            "spouse",
-                                            "son",
-                                            "daughter",
-                                        ].map((r) => (
-                                            <MenuItem key={r} value={r}>
-                                                {r.charAt(0).toUpperCase() + r.slice(1)}
-                                            </MenuItem>
-                                        ))}
-                                    </Select>
-                                </FormControl>
-                            </Grid> */}
+                                  <FormControl fullWidth>
+                                      <InputLabel>Relationship</InputLabel>
+                                      <Select size="small"
+                                          value={d.relationship_with_employee || ""}
+                                          disabled
+                                      >
+                                          {[
+                                              "father",
+                                              "mother",
+                                              "brother",
+                                              "sister",
+                                              "spouse",
+                                              "son",
+                                              "daughter",
+                                          ].map((r) => (
+                                              <MenuItem key={r} value={r}>
+                                                  {r.charAt(0).toUpperCase() + r.slice(1)}
+                                              </MenuItem>
+                                          ))}
+                                      </Select>
+                                  </FormControl>
+                              </Grid> */}
 
               <Grid item xs={12} sm={6}>
                 <TextField
@@ -387,7 +389,7 @@ const Corporate = ({ data }) => {
                 ["State", d.state_name],
                 ["District", d.district_name],
                 ["Tehsil", d.tehsil_name],
-                ["WorkShop Name", d.source_name_id],
+                ["WorkShop Name", d.Workshop_name],
               ].map(([label, value]) => (
                 <Grid key={label} item xs={12} sm={6}>
                   <TextField
@@ -428,13 +430,13 @@ const Corporate = ({ data }) => {
                 />
               </Grid>
               {/* <Grid item xs={12} sm={6}>
-                                <TextField size="small"
-                                    label="Site Plant"
-                                    fullWidth
-                                    value={d.site_plant || ""}
-                                    InputProps={{ readOnly: true }}
-                                />
-                            </Grid> */}
+                                  <TextField size="small"
+                                      label="Site Plant"
+                                      fullWidth
+                                      value={d.site_plant || ""}
+                                      InputProps={{ readOnly: true }}
+                                  />
+                              </Grid> */}
             </Grid>
           </Card>
         </Grid>

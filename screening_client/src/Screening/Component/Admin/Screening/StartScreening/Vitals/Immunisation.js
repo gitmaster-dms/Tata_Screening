@@ -245,23 +245,23 @@ useEffect(() => {
           <Card sx={{ borderRadius: "20px", p: 1, mb: 1, background: "linear-gradient(90deg, #039BEF 0%, #1439A4 100%)", color: "white" }}>
             <Grid container>
               <Grid item xs={3}>
-                <Typography sx={{fontSize:"16px",fontWeight:550,fontFamily:"Roboto"}}>Name of Vaccine</Typography>
+                <Typography sx={{fontSize:"15px",fontWeight:550,fontFamily:"Roboto ,sans-serif"}}>Name of Vaccine</Typography>
               </Grid>
               <Grid item xs={2}>
-                <Typography sx={{fontSize:"16px",fontWeight:550,fontFamily:"Roboto"}}>Given Yes/No</Typography>
+                <Typography sx={{fontSize:"15px",fontWeight:550,fontFamily:"Roboto,sans-serif"}}>Given Yes/No</Typography>
               </Grid>
               <Grid item xs={5}>
-                <Typography sx={{fontSize:"16px",fontWeight:550,fontFamily:"Roboto"}} align="center">
+                <Typography sx={{fontSize:"15px",fontWeight:550,fontFamily:"Roboto,sans-serif"}} align="center">
                   Scheduled Date (From / To)
                 </Typography>
               </Grid>
               <Grid item xs={1}>
-                <Typography sx={{fontSize:"16px",fontWeight:550,fontFamily:"Roboto"}} align="center">
+                <Typography sx={{fontSize:"15px",fontWeight:550,fontFamily:"Roboto,sans-serif"}} align="center">
                   Days From
                 </Typography>
               </Grid>
               <Grid item xs={1}>
-                <Typography sx={{fontSize:"16px",fontWeight:550,fontFamily:"Roboto"}} align="center">
+                <Typography sx={{fontSize:"15px",fontWeight:550,fontFamily:"Roboto,sans-serif"}} align="center">
                   Days To
                 </Typography>
               </Grid>
@@ -276,7 +276,7 @@ useEffect(() => {
 
         {/* Vaccine Name */}
         <Grid item xs={3}>
-          <Typography sx={{fontSize:"14px",fontWeight:500,fontFamily:"Roboto"}}>{item.immunisations}</Typography>
+          <Typography sx={{fontSize:"13px",fontWeight:500,fontFamily:"Roboto,sans-serif"}}>{item.immunisations}</Typography>
         </Grid>
 
         {/* Given Yes/No */}

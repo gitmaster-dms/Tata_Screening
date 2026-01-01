@@ -68,7 +68,7 @@ const FamilyInfo = ({
             "Content-Type": "application/json",
             Authorization: `Bearer ${accessToken}`,
           },
-          body: JSON.stringify({ pkid }),
+          body: JSON.stringify({ pkid ,}),
         }
       );
 
@@ -98,7 +98,7 @@ const FamilyInfo = ({
             Authorization: `Bearer ${accessToken}`,
             "Content-Type": "application/json",
           },
-         
+         body: JSON.stringify(familyData),
         }
       );
 

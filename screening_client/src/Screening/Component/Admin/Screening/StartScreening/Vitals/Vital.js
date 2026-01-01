@@ -704,7 +704,7 @@ const Vital = ({
             onAcceptClick(nextName);
             return response.json();
           } else if (response.status === 400) {
-            openSnackbar("Fill the * marked Field");
+            openSnackbar("Fill the Required marked Field");
           } else if (response.status === 500) {
             openSnackbar("Error");
           } else if (response.status === 200) {
@@ -837,7 +837,7 @@ const Vital = ({
           onClose={() => setSnackbar({ ...snackbar, open: false })}
           severity={snackbar.severity}
           variant="filled"
-          sx={{ width: "100%" }}
+          sx={{ width: "100%", bgcolor: "green" }}
         >
           {snackbar.message}
         </Alert>
@@ -886,13 +886,16 @@ const Vital = ({
                       }}
                     />
                   </Grid>
-                  <Grid
-                    item
-                    xs={9}
-                    justifyContent={"center"}
-                    alignItems="center"
-                  >
-                    <Typography variant="subtitle2">
+                  <Grid item xs={9} display="flex" justifyContent="center">
+                    <Typography
+                      variant="subtitle2"
+                      sx={{
+                        display: "inline-block",
+                        px: 1, // thoda padding text ke around
+                        bgcolor: "#FCF6EA", // bgcolor only when text exists
+                        borderRadius: "4px",
+                      }}
+                    >
                       Pulse - beats/min
                     </Typography>
                   </Grid>
@@ -904,9 +907,18 @@ const Vital = ({
                         value={pulseValue || ""}
                         onChange={handlePulseInputChange}
                         sx={{
-                          bgcolor: "#FBF0F3",
-                          width: "35%",
-                          alignItems: "center",
+                          width: "50px",
+                          "& .MuiOutlinedInput-root": {
+                            backgroundColor: "#FCF6EA",
+                            height: "32px", // line short issue fix
+                          },
+                          "& input": {
+                            textAlign: "center",
+                            padding: "6px",
+                          },
+                        }}
+                        inputProps={{
+                          maxLength: 3,
                         }}
                       />
                     </Box>
@@ -958,6 +970,9 @@ const Vital = ({
                         value={sys || ""}
                         onChange={handleSysInputChange}
                         sx={{ width: "50px", bgcolor: "#D0FBFF" }}
+                        inputProps={{
+                          maxLength: 3,
+                        }}
                       />
                     </Box>
                   </Grid>
@@ -1010,6 +1025,9 @@ const Vital = ({
                           bgcolor: "#D0FBFF",
                           width: "50px",
                         }}
+                        inputProps={{
+                          maxLength: 3,
+                        }}
                       />
                     </Box>
                   </Grid>
@@ -1060,6 +1078,9 @@ const Vital = ({
                         value={rr || ""}
                         onChange={handleRrInputChange}
                         sx={{ width: "50px", bgcolor: "#F5F4FC" }}
+                        inputProps={{
+                          maxLength: 3,
+                        }}
                       />
                     </Box>
                   </Grid>
@@ -1102,6 +1123,9 @@ const Vital = ({
                         value={sats || ""}
                         sx={{ width: "50px", bgcolor: "#E9F4EE" }}
                         onChange={handleSatsInputChange}
+                        inputProps={{
+                          maxLength: 3,
+                        }}
                       />
                     </Box>
                   </Grid>
@@ -1141,15 +1165,17 @@ const Vital = ({
                     <Typography variant="subtitle2">Temperature</Typography>
                   </Grid>
                   <Grid item xs={12}>
-                    <Box sx={{display:"flex",justifyContent:"center"}}>
-
-                    <TextField
-                      fullWidth
-                      size="small"
-                      value={temp || ""}
-                      onChange={handleTempInputChange}
-                      sx={{ width: "50px", bgcolor: "#FCF6EA" }}
-                    />
+                    <Box sx={{ display: "flex", justifyContent: "center" }}>
+                      <TextField
+                        fullWidth
+                        size="small"
+                        value={temp || ""}
+                        onChange={handleTempInputChange}
+                        sx={{ width: "50px", bgcolor: "#FCF6EA" }}
+                        inputProps={{
+                          maxLength: 3,
+                        }}
+                      />
                     </Box>
                   </Grid>
                   <Grid item xs={6}>
