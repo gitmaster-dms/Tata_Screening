@@ -6948,9 +6948,9 @@ class FollowupPOST(APIView):
 
 
 class WorkshopFilterAPIView(APIView):
-    renderer_classes = [UserRenderer]
-    authentication_classes = [CustomJWTAuthentication]
-    permission_classes = [IsAuthenticated]
+    # renderer_classes = [UserRenderer]
+    # authentication_classes = [CustomJWTAuthentication]
+    # permission_classes = [IsAuthenticated]
     def get(self, request):
         try:
             date_filter = request.GET.get("date_filter")       
