@@ -11,6 +11,7 @@ import lungs from "../../../Images/DashboardIcons/lungs.png";
 import tooth from "../../../Images/DashboardIcons/tooth.png";
 import Investation from "../../../Images/DashboardIcons/investation.png";
 import Immunization from "../../../Images/DashboardIcons/immunization.png";
+import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 
 const Vitals = ({ vitalsData }) => {
   const vitalsResult = [
@@ -78,6 +79,17 @@ const Vitals = ({ vitalsData }) => {
       value: vitalsData?.immunisation_info_count,
     },
   ];
+
+  const maxValue = Math.max(
+    ...vitalsResult.map((item) => Number(item.value) || 0),
+    1 // fallback to avoid divide by 0
+  );
+
+  const getProgressValue = (value) => {
+    if (!value || value <= 0) return 0;
+    return Math.round((value / maxValue) * 100);
+  };
+
   return (
     <Box
       sx={{
@@ -99,19 +111,21 @@ const Vitals = ({ vitalsData }) => {
             width: 30,
             height: 30,
             borderRadius: "50%",
-            background: "linear-gradient(135deg, #4FACFE 0%, #00F2FE 100%)",
+            background: "linear-gradient(135deg, #00B8DB 0%, #2B7FFF 100%)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             flexShrink: 0,
           }}
         >
-          <Box
+          <ErrorOutlineIcon
+            sx={{ width: 16, height: 16, objectFit: "contain",color:"white" }}
+          />
+          {/* <Box
             component="img"
             src={health}
             alt="Vitals"
-            sx={{ width: 14, height: 14, objectFit: "contain" }}
-          />
+          /> */}
         </Box>
         <Typography
           variant="h6"
@@ -188,7 +202,7 @@ const Vitals = ({ vitalsData }) => {
             {/* Progress Bar */}
             <LinearProgress
               variant="determinate"
-              value={60}
+              value={getProgressValue(item.value)}
               sx={{
                 height: 4,
                 borderRadius: 2,
@@ -196,6 +210,7 @@ const Vitals = ({ vitalsData }) => {
                 background: "#D9D9D9",
                 "& .MuiLinearProgress-bar": {
                   background: item.gradient,
+                  transition: "transform 0.6s ease",
                 },
               }}
             />

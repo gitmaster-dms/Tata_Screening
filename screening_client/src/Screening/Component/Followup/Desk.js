@@ -65,7 +65,9 @@ const Desk = () => {
   console.log(selectedFollowUpStatus, "selectedFollowUpStatus");
 
   const [followUpFor, setFollowUpFor] = useState([]);
-  const [selectedFollowUpFor, setSelectedFollowUpFor] = useState(4);
+  const [selectedFollowUpFor, setSelectedFollowUpFor] = useState("");
+  // const [selectedFollowUpFor, setSelectedFollowUpFor] = useState(4);
+
   console.log(selectedFollowUpFor, "selectedFollowUpFor");
 
   const [sourceName, setSourceName] = useState([]);
@@ -149,7 +151,7 @@ const Desk = () => {
         },
       });
       const result = await response.json();
-    setWorkshop(result || []); // ✅ FIX
+      setWorkshop(result || []); // ✅ FIX
       console.log(result);
     } catch (error) {
       console.log(error);
@@ -161,9 +163,40 @@ const Desk = () => {
 
   // Doctor List
   const [doctor, setDoctor] = useState([]);
-  console.log("doctor",doctor);
-  
+  console.log("doctor", doctor);
+
   const [selectedDoctor, setSelectedDoctor] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
+  // Function to filter table data based on search query
+  const filterTableData = (data, searchQuery, selectedFollowUpStatus) => {
+    if (!data || data.length === 0) return [];
+
+    const query = searchQuery?.toLowerCase().trim() || "";
+
+    return data.filter((item) => {
+      // Filter by follow-up status if selected
+      if (selectedFollowUpStatus && item.follow_up !== selectedFollowUpStatus) {
+        return false;
+      }
+
+      // If no search query, include all
+      if (!query) return true;
+
+      // Safely convert to string and trim
+      const citizenName = item.citizen_name?.toLowerCase().trim() || "";
+      // const citizenId = item.citizen_id?.toString().trim() || "";
+      // const mobileNumber = item.mobile_number?.toString().trim() || "";
+      const doctorName = item.doctor_name?.toLowerCase().trim() || "";
+
+      return (
+        citizenName.includes(query) ||
+        // citizenId.includes(query) ||
+        // mobileNumber.includes(query) ||
+        doctorName.includes(query)
+      );
+    });
+  };
+
   const getdoctor = async () => {
     try {
       const response = await fetch(`${Port}/Screening/Doctor_List/`, {
@@ -324,7 +357,7 @@ const Desk = () => {
                   mb: 1,
                   fontWeight: 550,
                   fontSize: "16px",
-                  fontFamily:"Roboto, sans-serif",
+                  fontFamily: "Roboto, sans-serif",
                   textAlign: "left",
                   color: "black",
                   px: 2,
@@ -390,14 +423,13 @@ const Desk = () => {
                   value={selectedFollowUpFor}
                   onChange={handleFollowUpForChange}
                   InputLabelProps={{
-                      shrink: Boolean(selectedFollowUpFor),   // ✅ IMPORTANT
+                    // shrink: Boolean(selectedFollowUpFor),   // ✅ IMPORTANT
 
                     sx: {
                       fontWeight: 100,
                       fontSize: "14px",
                       color: "black !important",
                     },
-                    
                   }}
                   SelectProps={{
                     MenuProps: {
@@ -534,12 +566,16 @@ const Desk = () => {
           </Box>
 
           <div className="row inputdeskkk">
-            <div className="ml-2 d-flex justify-content-end">
-              <input
-                className="form-control form-control-sm"
-                placeholder="Search"
+            <Box className="ml-2 d-flex justify-content-end">
+              <TextField
+                size="small"
+                variant="outlined"
+                placeholder="Search by Name, or doctor name"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                sx={{ minWidth: 250 }} // optional styling
               />
-            </div>
+            </Box>
           </div>
 
           <div>
@@ -680,140 +716,143 @@ const Desk = () => {
                   </TableHead>
 
                   <TableBody>
-                    {tableData && tableData.length > 0 ? (
-                      tableData
-                        .filter((item) => {
-                          if (!selectedFollowUpStatus) return true;
-                          return item.follow_up === selectedFollowUpStatus;
-                        })
-                        .map((item, index) => (
-                          <TableRow
-                            key={item.follow_up_pk_id}
-                            sx={{
-                              backgroundColor: "#fff",
-                              "&:hover": { backgroundColor: "#f9f9f9" },
-                            }}
-                          >
-                            {/* 🔹 SINGLE TABLE CELL */}
-                            <TableCell sx={{ p: 0, py: 1 }}>
-                              <Box
+                    {filterTableData(
+                      tableData,
+                      searchQuery,
+                      selectedFollowUpStatus
+                    ).length > 0 ? (
+                      filterTableData(
+                        tableData,
+                        searchQuery,
+                        selectedFollowUpStatus
+                      ).map((item, index) => (
+                        <TableRow
+                          key={item.follow_up_pk_id}
+                          sx={{
+                            backgroundColor: "#fff",
+                            "&:hover": { backgroundColor: "#f9f9f9" },
+                          }}
+                        >
+                          {/* 🔹 SINGLE TABLE CELL */}
+                          <TableCell sx={{ p: 0, py: 1 }}>
+                            <Box
+                              sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "space-between",
+                                px: 1,
+                                textAlign: "center",
+                              }}
+                            >
+                              <Typography
                                 sx={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                  justifyContent: "space-between",
-                                  px: 1,
+                                  flex: 0.5,
+                                  fontSize: "14px",
+                                  fontFamily: "Roboto sans-serif",
+                                  fontWeight: 500,
                                   textAlign: "center",
                                 }}
                               >
-                                <Typography
-                                  sx={{
-                                    flex: 0.5,
-                                    fontSize: "14px",
-                                    fontFamily: "Roboto sans-serif",
-                                    fontWeight: 500,
-                                    textAlign: "center",
-                                  }}
-                                >
-                                  {index + 1}
-                                </Typography>
+                                {index + 1}
+                              </Typography>
 
-                                <Typography
-                                  sx={{
-                                    flex: 2,
-                                    fontSize: "14px",
-                                    fontFamily: "Roboto sans-serif",
-                                    fontWeight: 500,
-                                    textAlign: "center",
-                                  }}
-                                >
-                                  {item.citizen_id}
-                                </Typography>
+                              <Typography
+                                sx={{
+                                  flex: 2,
+                                  fontSize: "14px",
+                                  fontFamily: "Roboto sans-serif",
+                                  fontWeight: 500,
+                                  textAlign: "center",
+                                }}
+                              >
+                                {item.citizen_id}
+                              </Typography>
 
-                                <Typography
-                                  sx={{
-                                    flex: 1.5,
-                                    fontSize: "14px",
-                                    fontFamily: "Roboto sans-serif",
-                                    fontWeight: 500,
-                                    textAlign: "center",
-                                  }}
-                                >
-                                  {item.citizen_name}
-                                </Typography>
+                              <Typography
+                                sx={{
+                                  flex: 1.5,
+                                  fontSize: "14px",
+                                  fontFamily: "Roboto sans-serif",
+                                  fontWeight: 500,
+                                  textAlign: "center",
+                                }}
+                              >
+                                {item.citizen_name}
+                              </Typography>
 
-                                <Typography
-                                  sx={{
-                                    flex: 1.5,
-                                    fontSize: "14px",
-                                    fontFamily: "Roboto sans-serif",
-                                    fontWeight: 500,
-                                    textAlign: "center",
-                                  }}
-                                >
-                                  {item.doctor_name || "N/A"}
-                                </Typography>
+                              <Typography
+                                sx={{
+                                  flex: 1.5,
+                                  fontSize: "14px",
+                                  fontFamily: "Roboto sans-serif",
+                                  fontWeight: 500,
+                                  textAlign: "center",
+                                }}
+                              >
+                                {item.doctor_name || "N/A"}
+                              </Typography>
 
-                                <Typography
-                                  sx={{
-                                    flex: 1.2,
-                                    fontSize: "14px",
-                                    fontFamily: "Roboto sans-serif",
-                                    fontWeight: 500,
-                                    textAlign: "center",
-                                  }}
-                                >
-                                  {item.mobile_number}
-                                </Typography>
+                              <Typography
+                                sx={{
+                                  flex: 1.2,
+                                  fontSize: "14px",
+                                  fontFamily: "Roboto sans-serif",
+                                  fontWeight: 500,
+                                  textAlign: "center",
+                                }}
+                              >
+                                {item.mobile_number}
+                              </Typography>
 
-                                <Typography
-                                  sx={{
-                                    flex: 1.2,
-                                    fontSize: "14px",
-                                    fontFamily: "Roboto sans-serif",
-                                    fontWeight: 500,
-                                    textAlign: "center",
-                                  }}
-                                >
-                                  {item.dob || "N/A"}
-                                </Typography>
+                              <Typography
+                                sx={{
+                                  flex: 1.2,
+                                  fontSize: "14px",
+                                  fontFamily: "Roboto sans-serif",
+                                  fontWeight: 500,
+                                  textAlign: "center",
+                                }}
+                              >
+                                {item.dob || "N/A"}
+                              </Typography>
 
-                                <Typography
-                                  sx={{
-                                    flex: 1.2,
-                                    fontSize: "14px",
-                                    fontFamily: "Roboto sans-serif",
-                                    fontWeight: 500,
-                                    textAlign: "center",
-                                  }}
-                                >
-                                  {item.blood_group || "N/A"}
-                                </Typography>
+                              <Typography
+                                sx={{
+                                  flex: 1.2,
+                                  fontSize: "14px",
+                                  fontFamily: "Roboto sans-serif",
+                                  fontWeight: 500,
+                                  textAlign: "center",
+                                }}
+                              >
+                                {item.blood_group || "N/A"}
+                              </Typography>
 
-                                <Box
-                                  sx={{
-                                    flex: 0.5,
-                                    textAlign: "center",
-                                    fontSize: "14px",
-                                    fontFamily: "Roboto sans-serif",
-                                    fontWeight: 500,
-                                  }}
-                                >
-                                  {canView && (
-                                    <IconButton
-                                      component={Link}
-                                      to={`/mainscreen/Follow-Up/viewFollowup/${item.citizen_id}`}
-                                      size="small"
-                                    >
-                                      <RemoveRedEyeOutlinedIcon
-                                        sx={{ color: "#000" }}
-                                      />
-                                    </IconButton>
-                                  )}
-                                </Box>
+                              <Box
+                                sx={{
+                                  flex: 0.5,
+                                  textAlign: "center",
+                                  fontSize: "14px",
+                                  fontFamily: "Roboto sans-serif",
+                                  fontWeight: 500,
+                                }}
+                              >
+                                {canView && (
+                                  <IconButton
+                                    component={Link}
+                                    to={`/mainscreen/Follow-Up/viewFollowup/${item.citizen_id}`}
+                                    size="small"
+                                  >
+                                    <RemoveRedEyeOutlinedIcon
+                                      sx={{ color: "#000" }}
+                                    />
+                                  </IconButton>
+                                )}
                               </Box>
-                            </TableCell>
-                          </TableRow>
-                        ))
+                            </Box>
+                          </TableCell>
+                        </TableRow>
+                      ))
                     ) : (
                       <TableRow>
                         <TableCell align="center">

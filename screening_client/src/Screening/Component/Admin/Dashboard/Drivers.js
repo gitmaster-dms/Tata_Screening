@@ -4,6 +4,7 @@ import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import AssignmentTurnedInIcon from "@mui/icons-material/AssignmentTurnedIn";
 import PendingActionsIcon from "@mui/icons-material/PendingActions";
 import LocalHospitalIcon from "@mui/icons-material/LocalHospital";
+import { AccessTimeRounded, Sync, Timer, Timer10Rounded, TimerOff, TimerOffOutlined, Watch } from "@mui/icons-material";
 
 const DriverStatsCards = ({ data }) => {
   console.log("Driver Stats Data:", data);
@@ -24,13 +25,13 @@ const DriverStatsCards = ({ data }) => {
     {
       title: "Others",
       value: data?.Total_Others_Added ?? 0,
-      icon: <PendingActionsIcon sx={{ color: "#fff", fontSize: 20 }} />,
+      icon: <AccessTimeRounded sx={{ color: "#fff", fontSize: 20 }} />,
       iconBg: "linear-gradient(140deg, #FE9A00 0%, #F54900 100%)",
     },
     {
       title: "Referrals",
       value: data?.Total_Referrals_Made ?? 0,
-      icon: <LocalHospitalIcon sx={{ color: "#fff", fontSize: 20 }} />,
+      icon: <Sync sx={{ color: "#fff", fontSize: 20 }} />,
       iconBg: "linear-gradient(140deg, #E4EF51 0%, #C7C710 100%)",
     },
   ];

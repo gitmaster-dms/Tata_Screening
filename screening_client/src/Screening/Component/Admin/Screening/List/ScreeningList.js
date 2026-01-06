@@ -515,8 +515,17 @@ const ScreeningList = () => {
                     placeholder="Search"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
+
                   />
-                  <SearchIcon className="searchiconnew1111" />
+                  <SearchIcon className="searchiconnew1111"
+                   sx={{
+                        background:
+                          "linear-gradient(90deg, #2FB3F5 0%, #1439A4 100%)",
+                        ":hover": {
+                          background:
+                            "linear-gradient(90deg, #2FB3F5 0%, #1439A4 100%)",
+                        },
+                      }} />
                 </Box>
               </Grid>
 

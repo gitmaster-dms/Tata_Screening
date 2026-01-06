@@ -20,6 +20,10 @@ import {
   MenuItem,
   InputLabel,
   Card,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import { Modal } from "react-bootstrap";
@@ -29,12 +33,23 @@ import { Checkbox } from "@mui/material";
 import {
   DriveFileRenameOutlineOutlined,
   DeleteOutlineOutlined,
+  Add,
 } from "@mui/icons-material";
 import { useJsApiLoader, Autocomplete } from "@react-google-maps/api";
 import { Snackbar, Alert } from "@mui/material";
 
 const libraries = ["places"];
-
+const iconBlue = {
+  background: "rgba(10, 112, 183, 1)",
+  cursor: "pointer",
+  borderRadius: "6px",
+  color: "#fff",
+  p: "2px",
+  mr: 1,
+  "&:hover": {
+    opacity: 0.8,
+  },
+};
 const AddSource = () => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
@@ -106,11 +121,15 @@ const AddSource = () => {
   const [tableinfo, setTableInfo] = useState([]); /// data in table variable
   console.log(tableinfo, "tableinfor");
   const [workshopList, setWorkshopList] = useState([]);
+  console.log("workshopList", workshopList);
+
   const [selectedWorkshopId, setSelectedWorkshopId] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
   ////////////////////// Form Dropdown /////////////////
   const [dropdownSource, setDropdownSource] = useState([]);
   const [stateOptions, setStateOptions] = useState([]);
+  console.log(stateOptions, "stateoptions");
+
   const [districtOptions, setDistrictOptions] = useState([]);
   const [talukaOptions, setTalukaOptions] = useState([]);
   const [selectedState, setSelectedState] = useState("");
@@ -125,6 +144,7 @@ const AddSource = () => {
 
   const [sourceStateNav, setSourceStateNav] = useState([]); // State for source state options
   const [selectedStateNav, setSelectedStateNav] = useState("");
+  console.log(sourceStateNav, "sourceStateNav");
 
   const [sourceDistrictNav, setSourceDistrictNav] = useState([]); // State for source district options
   const [selectedDistrictNav, setSelectedDistrictNav] = useState("");
@@ -374,27 +394,42 @@ const AddSource = () => {
   const resetForm = () => {
     setSelectData({
       source: "6",
-      source_names: "",
+      Workshop_name: "",
       registration_no: "",
       mobile_no: "",
       email_id: "",
       Registration_details: "",
-      source_pincode: "",
-      source_address: "",
-      source_state: "",
-      source_district: "",
-      source_taluka: "",
+      ws_pincode: "",
+      ws_address: "",
+      ws_state: "",
+      ws_district: "",
+      ws_taluka: "",
     });
 
-    setSelectedSource("");
     setSelectedState("");
     setSelectedDistrict("");
     setSelectedTahsil("");
+
+    // Reset multi-selects
+    setSelectedVitals([]);
+    setSelectedSubVitals([]);
+
+    // Reset GIS
+    setGisAddress("");
+    setLat(null);
+    setLong(null);
+
+    // Reset errors
+    setErrors({});
   };
+
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 
   //////// POST API for source /////////////
   const [selectData, setSelectData] = useState({
     // Pass static community/source id 6 to backend (hidden on frontend)
+    pk_id: "",
+
     source: "6",
     Workshop_name: "",
     registration_no: "",
@@ -414,6 +449,7 @@ const AddSource = () => {
     source_taluka: "",
     Registration_details: null,
   });
+  console.log(selectData, "selectedData");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -504,48 +540,63 @@ const AddSource = () => {
           setSnackbarOpen(true);
         }
       } else {
-        try {
-          formData.append("modify_by", userID);
+        if (!updateSrc) {
+          try {
+            formData.append("modify_by", userID);
 
-          const response = await fetch(
-            `${Port}/Screening/Workshop_Update/${selectData.ws_pk_id}/`,
-            {
-              method: "PUT",
-              body: formData,
-              headers: { Authorization: `Bearer ${accessToken}` },
-            }
-          );
-
-          if (response.status === 200) {
-            setSnackbarMessage("Source updated successfully!");
-            setSnackbarSeverity("success");
-            setSnackbarOpen(true);
-            setSelectData({
-              source: "",
-              Workshop_name: "",
-              registration_no: "",
-              mobile_no: "",
-              email_id: "",
-              Registration_details: "",
-              ws_pincode: "",
-              ws_address: "",
-              ws_state: "",
-              ws_district: "",
-              ws_taluka: "",
-            });
-            setTableInfo([...tableinfo]);
-            resetForm();
-          } else {
-            setSnackbarMessage(
-              `Error updating source. Status: ${response.status}`
+            const response = await fetch(
+              `${Port}/Screening/Workshop_Update/${selectedRow}/`,
+              {
+                method: "PUT",
+                body: formData,
+                headers: { Authorization: `Bearer ${accessToken}` },
+              }
             );
+
+            if (response.status === 200) {
+              const result = await response.json();
+              const data = result.data; // 👈 Important
+
+              // Populate form fields with updated data
+              setSelectData({
+                ws_pk_id: data.ws_pk_id,
+                Workshop_name: data.Workshop_name,
+                registration_no: data.registration_no,
+                mobile_no: data.mobile_no,
+                email_id: data.email_id,
+                ws_pincode: data.ws_pincode,
+                ws_address: data.ws_address,
+                source: data.source,
+              });
+
+              setSelectedState(Number(data.ws_state));
+              setSelectedDistrict(Number(data.ws_district));
+              setSelectedTahsil(Number(data.ws_taluka));
+
+              setSelectedVitals(data.screening_vitals || []);
+              setSelectedSubVitals(data.sub_screening_vitals || []);
+              setSelectedRow(null);
+              setSelectedSourceId(null);
+              resetForm(); // now it truly resets the form
+              // Success message
+              setSnackbarMessage("Workshop updated successfully!");
+              setSnackbarSeverity("success");
+              setSnackbarOpen(true);
+
+              // ✅ Do NOT resetForm() here
+            } else {
+              setSnackbarMessage(
+                `Error updating source. Status: ${response.status}`
+              );
+              setSnackbarSeverity("error");
+              setSnackbarOpen(true);
+            }
+          } catch (error) {
+            console.error("Update error:", error);
+            setSnackbarMessage("Error updating workshop!");
             setSnackbarSeverity("error");
             setSnackbarOpen(true);
           }
-        } catch (error) {
-          setSnackbarMessage("Error updating source!");
-          setSnackbarSeverity("error");
-          setSnackbarOpen(true);
         }
       }
     } else {
@@ -580,6 +631,7 @@ const AddSource = () => {
     setDeleteModel(false);
   };
 
+  const [getid, setidws] = useState([]);
   ///////// get API for Table //////////////
   useEffect(() => {
     const fetchData = async () => {
@@ -591,6 +643,7 @@ const AddSource = () => {
         });
         const data = await response.json();
         setWorkshopList(data);
+        setidws(data.ws_pk_id);
         setLoading(false);
       } catch (error) {
         console.log("Error fetching source data", error);
@@ -602,28 +655,17 @@ const AddSource = () => {
 
   //////////////////// Delete
   const handleDelete = async () => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this data?"
-    );
-
-    if (!confirmDelete) {
-      return;
-    }
-
     console.log("Received sourceId:", selectData.pk_id);
 
     const userID = localStorage.getItem("userID");
     console.log(userID);
 
     try {
-      await axios.delete(
-        `${Port}/Screening/add_new_source_DELETE/${selectData.pk_id}/${userID}/`,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
+      await axios.delete(`${Port}/Screening/Workshop_delete/${selectedRow}/`, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
       console.log("Data Deleted successfully");
 
       console.log("Before delete:", tableinfo);
@@ -636,9 +678,17 @@ const AddSource = () => {
 
       console.log("After delete:", tableinfo);
 
+      setOpenDeleteDialog(false);
       setDeleteModel(true);
+      resetForm();
+      setSnackbarMessage("Deleted successfully!");
+      setSnackbarSeverity("success");
+      setSnackbarOpen(true);
     } catch (error) {
       console.error("Error deleting data:", error);
+      setSnackbarMessage("Failed to delete data!");
+      setSnackbarSeverity("error");
+      setSnackbarOpen(true);
     }
   };
 
@@ -685,68 +735,59 @@ const AddSource = () => {
 
   //// Soure State against selected source
   useEffect(() => {
-    const fetchStateNavOptions = async () => {
+    const fetchStates = async () => {
       try {
         const res = await fetch(`${Port}/Screening/State_Get/`, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
+          headers: { Authorization: `Bearer ${accessToken}` },
         });
         const data = await res.json();
-        console.log(data, "statedata");
-        setSourceStateNav(data);
-      } catch (error) {
-        console.error("Error fetching state against source data:", error);
+        setStateOptions(data); // ✅ sets options for form dropdown
+      } catch (err) {
+        console.error("Error fetching states:", err);
       }
     };
-    fetchStateNavOptions();
+    fetchStates();
   }, []);
 
   //// Soure District against selected source state/////////
   useEffect(() => {
-    const fetchDistrictNavOptions = async () => {
-      if (selectedStateNav) {
-        try {
-          const res = await fetch(
-            `${Port}/Screening/District_Get/${selectedStateNav}/`,
-            {
-              headers: {
-                Authorization: `Bearer ${accessToken}`,
-              },
-            }
-          );
-          const data = await res.json();
-          setSourceDistrictNav(data);
-        } catch (error) {
-          console.error("Error fetching districts against state data:", error);
-        }
+    const fetchDistricts = async () => {
+      if (!selectedState) return; // wait until a state is selected
+      try {
+        const res = await fetch(
+          `${Port}/Screening/District_Get/${selectedState}/`,
+          {
+            headers: { Authorization: `Bearer ${accessToken}` },
+          }
+        );
+        const data = await res.json();
+        setDistrictOptions(data);
+      } catch (err) {
+        console.error("Error fetching districts:", err);
       }
     };
-    fetchDistrictNavOptions();
-  }, [selectedStateNav]);
+    fetchDistricts();
+  }, [selectedState]);
 
   //// Soure Tehsil against selected source District/////////
   useEffect(() => {
-    const fetchTehsilNavOptions = async () => {
-      if (selectedDistrictNav) {
-        try {
-          const res = await fetch(
-            `${Port}/Screening/Tehsil_Get/${selectedDistrictNav}/`,
-            {
-              headers: {
-                Authorization: `Bearer ${accessToken}`,
-              },
-            }
-          );
-          const data = await res.json();
-          setSourceTehsilNav(data);
-        } catch (error) {
-          console.error("Error fetching Tehsil against District data:", error);
-        }
+    const fetchTehsils = async () => {
+      if (!selectedDistrict) return; // wait until a district is selected
+      try {
+        const res = await fetch(
+          `${Port}/Screening/Tehsil_Get/${selectedDistrict}/`,
+          {
+            headers: { Authorization: `Bearer ${accessToken}` },
+          }
+        );
+        const data = await res.json();
+        setTalukaOptions(data);
+      } catch (err) {
+        console.error("Error fetching tehsils:", err);
       }
     };
-    fetchTehsilNavOptions();
-  }, [selectedDistrictNav]);
+    fetchTehsils();
+  }, [selectedDistrict]);
 
   //// Soure Name against selected source district
   // useEffect(() => {
@@ -819,121 +860,78 @@ const AddSource = () => {
     console.log("id getting here:", selectedSourceId);
   }, [selectedSourceId]);
 
+  const [editData, setEditData] = useState(null);
+
   const fetchData1 = async () => {
+    if (!selectedRow) return;
+
     try {
-      if (selectedRow !== "") {
-        const response = await fetch(
-          `${Port}/Screening/Workshop_Update/${selectedRow}/`,
-          {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          }
-        );
-        console.log("Response from API:", response);
-
-        const data = await response.json();
-        console.log("JSON data from API:", data);
-
-        // Set selected values for dropdowns
-        setSelectedState(data.ws_state);
-        setSelectedDistrict(data.ws_district);
-        setSelectedTahsil(data.ws_taluka);
-        setSelectedVitals(data.screening_vitals || []);
-        setSelectedSubVitals(data.sub_screening_vitals || []);
-
-        // Set GIS address data if available
-        if (data.latitude && data.longitude) {
-          setLat(data.latitude);
-          setLong(data.longitude);
-          setGisAddress(data.ws_address);
+      const response = await fetch(
+        `${Port}/Screening/Workshop_Update/${selectedRow}/`,
+        {
+          headers: { Authorization: `Bearer ${accessToken}` },
         }
+      );
 
-        console.log("Workshop ID:", data.ws_pk_id);
-        console.log("Workshop Name:", data.Workshop_name);
-        console.log("Registration No:", data.registration_no);
-        console.log("Mobile No:", data.mobile_no);
-        console.log("Email ID:", data.email_id);
-        console.log("State:", data.ws_state_name);
-        console.log("District:", data.ws_district_name);
-        console.log("Taluka:", data.ws_taluka_name);
-        console.log("Pincode:", data.ws_pincode);
-        console.log("Address:", data.ws_address);
-        console.log("Vitals:", data.screening_vitals);
-        console.log("Sub Vitals:", data.sub_screening_vitals);
+      const data = await response.json();
+      setEditData(data); // 🔥 IMPORTANT
 
-        console.log("Workshop ID:", data.ws_pk_id);
+      // ✅ BASIC FIELDS
+      setSelectData({
+        source: data.source || "6",
+        Workshop_name: data.Workshop_name || "",
+        registration_no: data.registration_no || "",
+        mobile_no: data.mobile_no || "",
+        email_id: data.email_id || "",
+        ws_pincode: data.ws_pincode || "",
+        ws_address: data.ws_address || "",
+        Registration_details: data.logo || null,
+      });
 
-        if (response.headers.get("content-type") === "application/json") {
-          console.log("Handling JSON response");
-          setSelectData((prevState) => ({
-            source: data.source || "",
-            Workshop_name: data.Workshop_name || "",
-            registration_no: data.registration_no || "",
-            mobile_no: data.mobile_no || "",
-            email_id: data.email_id || "",
-            ws_pincode: data.ws_pincode || "",
-            ws_address: data.ws_address || "",
-            source_state: data.ws_state || "",
-            source_district: data.ws_district || "",
-            source_taluka: data.ws_taluka || "",
-            screening_vitals: data.screening_vitals || [],
-            sub_screening_vitals: data.sub_screening_vitals || [],
-            ws_pk_id: data.ws_pk_id || "",
-            pk_id: data.ws_pk_id || "",
-            Registration_details: data.logo,
-          }));
-          console.log(
-            "Registration Details (Image URL):",
-            selectData.Registration_details
-          );
-        } else {
-          console.log("Handling non-JSON response");
-          const fileResponse = await fetch(
-            `${Port}/Screening/add_new_source_PUT/${selectedSourceId}/`,
-            {
-              method: "GET",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${accessToken}`,
-              },
-            }
-          );
+      // ✅ LOCATION (CRITICAL)
+      setSelectedState(data.ws_state || "");
+      setSelectedDistrict(data.ws_district || "");
+      setSelectedTahsil(data.ws_taluka || "");
 
-          const fileBlob = await fileResponse.blob();
+      // ✅ VITALS
+      setSelectedVitals(data.screening_vitals || []);
+      setSelectedSubVitals(data.sub_screening_vitals || []);
 
-          setSelectData((prevState) => ({
-            add_source_id: data.source?.source || "",
-            source: data.source?.source_pk_id || "",
-            add_state_id: data.source_state?.state_name || "",
-            source_state: data.source_state?.state_id || "",
-            add_district_id: data.source_district?.dist_name || "",
-            source_district: data.source_district?.dist_id || "",
-            add_tehsil_id: data.source_taluka?.tahsil_name || "",
-            source_taluka: data.source_taluka?.tal_id || "",
-            source_names: data.source_names || "",
-            registration_no: data.registration_no || "",
-            mobile_no: data.mobile_no || "",
-            email_id: data.email_id || "",
-            source_pincode: data.source_pincode || "",
-            source_address: data.source_address || "",
-            screening_vitals: data.screening_vitals || [],
-            sub_screening_vitals: data.sub_screening_vitals || [],
-            pk_id: data.source_pk_id || "",
-            Registration_details: fileBlob,
-          }));
-          setSelectedVitals(data.screening_vitals || []);
-          setSelectedSubVitals(data.sub_screening_vitals || []);
-        }
-      }
-    } catch (error) {
-      console.error("Error fetching data:", error);
+      // ✅ GIS
+      setGisAddress(data.ws_address || "");
+      setLat(data.latitude || null);
+      setLong(data.longitude || null);
+
+      // ✅ ENABLE FORM FOR EDIT
+      setFormEnabled(true);
+      setUpdateSrc(false);
+    } catch (err) {
+      console.error("Edit fetch error:", err);
     }
   };
 
   useEffect(() => {
-    fetchData1();
+    if (selectedRow) {
+      fetchData1();
+    }
   }, [selectedRow]);
+
+  useEffect(() => {
+    if (stateOptions.length && editData?.ws_state) {
+      setSelectedState((editData.ws_state));
+    }
+  }, [stateOptions]);
+  useEffect(() => {
+    if (districtOptions.length && editData?.ws_district) {
+      setSelectedDistrict(Number(editData.ws_district));
+    }
+  }, [districtOptions]);
+
+  useEffect(() => {
+    if (talukaOptions.length && editData?.ws_taluka) {
+      setSelectedTahsil(Number(editData.ws_taluka));
+    }
+  }, [talukaOptions]);
 
   return (
     <div>
@@ -1011,11 +1009,11 @@ const AddSource = () => {
                   }}
                 >
                   <MenuItem value="">Workshop State</MenuItem>
-                  {sourceStateNav.map((drop) => (
+                  {/* {sourceStateNav.map((drop) => (
                     <MenuItem key={drop.state_id} value={drop.state_id}>
                       {drop.state_name}
                     </MenuItem>
-                  ))}
+                  ))} */}
                 </TextField>
               </Grid>
 
@@ -1165,14 +1163,21 @@ const AddSource = () => {
                 sx={{ mb: 2 }}
               >
                 <Typography
-                  sx={{ fontWeight: 550, fontFamily: "Roboto Sans-serif",
-                    fontSize: { xs: "16px", sm: "17px", md: "18px" },
-                   }}
+                  sx={{ fontWeight: 550, fontFamily: "Roboto Sans-serif" }}
                 >
                   Add Workshop
                 </Typography>
+
                 <Box>
-                  {/* {canEdit && ( */}
+                  <Add
+                    sx={iconBlue}
+                    onClick={() => {
+                      setFormEnabled(true);
+                      setUpdateSrc(true); // ✅ ADD MODE
+                      resetForm();
+                    }}
+                  />
+                  {/* {canEdit && selectedRow && ( */}
                   <DriveFileRenameOutlineOutlined
                     sx={{
                       background: "rgba(10, 112, 183, 1)",
@@ -1190,7 +1195,7 @@ const AddSource = () => {
                       setUpdateSrc(false);
                     }}
                   />
-                  {/* // )} */}
+                  {/* )} */}
                   {/* {canDelete && ( */}
                   <DeleteOutlineOutlined
                     sx={{
@@ -1210,6 +1215,35 @@ const AddSource = () => {
                   />
                   {/* )} */}
                 </Box>
+                <Dialog
+                  open={openDeleteDialog}
+                  onClose={() => setOpenDeleteDialog(false)}
+                >
+                  <DialogTitle>Confirm Delete</DialogTitle>
+
+                  <DialogContent>
+                    <Typography>
+                      Are you sure you want to delete this record?
+                    </Typography>
+                  </DialogContent>
+
+                  <DialogActions>
+                    <Button
+                      onClick={() => setOpenDeleteDialog(false)}
+                      color="inherit"
+                    >
+                      Cancel
+                    </Button>
+
+                    <Button
+                      onClick={handleDelete}
+                      color="error"
+                      variant="contained"
+                    >
+                      Delete
+                    </Button>
+                  </DialogActions>
+                </Dialog>
               </Grid>
 
               <Box component="form" onSubmit={handleSubmit}>
@@ -1423,84 +1457,93 @@ const AddSource = () => {
                   )}
 
                   <Grid item xs={12} sm={6}>
-                    <FormControl fullWidth size="small">
-                      <InputLabel>State *</InputLabel>
-                      <Select
-                        onChange={(e) => setSelectedState(e.target.value)}
-                        sx={{
-                          "& .MuiInputBase-input.MuiSelect-select": {
-                            color: "#000 !important",
-                          },
-                          "& .MuiSvgIcon-root": {
-                            color: "#000",
-                          },
-                        }}
-                      >
-                        <MenuItem value="">
-                          {selectData.add_state_id || "Select State"}
+                    <TextField
+                      select
+                      fullWidth
+                      size="small"
+                      label="State *"
+                      disabled={!isFormEnabled}
+                      value={selectedState}
+                      onChange={(e) => setSelectedState(e.target.value)}
+                      sx={{
+                        "& .MuiInputBase-input.MuiSelect-select": {
+                          color: "#000 !important",
+                        },
+                        "& .MuiSvgIcon-root": {
+                          color: "#000",
+                        },
+                      }}
+                    >
+                      <MenuItem value="">
+                        {selectData.add_state_id || "Select State"}
+                      </MenuItem>
+                      {stateOptions.map((state) => (
+                        <MenuItem key={state.state_id} value={state.state_id}>
+                          {state.state_name}
                         </MenuItem>
-                        {stateOptions.map((state) => (
-                          <MenuItem key={state.state_id} value={state.state_id}>
-                            {state.state_name}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
+                      ))}
+                    </TextField>
                   </Grid>
 
                   <Grid item xs={12} sm={6}>
-                    <FormControl fullWidth size="small">
-                      <InputLabel>District *</InputLabel>
-                      <Select
-                        onChange={(e) => setSelectedDistrict(e.target.value)}
-                        sx={{
-                          "& .MuiInputBase-input.MuiSelect-select": {
-                            color: "#000 !important",
-                          },
-                          "& .MuiSvgIcon-root": {
-                            color: "#000",
-                          },
-                        }}
-                      >
-                        <MenuItem value="">
-                          {selectData.add_district_id || "Select District"}
+                    <TextField
+                      select
+                      fullWidth
+                      size="small"
+                      label="District *"
+                      disabled={!isFormEnabled}
+                      value={selectedDistrict}
+                      onChange={(e) => setSelectedDistrict(e.target.value)}
+                      sx={{
+                        "& .MuiInputBase-input.MuiSelect-select": {
+                          color: "#000 !important",
+                        },
+                        "& .MuiSvgIcon-root": {
+                          color: "#000",
+                        },
+                      }}
+                    >
+                      <MenuItem value="">
+                        {selectData.add_district_id || "Select District"}
+                      </MenuItem>
+                      {districtOptions.map((district) => (
+                        <MenuItem
+                          key={district.dist_id}
+                          value={district.dist_id}
+                        >
+                          {district.dist_name}
                         </MenuItem>
-                        {districtOptions.map((district) => (
-                          <MenuItem
-                            key={district.dist_id}
-                            value={district.dist_id}
-                          >
-                            {district.dist_name}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
+                      ))}
+                    </TextField>
                   </Grid>
 
                   <Grid item xs={12} sm={6}>
-                    <FormControl fullWidth size="small">
-                      <InputLabel>Tehsil *</InputLabel>
-                      <Select
-                        onChange={(e) => setSelectedTahsil(e.target.value)}
-                        sx={{
-                          "& .MuiInputBase-input.MuiSelect-select": {
-                            color: "#000 !important",
-                          },
-                          "& .MuiSvgIcon-root": {
-                            color: "#000",
-                          },
-                        }}
-                      >
-                        <MenuItem value="">
-                          {selectData.add_tehsil_id || "Select Tehsil"}
+                    <TextField
+                      select
+                      size="small"
+                      label="Tehsil *"
+                      fullWidth
+                      disabled={!isFormEnabled}
+                      value={selectedTahsil}
+                      onChange={(e) => setSelectedTahsil(e.target.value)}
+                      sx={{
+                        "& .MuiInputBase-input.MuiSelect-select": {
+                          color: "#000 !important",
+                        },
+                        "& .MuiSvgIcon-root": {
+                          color: "#000",
+                        },
+                      }}
+                    >
+                      <MenuItem value="">
+                        {selectData.add_tehsil_id || "Select Tehsil"}
+                      </MenuItem>
+                      {talukaOptions.map((taluka) => (
+                        <MenuItem key={taluka.tal_id} value={taluka.tal_id}>
+                          {taluka.tahsil_name}
                         </MenuItem>
-                        {talukaOptions.map((taluka) => (
-                          <MenuItem key={taluka.tal_id} value={taluka.tal_id}>
-                            {taluka.tahsil_name}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
+                      ))}
+                    </TextField>
                   </Grid>
 
                   <Grid item xs={12} sm={6}>

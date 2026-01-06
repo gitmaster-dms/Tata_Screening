@@ -214,7 +214,7 @@ const Dashboard = () => {
         // height: "calc(100vh - 40px - 50px)", // 64px header + 50px footer
         // overflowY: "auto",
         backgroundImage: `url(${dashbordbg})`,
-        backgroundSize: "cover",
+        // backgroundSize: "cover",
         backgroundRepeat: "no-repeat",
         backgroundPosition: "center",
         bgcolor: "#F0F6FB",

@@ -31,8 +31,8 @@ const MedicalStaff = ({ data }) => {
         <Stack direction="row" alignItems="center" spacing={0.5}>
           <Box
             sx={{
-              width: 28,
-              height: 28,
+              width: 20,
+              height: 20,
               borderRadius: "50%",
               background: "linear-gradient(90deg, #00B8DB 0%, #2B7FFF 100%)",
               display: "flex",
@@ -41,7 +41,7 @@ const MedicalStaff = ({ data }) => {
               flexShrink: 0,
             }}
           >
-            <PersonIcon sx={{ color: "#fff", fontSize: 17 }} />
+            <PersonIcon sx={{ color: "#fff", fontSize: 15 }} />
           </Box>
           <Typography
             sx={{
@@ -60,7 +60,8 @@ const MedicalStaff = ({ data }) => {
         <Stack
           direction={{ xs: "column", sm: "row" }}
           alignItems="center"
-          justifyContent="space-between"
+          justifyContent="flex-start"
+          gap={5}
           // spacing={{ xs: 1, sm: 2, md: 1 }}
           // sx={{ mt: 1 }}
         >
@@ -119,57 +120,84 @@ const MedicalStaff = ({ data }) => {
           </Box>
 
           {/* Legends */}
-          <Stack spacing={0.8} sx={{ mt: { xs: 0.5, sm: 0 } }}>
+          <Stack spacing={0.8} sx={{ mt: { xs: 0.5, sm: 0 },
+            ml: { sm: -2 , md: 1,xs: 0},   // 🔥 legends chart ke paas aa jayenge
+ }}>
             {/* Available */}
-            <Stack direction="row" alignItems="center" spacing={0.5}>
-              <Box
-                sx={{
-                  width: 10,
-                  height: 10,
-                  borderRadius: "50%",
-                  bgcolor: "#087ED3",
-                  flexShrink: 0,
-                }}
-              />
-              <Typography
-                sx={{
-                  fontSize: 13,
-                  fontWeight: 500,
-                  color: "#252539",
-                  fontFamily: "Roboto",
-                }}
-              >
-                {available}&nbsp;
-                <Box component="span" sx={{ fontSize: 12, fontWeight: 400 }}>
-                  Available
-                </Box>
-              </Typography>
-            </Stack>
+            {/* Legends */}
+            <Stack
+              spacing={0.5}
+              sx={{
+                ml: 0,
+                alignItems: "flex-start",
+              }}
+            >
+              {/* Available */}
+              <Stack direction="row" spacing={0.8} alignItems="center">
+                <Box
+                  sx={{
+                    width: 8,
+                    height: 8,
+                    borderRadius: "50%",
+                    bgcolor: "#087ED3",
+                  }}
+                />
+                <Stack spacing={0}>
+                  <Typography
+                    sx={{
+                      fontSize: 14,
+                      fontWeight: 600,
+                      color: "#252539",
+                      lineHeight: 1,
+                    }}
+                  >
+                    {available}
+                  </Typography>
+                  <Typography
+                    sx={{
+                      fontSize: 11,
+                      color: "#777",
+                      lineHeight: 1.1,
+                      fontWeight: 500,
+                    }}
+                  >
+                    Available
+                  </Typography>
+                </Stack>
+              </Stack>
 
-            {/* Unavailable */}
-            <Stack direction="row" alignItems="center" spacing={1}>
-              <Box
-                sx={{
-                  width: 10,
-                  height: 10,
-                  borderRadius: "50%",
-                  bgcolor: "#F35A81",
-                  flexShrink: 0,
-                }}
-              />
-              <Typography
-                sx={{
-                  fontSize: 13,
-                  fontWeight: 500,
-                  color: "#252539",
-                  fontFamily: "Roboto",
-                }}
-              >
-                {unavailable}&nbsp;
-                <Box component="span" sx={{ fontSize: 12, fontWeight: 400 }}>
-                  Unavailable
-                </Box>
-              </Typography>
+              {/* Unavailable */}
+              <Stack direction="row" spacing={0.8} alignItems="center">
+                <Box
+                  sx={{
+                    width: 8,
+                    height: 8,
+                    borderRadius: "50%",
+                    bgcolor: "#F35A81",
+                  }}
+                />
+                <Stack spacing={0}>
+                  <Typography
+                    sx={{
+                      fontSize: 14,
+                      fontWeight: 600,
+                      color: "#252539",
+                      lineHeight: 1,
+                    }}
+                  >
+                    {unavailable}
+                  </Typography>
+                  <Typography
+                    sx={{
+                      fontSize: 11,
+                      color: "#777",
+                      lineHeight: 1.1,
+                    }}
+                  >
+                    Unavailable
+                  </Typography>
+                </Stack>
+              </Stack>
             </Stack>
           </Stack>
         </Stack>

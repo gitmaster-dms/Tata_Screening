@@ -491,6 +491,7 @@ const CorporateUpdate = (props) => {
                         color: "#000",
                       },
                     }}
+                    required
                     name="prefix"
                     value={updatedData?.prefix || ""}
                     onChange={handleInputChange}
@@ -515,6 +516,7 @@ const CorporateUpdate = (props) => {
                   name="name"
                   value={updatedData.name || ""}
                   onChange={handleInputChange}
+                  required
                 />
               </Grid>
 
@@ -530,6 +532,7 @@ const CorporateUpdate = (props) => {
                         color: "#000",
                       },
                     }}
+                    required
                     name="blood_groups"
                     value={updatedData.blood_groups || ""}
                     onChange={handleInputChange}
@@ -596,11 +599,24 @@ const CorporateUpdate = (props) => {
                   fullWidth
                   size="small"
                   label="Aadhar ID"
-                  type="number"
                   name="aadhar_id"
+                  required
                   value={updatedData.aadhar_id || ""}
-                  onChange={handleInputChange}
-                  inputProps={{ maxLength: 12 }}
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/\D/g, ""); // only numbers
+                    if (value.length <= 12) {
+                      handleInputChange({
+                        target: {
+                          name: "aadhar_id",
+                          value,
+                        },
+                      });
+                    }
+                  }}
+                  inputProps={{
+                    maxLength: 12,
+                    inputMode: "numeric", // mobile numeric keyboard
+                  }}
                 />
               </Grid>
 
@@ -626,6 +642,7 @@ const CorporateUpdate = (props) => {
                   value={updatedData.mobile_no || ""}
                   onChange={handleInputChange}
                   inputProps={{ maxLength: 10 }}
+                  required
                 />
               </Grid>
 
@@ -989,6 +1006,7 @@ const CorporateUpdate = (props) => {
                         color: "#000",
                       },
                     }}
+                    required
                     value={updatedData.state || ""}
                     label="State"
                     onChange={(e) =>
@@ -1018,6 +1036,7 @@ const CorporateUpdate = (props) => {
                         color: "#000",
                       },
                     }}
+                    required
                     value={updatedData.district || ""}
                     label="District"
                     onChange={(e) =>
@@ -1050,6 +1069,7 @@ const CorporateUpdate = (props) => {
                         color: "#000",
                       },
                     }}
+                    required
                     value={updatedData.tehsil || ""}
                     label="Tehsil"
                     onChange={(e) =>
@@ -1079,10 +1099,14 @@ const CorporateUpdate = (props) => {
                         color: "#000",
                       },
                     }}
+                    required
                     value={updatedData.source_name || ""}
                     label="WorkShop Name"
                     onChange={(e) =>
-                      setUpdatedData({ ...updatedData, source_name: e.target.value })
+                      setUpdatedData({
+                        ...updatedData,
+                        source_name: e.target.value,
+                      })
                     }
                   >
                     <MenuItem value="">Select Workshop</MenuItem>
@@ -1128,6 +1152,7 @@ const CorporateUpdate = (props) => {
                   label="Pincode"
                   type="number"
                   name="pincode"
+                  required
                   value={updatedData.pincode || ""}
                   onChange={handleInputChange}
                   onInput={(e) => {
