@@ -1205,7 +1205,7 @@ from django.db import models, transaction
 
 class Citizen(models.Model):
     citizens_pk_id = models.AutoField(primary_key=True)
-    citizen_id = models.CharField(max_length=50, editable=False,unique=True)
+    citizen_id = models.CharField(max_length=50, editable=False,unique=True,db_index=True)
     prefix = models.CharField(max_length=255,null=True,blank=True)
     name = models.CharField(max_length=255,null=True,blank=True)
     vehicle_number = models.CharField(max_length=255,null=True,blank=True)
@@ -1214,17 +1214,17 @@ class Citizen(models.Model):
     year = models.CharField(max_length=12)
     months = models.CharField(max_length=12) 
     days = models.CharField(max_length=12)
-    gender = models.ForeignKey('agg_gender', on_delete=models.CASCADE,null=True, blank=True)
-    source = models.ForeignKey('agg_source', on_delete=models.CASCADE,null=True, blank=True)
-    aadhar_id = models.CharField(max_length=12,null=True,blank=True)
-    mobile_no = models.BigIntegerField(null=True,blank=True)
-    category = models.ForeignKey('Category', on_delete=models.CASCADE,null=True, blank=True)
+    gender = models.ForeignKey('agg_gender', on_delete=models.CASCADE,null=True, blank=True,db_index=True)
+    source = models.ForeignKey('agg_source', on_delete=models.CASCADE,null=True, blank=True,db_index=True)
+    aadhar_id = models.CharField(max_length=12,null=True,blank=True,db_index=True)
+    mobile_no = models.BigIntegerField(null=True,blank=True,db_index=True)
+    category = models.ForeignKey('Category', on_delete=models.CASCADE,null=True, blank=True,db_index=True)
 #___________ADDRESS_____________________________
-    source_name = models.ForeignKey('Workshop', on_delete=models.CASCADE)
-    state = models.ForeignKey('agg_sc_state', on_delete=models.CASCADE, blank=True, null=True)
-    district = models.ForeignKey('agg_sc_district', on_delete=models.CASCADE,blank=True, null=True)
+    source_name = models.ForeignKey('Workshop', on_delete=models.CASCADE,db_index=True)
+    state = models.ForeignKey('agg_sc_state', on_delete=models.CASCADE, blank=True, null=True,db_index=True)
+    district = models.ForeignKey('agg_sc_district', on_delete=models.CASCADE,blank=True, null=True,db_index=True)
     tehsil =  models.ForeignKey('agg_sc_tahsil', on_delete=models.CASCADE,blank=True, null=True)
-    pincode = models.CharField(max_length=255)
+    pincode = models.CharField(max_length=255,db_index=True)
     address = models.CharField(max_length=255,null=True,blank=True)
 #___________GROWTH MONITORING________________
     height = models.FloatField(blank=True,null=True)
@@ -1240,15 +1240,27 @@ class Citizen(models.Model):
     emergency_prefix = models.CharField(max_length=255,null=True,blank=True)
     emergency_fullname = models.CharField(max_length=255,null=True,blank=True)
     emergency_gender = models.CharField(max_length=255,null=True,blank=True)
-    emergency_contact = models.CharField(max_length=10, null=True,blank=True) 
+    emergency_contact = models.CharField(max_length=10, null=True,blank=True,db_index=True) 
     relationship_with_employee = models.CharField(max_length=255,null=True,blank=True)
     emergency_address = models.CharField(max_length=555,null=True,blank=True)
     
-    is_deleted = models.BooleanField(default=False)
-    added_by =	models.ForeignKey(agg_com_colleague, on_delete=models.CASCADE, null=True, blank=True)
-    added_date = models.DateTimeField(auto_now_add=True)
-    modify_by =	models.ForeignKey(agg_com_colleague, on_delete=models.CASCADE, null=True, blank=True, related_name='citizen_modify_by')
-    modify_date = models.DateTimeField(auto_now=True, null=True)
+    is_deleted = models.BooleanField(default=False,db_index=True)
+    added_by =	models.ForeignKey(agg_com_colleague, on_delete=models.CASCADE, null=True, blank=True,db_index=True)
+    added_date = models.DateTimeField(auto_now_add=True,db_index=True)
+    modify_by =	models.ForeignKey(agg_com_colleague, on_delete=models.CASCADE, null=True, blank=True, related_name='citizen_modify_by',db_index=True)
+    modify_date = models.DateTimeField(auto_now=True, null=True,db_index=True)
+
+    class Meta:
+        db_table = "citizen"
+        indexes = [
+            models.Index(fields=['is_deleted', 'added_date']),
+            models.Index(fields=['is_deleted', 'district']),
+            models.Index(fields=['is_deleted', 'state']),
+            models.Index(fields=['source_name', 'is_deleted']),
+            models.Index(fields=['mobile_no', 'is_deleted']),
+            models.Index(fields=['aadhar_id', 'is_deleted']),
+        ]
+
     
     
     
