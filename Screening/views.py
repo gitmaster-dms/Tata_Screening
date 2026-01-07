@@ -3955,17 +3955,55 @@ class location_get_APIView(APIView):
             return JsonResponse({"error": str(e)}, status=500)
 
 
+# class Citizen_Post_Api(APIView):
+#     renderer_classes = [UserRenderer]
+#     authentication_classes = [CustomJWTAuthentication]
+#     permission_classes = [IsAuthenticated]
+#     def post(self, request):
+#         Serializer = Citizen_Post_Serializer(data=request.data)
+#         if Serializer.is_valid():
+#             Serializer.save()
+#             return Response(Serializer.data, status=status.HTTP_201_CREATED)
+#         else:
+#             return Response(Serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
 class Citizen_Post_Api(APIView):
-    renderer_classes = [UserRenderer]
-    authentication_classes = [CustomJWTAuthentication]
-    permission_classes = [IsAuthenticated]
+    # renderer_classes = [UserRenderer]
+    # authentication_classes = [CustomJWTAuthentication]
+    # permission_classes = [IsAuthenticated]
+
     def post(self, request):
-        Serializer = Citizen_Post_Serializer(data=request.data)
-        if Serializer.is_valid():
-            Serializer.save()
-            return Response(Serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return Response(Serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        TOTAL_INSERTS = 1_000_000   # 🔴 hard-coded 10 lakh
+
+        data = request.data.copy()  # same payload reused
+        total_inserted = 0
+
+        for i in range(TOTAL_INSERTS):
+            serializer = Citizen_Post_Serializer(data=data)
+
+            if serializer.is_valid():
+                instance = serializer.save()
+                total_inserted += 1
+
+                # ✅ PRINT PK CONTINUOUSLY
+                print(f"Inserted PK ID: {instance.pk}")
+
+                # optional progress log
+                if total_inserted % 1000 == 0:
+                    print(f"Total inserted so far: {total_inserted}")
+
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response(
+            {
+                "message": "10 lakh insertion completed",
+                "total_inserted": total_inserted
+            },
+            status=status.HTTP_201_CREATED
+        )
+
 
 class Workshop_Post_Api(APIView):
     renderer_classes = [UserRenderer]
