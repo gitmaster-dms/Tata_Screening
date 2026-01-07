@@ -107,15 +107,17 @@ const Vitals = ({ vitalsData }) => {
       {/* ---------- Title ---------- */}
       <Stack direction="row" alignItems="center" spacing={1}>
         <Box
-          sx={{
-            width: 30,
-            height: 30,
-            borderRadius: "50%",
-            background: "linear-gradient(135deg, #00B8DB 0%, #2B7FFF 100%)",
+         sx={{
+            background: "linear-gradient(90deg, #00B8DB 0%, #2B7FFF 94%)",
+            borderRadius: "40%",
+            width: { xs: 26, sm: 28, md: 25 },
+            height: { xs: 26, sm: 28, md: 25 },
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             flexShrink: 0,
+            // mr: 1,
+            right: 1,
           }}
         >
           <ErrorOutlineIcon

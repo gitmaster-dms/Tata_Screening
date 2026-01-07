@@ -1152,7 +1152,7 @@ const HealthList = () => {
                 onClick={handlesubmit}
                 sx={{
                   backgroundColor: "#0A70B7",
-                  "&:hover": { backgroundColor: "#45A049" },
+                  "&:hover": { backgroundColor: "#0A70B7" },
                   color: "#fff",
                   width: "100%",
                   py: 1,

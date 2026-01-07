@@ -33,7 +33,7 @@ const ScreeningList = () => {
   const [open, setOpen] = useState(false);
   const [cardData, setCardData] = useState([]);
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(6);
+  const [rowsPerPage, setRowsPerPage] = useState(1);
   const [loading, setLoading] = useState(true);
   const handleClose = () => setOpen(false);
   const handleChangePage = (event, newPage) => {
@@ -543,7 +543,7 @@ const ScreeningList = () => {
                   onPageChange={handleChangePage}
                   rowsPerPage={rowsPerPage}
                   onRowsPerPageChange={handleChangeRowsPerPage}
-                  rowsPerPageOptions={[6, 10, 20, 50, 75, 100]}
+                  rowsPerPageOptions={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
                 />
               </Grid>
             </Grid>

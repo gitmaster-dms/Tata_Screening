@@ -90,7 +90,7 @@ const DriverStatsCards = ({ data }) => {
                     color: "#252539",
                     fontWeight: 500,
                     fontSize: { xs: 13, sm: 14, md: 14 },
-                    fontFamily: "Roboto",
+                    fontFamily: "Roboto , sans-serif",
                     lineHeight: 1,
                   }}
                 >

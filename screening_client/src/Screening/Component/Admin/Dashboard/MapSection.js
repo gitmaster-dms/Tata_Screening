@@ -1,4 +1,3 @@
-
 // import React, { useEffect, useRef, useState } from "react";
 // import {
 //   Card,
@@ -265,19 +264,6 @@
 
 // export default MapSection;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
 import React, { useEffect, useRef, useState } from "react";
 import {
   Card,
@@ -313,9 +299,6 @@ const MapSection = ({ selectedState }) => {
 
   const extendedWindowRef = useRef(null);
 
-
-
-
   const workshopIcon = L.icon({
     iconUrl: workshopIconImg,
     iconSize: [20, 20],
@@ -330,7 +313,9 @@ const MapSection = ({ selectedState }) => {
 
   const getDistricts = async (stateId) => {
     try {
-      const response = await axios.get(`${port}/Screening/District_Get/${stateId}/`);
+      const response = await axios.get(
+        `${port}/Screening/District_Get/${stateId}/`
+      );
       setDistrictList(response.data || []);
     } catch (error) {
       console.error("Error fetching districts:", error);
@@ -341,14 +326,13 @@ const MapSection = ({ selectedState }) => {
   useEffect(() => {
     if (!mapContainerRef.current || mapRef.current) return;
 
-    mapRef.current = L.map(mapContainerRef.current, { attributionControl: false }).setView(
-      [mapView[0], mapView[1]],
-      mapView[2]
-    );
+    mapRef.current = L.map(mapContainerRef.current, {
+      attributionControl: false,
+    }).setView([mapView[0], mapView[1]], mapView[2]);
 
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19 }).addTo(
-      mapRef.current
-    );
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 19,
+    }).addTo(mapRef.current);
 
     // mapRef.current.on("moveend zoomend", () => {
     //   const center = mapRef.current.getCenter();
@@ -363,10 +347,7 @@ const MapSection = ({ selectedState }) => {
       setMapView([center.lat, center.lng, zoom]);
 
       // 🔁 SYNC MAIN → EXTENDED
-      if (
-        extendedWindowRef.current &&
-        !extendedWindowRef.current.closed
-      ) {
+      if (extendedWindowRef.current && !extendedWindowRef.current.closed) {
         extendedWindowRef.current.postMessage(
           {
             type: "SYNC_VIEW",
@@ -379,15 +360,11 @@ const MapSection = ({ selectedState }) => {
       }
     });
 
-
-
     return () => {
       mapRef.current?.remove();
       mapRef.current = null;
     };
   }, []);
-
-
 
   useEffect(() => {
     const handleMessage = (event) => {
@@ -406,13 +383,6 @@ const MapSection = ({ selectedState }) => {
       window.removeEventListener("message", handleMessage);
     };
   }, []);
-
-
-
-
-
-
-
 
   // Update markers on main map
   useEffect(() => {
@@ -441,10 +411,7 @@ const MapSection = ({ selectedState }) => {
     }
 
     // 🔁 Update extended map when main map data changes
-    if (
-      extendedWindowRef.current &&
-      !extendedWindowRef.current.closed
-    ) {
+    if (extendedWindowRef.current && !extendedWindowRef.current.closed) {
       extendedWindowRef.current.postMessage(
         {
           type: "UPDATE_MARKERS",
@@ -453,13 +420,7 @@ const MapSection = ({ selectedState }) => {
         "*"
       );
     }
-
-
-
   }, [workshops, dateFilter]);
-
-
-
 
   const openExtendedMapInNewWindow = () => {
     const newWin = window.open(
@@ -469,8 +430,6 @@ const MapSection = ({ selectedState }) => {
     );
 
     extendedWindowRef.current = newWin;
-
-
 
     if (!newWin) return;
 
@@ -510,15 +469,6 @@ const MapSection = ({ selectedState }) => {
         popupAnchor: [0, -40],
       });
 
-
-
-
-
-
-
-
-
-
       const renderMarkers = (list) => {
         map.eachLayer((layer) => {
           if (layer instanceof newWin.L.Marker) {
@@ -535,9 +485,7 @@ const MapSection = ({ selectedState }) => {
 
           newWin.L.marker([lat, lng], { icon })
             .addTo(map)
-            .bindPopup(
-              `<b>${item.Workshop_name}</b><br/>${item.ws_address}`
-            );
+            .bindPopup(`<b>${item.Workshop_name}</b><br/>${item.ws_address}`);
 
           bounds.extend([lat, lng]);
         });
@@ -547,11 +495,9 @@ const MapSection = ({ selectedState }) => {
         }
       };
 
-
       if (dateFilter && workshops.length > 0) {
         renderMarkers(workshops);
       }
-
 
       newWin.addEventListener("message", (event) => {
         if (event.data?.type === "SYNC_VIEW") {
@@ -583,22 +529,57 @@ const MapSection = ({ selectedState }) => {
     };
   };
 
-
-
-
-
-
-
   return (
-    <Card sx={{ borderRadius: 3, boxShadow: "0 2px 10px rgba(0,0,0,0.08)", background: "#F8FAFCB2", border: "2px solid #fff", height: "100%" }}>
+    <Card
+      sx={{
+        borderRadius: 3,
+        boxShadow: "0 2px 10px rgba(0,0,0,0.08)",
+        background: "#F8FAFCB2",
+        border: "2px solid #fff",
+        height: "100%",
+      }}
+    >
       <CardContent sx={{ p: 1 }}>
         {/* HEADER */}
-        <Stack direction="row" alignItems="center" justifyContent="space-between" spacing={1}>
+        <Stack
+          direction="row"
+          alignItems="center"
+          justifyContent="space-between"
+          spacing={1}
+        >
           <Stack direction="row" alignItems="center" spacing={0.5}>
-            <Box sx={{ width: 26, height: 26, borderRadius: "50%", background: "linear-gradient(135deg, #4FACFE 0%, #00F2FE 100%)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <Box component="img" src={health} alt="Map Icon" sx={{ width: 14, height: 14, objectFit: "contain" }} />
+            <Box
+              sx={{
+                background: "linear-gradient(90deg, #00B8DB 0%, #2B7FFF 94%)",
+                borderRadius: "40%",
+                width: { xs: 26, sm: 28, md: 25 },
+                height: { xs: 26, sm: 28, md: 25 },
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                flexShrink: 0,
+                // mr: 1,
+                right: 1,
+              }}
+            >
+              <Box
+                component="img"
+                src={health}
+                alt="Map Icon"
+                sx={{ width: 14, height: 14, objectFit: "contain" }}
+              />
             </Box>
-            <Typography variant="h6" sx={{ fontWeight: 600, color: "#252539", fontSize: 15, fontFamily: "Roboto" }}>Map</Typography>
+            <Typography
+              variant="h6"
+              sx={{
+                fontWeight: 600,
+                color: "#252539",
+                fontSize: 15,
+                fontFamily: "Roboto",
+              }}
+            >
+              Map
+            </Typography>
           </Stack>
 
           {/* FILTERS */}
@@ -618,7 +599,12 @@ const MapSection = ({ selectedState }) => {
                 height: "2.5rem",
                 width: "100%",
                 "& .MuiInputBase-input": { color: "#9e9e9e !important" },
-                "& .MuiInputBase-root": { height: "100%", padding: "0 12px", display: "flex", alignItems: "center" },
+                "& .MuiInputBase-root": {
+                  height: "100%",
+                  padding: "0 12px",
+                  display: "flex",
+                  alignItems: "center",
+                },
                 borderRadius: "12px",
                 "& fieldset": { border: "none" },
                 backgroundColor: "#fff",
@@ -626,8 +612,14 @@ const MapSection = ({ selectedState }) => {
                 "&:hover": { boxShadow: "0px 4px 15px rgba(0, 0, 0, 0.2)" },
               }}
             >
-              <MenuItem value="" disabled>Select District</MenuItem>
-              {districtList.map((dist) => (<MenuItem key={dist.dist_id} value={dist.dist_id}>{dist.dist_name}</MenuItem>))}
+              <MenuItem value="" disabled>
+                Select District
+              </MenuItem>
+              {districtList.map((dist) => (
+                <MenuItem key={dist.dist_id} value={dist.dist_id}>
+                  {dist.dist_name}
+                </MenuItem>
+              ))}
             </Select>
 
             {/* SCANNER ICON → Open Extended Map in New Window */}
@@ -642,7 +634,7 @@ const MapSection = ({ selectedState }) => {
                 alignItems: "center",
                 justifyContent: "center",
                 cursor: "pointer",
-                "&:hover": { transform: "scale(1.1)" }
+                "&:hover": { transform: "scale(1.1)" },
               }}
             >
               <ScannerIcon sx={{ color: "#fff", fontSize: 16 }} />
@@ -651,8 +643,18 @@ const MapSection = ({ selectedState }) => {
         </Stack>
 
         {/* MAIN MAP */}
-        <Box sx={{ mt: 1.5, borderRadius: "16px", overflow: "hidden", border: "1px solid #E5EAF2" }}>
-          <div ref={mapContainerRef} style={{ width: "100%", height: "230px" }} />
+        <Box
+          sx={{
+            mt: 1.5,
+            borderRadius: "16px",
+            overflow: "hidden",
+            border: "1px solid #E5EAF2",
+          }}
+        >
+          <div
+            ref={mapContainerRef}
+            style={{ width: "100%", height: "230px" }}
+          />
         </Box>
       </CardContent>
     </Card>

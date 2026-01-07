@@ -403,15 +403,15 @@ const Permission = () => {
         </Alert>
       </Snackbar>
 
-      <Box sx={{ backgroundColor: "#f5f5f5", py: 1 }}>
+      <Box sx={{ backgroundColor: "#f5f5f5" }}>
         <Box sx={{ width: "95%", mx: "auto", mr: 2 }}>
           {/* =========================== */}
           {/* DROPDOWN CARD */}
           {/* =========================== */}
           <Card
             sx={{
-              p: 2,
-              mb: 3,
+              p: 1,
+              mb: 1,
               borderRadius: 2,
               boxShadow: "0 2px 8px rgba(0,0,0,0.1)",
             }}
@@ -563,7 +563,6 @@ const Permission = () => {
               <Grid item xs={12} md={8}>
                 <Paper
                   sx={{
-                    p: 1,
                     textAlign: "left",
                     fontWeight: "bold",
                     background: "transparent",
@@ -579,15 +578,13 @@ const Permission = () => {
             </Grid>
 
             {/* Scrollable List */}
-            <Box sx={{ maxHeight: 450, overflowY: "auto", p: 2 }}>
+            <Box sx={{ maxHeight: 450, overflowY: "auto",p:0.6}}>
               {moduleSubmodule.map((module) => (
                 <Grid
                   container
-                  spacing={2}
                   sx={{
                     mt: 1,
                     borderBottom: "1px solid #eee",
-                    pb: 1,
                   }}
                   key={module.module_id}
                 >

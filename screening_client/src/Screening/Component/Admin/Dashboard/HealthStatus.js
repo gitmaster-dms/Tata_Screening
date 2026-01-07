@@ -38,21 +38,21 @@ const HealthStatusCard = ({ healthStatusData }) => {
       count: fitData?.Count || 0,
       value: fitData?.Percentage || 0,
       color: "#00BCD4",
-      icon: <CheckCircleIcon sx={{ color: "#000", fontSize: 18, mr: 1 }} />,
+      icon: <CheckCircleIcon sx={{ color: "#fff", fontSize: 18, mr: 1 }} />,
     },
     {
       label: "Under Observation",
       count: underObsCount,
       value: underObsPercent,
       color: "#4E73DF",
-      icon: <WarningAmberIcon sx={{ color: "#000", fontSize: 18, mr: 1 }} />,
+      icon: <WarningAmberIcon sx={{ color: "#fff", fontSize: 18, mr: 1 }} />,
     },
     {
       label: "Unfit / Critical",
       count: unfitCount,
       value: unfitPercent,
       color: "#FF9843",
-      icon: <CancelIcon sx={{ color: "#000", fontSize: 18, mr: 1 }} />,
+      icon: <CancelIcon sx={{ color: "#fff", fontSize: 18, mr: 1 }} />,
     },
   ];
 
@@ -80,34 +80,30 @@ const HealthStatusCard = ({ healthStatusData }) => {
       >
         <Box
           sx={{
-            background: "linear-gradient(90deg, #2FB3F5 0%, #1439A4 94%)",
+            background: "linear-gradient(90deg, #00B8DB 0%, #2B7FFF 94%)",
             borderRadius: "40%",
-            width: { xs: 26, sm: 28, md: 30 },
-            height: { xs: 26, sm: 28, md: 30 },
+            width: { xs: 26, sm: 28, md: 25 },
+            height: { xs: 26, sm: 28, md: 25 },
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
             flexShrink: 0,
             // mr: 1,
-            right: 0.5,
+            right: 1,
           }}
         >
           <Box
             component="img"
             src={healthstatus}
-            alt="Health Icon"
-            sx={{
-              width: 20,
-              height: 20,
-              mr: 1,
-            }}
+            alt="Map Icon"
+            sx={{ width: 14, height: 14, objectFit: "contain" }}
           />
         </Box>
 
         <Typography
           fontWeight={700}
           sx={{
-            fontSize: { xs: 14, sm: 15, md: 14},
+            fontSize: { xs: 14, sm: 15, md: 14 },
             color: "#252539",
             fontFamily: "Roboto",
             ml: 1,
@@ -154,9 +150,9 @@ const HealthStatusCard = ({ healthStatusData }) => {
                 <Typography
                   sx={{
                     fontSize: { xs: 12, sm: 13 },
-                    fontWeight: 600,
+                    fontWeight: 550,
                     color: "#000",
-                    fontFamily: "Roboto",
+                    fontFamily: "Roboto,sans-serif",
                   }}
                 >
                   {item.label}

@@ -306,6 +306,11 @@ const AddSource = () => {
           .includes(searchQuery.toLowerCase())
       )
     : [];
+  const totalPages = Math.ceil(displayedData.length / rowsPerPage);
+
+  useEffect(() => {
+    setPage(0);
+  }, [searchQuery]);
 
   const [selectedFile, setSelectedFile] = useState(null);
 
@@ -557,6 +562,11 @@ const AddSource = () => {
               const result = await response.json();
               const data = result.data; // 👈 Important
 
+              setTableInfo((prev) =>
+                prev.map((row) =>
+                  row.ws_pk_id === selectedRow ? { ...row, ...data } : row
+                )
+              );
               // Populate form fields with updated data
               setSelectData({
                 ws_pk_id: data.ws_pk_id,
@@ -579,6 +589,7 @@ const AddSource = () => {
               setSelectedSourceId(null);
               resetForm(); // now it truly resets the form
               // Success message
+
               setSnackbarMessage("Workshop updated successfully!");
               setSnackbarSeverity("success");
               setSnackbarOpen(true);
@@ -918,7 +929,7 @@ const AddSource = () => {
 
   useEffect(() => {
     if (stateOptions.length && editData?.ws_state) {
-      setSelectedState((editData.ws_state));
+      setSelectedState(editData.ws_state);
     }
   }, [stateOptions]);
   useEffect(() => {
@@ -1810,6 +1821,7 @@ const AddSource = () => {
                 rowsPerPage={rowsPerPage}
                 onRowsPerPageChange={handleChangeRowsPerPage}
                 rowsPerPageOptions={[5, 10, 20]}
+                labelDisplayedRows={() => `Page ${page + 1} of ${totalPages}`}
                 sx={{
                   "& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows":
                     {

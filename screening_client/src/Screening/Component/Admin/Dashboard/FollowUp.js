@@ -9,14 +9,32 @@ import {
 } from "@mui/material";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import { PieChart } from "react-minimal-pie-chart";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import AutorenewIcon from "@mui/icons-material/Autorenew";
+import HourglassEmptyIcon from "@mui/icons-material/HourglassEmpty";
 
-const FollowUpCard = ({data}) => {
+const FollowUpCard = ({ data }) => {
   const [selectedIndex, setSelectedIndex] = useState(null);
 
   const followUpData = [
-    { title: "Done", value: data?.Followups_Done ?? 0, color: "#4ED7AA" },
-    { title: "In-progress", value: data?.Followups_InProgress ?? 0, color: "#FFC769" },
-    { title: "Pending", value: data?.Followups_Pending ?? 0, color: "#F35A81" },
+    {
+      title: "Done",
+      value: data?.Followups_Done ?? 0,
+      color: "#4ED7AA",
+      icon: <CheckCircleIcon sx={{ fontSize: 14, color: "#fff" }} />,
+    },
+    {
+      title: "In-progress",
+      value: data?.Followups_InProgress ?? 0,
+      color: "#FFC769",
+      icon: <AutorenewIcon sx={{ fontSize: 14, color: "#fff" }} />,
+    },
+    {
+      title: "Pending",
+      value: data?.Followups_Pending ?? 0,
+      color: "#F35A81",
+      icon: <HourglassEmptyIcon sx={{ fontSize: 14, color: "#fff" }} />,
+    },
   ];
 
   const total =
@@ -56,21 +74,22 @@ const FollowUpCard = ({data}) => {
         >
           <Box
             sx={{
-              width: 20,
-              height: 20,
-              borderRadius: "50%",
-              background: "linear-gradient(90deg, #00B8DB 0%, #2B7FFF 100%)",
+              background: "linear-gradient(90deg, #00B8DB 0%, #2B7FFF 94%)",
+              borderRadius: "40%",
+              width: { xs: 26, sm: 28, md: 20 },
+              height: { xs: 26, sm: 28, md: 20 },
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              mr: 1,
               flexShrink: 0,
+              mr: 1,
+              // right: 1,
             }}
           >
-            <TrendingUpIcon sx={{ color: "#fff", fontSize: 15 }} />
+            <TrendingUpIcon sx={{ color: "#fff", fontSize: 16 }} />
           </Box>
           <Typography
-            fontWeight={700}
+            fontWeight={600}
             sx={{ fontSize: 15, color: "#1A1A1A", fontFamily: "Roboto" }}
           >
             Follow-up
@@ -159,21 +178,47 @@ const FollowUpCard = ({data}) => {
                     px: 1,
                   }}
                 >
-                  <Typography
+                  {/* LEFT SIDE: Icon + Title together */}
+                  <Box
                     sx={{
-                      fontSize: 12,
-                      fontWeight: 600,
-                      color: "#000",
-                      textTransform: "capitalize",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 0.5, // 👈 yahin se gap control hoga (0.3 / 0.4 bhi try kar sakte ho)
                     }}
                   >
-                    {item.title}
-                  </Typography>
+                    <Box
+                      sx={{
+                        width: 18,
+                        height: 18,
+                        borderRadius: "50%",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      {item.icon}
+                    </Box>
+
+                    <Typography
+                      sx={{
+                        fontSize: 10,
+                        fontWeight: 600,
+                        color: "#000",
+                        textTransform: "capitalize",
+                        fontFamily: "Roboto, sans-serif",
+                      }}
+                    >
+                      {item.title}
+                    </Typography>
+                  </Box>
+
+                  {/* RIGHT SIDE: Value */}
                   <Typography
                     sx={{
-                      fontSize: 12,
+                      fontSize: 10,
                       fontWeight: 600,
                       color: "#252539",
+                      fontFamily: "Roboto, sans-serif",
                     }}
                   >
                     {item.value}

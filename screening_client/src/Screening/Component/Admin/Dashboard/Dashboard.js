@@ -211,20 +211,16 @@ const Dashboard = () => {
   return (
     <Box
       sx={{
-        // height: "calc(100vh - 40px - 50px)", // 64px header + 50px footer
-        // overflowY: "auto",
-        backgroundImage: `url(${dashbordbg})`,
-        // backgroundSize: "cover",
-        backgroundRepeat: "no-repeat",
-        backgroundPosition: "center",
-        bgcolor: "#F0F6FB",
-        overflowY: "auto", // scroll inside dashboard only
-
-        // minHeight: "100vh",
-        width: "100%",
-        pl: { md: 7, sm: 2, xs: 1 },
-        pr: { md: 1, sm: 2, xs: 1 },
-        pt: 2,
+        display: {
+          xs: "block",
+          sm: "block", // ❌ hide on small tablets
+          md: "block", // ✅ show from desktop
+        },
+        minHeight: "100vh",
+        pl: { md: 7 },
+        pr: { md: 1 },
+        pt: 1,
+        backgroundColor: "rgba(240,246,251,0.85)", // optional glass effect
       }}
     >
       {/* ---------- Filter Tabs ---------- */}
@@ -232,16 +228,9 @@ const Dashboard = () => {
         sx={{
           display: "flex",
           alignItems: "center",
-          gap: 1,
+          gap: 1.5, // ✅ horizontal gap
           mb: 1,
-          // pl: 1,
-          flexWrap: "wrap",
-          position: "sticky",
-          top: 0,
-          // backgroundColor: "#F0F6FB",
-          zIndex: 2,
-          pt: 1,
-          pb: 1,
+          flexWrap: "wrap", // ✅ responsive wrap
         }}
       >
         <Tabs
@@ -280,7 +269,7 @@ const Dashboard = () => {
             label="Today"
             sx={{
               "&.Mui-selected": {
-                color: "#000000", // Selected tab text
+                color: "#fff", // Selected tab text
                 borderRadius: "10px",
                 zIndex: 1,
               },
@@ -290,7 +279,7 @@ const Dashboard = () => {
             label="This Month"
             sx={{
               "&.Mui-selected": {
-                color: "#000000", // Selected tab text
+                color: "#fff", // Selected tab text
                 borderRadius: "10px",
                 zIndex: 1,
               },
@@ -300,7 +289,7 @@ const Dashboard = () => {
             label="Till Date"
             sx={{
               "&.Mui-selected": {
-                color: "#000000", // Selected tab text
+                color: "#fff", // Selected tab text
                 borderRadius: "10px",
                 zIndex: 1,
               },

@@ -31,17 +31,19 @@ const MedicalStaff = ({ data }) => {
         <Stack direction="row" alignItems="center" spacing={0.5}>
           <Box
             sx={{
-              width: 20,
-              height: 20,
-              borderRadius: "50%",
-              background: "linear-gradient(90deg, #00B8DB 0%, #2B7FFF 100%)",
+              background: "linear-gradient(90deg, #00B8DB 0%, #2B7FFF 94%)",
+              borderRadius: "40%",
+              width: { xs: 26, sm: 28, md: 25 },
+              height: { xs: 26, sm: 28, md: 25 },
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               flexShrink: 0,
+              // mr: 1,
+              right: 1,
             }}
           >
-            <PersonIcon sx={{ color: "#fff", fontSize: 15 }} />
+            <PersonIcon sx={{ color: "#fff", fontSize: 16 }} />
           </Box>
           <Typography
             sx={{
@@ -50,6 +52,7 @@ const MedicalStaff = ({ data }) => {
               fontFamily: "Roboto",
               fontWeight: 600,
               lineHeight: 1.2,
+              gap: 1,
             }}
           >
             Medical Staff
@@ -120,9 +123,13 @@ const MedicalStaff = ({ data }) => {
           </Box>
 
           {/* Legends */}
-          <Stack spacing={0.8} sx={{ mt: { xs: 0.5, sm: 0 },
-            ml: { sm: -2 , md: 1,xs: 0},   // 🔥 legends chart ke paas aa jayenge
- }}>
+          <Stack
+            spacing={0.8}
+            sx={{
+              mt: { xs: 0.5, sm: 0 },
+              ml: { sm: -2, md: 1, xs: 0 }, // 🔥 legends chart ke paas aa jayenge
+            }}
+          >
             {/* Available */}
             {/* Legends */}
             <Stack
@@ -138,7 +145,7 @@ const MedicalStaff = ({ data }) => {
                   sx={{
                     width: 8,
                     height: 8,
-                    borderRadius: "50%",
+                    borderRadius: "30%",
                     bgcolor: "#087ED3",
                   }}
                 />
@@ -149,6 +156,7 @@ const MedicalStaff = ({ data }) => {
                       fontWeight: 600,
                       color: "#252539",
                       lineHeight: 1,
+                      fontFamily: "Roboto , sans-serif",
                     }}
                   >
                     {available}
@@ -157,8 +165,9 @@ const MedicalStaff = ({ data }) => {
                     sx={{
                       fontSize: 11,
                       color: "#777",
-                      lineHeight: 1.1,
+                      lineHeight: 2,
                       fontWeight: 500,
+                      fontFamily: "Roboto , sans-serif",
                     }}
                   >
                     Available
@@ -172,8 +181,9 @@ const MedicalStaff = ({ data }) => {
                   sx={{
                     width: 8,
                     height: 8,
-                    borderRadius: "50%",
+                    borderRadius: "30%",
                     bgcolor: "#F35A81",
+                    fontFamily: "Roboto , sans-serif",
                   }}
                 />
                 <Stack spacing={0}>
@@ -181,6 +191,7 @@ const MedicalStaff = ({ data }) => {
                     sx={{
                       fontSize: 14,
                       fontWeight: 600,
+                      fontFamily: "Roboto , sans-serif",
                       color: "#252539",
                       lineHeight: 1,
                     }}
@@ -192,6 +203,7 @@ const MedicalStaff = ({ data }) => {
                       fontSize: 11,
                       color: "#777",
                       lineHeight: 1.1,
+                      fontFamily: "Roboto , sans-serif",
                     }}
                   >
                     Unavailable
