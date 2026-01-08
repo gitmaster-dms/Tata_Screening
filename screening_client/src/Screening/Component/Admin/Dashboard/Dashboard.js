@@ -216,9 +216,15 @@ const Dashboard = () => {
           sm: "block", // ❌ hide on small tablets
           md: "block", // ✅ show from desktop
         },
+        background: `linear-gradient(
+      45deg,
+      rgba(224, 178, 255, 0.3) 0%,
+      rgba(0, 0, 0, 0) 40.63%,
+      rgba(21, 93, 250, 0.3) 100%
+    )`,
         minHeight: "100vh",
-        pl: { md: 7 },
-        pr: { md: 1 },
+        pl: { md: 7 , xs: 0,sm: 0},
+        pr: { md: 1 , xs: 0,sm: 0},
         pt: 1,
         backgroundColor: "rgba(240,246,251,0.85)", // optional glass effect
       }}

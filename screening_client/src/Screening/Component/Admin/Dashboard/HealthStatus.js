@@ -67,7 +67,7 @@ const HealthStatusCard = ({ healthStatusData }) => {
         display: "flex",
         flexDirection: "column",
         justifyContent: "flex-start", // aligned to top
-        border: "1px solid #fff",
+        border: "2px solid #fff",
       }}
     >
       {/* ---------- Header ---------- */}
@@ -75,7 +75,7 @@ const HealthStatusCard = ({ healthStatusData }) => {
         sx={{
           display: "flex",
           alignItems: "center",
-          mb: 1.2, // tighter spacing
+          mb: 1.5, // tighter spacing
         }}
       >
         <Box

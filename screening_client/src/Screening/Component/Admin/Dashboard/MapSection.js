@@ -308,19 +308,30 @@ const MapSection = ({ selectedState }) => {
 
   // Fetch districts when state changes
   useEffect(() => {
-    if (selectedState) getDistricts(selectedState);
+    if (selectedState) 
+      setSelectedDistrict(""); // reset selected district
+    getDistricts(selectedState);
   }, [selectedState]);
 
-  const getDistricts = async (stateId) => {
-    try {
-      const response = await axios.get(
-        `${port}/Screening/District_Get/${stateId}/`
-      );
-      setDistrictList(response.data || []);
-    } catch (error) {
-      console.error("Error fetching districts:", error);
-    }
-  };
+ const getDistricts = async (stateId) => {
+  try {
+    const response = await axios.get(
+      `${port}/Screening/District_Get/${stateId}/`
+    );
+
+    // ✅ FORCE ARRAY
+    const list = Array.isArray(response.data)
+      ? response.data
+      : Array.isArray(response.data?.data)
+      ? response.data.data
+      : [];
+
+    setDistrictList(list);
+  } catch (error) {
+    console.error("Error fetching districts:", error);
+    setDistrictList([]); // ✅ fallback
+  }
+};
 
   // Initialize main map
   useEffect(() => {

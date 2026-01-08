@@ -23,6 +23,10 @@ import {
   Card,
   Paper,
   IconButton,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
 } from "@mui/material";
 
 const Desk = () => {
@@ -72,6 +76,9 @@ const Desk = () => {
 
   const [sourceName, setSourceName] = useState([]);
   const [selectedFollowUpForName, setselectedFollowUpForName] = useState("");
+  const [openMenuModal, setOpenMenuModal] = useState(false);
+const [selectedRow, setSelectedRow] = useState(null);
+
 
   const [showTable, setShowTable] = useState(false);
   console.log(showTable, "showTableshowTableshowTable");
@@ -344,23 +351,24 @@ const Desk = () => {
     <div>
       <Box sx={{ p: 2, m: "0em 0em 0 2em" }}>
         <Box
-          className="card deskcard m-2"
+          className="card deskcard m-1"
           style={{
             background: "#fff",
             color: "white",
           }}
         >
-          <div class="row">
-            <div class="col">
+          <div >
+            <div >
               <Typography
                 sx={{
                   mb: 1,
                   fontWeight: 550,
-                  fontSize: "16px",
+                  fontSize: "15px",
                   fontFamily: "Roboto, sans-serif",
                   textAlign: "left",
                   color: "black",
                   px: 2,
+                  py: 0.1,
                 }}
               >
                 FollowUp Desk
@@ -573,7 +581,7 @@ const Desk = () => {
                 placeholder="Search by Name, or doctor name"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                sx={{ minWidth: 250 }} // optional styling
+                sx={{ minWidth: 270 }} // optional styling
               />
             </Box>
           </div>
@@ -865,6 +873,28 @@ const Desk = () => {
               </TableContainer>
             )}
           </div>
+          <Dialog
+  open={openMenuModal}
+  onClose={() => setOpenMenuModal(false)}
+  fullWidth
+  maxWidth="xs"
+>
+  <DialogTitle>Actions</DialogTitle>
+
+  <DialogContent>
+    <Typography>
+      Citizen Name: {selectedRow?.citizen_name}
+    </Typography>
+    <Typography>
+      Citizen ID: {selectedRow?.citizen_id}
+    </Typography>
+  </DialogContent>
+
+  <DialogActions>
+    <Button onClick={() => setOpenMenuModal(false)}>Close</Button>
+  </DialogActions>
+</Dialog>
+
           {/* )} */}
           {/* {canView && ( */}
 

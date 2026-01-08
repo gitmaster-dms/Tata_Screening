@@ -5,6 +5,7 @@ import "./AddUser.css";
 import {
   DriveFileRenameOutlineOutlined,
   DeleteOutlineOutlined,
+  Add,
 } from "@mui/icons-material";
 import axios from "axios";
 import { Modal } from "react-bootstrap";
@@ -35,6 +36,7 @@ import {
   DeleteOutlineOutlinedIcon,
   Alert,
   Snackbar,
+  Tooltip,
 } from "@mui/material";
 import { API_URL } from "../../../../Config/api";
 
@@ -178,6 +180,7 @@ const AddUser = () => {
   const [existModel, setExistModel] = useState(false); ////////////// ExistFields
   const [formEnabled, setFormEnabled] = useState(false); ////////// disabled
   const [loading, setLoading] = useState(true);
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 
   ////////////// navbar useState
   useEffect(() => {
@@ -473,7 +476,9 @@ const AddUser = () => {
   };
 
   const [formData, setFormData] = useState({
-    clg_ref_id: "",
+    clg_ref_id: {
+      id: "",
+    },
     clg_gender: "",
     clg_Date_of_birth: "",
     clg_mobile_no: "",
@@ -490,6 +495,7 @@ const AddUser = () => {
     clg_grppp_id: "",
     clg_genderr_id: "",
   });
+  console.log(formData, "fomrdata");
 
   const resetForm = () => {
     setFormData({
@@ -549,10 +555,10 @@ const AddUser = () => {
     }));
 
     // Dropdown / Select handlers
-    if (name === "clg_source") setSelectedSourcee(value);
-    if (name === "clg_state") setSelectedState(value);
-    if (name === "clg_district") setSelectedDistrict(value);
-    if (name === "clg_tahsil") setSelectedTaluka(value);
+    if (name === "clg_source_id") setSelectedSourcee(value);
+    if (name === "clg_states_id") setSelectedState(value);
+    if (name === "clg_district_id") setSelectedDistrict(value);
+    if (name === "clg_tehsil_id") setSelectedTaluka(value);
     if (name === "clg_source_name_id") setSelectedName(value);
     if (name === "grp_id") setSelectedRole(value);
 
@@ -683,7 +689,7 @@ const AddUser = () => {
         url = `${API_URL}/Screening/register/`;
         method = "POST";
       } else {
-        url = `${API_URL}/Screening/User_PUT/${formData.pk}/`;
+        url = `${API_URL}/Screening/User_PUT/${getid}/`;
         method = "PUT";
       }
 
@@ -729,6 +735,8 @@ const AddUser = () => {
           return prev;
         });
 
+        setUpdateSrc(false); // Switch to add mode after update
+        setFormAction("add");
         resetForm();
         return;
       }
@@ -760,75 +768,13 @@ const AddUser = () => {
       showSnackbar("Network error! Check connection.", "error");
     }
   };
+  const handleAddClick = () => {
+    resetForm();
+    setFormEnabled(true);
+    setFormAction("add");
+  };
 
-  // const handleSubmit = async (e) => {
-  //   e.preventDefault();
-  //   const isValid = validateForm();
-
-  //   if (formData.clg_mobile_no.length < 10) {
-  //     console.log('Contact number must be at least 10 characters long.');
-  //     alert("Contact number must be at least 10 digit long.");
-  //     return;
-  //   }
-
-  //   if (isValid) {
-  //     const userData = {
-  //       ...formData,
-  //       password: "1234",
-  //       password2: "1234",
-  //       clg_source: formData.clg_source,
-  //       clg_state: formData.clg_state,
-  //       clg_district: formData.clg_district,
-  //       clg_tahsil: formData.clg_tahsil,
-  //       clg_source_name: formData.clg_source_name,
-  //       clg_added_by: userID,
-  //     };
-
-  //     if (updateSrc) {
-  //       userData.clg_modify_by = userID;  // Add clg_modify_by for PUT request
-  //     }
-
-  //     try {
-  //       if (!updateSrc) {
-  //         const response = await fetch(`${API_URL}/Screening/register/`, {
-  //           method: 'POST',
-  //           headers: {
-  //             'Content-Type': 'application/json',
-  //           },
-  //           body: JSON.stringify(userData),
-  //         });
-
-  //         // Handle POST response
-
-  //       }
-  //       else {
-  //         const response = await fetch(`${API_URL}/Screening/User_PUT/${formData.pk}/`, {
-  //           method: 'PUT',
-  //           headers: {
-  //             'Content-Type': 'application/json',
-  //           },
-  //           body: JSON.stringify(userData),
-  //         });
-
-  //         console.log('hhhhhhhhhhhhhhhh', userData);
-
-  //         if (response.status === 200) {
-  //           console.log('Updated successfully:', response);
-  //           setUpdateModel(true);
-  //         } else {
-  //           console.error('Error updating user. Unexpected response:', response);
-  //         }
-  //       }
-  //     } catch (error) {
-  //       console.error('Error:', error);
-  //     }
-  //   } else {
-  //     console.log('Form has errors, please correct them.');
-  //   }
-  // };
-
-  ////// table row click
-
+  const [getid, setGetid] = useState(null);
   const handleTableRowClick = async (pk) => {
     try {
       const response = await fetch(`${API_URL}/Screening/User_GET_ID/${pk}/`, {
@@ -840,7 +786,9 @@ const AddUser = () => {
 
       console.log("Fetched Data:", data);
       console.log(data.source_id, "hhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
-
+      setFormAction("edit");
+      setGetid(data.pk);
+      setFormEnabled(true);
       setFormData((prev) => ({
         ...prev,
         clg_ref_id: data.clg_ref_id,
@@ -908,14 +856,19 @@ const AddUser = () => {
       console.log("Error while fetching data", error);
     }
   };
+  const handleDeleteClick = (row) => {
+    setFormData(row); // store selected row
+    setOpenConfirm(true); // open confirmation dialog
+  };
+
+  const [openConfirm, setOpenConfirm] = useState(false);
+  const handleConfirmNo = () => {
+    setOpenConfirm(false);
+  };
 
   ////////////// Delete
   const handleDelete = async () => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this user?"
-    );
-
-    if (!confirmDelete) return;
+    console.log("handleDelete called"); // 🔥 DEBUG
 
     try {
       const deleteUrl = `${API_URL}/Screening/User_DELETE/${formData.pk}/${userID}/`;
@@ -928,18 +881,14 @@ const AddUser = () => {
 
       setTableData((prev) => prev.filter((item) => item.pk !== formData.pk));
 
-      // RESET FORM COMPLETELY
       resetForm();
-
-      // OPEN DELETE SUCCESS MODAL
       setDeleteModel(true);
-
-      // SNACKBAR SUCCESS
       showSnackbar("User Deleted Successfully!", "success");
     } catch (error) {
       console.error("Error deleting data:", error);
-
       showSnackbar("User Failed to Delete!", "error");
+    } finally {
+      setOpenConfirm(false);
     }
   };
 
@@ -983,6 +932,20 @@ const AddUser = () => {
   );
 
   const [formAction, setFormAction] = useState("");
+  const startAddMode = () => {
+    // 1️⃣ Full form reset
+    resetForm();
+
+    // 2️⃣ Edit-related states clear
+    setGetid(null);
+    setSelectedRowIndex(null);
+
+    // 3️⃣ Mode flags
+    setUpdateSrc(false);
+    setDeleteSrc(true);
+    setFormEnabled(true);
+    setFormAction("add");
+  };
 
   return (
     <Box sx={{ p: 1.5, m: "0em 0em 0 2.6em" }}>
@@ -1245,6 +1208,10 @@ const AddUser = () => {
                         p: 0.1,
                       }}
                     >
+                      <IconButton color="primary" onClick={startAddMode}>
+                        <Add />
+                      </IconButton>
+
                       <IconButton
                         color="primary"
                         onClick={() => {
@@ -1259,7 +1226,7 @@ const AddUser = () => {
                         color="error"
                         onClick={() => {
                           setDeleteSrc(false);
-                          handleDelete();
+                          setOpenConfirm(true); // ✅ modal open
                         }}
                       >
                         <DeleteOutlineOutlined />
@@ -1283,10 +1250,13 @@ const AddUser = () => {
                               },
                             }}
                             size="small"
-                            name="clg_source"
+                            name="clg_source_id"
                             value={selectedSourcee}
                             onChange={handleChange}
                             label="Source"
+                            error={!!errors.clg_source}
+                            disabled={!formEnabled}
+                            helperText={errors.clg_source}
                           >
                             <MenuItem value="">
                               {formData.source_id || "Select Source"}
@@ -1325,7 +1295,7 @@ const AddUser = () => {
                               },
                             }}
                             size="small"
-                            name="clg_state"
+                            name="clg_states_id"
                             value={selectedState}
                             onChange={handleChange}
                             label="Source State"
@@ -1352,7 +1322,7 @@ const AddUser = () => {
 
                       {/* District */}
                       <Grid item xs={12} md={6}>
-                        <FormControl fullWidth error={!!errors.clg_district}>
+                        <FormControl fullWidth error={!!errors.clg_district_id}>
                           <InputLabel> District</InputLabel>
                           <Select
                             sx={{
@@ -1365,14 +1335,14 @@ const AddUser = () => {
                               },
                             }}
                             size="small"
-                            name="clg_district"
+                            name="clg_district_id"
                             value={selectedDistrict}
                             onChange={handleChange}
                             label="Source District"
+                            error={!!errors.clg_district}
+                            helperText={errors.clg_district}
                           >
-                            <MenuItem value="">
-                              {formData.clg_district_id || "Select District"}
-                            </MenuItem>
+                            <MenuItem value="">Select District</MenuItem>
                             {districtOptions.map((district) => (
                               <MenuItem
                                 key={district.dist_id}
@@ -1392,7 +1362,7 @@ const AddUser = () => {
 
                       {/* Tehsil */}
                       <Grid item xs={12} md={6}>
-                        <FormControl fullWidth error={!!errors.clg_tahsil}>
+                        <FormControl fullWidth error={!!errors.clg_tehsil_id}>
                           <InputLabel> Tehsil</InputLabel>
                           <Select
                             sx={{
@@ -1405,14 +1375,14 @@ const AddUser = () => {
                               },
                             }}
                             size="small"
-                            name="clg_tahsil"
+                            name="clg_tehsil_id"
                             value={selectedTaluka}
                             onChange={handleChange}
                             label="Source Tehsil"
+                            error={!!errors.clg_tahsil}
+                            helperText={errors.clg_tahsil}
                           >
-                            <MenuItem value="">
-                              {formData.tal_id || "Select Tehsil"}
-                            </MenuItem>
+                            <MenuItem value="">Select Tehsil</MenuItem>
                             {talukaOptions.map((taluka) => (
                               <MenuItem
                                 key={taluka.tal_id}
@@ -1554,6 +1524,8 @@ const AddUser = () => {
                             value={formData.clg_gender}
                             onChange={handleChange}
                             label="Gender"
+                            error={!!errors.clg_gender}
+                            helperText={errors.clg_gender}
                           >
                             <MenuItem value="">
                               {formData.clg_genderr_id || "Select Gender"}
@@ -1673,7 +1645,7 @@ const AddUser = () => {
                       </Grid>
 
                       {/* Submit Button */}
-                      <Grid item xs={12}>
+                      <Grid item xs={12} display="flex" justifyContent="center">
                         {formAction === "add" && (
                           <Button
                             variant="contained"
@@ -1683,6 +1655,7 @@ const AddUser = () => {
                             Submit
                           </Button>
                         )}
+
                         {formAction === "update" && (
                           <Button
                             variant="contained"
@@ -1732,7 +1705,7 @@ const AddUser = () => {
                         value={searchQuery}
                         onChange={(e) => {
                           setSearchQuery(e.target.value);
-                          setPage(0); // 🔥 new search → always go to first page (0)
+                          setPage(0); //  new search → always go to first page (0)
                         }}
                       />
                     </Grid>
@@ -1758,45 +1731,105 @@ const AddUser = () => {
                         borderSpacing: 0,
                         borderRadius: "20px",
                         overflow: "hidden",
-                        size: "small",
                       }}
                     >
                       <TableHead>
                         <TableRow
                           sx={{
+                            display: "flex",
+                            alignItems: "center", // 🔥 vertical center
                             background:
                               "linear-gradient(90deg, #2FB3F5 0%, #1439A4 100%)",
-                            "& th:first-of-type": {
-                              borderTopLeftRadius: "40px",
-                              borderBottomLeftRadius: "40px",
-                            },
-                            "& th:last-of-type": {
-                              borderTopRightRadius: "40px",
-                              borderBottomRightRadius: "40px",
-                            },
+                            minHeight: 40, // 🔥 reduce header height
                           }}
                         >
-                          {["Sr No", "User Name", "Mobile No", "Email ID"].map(
-                            (header, i) => (
-                              <TableCell
-                                key={i}
-                                sx={{
-                                  fontFamily: "Roboto,sans-serif",
-                                  fontSize: "13px",
-                                  fontWeight: 550,
-                                  lineHeight: 1,
-                                  color: "#fff",
-                                  whiteSpace: "nowrap",
-                                  borderRight:
-                                    i !== 3 ? "1px solid #fff" : "none",
-                                  py: 1.5,
-                                }}
-                                align="center"
-                              >
-                                {header}
-                              </TableCell>
-                            )
-                          )}
+                          <CardContent
+                            sx={{
+                              flex: 0.5,
+                              py: 0.5, // 🔥 reduce padding
+                              px: 1,
+                              textAlign: "center",
+                              borderRight: "1px solid #fff",
+                            }}
+                          >
+                            <Typography
+                              sx={{
+                                fontFamily: "Roboto, sans-serif",
+                                fontSize: "13px",
+                                fontWeight: 550,
+                                color: "#fff",
+                                lineHeight: 1.2,
+                              }}
+                            >
+                              Sr No
+                            </Typography>
+                          </CardContent>
+
+                          <CardContent
+                            sx={{
+                              flex: 2,
+                              py: 0.5,
+                              px: 1,
+                              textAlign: "center",
+                              borderRight: "1px solid #fff",
+                            }}
+                          >
+                            <Typography
+                              sx={{
+                                fontFamily: "Roboto, sans-serif",
+                                fontSize: "13px",
+                                fontWeight: 550,
+                                color: "#fff",
+                                lineHeight: 1.2,
+                              }}
+                            >
+                              Name
+                            </Typography>
+                          </CardContent>
+
+                          <CardContent
+                            sx={{
+                              flex: 1.5,
+                              py: 0.5,
+                              // px: 1,
+                              textAlign: "center",
+                              borderRight: "1px solid #fff",
+                            }}
+                          >
+                            <Typography
+                              sx={{
+                                fontFamily: "Roboto, sans-serif",
+                                fontSize: "13px",
+                                fontWeight: 550,
+                                color: "#fff",
+                                lineHeight: 1.2,
+                              }}
+                            >
+                              Mobile Number
+                            </Typography>
+                          </CardContent>
+
+                          <CardContent
+                            sx={{
+                              flex: 1,
+                              py: 0.5,
+                              // px: 1,
+                              textAlign: "center",
+                            }}
+                          >
+                            <Typography
+                              sx={{
+                                fontFamily: "Roboto, sans-serif",
+                                fontSize: "13px",
+                                fontWeight: 550,
+                                color: "#fff",
+                                // px: 1,
+                                // lineHeight: 1.2,
+                              }}
+                            >
+                              Email Id
+                            </Typography>
+                          </CardContent>
                         </TableRow>
                       </TableHead>
                     </Table>
@@ -1812,7 +1845,7 @@ const AddUser = () => {
                               // key={item.pk ?? index}
                               // elevation={isSelected ? 6 : 2}
                               sx={{
-                                mb: 2,
+                                mb: 1,
                                 height: "40px",
                                 // p: 1,
                                 // cursor: "pointer",
@@ -1835,7 +1868,7 @@ const AddUser = () => {
                                   textAlign="center"
                                   justifyContent={"center"}
                                 >
-                                  <Grid item sx={{ flex: 2 }}>
+                                  <Grid item sx={{ flex: 0.5 }}>
                                     <Typography
                                       sx={{
                                         fontSize: "14px",
@@ -1847,10 +1880,10 @@ const AddUser = () => {
                                     </Typography>
                                   </Grid>
 
-                                  <Grid item sx={{ flex: 5 }}>
+                                  <Grid item sx={{ flex: 2 }}>
                                     <Typography
                                       sx={{
-                                        fontSize: "14px",
+                                        fontSize: "13px",
                                         fontWeight: 500,
                                         fontFamily: "Roboto,sans-serif",
                                       }}
@@ -1859,10 +1892,10 @@ const AddUser = () => {
                                     </Typography>
                                   </Grid>
 
-                                  <Grid item sx={{ flex: 3 }}>
+                                  <Grid item sx={{ flex: 2 }}>
                                     <Typography
                                       sx={{
-                                        fontSize: "14px",
+                                        fontSize: "13px",
                                         fontWeight: 500,
                                         fontFamily: "Roboto,sans-serif",
                                       }}
@@ -1871,16 +1904,25 @@ const AddUser = () => {
                                     </Typography>
                                   </Grid>
 
-                                  <Grid item sx={{ flex: 3.5 }}>
-                                    <Typography
-                                      sx={{
-                                        fontSize: "14px",
-                                        fontWeight: 500,
-                                        fontFamily: "Roboto",
-                                      }}
-                                    >
-                                      {item.clg_email}
-                                    </Typography>
+                                  <Grid item sx={{ flex: showForm ? 1 : 1 }}>
+                                    <Tooltip title={item.clg_email || ""} arrow>
+                                      <Typography
+                                        sx={{
+                                          textAlign: "center",
+                                          fontSize: "13px",
+                                          fontWeight: 500,
+                                          fontFamily: "Roboto",
+                                          maxWidth: showForm ? 60 : 150, // 👈 control visible width
+                                          overflow: "hidden",
+                                          textOverflow: "ellipsis", // 👈 half email show
+                                          whiteSpace: "nowrap",
+                                          cursor: "pointer",
+                                          px: 1,
+                                        }}
+                                      >
+                                        {item.clg_email}
+                                      </Typography>
+                                    </Tooltip>
                                   </Grid>
                                 </Grid>
                               </CardContent>
@@ -1918,6 +1960,27 @@ const AddUser = () => {
         </Grid>
 
         {/* Success Dialogs */}
+        <Dialog
+          open={openConfirm}
+          onClose={handleConfirmNo}
+          maxWidth="xs"
+          fullWidth
+        >
+          <DialogTitle>Confirm Delete</DialogTitle>
+
+          <DialogContent>
+            <Typography>Are you sure you want to delete this user?</Typography>
+          </DialogContent>
+
+          <DialogActions>
+            <Button onClick={handleConfirmNo}>No</Button>
+
+            <Button onClick={handleDelete} color="error" variant="contained">
+              Yes
+            </Button>
+          </DialogActions>
+        </Dialog>
+
         <Dialog open={showModal} onClose={handleRegisterModel}>
           <DialogTitle>User Registered Successfully</DialogTitle>
           <DialogActions>
@@ -1925,12 +1988,12 @@ const AddUser = () => {
           </DialogActions>
         </Dialog>
 
-        <Dialog open={deleteModel} onClose={handleDeleteModel}>
+        {/* <Dialog open={deleteModel} onClose={handleDeleteModel}>
           <DialogTitle>User Deleted Successfully</DialogTitle>
           <DialogActions>
             <Button onClick={handleDeleteModel}>Close</Button>
           </DialogActions>
-        </Dialog>
+        </Dialog> */}
 
         <Dialog open={mandotoryModel} onClose={handleMandotoryModel}>
           <DialogTitle>Fill the Mandatory Fields</DialogTitle>

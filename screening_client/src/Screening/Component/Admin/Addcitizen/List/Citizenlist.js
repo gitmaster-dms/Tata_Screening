@@ -828,48 +828,48 @@ const Citizenlist = () => {
       </Card>
 
       <Box sx={{ p: 1, m: "0.0em 0.0em 0 3.1em" }}>
-        <Grid container spacing={2} alignItems="center" sx={{ mb: 2 }}>
+        <Grid container spacing={1} alignItems="center" sx={{ mb: 2 }}>
           <Grid item xs={12} sm={6} md={3}>
             <Card
               sx={{
-                p: 0.1,
+                p: 0.5,
                 borderRadius: 2,
                 boxShadow: 2,
                 display: "flex",
                 justifyContent: "space-between",
               }}
             >
-              {["today", "month", "date"].map((key) => (
-                <Button
-                  key={key}
-                  variant={active === key ? "contained" : "outlined"}
-                  onClick={() => handleActive(key)}
-                  sx={{
-                    flex: 1,
-                    mx: 0.5,
-                    my: 0.5,
-                    textTransform: "none",
-                    fontWeight: active === key ? 400 : 400,
-                    background:
-                      active === key
-                        ? "linear-gradient(90deg, #2FB3F5 0%, #1439A4 100%)"
-                        : "transparent",
-                    color: active === key ? "white" : "black",
-                    "&:hover": {
+              <Box sx={{ display: "flex", gap: 1,my:1,mx:0.5 }}>
+                {["today", "month", "date"].map((key) => (
+                  <Button
+                    key={key}
+                    variant={active === key ? "contained" : "outlined"}
+                    onClick={() => handleActive(key)}
+                    sx={{
+                      textTransform: "none",
+                      fontWeight: 400,
                       background:
                         active === key
                           ? "linear-gradient(90deg, #2FB3F5 0%, #1439A4 100%)"
-                          : "#E3F2FD",
-                    },
-                  }}
-                >
-                  {key === "today"
-                    ? "Today"
-                    : key === "month"
-                    ? "Month"
-                    : "Till Date"}
-                </Button>
-              ))}
+                          : "transparent",
+                      color: active === key ? "white" : "black",
+                      "&:hover": {
+                        background:
+                          active === key
+                            ? "linear-gradient(90deg, #2FB3F5 0%, #1439A4 100%)"
+                            : "#E3F2FD",
+                      },
+                      flex: "none", // buttons ka size content ke hisaab se
+                    }}
+                  >
+                    {key === "today"
+                      ? "Today"
+                      : key === "month"
+                      ? "Month"
+                      : "Till Date"}
+                  </Button>
+                ))}
+              </Box>
             </Card>
           </Grid>
 

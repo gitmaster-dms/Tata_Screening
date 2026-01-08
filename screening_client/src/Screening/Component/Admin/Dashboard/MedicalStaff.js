@@ -33,8 +33,8 @@ const MedicalStaff = ({ data }) => {
             sx={{
               background: "linear-gradient(90deg, #00B8DB 0%, #2B7FFF 94%)",
               borderRadius: "40%",
-              width: { xs: 26, sm: 28, md: 25 },
-              height: { xs: 26, sm: 28, md: 25 },
+              width: { xs: 26, sm: 28, md: 20 },
+              height: { xs: 26, sm: 28, md: 20 },
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -43,11 +43,11 @@ const MedicalStaff = ({ data }) => {
               right: 1,
             }}
           >
-            <PersonIcon sx={{ color: "#fff", fontSize: 16 }} />
+            <PersonIcon sx={{ color: "#fff", fontSize: 15 }} />
           </Box>
           <Typography
             sx={{
-              fontSize: 15,
+              fontSize: 14,
               color: "#1A1A1A",
               fontFamily: "Roboto",
               fontWeight: 600,

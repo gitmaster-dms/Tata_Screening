@@ -24,6 +24,7 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  ListItemText,
 } from "@mui/material";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
 import { Modal } from "react-bootstrap";
@@ -325,6 +326,7 @@ const AddSource = () => {
     ws_state: "",
     ws_district: "",
     ws_taluka: "",
+    screening_vitals: "",
   });
 
   const validateForm = () => {
@@ -334,8 +336,8 @@ const AddSource = () => {
       newErrors.source = "Source is required";
     }
 
-    if (!selectData.source_names) {
-      newErrors.source_names = "Source Name is required";
+    if (!selectData.Workshop_name) {
+      newErrors.Workshop_name = "Workshop Name is required";
     }
 
     if (!selectData.registration_no) {
@@ -358,42 +360,47 @@ const AddSource = () => {
     //     newErrors.Registration_details = 'Registration Details are required';
     // }
 
-    // if (!selectData.source_pincode) {
-    //     newErrors.source_pincode = 'Pin Code is required';
-    // }
-
-    if (!selectData.source_pincode) {
-      newErrors.source_pincode = "Pincode is required";
-    } else if (!/^\d{6}$/.test(selectData.source_pincode)) {
-      newErrors.source_pincode = "Invalid Pincode";
+    if (!selectData.ws_pincode) {
+      newErrors.ws_pincode = "Pincode is required";
+    } else if (!/^\d{6}$/.test(selectData.ws_pincode)) {
+      newErrors.ws_pincode = "Invalid Pincode";
     }
 
+    // if (!selectData.screening_vitals) {
+    //   newErrors.screening_vitals = "Screening Vitals is required";
+    // }
     // else if (!/^\d{6}$/.test(selectData.source_pincode)) {
     //     newErrors.source_pincode = 'Invalid pin code format.';
     // }
 
-    if (!selectData.source_address) {
-      newErrors.source_address = "Address is required";
+    // if (!selectData.ws_state) {
+    //   newErrors.ws_state = "State is required";
+    // }
+    // if (!selectData.ws_district) {
+    //   newErrors.ws_district = "District is required";
+    // }
+    // if (!selectData.ws_taluka) {
+    //   newErrors.ws_taluka = "Taluka is required";
+    // }
+    if (!selectData.ws_address) {
+      newErrors.ws_address = "Address is required";
     }
     setErrors(newErrors);
-    return true;
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
 
     if (name === "screening_vitals") {
-      setSelectedVitals(e.target.value);
-    } else if (name === "sub_screening_vitals") {
-      setSelectedSubVitals(e.target.value);
-    } else {
-      console.log(`Updating field ${name} with value:`, value);
-      setSelectData((prevData) => ({
-        ...prevData,
-        [name]: value,
+      const normalized = (Array.isArray(value) ? value : [value]).map(Number);
+
+      setSelectedVitals(normalized);
+      setSelectData((prev) => ({
+        ...prev,
+        screening_vitals: normalized,
       }));
     }
-    console.log("Updated selectData:", selectData);
   };
 
   const resetForm = () => {
@@ -434,7 +441,6 @@ const AddSource = () => {
   const [selectData, setSelectData] = useState({
     // Pass static community/source id 6 to backend (hidden on frontend)
     pk_id: "",
-
     source: "6",
     Workshop_name: "",
     registration_no: "",
@@ -545,72 +551,72 @@ const AddSource = () => {
           setSnackbarOpen(true);
         }
       } else {
-        if (!updateSrc) {
-          try {
-            formData.append("modify_by", userID);
+        // if (!updateSrc) {
+        try {
+          formData.append("modify_by", userID);
 
-            const response = await fetch(
-              `${Port}/Screening/Workshop_Update/${selectedRow}/`,
-              {
-                method: "PUT",
-                body: formData,
-                headers: { Authorization: `Bearer ${accessToken}` },
-              }
-            );
-
-            if (response.status === 200) {
-              const result = await response.json();
-              const data = result.data; // 👈 Important
-
-              setTableInfo((prev) =>
-                prev.map((row) =>
-                  row.ws_pk_id === selectedRow ? { ...row, ...data } : row
-                )
-              );
-              // Populate form fields with updated data
-              setSelectData({
-                ws_pk_id: data.ws_pk_id,
-                Workshop_name: data.Workshop_name,
-                registration_no: data.registration_no,
-                mobile_no: data.mobile_no,
-                email_id: data.email_id,
-                ws_pincode: data.ws_pincode,
-                ws_address: data.ws_address,
-                source: data.source,
-              });
-
-              setSelectedState(Number(data.ws_state));
-              setSelectedDistrict(Number(data.ws_district));
-              setSelectedTahsil(Number(data.ws_taluka));
-
-              setSelectedVitals(data.screening_vitals || []);
-              setSelectedSubVitals(data.sub_screening_vitals || []);
-              setSelectedRow(null);
-              setSelectedSourceId(null);
-              resetForm(); // now it truly resets the form
-              // Success message
-
-              setSnackbarMessage("Workshop updated successfully!");
-              setSnackbarSeverity("success");
-              setSnackbarOpen(true);
-
-              // ✅ Do NOT resetForm() here
-            } else {
-              setSnackbarMessage(
-                `Error updating source. Status: ${response.status}`
-              );
-              setSnackbarSeverity("error");
-              setSnackbarOpen(true);
+          const response = await fetch(
+            `${Port}/Screening/Workshop_Update/${selectedRow}/`,
+            {
+              method: "PUT",
+              body: formData,
+              headers: { Authorization: `Bearer ${accessToken}` },
             }
-          } catch (error) {
-            console.error("Update error:", error);
-            setSnackbarMessage("Error updating workshop!");
+          );
+
+          if (response.status === 200) {
+            const result = await response.json();
+            const data = result.data; // 👈 Important
+
+            setTableInfo((prev) =>
+              prev.map((row) =>
+                row.ws_pk_id === selectedRow ? { ...row, ...data } : row
+              )
+            );
+            // Populate form fields with updated data
+            setSelectData({
+              ws_pk_id: data.ws_pk_id,
+              Workshop_name: data.Workshop_name,
+              registration_no: data.registration_no,
+              mobile_no: data.mobile_no,
+              email_id: data.email_id,
+              ws_pincode: data.ws_pincode,
+              ws_address: data.ws_address,
+              source: data.source,
+            });
+
+            setSelectedState(Number(data.ws_state));
+            setSelectedDistrict(Number(data.ws_district));
+            setSelectedTahsil(Number(data.ws_taluka));
+
+            setSelectedVitals(data.screening_vitals || []);
+            setSelectedSubVitals(data.sub_screening_vitals || []);
+            setSelectedRow(null);
+            setSelectedSourceId(null);
+            // Success message
+
+            setSnackbarMessage("Workshop updated successfully!");
+            setSnackbarSeverity("success");
+            setSnackbarOpen(true);
+
+            // ✅ Do NOT resetForm() here
+          } else {
+            setSnackbarMessage(
+              `Error updating source. Status: ${response.status}`
+            );
             setSnackbarSeverity("error");
             setSnackbarOpen(true);
           }
+        } catch (error) {
+          console.error("Update error:", error);
+          setSnackbarMessage("Error updating workshop!");
+          setSnackbarSeverity("error");
+          setSnackbarOpen(true);
         }
       }
-    } else {
+    }
+    // }
+    else {
       setSnackbarMessage("Form has errors. Please correct them.");
       setSnackbarSeverity("warning");
       setSnackbarOpen(true);
@@ -905,7 +911,11 @@ const AddSource = () => {
       setSelectedTahsil(data.ws_taluka || "");
 
       // ✅ VITALS
-      setSelectedVitals(data.screening_vitals || []);
+      setSelectedVitals(
+        Array.isArray(data.screening_vitals)
+          ? data.screening_vitals.map(Number)
+          : []
+      );
       setSelectedSubVitals(data.sub_screening_vitals || []);
 
       // ✅ GIS
@@ -1201,9 +1211,11 @@ const AddSource = () => {
                         opacity: 0.8,
                       },
                     }}
-                    onClick={() => {
+                    onClick={(e) => {
+                      e.stopPropagation(); // 🔥 MOST IMPORTANT
                       setFormEnabled(true);
                       setUpdateSrc(false);
+                      fetchData1(); // 🔥 explicitly fetch data
                     }}
                   />
                   {/* )} */}
@@ -1219,9 +1231,10 @@ const AddSource = () => {
                         opacity: 0.8,
                       },
                     }}
-                    onClick={() => {
+                    onClick={(e) => {
+                      e.stopPropagation(); // 🔥 card click se bachne ke liye
                       setDeleteSrc(false);
-                      handleDelete();
+                      setOpenDeleteDialog(true); // ✅ open confirmation dialog
                     }}
                   />
                   {/* )} */}
@@ -1259,35 +1272,6 @@ const AddSource = () => {
 
               <Box component="form" onSubmit={handleSubmit}>
                 <Grid container spacing={2}>
-                  {/* <Grid item xs={12} sm={6}>
-                                        <FormControl fullWidth size="small" disabled={!isFormEnabled}>
-                                            <InputLabel>Workshop *</InputLabel>
-                                            <Select
-                                                name="source"
-                                                value={selectData.source}
-                                                onChange={handleChange}
-                                                label="Source"
-                                                sx={{
-                                                    "& .MuiInputBase-input.MuiSelect-select": {
-                                                        color: "#000 !important",
-                                                    },
-                                                    "& .MuiSvgIcon-root": {
-                                                        color: "#000",
-                                                    },
-                                                }}
-                                            >
-                                                <MenuItem value="">
-                                                    {selectData.add_source_id || "Select Source"}
-                                                </MenuItem>
-                                                {dropdownSource.map((option) => (
-                                                    <MenuItem key={option.source_pk_id} value={option.source_pk_id}>
-                                                        {option.source}
-                                                    </MenuItem>
-                                                ))}
-                                            </Select>
-                                        </FormControl>
-                                    </Grid> */}
-
                   {/* Hidden input to submit static community/source id (6) */}
                   <input
                     type="hidden"
@@ -1306,7 +1290,13 @@ const AddSource = () => {
                       disabled={!isFormEnabled}
                       error={!!errors.Workshop_name}
                       helperText={errors.Workshop_name}
-                    />
+                    >
+                      {errors.Workshop_name && (
+                        <span style={{ color: "red" }}>
+                          {errors.Workshop_name || "Workshop Name is required"}
+                        </span>
+                      )}
+                    </TextField>
                   </Grid>
 
                   <Grid item xs={12} sm={6}>
@@ -1368,51 +1358,56 @@ const AddSource = () => {
                                     </Grid> */}
 
                   <Grid item xs={12} sm={6}>
-                    <FormControl
+                    <TextField
+                      select
                       fullWidth
                       size="small"
+                      label="Vitals"
+                      name="screening_vitals"
                       disabled={!isFormEnabled}
+                      value={selectedVitals}
+                      onChange={handleChange}
+                      sx={{
+                        color: "#000",
+                        "& .MuiSelect-select": {
+                          color: "#000 !important", // ✅ selected text color
+                        },
+                        "& .MuiInputBase-root": {
+                          color: "#000 !important", // fallback
+                        },
+                      }}
+                      SelectProps={{
+                        multiple: true,
+                        renderValue: (selected) =>
+                          selected.length === 0
+                            ? ""
+                            : selected
+                                .map((val) => {
+                                  const vital = screeningVitals.find(
+                                    (v) =>
+                                      Number(v.sc_list_pk_id) === Number(val)
+                                  );
+                                  return vital?.screening_list;
+                                })
+                                .filter(Boolean)
+                                .join(", "),
+                      }}
+                      // InputLabelProps={{ shrink: true }}
                     >
-                      <InputLabel>Vitals *</InputLabel>
-                      <Select
-                        multiple
-                        value={selectedVitals}
-                        onChange={handleChange}
-                        name="screening_vitals"
-                        renderValue={(selected) =>
-                          selected
-                            .map((val) => {
-                              const vital = screeningVitals.find(
-                                (v) => v.sc_list_pk_id === val
-                              );
-                              return vital ? vital.screening_list : "";
-                            })
-                            .join(", ")
-                        }
-                        sx={{
-                          "& .MuiInputBase-input.MuiSelect-select": {
-                            color: "#000 !important",
-                          },
-                          "& .MuiSvgIcon-root": {
-                            color: "#000",
-                          },
-                        }}
-                      >
-                        {screeningVitals.map((vital) => (
-                          <MenuItem
-                            key={vital.sc_list_pk_id}
-                            value={vital.sc_list_pk_id}
-                          >
-                            <Checkbox
-                              checked={
-                                selectedVitals.indexOf(vital.sc_list_pk_id) > -1
-                              }
-                            />
-                            {vital.screening_list}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
+                      {screeningVitals.map((vital) => (
+                        <MenuItem
+                          key={vital.sc_list_pk_id}
+                          value={Number(vital.sc_list_pk_id)}
+                        >
+                          <Checkbox
+                            checked={selectedVitals.includes(
+                              Number(vital.sc_list_pk_id)
+                            )}
+                          />
+                          <ListItemText primary={vital.screening_list} />
+                        </MenuItem>
+                      ))}
+                    </TextField>
                   </Grid>
 
                   {selectedVitalId === 5 && (
@@ -1472,7 +1467,7 @@ const AddSource = () => {
                       select
                       fullWidth
                       size="small"
-                      label="State *"
+                      label="State"
                       disabled={!isFormEnabled}
                       value={selectedState}
                       onChange={(e) => setSelectedState(e.target.value)}
@@ -1484,6 +1479,8 @@ const AddSource = () => {
                           color: "#000",
                         },
                       }}
+                      // error={!!errors.ws_state}
+                      // helperText={errors.ws_state}
                     >
                       <MenuItem value="">
                         {selectData.add_state_id || "Select State"}
@@ -1501,7 +1498,7 @@ const AddSource = () => {
                       select
                       fullWidth
                       size="small"
-                      label="District *"
+                      label="District"
                       disabled={!isFormEnabled}
                       value={selectedDistrict}
                       onChange={(e) => setSelectedDistrict(e.target.value)}
@@ -1513,6 +1510,8 @@ const AddSource = () => {
                           color: "#000",
                         },
                       }}
+                      // error={!!errors.ws_district}
+                      // helperText={errors.ws_district}
                     >
                       <MenuItem value="">
                         {selectData.add_district_id || "Select District"}
@@ -1532,7 +1531,7 @@ const AddSource = () => {
                     <TextField
                       select
                       size="small"
-                      label="Tehsil *"
+                      label="Tehsil"
                       fullWidth
                       disabled={!isFormEnabled}
                       value={selectedTahsil}
@@ -1545,6 +1544,8 @@ const AddSource = () => {
                           color: "#000",
                         },
                       }}
+                      error={!!errors.ws_taluka}
+                      helperText={errors.ws_taluka}
                     >
                       <MenuItem value="">
                         {selectData.add_tehsil_id || "Select Tehsil"}
@@ -1831,6 +1832,40 @@ const AddSource = () => {
               />
             </Box>
           </Box>
+          <Dialog
+            open={openDeleteDialog}
+            onClose={() => setOpenDeleteDialog(false)}
+            maxWidth="xs"
+            fullWidth
+          >
+            <DialogTitle>Confirm Delete</DialogTitle>
+
+            <DialogContent>
+              <Typography>
+                Are you sure you want to delete this workshop?
+              </Typography>
+            </DialogContent>
+
+            <DialogActions>
+              <Button
+                onClick={() => setOpenDeleteDialog(false)}
+                color="inherit"
+              >
+                Cancel
+              </Button>
+
+              <Button
+                onClick={() => {
+                  setOpenDeleteDialog(false);
+                  handleDelete(); // ✅ actual delete call
+                }}
+                color="error"
+                variant="contained"
+              >
+                Delete
+              </Button>
+            </DialogActions>
+          </Dialog>
         </Grid>
       </Grid>
     </div>
