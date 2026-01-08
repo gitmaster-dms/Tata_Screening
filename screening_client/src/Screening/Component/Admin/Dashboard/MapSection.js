@@ -334,31 +334,31 @@ const MapSection = ({ selectedState }) => {
       maxZoom: 19,
     }).addTo(mapRef.current);
 
-    // mapRef.current.on("moveend zoomend", () => {
-    //   const center = mapRef.current.getCenter();
-    //   const zoom = mapRef.current.getZoom();
-    //   setMapView([center.lat, center.lng, zoom]);
-    // });
-
     mapRef.current.on("moveend zoomend", () => {
       const center = mapRef.current.getCenter();
       const zoom = mapRef.current.getZoom();
-
       setMapView([center.lat, center.lng, zoom]);
-
-      // 🔁 SYNC MAIN → EXTENDED
-      if (extendedWindowRef.current && !extendedWindowRef.current.closed) {
-        extendedWindowRef.current.postMessage(
-          {
-            type: "SYNC_VIEW",
-            lat: center.lat,
-            lng: center.lng,
-            zoom,
-          },
-          "*"
-        );
-      }
     });
+
+    // mapRef.current.on("moveend zoomend", () => {
+    //   const center = mapRef.current.getCenter();
+    //   const zoom = mapRef.current.getZoom();
+
+    //   setMapView([center.lat, center.lng, zoom]);
+
+    //   // 🔁 SYNC MAIN → EXTENDED
+    //   if (extendedWindowRef.current && !extendedWindowRef.current.closed) {
+    //     extendedWindowRef.current.postMessage(
+    //       {
+    //         type: "SYNC_VIEW",
+    //         lat: center.lat,
+    //         lng: center.lng,
+    //         zoom,
+    //       },
+    //       "*"
+    //     );
+    //   }
+    // });
 
     return () => {
       mapRef.current?.remove();
@@ -500,11 +500,11 @@ const MapSection = ({ selectedState }) => {
       }
 
       newWin.addEventListener("message", (event) => {
-        if (event.data?.type === "SYNC_VIEW") {
-          const { lat, lng, zoom } = event.data;
+        // if (event.data?.type === "SYNC_VIEW") {
+        //   const { lat, lng, zoom } = event.data;
 
-          map.setView([lat, lng], zoom);
-        }
+        //   map.setView([lat, lng], zoom);
+        // }
 
         if (event.data?.type === "UPDATE_MARKERS") {
           renderMarkers(event.data.workshops);
