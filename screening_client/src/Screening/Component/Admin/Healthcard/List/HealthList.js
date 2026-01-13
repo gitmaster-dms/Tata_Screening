@@ -72,7 +72,7 @@ const HealthList = () => {
 
   //////////////////////////// Nav Dropdown //////////////////////////
   const [sourceNav, setSourceNav] = useState([]); // State for source options
-  const [selectedSource, setSelectedSource] = useState(""); // State to store selected source
+  const [selectedSource, setSelectedSource] = useState(SourceUrlId || ""); // State to store selected source
 
   const [sourceStateNav, setSourceStateNav] = useState([]); // State for source state options
   const [selectedStateNav, setSelectedStateNav] = useState("");
@@ -143,11 +143,11 @@ const HealthList = () => {
 
   //// Soure State against selected source
   useEffect(() => {
-    const fetchStateNavOptions = async () => {
-      if (selectedSource) {
+    const fetchDistricts = async () => {
+      if (selectedStateNav) {
         try {
           const res = await fetch(
-            `${Port}/Screening/source_and_pass_state_Get/${selectedSource}`,
+            `${Port}/Screening/District_Get/${selectedStateNav}/`,
             {
               headers: {
                 Authorization: `Bearer ${accessToken}`,
@@ -155,37 +155,32 @@ const HealthList = () => {
             }
           );
           const data = await res.json();
-          setSourceStateNav(data);
+          setDistrictOptions(data);
         } catch (error) {
           console.error("Error fetching state against source data:", error);
         }
       }
     };
-    fetchStateNavOptions();
-  }, [selectedSource]);
+    fetchDistricts();
+  }, [selectedStateNav]);
 
   //// Soure District against selected source state/////////
   useEffect(() => {
-    const fetchDistrictNavOptions = async () => {
-      if (selectedStateNav) {
-        try {
-          const res = await fetch(
-            `${Port}/Screening/state_and_pass_district_Get/${selectedSource}/${selectedStateNav}/`,
-            {
-              headers: {
-                Authorization: `Bearer ${accessToken}`,
-              },
-            }
-          );
-          const data = await res.json();
-          setSourceDistrictNav(data);
-        } catch (error) {
-          console.error("Error fetching districts against state data:", error);
-        }
+    const fetchStateNavOptions = async () => {
+      try {
+        const res = await fetch(`${Port}/Screening/State_Get/`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+        const data = await res.json();
+        setSourceStateNav(data);
+      } catch (error) {
+        console.error("Error fetching districts against state data:", error);
       }
     };
-    fetchDistrictNavOptions();
-  }, [selectedStateNav]);
+    fetchStateNavOptions();
+  }, []);
 
   //// Soure Tehsil against selected source District/////////
   useEffect(() => {
@@ -193,7 +188,7 @@ const HealthList = () => {
       if (selectedDistrictNav) {
         try {
           const res = await fetch(
-            `${Port}/Screening/district_and_pass_taluka_Get/${selectedSource}/${selectedDistrictNav}/`,
+            `${Port}/Screening/Tehsil_Get/${selectedDistrictNav}/`,
             {
               headers: {
                 Authorization: `Bearer ${accessToken}`,
@@ -221,7 +216,7 @@ const HealthList = () => {
       ) {
         try {
           const res = await fetch(
-            `${Port}/Screening/taluka_and_pass_SourceName_Get/?SNid=${selectedTehsilNav}&So=${selectedSource}&source_pk_id=${SourceNameUrlId}`,
+            `${Port}/Screening/Tehsil_Get/?SNid=${selectedTehsilNav}&So=${selectedSource}&source_pk_id=${SourceNameUrlId}`,
             {
               headers: {
                 Authorization: `Bearer ${accessToken}`,
@@ -600,6 +595,17 @@ const HealthList = () => {
   const [scheduleIDD, setScheduleIDD] = useState(null);
   const [citizenID, setCitizenID] = useState(null);
   const [basicInfo2Data, setBasicInfo2Data] = useState([]);
+  const [sourceOption, setSourceOption] = useState([]);
+  const [selectedSourcee, setSelectedSourcee] = useState("");
+
+  const [stateOptions, setStateOptions] = useState([]);
+  const [selectedState, setSelectedState] = useState("");
+
+  const [districtOptions, setDistrictOptions] = useState([]);
+  const [selectedDistrict, setSelectedDistrict] = useState("");
+
+  const [talukaOptions, setTalukaOptions] = useState([]);
+  const [selectedTaluka, setSelectedTaluka] = useState("");
 
   const fetchCitizenVital = async (iddddddddddd) => {
     try {
@@ -1021,23 +1027,28 @@ const HealthList = () => {
             {/* Source */}
             <Grid item xs={12} sm={6} md={2}>
               <TextField
+                sx={{
+                  minWidth: 120,
+                  "& .MuiInputBase-input.MuiSelect-select": {
+                    color: "#000 !important",
+                  },
+                  "& .MuiSvgIcon-root": {
+                    color: "#000",
+                  },
+                }}
                 select
                 fullWidth
                 size="small"
-                label="Workshop"
-                variant="outlined"
+                label="Source"
                 value={selectedSource}
                 onChange={(e) => setSelectedSource(e.target.value)}
-                InputLabelProps={{
-                  style: { fontWeight: 100, fontSize: "14px" },
-                }}
               >
                 <MenuItem value="">Select Workshop</MenuItem>
-                {/* {sourceNav.map((drop) => (
-                  <MenuItem key={drop.source_pk_id} value={drop.source_pk_id}>
+                {sourceNav.map((drop) => (
+                  <MenuItem key={drop.clg_source} value={drop.source_pk_id}>
                     {drop.source}
                   </MenuItem>
-                ))} */}
+                ))}
               </TextField>
             </Grid>
 
@@ -1054,10 +1065,19 @@ const HealthList = () => {
                 InputLabelProps={{
                   style: { fontWeight: 100, fontSize: "14px" },
                 }}
+                sx={{
+                  minWidth: 120,
+                  "& .MuiInputBase-input.MuiSelect-select": {
+                    color: "#000 !important",
+                  },
+                  "& .MuiSvgIcon-root": {
+                    color: "#000",
+                  },
+                }}
               >
                 <MenuItem value="">Select State</MenuItem>
                 {sourceStateNav.map((drop) => (
-                  <MenuItem key={drop.source_state} value={drop.source_state}>
+                  <MenuItem key={drop.state_id} value={drop.state_id}>
                     {drop.state_name}
                   </MenuItem>
                 ))}
@@ -1077,13 +1097,19 @@ const HealthList = () => {
                 InputLabelProps={{
                   style: { fontWeight: 100, fontSize: "14px" },
                 }}
+                sx={{
+                  minWidth: 120,
+                  "& .MuiInputBase-input.MuiSelect-select": {
+                    color: "#000 !important",
+                  },
+                  "& .MuiSvgIcon-root": {
+                    color: "#000",
+                  },
+                }}
               >
                 <MenuItem value="">Select District</MenuItem>
-                {sourceDistrictNav.map((drop) => (
-                  <MenuItem
-                    key={drop.source_district}
-                    value={drop.source_district}
-                  >
+                {districtOptions.map((drop) => (
+                  <MenuItem key={drop.dist_id} value={drop.dist_id}>
                     {drop.dist_name}
                   </MenuItem>
                 ))}
@@ -1103,10 +1129,19 @@ const HealthList = () => {
                 InputLabelProps={{
                   style: { fontWeight: 100, fontSize: "14px" },
                 }}
+                sx={{
+                  minWidth: 120,
+                  "& .MuiInputBase-input.MuiSelect-select": {
+                    color: "#000 !important",
+                  },
+                  "& .MuiSvgIcon-root": {
+                    color: "#000",
+                  },
+                }}
               >
                 <MenuItem value="">Select Tehsil</MenuItem>
                 {sourceTehsilNav.map((drop) => (
-                  <MenuItem key={drop.source_taluka} value={drop.source_taluka}>
+                  <MenuItem key={drop.tal_id} value={drop.tal_id}>
                     {drop.tahsil_name}
                   </MenuItem>
                 ))}
@@ -1165,361 +1200,400 @@ const HealthList = () => {
         </Box>
       </Card>
 
-      <Grid container spacing={0.5} sx={{ mt: 0.5 }}>
-        {/* LEFT PANEL – SEARCH + TABLE */}
-        <Grid item xs={12} md={5.5}>
+      {/* <Grid container>
+        <Grid item xs={12} sm={8} md={4} sx={{ mt: 2 }}>
           <input
-            className="form-control mb-3"
+            className="form-control"
             placeholder="Search Citizen..."
             value={searchQuery}
             onChange={handleSearchChange}
           />
-
-          <TableContainer>
-            <Table
-              size="small"
-              sx={{
-                borderCollapse: "separate",
-                borderSpacing: "0 4px", // vertical gap
-              }}
-            >
-              {/* Table Head */}
-              <TableHead>
-                <TableRow>
-                  <TableCell colSpan={3} sx={{ p: 0, borderBottom: "none" }}>
-                    <Card
-                      sx={{
-                        background:
-                          "linear-gradient(90deg, #2FB3F5 0%, #1439A4 100%)",
-                        borderRadius: 20,
-                      }}
-                    >
-                      <Box
-                        sx={{
-                          display: "flex",
-                          alignItems: "center", // vertical center
-                          justifyContent: "space-between",
-                          px: 1,
-                          py: 1,
-                        }}
-                      >
-                        <Typography
-                          sx={{
-                            flex: 1.2,
-                            fontFamily: "Roboto",
-                            fontWeight: 600,
-                            fontSize: "14px",
-                            color: "white",
-                            borderRight: "1px solid white",
-                          }}
-                        >
-                          Citizen Name
-                        </Typography>
-                        <Typography
-                          sx={{
-                            flex: 1.5,
-                            fontFamily: "Roboto",
-                            fontWeight: 600,
-                            fontSize: "14px",
-                            color: "white",
-                            textAlign: "center",
-                                                        borderRight: "1px solid white",
-
-                          }}
-                        >
-                          Aadhar ID
-                        </Typography>
-                        <Typography
-                          sx={{
-                            flex: 0.8,
-                            fontFamily: "Roboto",
-                            fontWeight: 600,
-                            fontSize: "14px",
-                            color: "white",
-                            textAlign: "center",
-                          }}
-                        >
-                          Action
-                        </Typography>
-                      </Box>
-                    </Card>
-                  </TableCell>
-                </TableRow>
-              </TableHead>
-
-              {/* Table Body */}
-              <TableBody>
-                {loading ? (
-                  <TableRow>
-                    <TableCell colSpan={3} align="center">
-                      <CircularProgress />
-                    </TableCell>
-                  </TableRow>
-                ) : filteredResults.length === 0 ? (
-                  <TableRow>
-                    <TableCell colSpan={3} align="center">
-                      No data found
-                    </TableCell>
-                  </TableRow>
-                ) : (
-                  slicedResults.map((result, index) => (
-                    <TableRow
-                      key={index}
-                      hover
-                      selected={result.citizen_id === selectedCitizenId}
-                      sx={{ cursor: "pointer" }}
-                      onClick={() => handleEyeClick(result.citizen_id)}
-                    >
-                      <TableCell>
-                        {result.name.charAt(0).toUpperCase() +
-                          result.name.slice(1).toLowerCase()}
-                      </TableCell>
-                      <TableCell>{result.aadhar_id}</TableCell>
-                      <TableCell align="center">
-                        <RemoveRedEyeOutlinedIcon />
-                      </TableCell>
-                    </TableRow>
-                  ))
-                )}
-              </TableBody>
-
-              {/* Table Footer / Pagination */}
-              <TableFooter>
-                <TableRow>
-                  <TablePagination
-                    count={filteredResults.length}
-                    page={page}
-                    onPageChange={handleChangePage}
-                    rowsPerPage={rowsPerPage}
-                    onRowsPerPageChange={handleChangeRowsPerPage}
-                    rowsPerPageOptions={[5, 10, 20]}
-                  />
-                </TableRow>
-              </TableFooter>
-            </Table>
-          </TableContainer>
         </Grid>
+      </Grid> */}
 
-        {/* RIGHT PANEL – MAIN CONTENT */}
-        <Grid item xs={12} md={6.5}>
-          {/* PROFILE CARD */}
-          <Box className={`card ${isDataFetched ? "data-fetched" : ""}`} p={2}>
+      <Box
+        sx={{
+          width: "100%",
+          maxWidth: "100vw",
+          overflowX: "hidden",
+          px: { xs: 1, sm: 2 },
+        }}
+      >
+        <Grid container sx={{ mt: 1.5 }}>
+          {/* ================= LEFT PANEL WRAPPER ================= */}
+          <Grid item xs={12} md={5.5}>
             <Grid container spacing={1}>
-              {/* LEFT DETAILS */}
-              <Grid item xs={12} md={6}>
-                <Grid container spacing={1}>
-                  <Grid item xs={5} sm={4} className="titlehealth">
-                    Citizen Name :
-                  </Grid>
-                  <Grid item xs={7} className="healthresponsetitle">
-                    {scheduleData.Citizen_info?.[0]?.name}
-                  </Grid>
-
-                  <Grid item xs={5} sm={4} className="titlehealth1">
-                    Citizen ID :
-                  </Grid>
-                  <Grid item xs={7} className="healthresponsetitle1">
-                    {scheduleData.Citizen_info?.[0]?.citizen_id}
-                  </Grid>
-                </Grid>
-
-                <hr className="hrline" />
-
-                <Grid container spacing={1} className="cardhealth">
-                  <Grid item xs={4} className="ealthcardtitle">
-                    Gender
-                  </Grid>
-                  <Grid item xs={4} className="ealthcardtitle">
-                    DOB
-                  </Grid>
-                  <Grid item xs={4} className="ealthcardtitle">
-                    Age
-                  </Grid>
-
-                  <Grid item xs={4} className="ealthcardtitle1">
-                    {scheduleData.Citizen_info?.[0]?.gender}
-                  </Grid>
-                  <Grid item xs={4} className="ealthcardtitle1">
-                    {scheduleData.Citizen_info?.[0]?.dob}
-                  </Grid>
-                  <Grid item xs={4} className="ealthcardtitle1">
-                    {scheduleData.Citizen_info?.[0]?.year}
-                  </Grid>
-                </Grid>
+              {/* ===== SEARCH HEADER (SAME HEIGHT AS TABLE HEADER) ===== */}
+              <Grid item xs={12}>
+                <Box sx={{ width: { xs: "100%", sm: "80%" } }}>
+                  <input
+                    className="form-control"
+                    placeholder="Search Citizen..."
+                    style={{ height: 36 }}
+                  />
+                </Box>
               </Grid>
 
-              {/* RIGHT SIDE – DROPDOWN + BUTTON */}
-              <Grid item xs={12} md={6}>
-                <Grid container spacing={2} alignItems="center">
-                  <Grid item xs={8}>
-                    <select
-                      className="form-control screedropdown"
-                      onChange={(e) => {
-                        fetchCitizenVital(e.target.value);
-                        setSelectedScheduleCount(e.target.value);
-                      }}
-                    >
-                      <option>Select</option>
-                      {totalCount.map((option) => (
-                        <option key={option} value={option}>
-                          {option}
-                        </option>
-                      ))}
-                    </select>
-                  </Grid>
+              {/* ===== TABLE (UNCHANGED) ===== */}
+              <Grid item xs={12}>
+                <TableContainer>
+                  <Table
+                    size="small"
+                    sx={{
+                      borderCollapse: "separate",
+                      borderSpacing: "0 1px",
+                      px: 1,
+                    }}
+                  >
+                    <TableHead>
+                      <TableRow>
+                        <TableCell
+                          colSpan={4}
+                          sx={{ p: 0, borderBottom: "none" }}
+                        >
+                          <Card
+                            sx={{
+                              background:
+                                "linear-gradient(90deg, #2FB3F5 0%, #1439A4 100%)",
+                              borderRadius: 20,
+                              height: 40, // 🔥 SAME HEIGHT
+                            }}
+                          >
+                            <Box
+                              sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                height: "100%",
+                                px: 1,
+                              }}
+                            >
+                              <Typography sx={{ flex: 1.2, color: "#fff" }}>
+                                Citizen Name
+                              </Typography>
+                              <Typography
+                                sx={{
+                                  flex: 1.5,
+                                  color: "#fff",
+                                  textAlign: "center",
+                                }}
+                              >
+                                Aadhar ID
+                              </Typography>
+                              <Typography
+                                sx={{
+                                  flex: 0.8,
+                                  color: "#fff",
+                                  textAlign: "center",
+                                }}
+                              >
+                                Action
+                              </Typography>
+                            </Box>
+                          </Card>
+                        </TableCell>
+                      </TableRow>
+                    </TableHead>
 
-                  <Grid item xs={4}>
-                    <button
-                      className="downloadhealthcardddddddddddddddddddddddddddd"
-                      onClick={handleDownload}
-                    >
-                      Healthcard
-                    </button>
-                  </Grid>
-                </Grid>
+                    <TableBody>
+                      {loading ? (
+                        <TableRow>
+                          <TableCell colSpan={3} align="center">
+                            <CircularProgress size={22} />
+                          </TableCell>
+                        </TableRow>
+                      ) : slicedResults.length === 0 ? (
+                        <TableRow>
+                          <TableCell colSpan={3} align="center">
+                            No data found
+                          </TableCell>
+                        </TableRow>
+                      ) : (
+                        slicedResults.map((result, index) => (
+                          <TableRow
+                            key={index}
+                            hover
+                            sx={{ cursor: "pointer" }}
+                            onClick={() => handleEyeClick(result.citizen_id)}
+                          >
+                            <TableCell>{result.name}</TableCell>
+                            <TableCell>{result.aadhar_id}</TableCell>
+                            <TableCell align="center">
+                              <RemoveRedEyeOutlinedIcon />
+                            </TableCell>
+                          </TableRow>
+                        ))
+                      )}
+                    </TableBody>
 
-                <Grid container spacing={1} mt={1}>
-                  <Grid item xs={4} className="idddddddd">
-                    Schedule ID -
-                  </Grid>
-
-                  <Grid item xs={8} className="scheduledidhealthcard">
-                    {scheduleId}
-                  </Grid>
-                </Grid>
+                    <TableFooter>
+                      <TableRow>
+                        <TablePagination
+                          count={filteredResults.length}
+                          page={page}
+                          onPageChange={handleChangePage}
+                          rowsPerPage={rowsPerPage}
+                          onRowsPerPageChange={handleChangeRowsPerPage}
+                        />
+                      </TableRow>
+                    </TableFooter>
+                  </Table>
+                </TableContainer>
               </Grid>
             </Grid>
-          </Box>
+          </Grid>
 
-          {/* FORM TABS */}
-          <Grid container spacing={1} mt={1}>
-            <Grid item xs={12}>
-              <Box className="card" sx={{ p: 0.5 }}>
-                <Box
-                  sx={{
-                    display: "flex",
-                    overflowX: "auto",
-                    gap: 1,
-                    height: "3.5em",
-                    alignItems: "center",
-                    p: 0.5,
-                  }}
-                >
-                  {fetchVitalForm.length > 0 ? (
-                    fetchVitalForm
-                      .filter(
-                        (form) =>
-                          form.screening_list !== "Investigation" &&
-                          form.screening_list !== "Immunisation "
-                      )
-                      .map((form, index) => (
-                        <Box
-                          key={index}
-                          onClick={() => handleFormClick(form.screening_list)}
-                          className={`healthvitalname ${
-                            selectedForm === form.screening_vitals
-                              ? "selected-tab"
-                              : ""
-                          }`}
-                          sx={{
-                            px: 2,
-                            py: 1,
-                            whiteSpace: "nowrap",
-                            borderRadius: "4px",
-                            cursor: "pointer",
-                            backgroundColor:
+          {/* RIGHT PANEL – MAIN CONTENT */}
+          <Grid item xs={12} md={6.5}>
+            {/* PROFILE CARD */}
+            <Box
+              className={`card ${isDataFetched ? "data-fetched" : ""}`}
+              p={2}
+            >
+              <Grid container spacing={1}>
+                {/* LEFT DETAILS */}
+                <Grid item xs={12} md={6}>
+                  <Grid container spacing={1}>
+                    <Grid item xs={5} sm={4} className="titlehealth">
+                      Citizen Name :
+                    </Grid>
+                    <Grid item xs={7} className="healthresponsetitle">
+                      {scheduleData.Citizen_info?.[0]?.name}
+                    </Grid>
+
+                    <Grid item xs={5} sm={4} className="titlehealth1">
+                      Citizen ID :
+                    </Grid>
+                    <Grid item xs={7} className="healthresponsetitle1">
+                      {scheduleData.Citizen_info?.[0]?.citizen_id}
+                    </Grid>
+                  </Grid>
+
+                  <hr className="hrline" />
+
+                  <Grid container spacing={1} className="cardhealth">
+                    <Grid item xs={4} className="ealthcardtitle">
+                      Gender
+                    </Grid>
+                    <Grid item xs={4} className="ealthcardtitle">
+                      DOB
+                    </Grid>
+                    <Grid item xs={4} className="ealthcardtitle">
+                      Age
+                    </Grid>
+
+                    <Grid item xs={4} className="ealthcardtitle1">
+                      {scheduleData.Citizen_info?.[0]?.gender}
+                    </Grid>
+                    <Grid item xs={4} className="ealthcardtitle1">
+                      {scheduleData.Citizen_info?.[0]?.dob}
+                    </Grid>
+                    <Grid item xs={4} className="ealthcardtitle1">
+                      {scheduleData.Citizen_info?.[0]?.year}
+                    </Grid>
+                  </Grid>
+                </Grid>
+
+                {/* RIGHT SIDE – DROPDOWN + BUTTON */}
+           <Grid item xs={12} md={5}>
+  <Box
+    sx={{
+      display: "flex",
+      flexWrap: { xs: "wrap", sm: "nowrap" }, // stack on mobile
+      // gap: 1,
+      width: "100%",
+      alignItems: "center", // center vertically
+    }}
+  >
+    {/* SELECT */}
+    <Box sx={{ width: { xs: "100%", sm: "60%" ,md:"80%"}, minWidth: 0 }}>
+      <TextField
+        select
+        fullWidth
+        label="Select Schedule Count"
+        // className="form-control screedropdown"
+        size="small"
+        style={{
+          width: "100%",
+          height: "42px", // same height as button
+          boxSizing: "border-box",
+        }}
+        onChange={(e) => {
+          fetchCitizenVital(e.target.value);
+          setSelectedScheduleCount(e.target.value);
+        }}
+      >
+        <MenuItem>Select Schedule Count</MenuItem>
+        {totalCount.map((option) => (
+          <MenuItem key={option} value={option}>
+            {option}
+          </MenuItem>
+        ))}
+      </TextField>
+    </Box>
+
+    {/* BUTTON */}
+    <Box sx={{ width: { xs: "100%", sm: "35%" ,md:"40%",} ,px: 1, mt: { xs: 1, sm: 0,md:0 } }}>
+      <button
+        className="downloadhealthcardddddddddddddddddddddddddddd"
+        style={{
+          width: "100%",
+          height: "42px",
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          whiteSpace: "nowrap",
+        }}
+        onClick={handleDownload}
+      >
+        Healthcard
+      </button>
+    </Box>
+  </Box>
+
+  {/* SCHEDULE ID */}
+  <Grid container spacing={1} mt={1}>
+    <Grid item xs={5} className="idddddddd">
+      Schedule ID -
+    </Grid>
+    <Grid item xs={7} className="scheduledidhealthcard">
+      {scheduleId}
+    </Grid>
+  </Grid>
+</Grid>
+
+              </Grid>
+            </Box>
+
+            {/* FORM TABS */}
+            <Grid container spacing={1} mt={1}>
+              <Grid item xs={12}>
+                <Box className="card" sx={{ p: 0.5 }}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      overflowX: "auto",
+                      gap: 1,
+                      height: "3.5em",
+                      alignItems: "center",
+                      p: 0.5,
+                    }}
+                  >
+                    {fetchVitalForm.length > 0 ? (
+                      fetchVitalForm
+                        .filter(
+                          (form) =>
+                            form.screening_list !== "Investigation" &&
+                            form.screening_list !== "Immunisation "
+                        )
+                        .map((form, index) => (
+                          <Box
+                            key={index}
+                            onClick={() => handleFormClick(form.screening_list)}
+                            className={`healthvitalname ${
                               selectedForm === form.screening_vitals
-                                ? "#ddd"
-                                : "transparent",
-                          }}
-                        >
-                          {form.screening_list}
-                        </Box>
-                      ))
+                                ? "selected-tab"
+                                : ""
+                            }`}
+                            sx={{
+                              px: 2,
+                              py: 1,
+                              whiteSpace: "nowrap",
+                              borderRadius: "4px",
+                              cursor: "pointer",
+                              backgroundColor:
+                                selectedForm === form.screening_vitals
+                                  ? "#ddd"
+                                  : "transparent",
+                            }}
+                          >
+                            {form.screening_list}
+                          </Box>
+                        ))
+                    ) : (
+                      <Box sx={{ ml: 2 }}>No screening forms available.</Box>
+                    )}
+                  </Box>
+                </Box>
+              </Grid>
+            </Grid>
+
+            {/* IMAGE + DETAILS */}
+            <Grid container spacing={2} mt={1}>
+              <Grid
+                item
+                xs={12}
+                md={4}
+                sx={{
+                  display: "flex",
+                  justifyContent: { xs: "center", md: "flex-start" },
+                }}
+              >
+                {isGenderAvailable &&
+                  (scheduleData.Citizen_info[0].gender === "Male" ? (
+                    <img className="malepiccc" src={malepic} alt="Male" />
                   ) : (
-                    <Box sx={{ ml: 2 }}>No screening forms available.</Box>
+                    <img className="femalepiccc" src={femalePic} alt="Female" />
+                  ))}
+              </Grid>
+
+              <Grid item xs={12} md={8}>
+                <Box className="card cardhealthcardallvitalscomponenet">
+                  {selectedForm === "Basic Information" && (
+                    <CitizenInfoHealth citizenData={citizen} />
+                  )}
+
+                  {selectedForm === "Emergency Details" && (
+                    <FamilyInfo family={family} />
+                  )}
+
+                  {selectedForm === "BMI & Symptoms" && (
+                    <BmiHealth bmiData={bmiData} />
+                  )}
+
+                  {selectedForm === "Vital" && (
+                    <Vitalhealth vitalsData={vitalsData} />
+                  )}
+
+                  {selectedForm === "Basic Screening" && (
+                    <BasicScreenVital basicScreenData={basicScreenData} />
+                  )}
+
+                  {selectedForm === "Auditory" && (
+                    <AuditoryHealth
+                      auditoryData={auditoryData}
+                      auditory={auditory}
+                    />
+                  )}
+
+                  {selectedForm === "Dental Check Up" && (
+                    <DentalHealth dentalData={dentalData} />
+                  )}
+
+                  {selectedForm === "Vision" && (
+                    <VisionHealth visionData={visionData} vision={vision} />
+                  )}
+
+                  {selectedForm === "Medical History" && (
+                    <Medicalhistory medical={medical} />
+                  )}
+
+                  {selectedForm === "immunizationform" && (
+                    <ImmunisationHealth immunizationData={immunizationData} />
+                  )}
+
+                  {selectedForm === "Psychological Screening" && (
+                    <PsychologicalHealth psychoData={psychoData} />
+                  )}
+
+                  {selectedForm === "Pulmonary Function Tests" && (
+                    <PftHealth pft={pft} />
                   )}
                 </Box>
-              </Box>
-            </Grid>
-          </Grid>
-
-          {/* IMAGE + DETAILS */}
-          <Grid container spacing={2} mt={1}>
-            <Grid
-              item
-              xs={12}
-              md={4}
-              sx={{
-                display: "flex",
-                justifyContent: { xs: "center", md: "flex-start" },
-              }}
-            >
-              {isGenderAvailable &&
-                (scheduleData.Citizen_info[0].gender === "Male" ? (
-                  <img className="malepiccc" src={malepic} alt="Male" />
-                ) : (
-                  <img className="femalepiccc" src={femalePic} alt="Female" />
-                ))}
-            </Grid>
-
-            <Grid item xs={12} md={8}>
-              <Box className="card cardhealthcardallvitalscomponenet">
-                {selectedForm === "Basic Information" && (
-                  <CitizenInfoHealth citizenData={citizen} />
-                )}
-
-                {selectedForm === "Emergency Details" && (
-                  <FamilyInfo family={family} />
-                )}
-
-                {selectedForm === "BMI & Symptoms" && (
-                  <BmiHealth bmiData={bmiData} />
-                )}
-
-                {selectedForm === "Vital" && (
-                  <Vitalhealth vitalsData={vitalsData} />
-                )}
-
-                {selectedForm === "Basic Screening" && (
-                  <BasicScreenVital basicScreenData={basicScreenData} />
-                )}
-
-                {selectedForm === "Auditory" && (
-                  <AuditoryHealth
-                    auditoryData={auditoryData}
-                    auditory={auditory}
-                  />
-                )}
-
-                {selectedForm === "Dental Check Up" && (
-                  <DentalHealth dentalData={dentalData} />
-                )}
-
-                {selectedForm === "Vision" && (
-                  <VisionHealth visionData={visionData} vision={vision} />
-                )}
-
-                {selectedForm === "Medical History" && (
-                  <Medicalhistory medical={medical} />
-                )}
-
-                {selectedForm === "immunizationform" && (
-                  <ImmunisationHealth immunizationData={immunizationData} />
-                )}
-
-                {selectedForm === "Psychological Screening" && (
-                  <PsychologicalHealth psychoData={psychoData} />
-                )}
-
-                {selectedForm === "Pulmonary Function Tests" && (
-                  <PftHealth pft={pft} />
-                )}
-              </Box>
+              </Grid>
             </Grid>
           </Grid>
         </Grid>
-      </Grid>
+      </Box>
 
       <div
         ref={dashboardRef}

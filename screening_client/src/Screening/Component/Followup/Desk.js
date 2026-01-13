@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Box from "@mui/material/Box";
 import MenuItem from "@mui/material/MenuItem";
 import TextField from "@mui/material/TextField";
-import "./Desk.css";
+// Removed external CSS to rely on MUI `sx` for responsive styling
 import Stack from "@mui/material/Stack";
 import Button from "@mui/material/Button";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
@@ -27,6 +27,7 @@ import {
   DialogTitle,
   DialogContent,
   DialogActions,
+  TablePagination,
 } from "@mui/material";
 
 const Desk = () => {
@@ -77,13 +78,23 @@ const Desk = () => {
   const [sourceName, setSourceName] = useState([]);
   const [selectedFollowUpForName, setselectedFollowUpForName] = useState("");
   const [openMenuModal, setOpenMenuModal] = useState(false);
-const [selectedRow, setSelectedRow] = useState(null);
-
+  const [selectedRow, setSelectedRow] = useState(null);
 
   const [showTable, setShowTable] = useState(false);
   console.log(showTable, "showTableshowTableshowTable");
   console.log("selectedFollowUpFor:", selectedFollowUpFor);
   console.log("selectedFollowUpStatus:", selectedFollowUpStatus);
+
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const handleChangePage = (event, newPage) => {
+  setPage(newPage);
+};
+
+const handleChangeRowsPerPage = (event) => {
+  setRowsPerPage(parseInt(event.target.value, 10));
+  setPage(0); // reset to first page
+};
 
   const fetchFollowUpFor = async () => {
     try {
@@ -349,247 +360,263 @@ const [selectedRow, setSelectedRow] = useState(null);
 
   return (
     <div>
-      <Box sx={{ p: 2, m: "0em 0em 0 2em" }}>
+      <Box
+        sx={{
+          p: { xs: 1, sm: 2 },
+          m: { xs: "0 0 0 0.5em", md: "0em 0em 0 2em" },
+        }}
+      >
+        {/* Filter Card */}
         <Box
-          className="card deskcard m-1"
-          style={{
+          sx={{
             background: "#fff",
-            color: "white",
+            color: "#000",
+            borderRadius: 2,
+            boxShadow: 1,
+            p: { xs: 1, sm: 2 },
+            m: 1,
+            width: "100%",
+            overflow: "hidden",
           }}
         >
-          <div >
-            <div >
-              <Typography
-                sx={{
-                  mb: 1,
-                  fontWeight: 550,
-                  fontSize: "15px",
-                  fontFamily: "Roboto, sans-serif",
-                  textAlign: "left",
-                  color: "black",
-                  px: 2,
-                  py: 0.1,
-                }}
-              >
-                FollowUp Desk
-              </Typography>
-            </div>
-          </div>
+          {/* Filter Card Header and Filters */}
+          <Box>
+            <Typography
+              sx={{
+                mb: 1,
+                fontWeight: 600,
+                fontSize: { xs: "16px", sm: "18px" },
+                fontFamily: "Roboto, sans-serif",
+                textAlign: "left",
+                color: "black",
+                px: 1,
+                // py: 0.5,
+              }}
+            >
+              FollowUp Desk
+            </Typography>
 
-          <Box className="dropdowndesk">
-            <Grid container spacing={1} alignItems="center">
-              {/* FollowUp Status */}
-              <Grid item xs={12} md={2}>
-                <TextField
-                  select
-                  fullWidth
-                  size="small"
-                  label="FollowUp Status"
-                  value={selectedFollowUpStatus}
-                  onChange={handleFollowUpStatusChange}
-                  InputLabelProps={{
-                    sx: {
-                      fontWeight: 100,
-                      fontSize: "14px",
-                      color: "black !important",
-                    },
-                  }}
-                  SelectProps={{
-                    MenuProps: {
-                      classes: { paper: "custom-menu-paper" },
-                    },
-                  }}
-                  sx={{
-                    "& .MuiInputBase-input": { color: "black" },
-                    "& .MuiSelect-select": { color: "black !important" }, // <-- FIXEDss
-                    "& .MuiOutlinedInput-root": {
-                      "& fieldset": { borderColor: "black" },
-                      "&:hover fieldset": { borderColor: "black" },
-                      "&.Mui-focused fieldset": { borderColor: "black" },
-                    },
-                    "& .MuiSvgIcon-root": { color: "black" },
-                  }}
-                >
-                  {followUpStatusOptions.map((option) => (
-                    <MenuItem
-                      key={option.followup_pk_id}
-                      value={option.followup_pk_id}
-                    >
-                      {option.follow_up}
+            <Box sx={{ mb: 1 }}>
+              <Grid container spacing={1} alignItems="center">
+                {/* FollowUp Status */}
+                <Grid item xs={12} md={2} sm={6}>
+                  <TextField
+                    select
+                    fullWidth
+                    size="small"
+                    label="FollowUp Status"
+                    value={selectedFollowUpStatus}
+                    onChange={handleFollowUpStatusChange}
+                    InputLabelProps={{
+                      sx: {
+                        fontWeight: 100,
+                        fontSize: "14px",
+                        color: "black !important",
+                      },
+                    }}
+                    SelectProps={{
+                      MenuProps: {
+                        classes: { paper: "custom-menu-paper" },
+                      },
+                    }}
+                    sx={{
+                      "& .MuiInputBase-input": { color: "black" },
+                      "& .MuiSelect-select": { color: "black !important" }, // <-- FIXEDss
+                      "& .MuiOutlinedInput-root": {
+                        "& fieldset": { borderColor: "black" },
+                        "&:hover fieldset": { borderColor: "black" },
+                        "&.Mui-focused fieldset": { borderColor: "black" },
+                      },
+                      "& .MuiSvgIcon-root": { color: "black" },
+                    }}
+                  >
+                    {followUpStatusOptions.map((option) => (
+                      <MenuItem
+                        key={option.followup_pk_id}
+                        value={option.followup_pk_id}
+                      >
+                        {option.follow_up}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                </Grid>
+
+                {/* Followup For */}
+                <Grid item xs={12} md={2} sm={6}>
+                  <TextField
+                    select
+                    fullWidth
+                    size="small"
+                    label="FollowUp For"
+                    value={selectedFollowUpFor}
+                    onChange={handleFollowUpForChange}
+                    InputLabelProps={{
+                      // shrink: Boolean(selectedFollowUpFor),   // ✅ IMPORTANT
+
+                      sx: {
+                        fontWeight: 100,
+                        fontSize: "14px",
+                        color: "black !important",
+                      },
+                    }}
+                    SelectProps={{
+                      MenuProps: {
+                        classes: { paper: "custom-menu-paper" },
+                      },
+                    }}
+                    sx={{
+                      "& .MuiInputBase-input": { color: "black" },
+                      "& .MuiSelect-select": { color: "black !important" }, // <-- FIXEDss
+                      "& .MuiOutlinedInput-root": {
+                        "& fieldset": { borderColor: "black" },
+                        "&:hover fieldset": { borderColor: "black" },
+                        "&.Mui-focused fieldset": { borderColor: "black" },
+                      },
+                      "& .MuiSvgIcon-root": { color: "black" },
+                    }}
+                  >
+                    {followUpFor.map((option) => (
+                      <MenuItem
+                        key={option.followupfor_pk_id}
+                        value={option.followupfor_pk_id}
+                      >
+                        {option.follow_up_for}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                </Grid>
+
+                {/* Source Name */}
+                <Grid item xs={12} md={3} sm={6}>
+                  <TextField
+                    select
+                    fullWidth
+                    size="small"
+                    label="Workshop Name"
+                    value={selectedWorkshop}
+                    onChange={handleSourceNameChange}
+                    InputLabelProps={{
+                      sx: {
+                        fontWeight: 100,
+                        fontSize: "14px",
+                        color: "black !important",
+                      },
+                    }}
+                    SelectProps={{
+                      MenuProps: {
+                        classes: { paper: "custom-menu-paper" },
+                      },
+                    }}
+                    sx={{
+                      "& .MuiInputBase-input": { color: "black" },
+                      "& .MuiSelect-select": { color: "black !important" }, // <-- FIXEDss
+                      "& .MuiOutlinedInput-root": {
+                        "& fieldset": { borderColor: "black" },
+                        "&:hover fieldset": { borderColor: "black" },
+                        "&.Mui-focused fieldset": { borderColor: "black" },
+                      },
+                      "& .MuiSvgIcon-root": { color: "black" },
+                      width: "100%",
+                    }}
+                  >
+                    <MenuItem value="" disabled>
+                      Select WorkShop Name
                     </MenuItem>
-                  ))}
-                </TextField>
-              </Grid>
+                    {workshop.map((opt) => (
+                      <MenuItem key={opt.ws_pk_id} value={opt.ws_pk_id}>
+                        {opt.Workshop_name}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                </Grid>
 
-              {/* Followup For */}
-              <Grid item xs={12} md={2}>
-                <TextField
-                  select
-                  fullWidth
-                  size="small"
-                  label="FollowUp For"
-                  value={selectedFollowUpFor}
-                  onChange={handleFollowUpForChange}
-                  InputLabelProps={{
-                    // shrink: Boolean(selectedFollowUpFor),   // ✅ IMPORTANT
-
-                    sx: {
-                      fontWeight: 100,
-                      fontSize: "14px",
-                      color: "black !important",
-                    },
-                  }}
-                  SelectProps={{
-                    MenuProps: {
-                      classes: { paper: "custom-menu-paper" },
-                    },
-                  }}
-                  sx={{
-                    "& .MuiInputBase-input": { color: "black" },
-                    "& .MuiSelect-select": { color: "black !important" }, // <-- FIXEDss
-                    "& .MuiOutlinedInput-root": {
-                      "& fieldset": { borderColor: "black" },
-                      "&:hover fieldset": { borderColor: "black" },
-                      "&.Mui-focused fieldset": { borderColor: "black" },
-                    },
-                    "& .MuiSvgIcon-root": { color: "black" },
-                  }}
-                >
-                  {followUpFor.map((option) => (
-                    <MenuItem
-                      key={option.followupfor_pk_id}
-                      value={option.followupfor_pk_id}
-                    >
-                      {option.follow_up_for}
+                <Grid item xs={12} md={2} sm={6}>
+                  <TextField
+                    select
+                    fullWidth
+                    size="small"
+                    label="Doctor List"
+                    value={selectedDoctor}
+                    onChange={handleDoctorChange}
+                    InputLabelProps={{
+                      sx: {
+                        fontWeight: 100,
+                        fontSize: "14px",
+                        color: "black !important",
+                      },
+                    }}
+                    SelectProps={{
+                      MenuProps: {
+                        classes: { paper: "custom-menu-paper" },
+                      },
+                    }}
+                    sx={{
+                      "& .MuiInputBase-input": { color: "black" },
+                      "& .MuiSelect-select": { color: "black !important" }, // <-- FIXEDss
+                      "& .MuiOutlinedInput-root": {
+                        "& fieldset": { borderColor: "black" },
+                        "&:hover fieldset": { borderColor: "black" },
+                        "&.Mui-focused fieldset": { borderColor: "black" },
+                      },
+                      "& .MuiSvgIcon-root": { color: "black" },
+                    }}
+                  >
+                    <MenuItem value="" disabled>
+                      Select Doctor
                     </MenuItem>
-                  ))}
-                </TextField>
-              </Grid>
-
-              {/* Source Name */}
-              <Grid item xs={12} md={3}>
-                <TextField
-                  select
-                  fullWidth
-                  size="small"
-                  label="Workshop Name"
-                  value={selectedWorkshop}
-                  onChange={handleSourceNameChange}
-                  InputLabelProps={{
-                    sx: {
-                      fontWeight: 100,
-                      fontSize: "14px",
-                      color: "black !important",
-                    },
-                  }}
-                  SelectProps={{
-                    MenuProps: {
-                      classes: { paper: "custom-menu-paper" },
-                    },
-                  }}
-                  sx={{
-                    "& .MuiInputBase-input": { color: "black" },
-                    "& .MuiSelect-select": { color: "black !important" }, // <-- FIXEDss
-                    "& .MuiOutlinedInput-root": {
-                      "& fieldset": { borderColor: "black" },
-                      "&:hover fieldset": { borderColor: "black" },
-                      "&.Mui-focused fieldset": { borderColor: "black" },
-                    },
-                    "& .MuiSvgIcon-root": { color: "black" },
-                    width: "100%",
-                  }}
-                >
-                  <MenuItem value="" disabled>
-                    Select WorkShop Name
-                  </MenuItem>
-                  {workshop.map((opt) => (
-                    <MenuItem key={opt.ws_pk_id} value={opt.ws_pk_id}>
-                      {opt.Workshop_name}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              </Grid>
-
-              <Grid item xs={12} md={2}>
-                <TextField
-                  select
-                  fullWidth
-                  size="small"
-                  label="Doctor List"
-                  value={selectedDoctor}
-                  onChange={handleDoctorChange}
-                  InputLabelProps={{
-                    sx: {
-                      fontWeight: 100,
-                      fontSize: "14px",
-                      color: "black !important",
-                    },
-                  }}
-                  SelectProps={{
-                    MenuProps: {
-                      classes: { paper: "custom-menu-paper" },
-                    },
-                  }}
-                  sx={{
-                    "& .MuiInputBase-input": { color: "black" },
-                    "& .MuiSelect-select": { color: "black !important" }, // <-- FIXEDss
-                    "& .MuiOutlinedInput-root": {
-                      "& fieldset": { borderColor: "black" },
-                      "&:hover fieldset": { borderColor: "black" },
-                      "&.Mui-focused fieldset": { borderColor: "black" },
-                    },
-                    "& .MuiSvgIcon-root": { color: "black" },
-                  }}
-                >
-                  <MenuItem value="" disabled>
-                    Select Doctor
-                  </MenuItem>
-                  {doctor.map((opt) => (
-                    <MenuItem key={opt.doctor_pk_id} value={opt.doctor_pk_id}>
-                      {opt.doctor_name}
-                    </MenuItem>
-                  ))}
-                </TextField>
-              </Grid>
-              {/* Search Button */}
-              <Grid item xs={12} md={3} display="flex" alignItems="center">
-                <Button
-                  variant="contained"
-                  size="small"
-                  onClick={handleSearch}
-                  sx={{
-                    background:
-                      "linear-gradient(135deg, #2B7FFF 0%, #0092B8 100%)",
-                    color: "#fff",
-                    "&:hover": {
+                    {doctor.map((opt) => (
+                      <MenuItem key={opt.doctor_pk_id} value={opt.doctor_pk_id}>
+                        {opt.doctor_name}
+                      </MenuItem>
+                    ))}
+                  </TextField>
+                </Grid>
+                {/* Search Button */}
+                <Grid item xs={12} md={3} display="flex" alignItems="center">
+                  <Button
+                    variant="contained"
+                    size="small"
+                    onClick={handleSearch}
+                    sx={{
                       background:
                         "linear-gradient(135deg, #2B7FFF 0%, #0092B8 100%)",
-                    },
-                  }}
-                >
-                  Search
-                </Button>
+                      color: "#fff",
+                      "&:hover": {
+                        background:
+                          "linear-gradient(135deg, #2B7FFF 0%, #0092B8 100%)",
+                      },
+                    }}
+                  >
+                    Search
+                  </Button>
+                </Grid>
               </Grid>
-            </Grid>
-          </Box>
-
-          <div className="row inputdeskkk">
-            <Box className="ml-2 d-flex justify-content-end">
-              <TextField
-                size="small"
-                variant="outlined"
-                placeholder="Search by Name, or doctor name"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                sx={{ minWidth: 270 }} // optional styling
-              />
             </Box>
-          </div>
+          </Box>
+        </Box>
 
-          <div>
+        {/* Search input moved outside filter card */}
+        <Box sx={{ display: "flex", justifyContent: "flex-start", px: 1 }}>
+          <TextField
+            size="small"
+            variant="outlined"
+            placeholder="Search by Name, or doctor name"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            sx={{ minWidth: { xs: 160, sm: 270 } }}
+          />
+        </Box>
+
+        {/* Table Card (separate from filters) */}
+        <Box sx={{ mt: 2, px: 1 }}>
+          <Box sx={{ borderRadius: 2, mb: 2 }}>
             {showTable && (
               <TableContainer
-                sx={{ borderRadius: "10px", overflow: "hidden", mt: 0.7 }}
+                sx={{
+                  borderRadius: "10px",
+                  overflowX: "auto", // 🔥 REQUIRED
+                  overflowY: "hidden",
+                }}
               >
                 <Table
                   size="small"
@@ -742,7 +769,7 @@ const [selectedRow, setSelectedRow] = useState(null);
                           }}
                         >
                           {/* 🔹 SINGLE TABLE CELL */}
-                          <TableCell sx={{ p: 0, py: 1 }}>
+                          <TableCell>
                             <Box
                               sx={{
                                 display: "flex",
@@ -870,30 +897,56 @@ const [selectedRow, setSelectedRow] = useState(null);
                     )}
                   </TableBody>
                 </Table>
+                <TablePagination
+                  component="div"
+                  count={
+                    filterTableData(
+                      tableData,
+                      searchQuery,
+                      selectedFollowUpStatus
+                    ).length
+                  } // filtered total
+                  page={page} // current page
+                  onPageChange={handleChangePage} // handler for page change
+                  rowsPerPage={rowsPerPage} // current rows per page
+                  onRowsPerPageChange={handleChangeRowsPerPage} // handler for rows per page change
+                  rowsPerPageOptions={[10, 25, 50]}
+                  labelDisplayedRows={({ from, to, count }) =>
+                    `${from}–${to}  (Page ${page + 1})`
+                  }
+                  sx={{
+                    "& .MuiTablePagination-toolbar": {
+                      flexWrap: { xs: "wrap", sm: "nowrap" }, // responsive wrap on small screens
+                    },
+                    "& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows":
+                      {
+                        fontSize: "0.875rem",
+                      },
+                    "& .MuiTablePagination-select": {
+                      minWidth: "60px",
+                    },
+                  }}
+                />
               </TableContainer>
             )}
-          </div>
+          </Box>
           <Dialog
-  open={openMenuModal}
-  onClose={() => setOpenMenuModal(false)}
-  fullWidth
-  maxWidth="xs"
->
-  <DialogTitle>Actions</DialogTitle>
+            open={openMenuModal}
+            onClose={() => setOpenMenuModal(false)}
+            fullWidth
+            maxWidth="xs"
+          >
+            <DialogTitle>Actions</DialogTitle>
 
-  <DialogContent>
-    <Typography>
-      Citizen Name: {selectedRow?.citizen_name}
-    </Typography>
-    <Typography>
-      Citizen ID: {selectedRow?.citizen_id}
-    </Typography>
-  </DialogContent>
+            <DialogContent>
+              <Typography>Citizen Name: {selectedRow?.citizen_name}</Typography>
+              <Typography>Citizen ID: {selectedRow?.citizen_id}</Typography>
+            </DialogContent>
 
-  <DialogActions>
-    <Button onClick={() => setOpenMenuModal(false)}>Close</Button>
-  </DialogActions>
-</Dialog>
+            <DialogActions>
+              <Button onClick={() => setOpenMenuModal(false)}>Close</Button>
+            </DialogActions>
+          </Dialog>
 
           {/* )} */}
           {/* {canView && ( */}
@@ -902,7 +955,6 @@ const [selectedRow, setSelectedRow] = useState(null);
         </Box>
       </Box>
     </div>
-    // </div>
   );
 };
 

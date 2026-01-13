@@ -565,21 +565,34 @@ const AddUser = () => {
     // -----------------------------
     // VALIDATION LOGIC
     // -----------------------------
-    let errorMessage = "";
 
     // 1️⃣ MOBILE NUMBER VALIDATION
+
+    // Allow only digits for mobile
+    if (name === "clg_mobile_no") {
+      if (!/^\d*$/.test(value)) return; // ❌ block non-numbers
+      if (value.length > 10) return; // ❌ block >10 digits
+    }
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+
+    let errorMessage = "";
+
+    // 📱 MOBILE NUMBER VALIDATIONff
     if (name === "clg_mobile_no") {
       const indianMobilePattern = /^[6-9]\d{9}$/;
 
       if (!value) {
         errorMessage = "Mobile Number is required";
+      } else if (value.length < 10) {
+        errorMessage = ""; // ✅ NO error while typing
       } else if (!indianMobilePattern.test(value)) {
         errorMessage = "Invalid Mobile Number";
-      } else {
-        errorMessage = "";
       }
     }
-
     // 2️⃣ NAME VALIDATION (Max 3 words)
     if (name === "clg_ref_id") {
       if (!value.trim()) {
@@ -1595,6 +1608,11 @@ const AddUser = () => {
                           required
                           error={!!errors.clg_mobile_no}
                           helperText={errors.clg_mobile_no}
+                          inputProps={{
+                            maxLength: 10, // ⛔ Stop more than 10 digits
+                            inputMode: "numeric",
+                            pattern: "[0-9]*",
+                          }}
                         />
                       </Grid>
 
@@ -1834,7 +1852,17 @@ const AddUser = () => {
                       </TableHead>
                     </Table>
 
-                    <Box mt={1}>
+                    <Box
+                      sx={{
+                        overflowY: "auto",
+                        // Responsive heights for different breakpoints
+                        maxHeight: {
+                          xs: 200, // small screens
+                          sm: 250, // tablets
+                          md: 269, // desktop
+                        },
+                      }}
+                    >
                       {paginatedData.length > 0 ? (
                         paginatedData.map((item, index) => {
                           const serialNumber = startIndex + index + 1;
@@ -1948,6 +1976,9 @@ const AddUser = () => {
                         rowsPerPage={rowsPerPage}
                         onRowsPerPageChange={handleChangeRowsPerPage}
                         rowsPerPageOptions={[5, 10, 20]}
+                        labelDisplayedRows={({ from, to, count, page }) =>
+                          `${from}–${to}  (Page ${page + 1})`
+                        }
                       />
                     </Box>
 

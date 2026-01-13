@@ -132,6 +132,7 @@ const AddSource = () => {
   console.log(stateOptions, "stateoptions");
 
   const [districtOptions, setDistrictOptions] = useState([]);
+  console.log(districtOptions, "districtOptions");
   const [talukaOptions, setTalukaOptions] = useState([]);
   const [selectedState, setSelectedState] = useState("");
   const [selectedDistrict, setSelectedDistrict] = useState("");
@@ -149,6 +150,7 @@ const AddSource = () => {
 
   const [sourceDistrictNav, setSourceDistrictNav] = useState([]); // State for source district options
   const [selectedDistrictNav, setSelectedDistrictNav] = useState("");
+  console.log(selectedDistrictNav, "selectedDistrictNav");
 
   const [sourceTehsilNav, setSourceTehsilNav] = useState([]); // District for source Tehsil options
   const [selectedTehsilNav, setSelectedTehsilNav] = useState("");
@@ -299,7 +301,7 @@ const AddSource = () => {
     setPage(0);
   };
 
-  const displayedData = Array.isArray(tableinfo)
+  const filteredData = Array.isArray(tableinfo)
     ? tableinfo.filter((data) =>
         Object.values(data)
           .join(" ")
@@ -307,7 +309,12 @@ const AddSource = () => {
           .includes(searchQuery.toLowerCase())
       )
     : [];
-  const totalPages = Math.ceil(displayedData.length / rowsPerPage);
+  const paginatedData = filteredData.slice(
+    page * rowsPerPage,
+    page * rowsPerPage + rowsPerPage
+  );
+
+  const totalPages = Math.ceil(filteredData.length / rowsPerPage);
 
   useEffect(() => {
     setPage(0);
@@ -399,6 +406,11 @@ const AddSource = () => {
       setSelectData((prev) => ({
         ...prev,
         screening_vitals: normalized,
+      }));
+    } else {
+      setSelectData((prev) => ({
+        ...prev,
+        [name]: value,
       }));
     }
   };
@@ -651,13 +663,17 @@ const AddSource = () => {
   const [getid, setidws] = useState([]);
   ///////// get API for Table //////////////
   useEffect(() => {
+    if (!selectedTahsil) return;
     const fetchData = async () => {
       try {
-        const response = await fetch(`${Port}/Screening/Workshop_Get/`, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
+        const response = await fetch(
+          `${Port}/Screening/Workshop_Get/${selectedTahsil}/`,
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          }
+        );
         const data = await response.json();
         setWorkshopList(data);
         setidws(data.ws_pk_id);
@@ -668,7 +684,7 @@ const AddSource = () => {
       }
     };
     fetchData();
-  }, []);
+  }, [selectedTahsil]);
 
   //////////////////// Delete
   const handleDelete = async () => {
@@ -768,6 +784,7 @@ const AddSource = () => {
 
   //// Soure District against selected source state/////////
   useEffect(() => {
+    console.log("Selected State changed:", selectedState);
     const fetchDistricts = async () => {
       if (!selectedState) return; // wait until a state is selected
       try {
@@ -778,6 +795,7 @@ const AddSource = () => {
           }
         );
         const data = await res.json();
+        console.log("Fetched Districts:", data);
         setDistrictOptions(data);
       } catch (err) {
         console.error("Error fetching districts:", err);
@@ -1015,8 +1033,8 @@ const AddSource = () => {
                   label=" State"
                   name="ws_state"
                   variant="outlined"
-                  value={selectedStateNav}
-                  onChange={(event) => setSelectedStateNav(event.target.value)}
+                  value={selectedState}
+                  onChange={(event) => setSelectedState(event.target.value)}
                   InputLabelProps={{
                     style: { fontWeight: "100", fontSize: "14px" },
                   }}
@@ -1030,11 +1048,11 @@ const AddSource = () => {
                   }}
                 >
                   <MenuItem value="">Workshop State</MenuItem>
-                  {/* {sourceStateNav.map((drop) => (
+                  {stateOptions.map((drop) => (
                     <MenuItem key={drop.state_id} value={drop.state_id}>
                       {drop.state_name}
                     </MenuItem>
-                  ))} */}
+                  ))}
                 </TextField>
               </Grid>
 
@@ -1046,10 +1064,8 @@ const AddSource = () => {
                   label=" District"
                   variant="outlined"
                   name="ws_district"
-                  value={selectedDistrictNav}
-                  onChange={(event) =>
-                    setSelectedDistrictNav(event.target.value)
-                  }
+                  value={selectedDistrict}
+                  onChange={(event) => setSelectedDistrict(event.target.value)}
                   InputLabelProps={{
                     style: { fontWeight: "100", fontSize: "14px" },
                   }}
@@ -1065,7 +1081,7 @@ const AddSource = () => {
                   <MenuItem value="" disabled>
                     Select District
                   </MenuItem>
-                  {sourceDistrictNav.map((drop) => (
+                  {districtOptions.map((drop) => (
                     <MenuItem key={drop.dist_id} value={drop.dist_id}>
                       {drop.dist_name}
                     </MenuItem>
@@ -1081,8 +1097,8 @@ const AddSource = () => {
                   label=" Tehsil"
                   variant="outlined"
                   name="ws_tehsil"
-                  value={selectedTehsilNav}
-                  onChange={(event) => setSelectedTehsilNav(event.target.value)}
+                  value={selectedTahsil}
+                  onChange={(event) => setSelectedTahsil(event.target.value)}
                   InputLabelProps={{
                     style: { fontWeight: "100", fontSize: "14px" },
                   }}
@@ -1098,7 +1114,7 @@ const AddSource = () => {
                   <MenuItem value="" disabled>
                     Select Tehsil
                   </MenuItem>
-                  {sourceTehsilNav.map((drop) => (
+                  {talukaOptions.map((drop) => (
                     <MenuItem key={drop.tal_id} value={drop.tal_id}>
                       {drop.tahsil_name}
                     </MenuItem>
@@ -1337,7 +1353,7 @@ const AddSource = () => {
                       value={selectData.email_id}
                       onChange={handleChange}
                       size="small"
-                      disabled={!isFormEnabled}
+                      // disabled={!isFormEnabled}
                       error={
                         !!errors.email_id && errors.email_id !== "Verified"
                       }
@@ -1704,7 +1720,7 @@ const AddSource = () => {
                 >
                   <CircularProgress sx={{ color: "#1439A4" }} />
                 </Box>
-              ) : displayedData.length === 0 ? (
+              ) : paginatedData.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={3} align="center">
                     No results found
@@ -1739,8 +1755,8 @@ const AddSource = () => {
                   </Box>
 
                   <Box>
-                    {displayedData
-                      .slice(page * rowsPerPage, (page + 1) * rowsPerPage)
+                    {paginatedData
+                      // .slice(page * rowsPerPage, (page + 1) * rowsPerPage)
                       .map((info, index) => {
                         const serialNumber = index + 1 + page * rowsPerPage;
 
@@ -1816,13 +1832,15 @@ const AddSource = () => {
               {/* Pagination */}
               <TablePagination
                 component="div"
-                count={displayedData.length}
+                count={filteredData.length}
                 page={page}
-                onPageChange={handleChangePage}
                 rowsPerPage={rowsPerPage}
+                onPageChange={handleChangePage}
                 onRowsPerPageChange={handleChangeRowsPerPage}
                 rowsPerPageOptions={[5, 10, 20]}
-                labelDisplayedRows={() => `Page ${page + 1} of ${totalPages}`}
+                labelDisplayedRows={({ from, to }) =>
+                  `${from}–${to} | Page ${page + 1} of ${totalPages}`
+                }
                 sx={{
                   "& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows":
                     {
