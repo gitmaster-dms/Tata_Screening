@@ -87,8 +87,8 @@ const AddSource = () => {
       p.modules_submodule.some(
         (m) =>
           m.moduleName === "Source" &&
-          m.selectedSubmodules.some((s) => s.submoduleName === "Add")
-      )
+          m.selectedSubmodules.some((s) => s.submoduleName === "Add"),
+      ),
     );
     setCanAddSource(hasAddCitizenPermission);
     // Check if the user has permission for the "Delete" submodule
@@ -96,8 +96,8 @@ const AddSource = () => {
       p.modules_submodule.some(
         (m) =>
           m.moduleName === "Source" &&
-          m.selectedSubmodules.some((s) => s.submoduleName === "Delete")
-      )
+          m.selectedSubmodules.some((s) => s.submoduleName === "Delete"),
+      ),
     );
     setCanDelete(hasDeletePermission);
 
@@ -107,8 +107,8 @@ const AddSource = () => {
       p.modules_submodule.some(
         (m) =>
           m.moduleName === "Source" &&
-          m.selectedSubmodules.some((s) => s.submoduleName === "Edit")
-      )
+          m.selectedSubmodules.some((s) => s.submoduleName === "Edit"),
+      ),
     );
     setCanEdit(hasEditPermission);
   }, []);
@@ -163,7 +163,7 @@ const AddSource = () => {
     selectedStateNav,
     selectedDistrictNav,
     selectedTehsilNav,
-    selectedName
+    selectedName,
   );
 
   const [updateSrc, setUpdateSrc] = useState(true);
@@ -237,7 +237,7 @@ const AddSource = () => {
             headers: {
               Authorization: `Bearer ${accessToken}`,
             },
-          }
+          },
         );
         const data = response.data;
         setScreeningVitals(data);
@@ -253,7 +253,7 @@ const AddSource = () => {
   useEffect(() => {
     if (selectedVitals.includes(5)) {
       const selectedVital = screeningVitals.find(
-        (vital) => vital.sc_list_pk_id === 5
+        (vital) => vital.sc_list_pk_id === 5,
       );
       if (selectedVital) {
         setSelectedVitalId(selectedVital.sc_list_pk_id);
@@ -275,7 +275,7 @@ const AddSource = () => {
               headers: {
                 Authorization: `Bearer ${accessToken}`,
               },
-            }
+            },
           );
           const data = response.data;
           console.log("Fetching Sub Vitals....", data);
@@ -306,12 +306,12 @@ const AddSource = () => {
         Object.values(data)
           .join(" ")
           .toLowerCase()
-          .includes(searchQuery.toLowerCase())
+          .includes(searchQuery.toLowerCase()),
       )
     : [];
   const paginatedData = filteredData.slice(
     page * rowsPerPage,
-    page * rowsPerPage + rowsPerPage
+    page * rowsPerPage + rowsPerPage,
   );
 
   const totalPages = Math.ceil(filteredData.length / rowsPerPage);
@@ -389,30 +389,75 @@ const AddSource = () => {
     // if (!selectData.ws_taluka) {
     //   newErrors.ws_taluka = "Taluka is required";
     // }
-    if (!selectData.ws_address) {
-      newErrors.ws_address = "Address is required";
-    }
+    // if (!selectData.ws_address) {
+    //   newErrors.ws_address = "Address is required";
+    // }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
+  };
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  const handleEmailBlur = (e) => {
+    const value = e.target.value.trim();
+
+    if (!value) {
+      setErrors((prev) => ({
+        ...prev,
+        email_id: "Email is required",
+      }));
+      return;
+    }
+
+    if (!emailRegex.test(value)) {
+      setErrors((prev) => ({
+        ...prev,
+        email_id: "Enter a valid email address",
+      }));
+      return;
+    }
+
+    setErrors((prev) => ({
+      ...prev,
+      email_id: "",
+    }));
   };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
 
+    // 🔥 MULTIPLE SELECT HANDLING
+    if (name === "sub_screening_vitals") {
+      const normalized = Array.isArray(value)
+        ? value.map(Number)
+        : [Number(value)];
+
+      setSelectedSubVitals(normalized);
+      setSelectData((prev) => ({
+        ...prev,
+        sub_screening_vitals: normalized,
+      }));
+      return;
+    }
+
+    // parent vitals
     if (name === "screening_vitals") {
-      const normalized = (Array.isArray(value) ? value : [value]).map(Number);
+      const normalized = Array.isArray(value)
+        ? value.map(Number)
+        : [Number(value)];
 
       setSelectedVitals(normalized);
       setSelectData((prev) => ({
         ...prev,
         screening_vitals: normalized,
       }));
-    } else {
-      setSelectData((prev) => ({
-        ...prev,
-        [name]: value,
-      }));
+      return;
     }
+
+    // other fields
+    setSelectData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   const resetForm = () => {
@@ -502,11 +547,11 @@ const AddSource = () => {
 
       formData.append(
         "screening_vitals",
-        JSON.stringify(selectedVitals) || "[]"
+        JSON.stringify(selectedVitals) || "[]",
       );
       formData.append(
         "sub_screening_vitals",
-        JSON.stringify(selectedSubVitals) || "[]"
+        JSON.stringify(selectedSubVitals) || "[]",
       );
 
       const userID = localStorage.getItem("userID");
@@ -573,7 +618,7 @@ const AddSource = () => {
               method: "PUT",
               body: formData,
               headers: { Authorization: `Bearer ${accessToken}` },
-            }
+            },
           );
 
           if (response.status === 200) {
@@ -582,8 +627,8 @@ const AddSource = () => {
 
             setTableInfo((prev) =>
               prev.map((row) =>
-                row.ws_pk_id === selectedRow ? { ...row, ...data } : row
-              )
+                row.ws_pk_id === selectedRow ? { ...row, ...data } : row,
+              ),
             );
             // Populate form fields with updated data
             setSelectData({
@@ -614,7 +659,7 @@ const AddSource = () => {
             // ✅ Do NOT resetForm() here
           } else {
             setSnackbarMessage(
-              `Error updating source. Status: ${response.status}`
+              `Error updating source. Status: ${response.status}`,
             );
             setSnackbarSeverity("error");
             setSnackbarOpen(true);
@@ -629,7 +674,7 @@ const AddSource = () => {
     }
     // }
     else {
-      setSnackbarMessage("Form has errors. Please correct them.");
+      setSnackbarMessage("Please fill  all required fields. ");
       setSnackbarSeverity("warning");
       setSnackbarOpen(true);
     }
@@ -662,29 +707,29 @@ const AddSource = () => {
 
   const [getid, setidws] = useState([]);
   ///////// get API for Table //////////////
-  useEffect(() => {
-    if (!selectedTahsil) return;
-    const fetchData = async () => {
-      try {
-        const response = await fetch(
-          `${Port}/Screening/Workshop_Get/${selectedTahsil}/`,
-          {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          }
-        );
-        const data = await response.json();
-        setWorkshopList(data);
-        setidws(data.ws_pk_id);
-        setLoading(false);
-      } catch (error) {
-        console.log("Error fetching source data", error);
-        setLoading(false);
-      }
-    };
-    fetchData();
-  }, [selectedTahsil]);
+useEffect(() => {
+  if (!selectedTehsilNav) return;
+
+  const fetchData = async () => {
+    try {
+      const response = await fetch(
+        `${Port}/Screening/Workshop_list_get/${selectedTehsilNav}/`,
+        {
+          headers: { Authorization: `Bearer ${accessToken}` },
+        }
+      );
+      const data = await response.json();
+      setTableInfo(Array.isArray(data) ? data : []);
+      setLoading(false);
+    } catch (error) {
+      console.log("Error fetching workshop table data", error);
+      setLoading(false);
+    }
+  };
+
+  fetchData();
+}, [selectedTehsilNav]); // ✅ ONLY NAV STATE
+
 
   //////////////////// Delete
   const handleDelete = async () => {
@@ -705,8 +750,8 @@ const AddSource = () => {
 
       setTableInfo((prevTableInfo) =>
         prevTableInfo.filter(
-          (item) => item.source_pk_id !== selectData.source_pk_id
-        )
+          (item) => item.source_pk_id !== selectData.source_pk_id,
+        ),
       );
 
       console.log("After delete:", tableinfo);
@@ -766,6 +811,7 @@ const AddSource = () => {
       });
   }, []);
 
+  const [stateList, setStateList] = useState([]);
   //// Soure State against selected source
   useEffect(() => {
     const fetchStates = async () => {
@@ -775,6 +821,7 @@ const AddSource = () => {
         });
         const data = await res.json();
         setStateOptions(data); // ✅ sets options for form dropdown
+        setStateList(data); // ✅ sets options for nav dropdown
       } catch (err) {
         console.error("Error fetching states:", err);
       }
@@ -783,6 +830,7 @@ const AddSource = () => {
   }, []);
 
   //// Soure District against selected source state/////////
+  const [distList, setDistList] = useState([]);
   useEffect(() => {
     console.log("Selected State changed:", selectedState);
     const fetchDistricts = async () => {
@@ -792,11 +840,12 @@ const AddSource = () => {
           `${Port}/Screening/District_Get/${selectedState}/`,
           {
             headers: { Authorization: `Bearer ${accessToken}` },
-          }
+          },
         );
         const data = await res.json();
         console.log("Fetched Districts:", data);
         setDistrictOptions(data);
+        setDistList(data); // ✅ sets options for nav dropdown
       } catch (err) {
         console.error("Error fetching districts:", err);
       }
@@ -805,6 +854,7 @@ const AddSource = () => {
   }, [selectedState]);
 
   //// Soure Tehsil against selected source District/////////
+  const [tehList, setTehList] = useState([]);
   useEffect(() => {
     const fetchTehsils = async () => {
       if (!selectedDistrict) return; // wait until a district is selected
@@ -813,10 +863,11 @@ const AddSource = () => {
           `${Port}/Screening/Tehsil_Get/${selectedDistrict}/`,
           {
             headers: { Authorization: `Bearer ${accessToken}` },
-          }
+          },
         );
         const data = await res.json();
         setTalukaOptions(data);
+        setTehList(data); // ✅ sets options for nav dropdown
       } catch (err) {
         console.error("Error fetching tehsils:", err);
       }
@@ -883,6 +934,7 @@ const AddSource = () => {
   const [selectedSourceId, setSelectedSourceId] = useState("");
   const [selectedRow, setSelectedRow] = useState(null);
 
+  
   const handleTableRowClick = (info) => {
     setSelectedSourceId(info.ws_pk_id);
     setSelectedRow(info.ws_pk_id);
@@ -905,7 +957,7 @@ const AddSource = () => {
         `${Port}/Screening/Workshop_Update/${selectedRow}/`,
         {
           headers: { Authorization: `Bearer ${accessToken}` },
-        }
+        },
       );
 
       const data = await response.json();
@@ -932,7 +984,7 @@ const AddSource = () => {
       setSelectedVitals(
         Array.isArray(data.screening_vitals)
           ? data.screening_vitals.map(Number)
-          : []
+          : [],
       );
       setSelectedSubVitals(data.sub_screening_vitals || []);
 
@@ -1030,7 +1082,7 @@ const AddSource = () => {
                   fullWidth
                   select
                   size="small"
-                  label=" State"
+                  label="State"
                   name="ws_state"
                   variant="outlined"
                   value={selectedState}
@@ -1047,8 +1099,7 @@ const AddSource = () => {
                     },
                   }}
                 >
-                  <MenuItem value="">Workshop State</MenuItem>
-                  {stateOptions.map((drop) => (
+                  {stateList.map((drop) => (
                     <MenuItem key={drop.state_id} value={drop.state_id}>
                       {drop.state_name}
                     </MenuItem>
@@ -1081,7 +1132,7 @@ const AddSource = () => {
                   <MenuItem value="" disabled>
                     Select District
                   </MenuItem>
-                  {districtOptions.map((drop) => (
+                  {distList.map((drop) => (
                     <MenuItem key={drop.dist_id} value={drop.dist_id}>
                       {drop.dist_name}
                     </MenuItem>
@@ -1114,7 +1165,7 @@ const AddSource = () => {
                   <MenuItem value="" disabled>
                     Select Tehsil
                   </MenuItem>
-                  {talukaOptions.map((drop) => (
+                  {tehList.map((drop) => (
                     <MenuItem key={drop.tal_id} value={drop.tal_id}>
                       {drop.tahsil_name}
                     </MenuItem>
@@ -1342,6 +1393,7 @@ const AddSource = () => {
                         !!errors.mobile_no && errors.mobile_no !== "Verified"
                       }
                       helperText={errors.mobile_no}
+                      inputProps={{ maxLength: 10 }}
                     />
                   </Grid>
 
@@ -1352,8 +1404,9 @@ const AddSource = () => {
                       name="email_id"
                       value={selectData.email_id}
                       onChange={handleChange}
+                      onBlur={handleEmailBlur} // 🔥 validation here
                       size="small"
-                      // disabled={!isFormEnabled}
+                      type="email"
                       error={
                         !!errors.email_id && errors.email_id !== "Verified"
                       }
@@ -1401,14 +1454,13 @@ const AddSource = () => {
                                 .map((val) => {
                                   const vital = screeningVitals.find(
                                     (v) =>
-                                      Number(v.sc_list_pk_id) === Number(val)
+                                      Number(v.sc_list_pk_id) === Number(val),
                                   );
                                   return vital?.screening_list;
                                 })
                                 .filter(Boolean)
                                 .join(", "),
                       }}
-                      // InputLabelProps={{ shrink: true }}
                     >
                       {screeningVitals.map((vital) => (
                         <MenuItem
@@ -1417,7 +1469,7 @@ const AddSource = () => {
                         >
                           <Checkbox
                             checked={selectedVitals.includes(
-                              Number(vital.sc_list_pk_id)
+                              Number(vital.sc_list_pk_id),
                             )}
                           />
                           <ListItemText primary={vital.screening_list} />
@@ -1428,53 +1480,55 @@ const AddSource = () => {
 
                   {selectedVitalId === 5 && (
                     <Grid item xs={12} sm={6}>
-                      <FormControl
+                      <TextField
+                        select
                         fullWidth
                         size="small"
+                        label="Sub Vitals"
+                        name="sub_screening_vitals"
                         disabled={!isFormEnabled}
+                        value={selectedSubVitals}
+                        onChange={handleChange}
+                        SelectProps={{
+                          multiple: true,
+                          renderValue: (selected) =>
+                            selected.length === 0
+                              ? ""
+                              : selected
+                                  .map((val) => {
+                                    const subVital = subScreening.find(
+                                      (v) =>
+                                        Number(v.sc_sub_list_pk_id) ===
+                                        Number(val),
+                                    );
+                                    return subVital?.sub_list;
+                                  })
+                                  .filter(Boolean)
+                                  .join(", "),
+                        }}
+                        sx={{
+                          "& .MuiSelect-select": {
+                            color: "#000 !important",
+                            whiteSpace: "nowrap", // 🔥 HEIGHT FIX
+                            overflow: "hidden",
+                            textOverflow: "ellipsis",
+                          },
+                        }}
                       >
-                        <InputLabel>Sub Vitals *</InputLabel>
-                        <Select
-                          multiple
-                          value={selectedSubVitals}
-                          onChange={handleChange}
-                          name="sub_screening_vitals"
-                          renderValue={(selected) =>
-                            selected
-                              .map((val) => {
-                                const subVital = subScreening.find(
-                                  (v) => v.sc_sub_list_pk_id === val
-                                );
-                                return subVital ? subVital.sub_list : "";
-                              })
-                              .join(", ")
-                          }
-                          sx={{
-                            "& .MuiInputBase-input.MuiSelect-select": {
-                              color: "#000 !important",
-                            },
-                            "& .MuiSvgIcon-root": {
-                              color: "#000",
-                            },
-                          }}
-                        >
-                          {subScreening.map((subVital) => (
-                            <MenuItem
-                              key={subVital.sc_sub_list_pk_id}
-                              value={subVital.sc_sub_list_pk_id}
-                            >
-                              <Checkbox
-                                checked={
-                                  selectedSubVitals.indexOf(
-                                    subVital.sc_sub_list_pk_id
-                                  ) > -1
-                                }
-                              />
-                              {subVital.sub_list}
-                            </MenuItem>
-                          ))}
-                        </Select>
-                      </FormControl>
+                        {subScreening.map((subVital) => (
+                          <MenuItem
+                            key={subVital.sc_sub_list_pk_id}
+                            value={Number(subVital.sc_sub_list_pk_id)}
+                          >
+                            <Checkbox
+                              checked={selectedSubVitals.includes(
+                                Number(subVital.sc_sub_list_pk_id),
+                              )}
+                            />
+                            <ListItemText primary={subVital.sub_list} />
+                          </MenuItem>
+                        ))}
+                      </TextField>
                     </Grid>
                   )}
 
@@ -1598,7 +1652,7 @@ const AddSource = () => {
                       >
                         <TextField
                           fullWidth
-                          label="Address *"
+                          label="Workshop Address"
                           name="ws_address"
                           value={gisAddress}
                           onChange={(e) => setGisAddress(e.target.value)}
@@ -1721,110 +1775,95 @@ const AddSource = () => {
                   <CircularProgress sx={{ color: "#1439A4" }} />
                 </Box>
               ) : paginatedData.length === 0 ? (
-                <TableRow>
-                  <TableCell colSpan={3} align="center">
-                    No results found
-                  </TableCell>
-                </TableRow>
+                <Box textAlign="center" py={2}>
+                  No results found
+                </Box>
               ) : (
-                <Box>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      background:
-                        "linear-gradient(90deg, #2FB3F5 0%, #1439A4 100%)",
-                      color: "white",
-                      borderRadius: "20px",
-                      px: 1,
-                      py: 1,
-                      mb: 2,
-                      fontFamily: "Roboto,sans-serif",
-                      fontSize: "13px",
-                      fontWeight: 550,
-                      textAlign: "center",
-                    }}
-                  >
-                    <Box sx={{ flex: 0.8, borderRight: "1px solid white" }}>
-                      Sr No
+                // 🔥 Horizontal Scroll Wrapper
+                <Box
+                  sx={{
+                    width: "100%",
+                    overflowX: {
+                      xs: "auto", // 📱 mobile → scroll
+                      sm: "auto", // tablets (optional)
+                      md: "hidden", // 💻 desktop → no scroll
+                    },
+                  }}
+                >
+                  {/* Minimum width forces scroll on small screens */}
+                  <Box sx={{ minWidth: 600 }}>
+                    {/* Header */}
+                    <Box
+                      sx={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        background:
+                          "linear-gradient(90deg, #2FB3F5 0%, #1439A4 100%)",
+                        color: "white",
+                        borderRadius: "20px",
+                        px: 1,
+                        py: 1,
+                        mb: 2,
+                        fontFamily: "Roboto,sans-serif",
+                        fontSize: "13px",
+                        fontWeight: 550,
+                        textAlign: "center",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      <Box sx={{ flex: 0.8, borderRight: "1px solid white" }}>
+                        Sr No
+                      </Box>
+                      <Box sx={{ flex: 2, borderRight: "1px solid white" }}>
+                        Workshop Name
+                      </Box>
+                      <Box sx={{ flex: 2 }}>Registration Number</Box>
                     </Box>
-                    <Box sx={{ flex: 2, borderRight: "1px solid white" }}>
-                      Workshop Name
-                    </Box>
-                    <Box sx={{ flex: 2 }}>Registration Number</Box>
-                  </Box>
 
-                  <Box>
-                    {paginatedData
-                      // .slice(page * rowsPerPage, (page + 1) * rowsPerPage)
-                      .map((info, index) => {
-                        const serialNumber = index + 1 + page * rowsPerPage;
+                    {/* Rows */}
+                    {paginatedData.map((info, index) => {
+                      const serialNumber = index + 1 + page * rowsPerPage;
 
-                        return (
-                          <Card
-                            key={info.ws_pk_id}
-                            onClick={() => handleTableRowClick(info)}
-                            elevation={0}
-                            sx={{
-                              mb: 1,
-                              display: "flex",
-                              borderRadius: "20px",
-                              border: "none",
-                              boxShadow: "none",
-                              cursor: "pointer",
-                              transition: "0.3s",
-                              p: 1.5,
-                              textAlign: "center",
-
-                              borderRadiusTopleft:
-                                selectedRow === info.ws_pk_id
-                                  ? "2px solid red"
-                                  : "0px",
+                      return (
+                        <Card
+                          key={info.ws_pk_id}
+                          onClick={() => handleTableRowClick(info)}
+                          elevation={0}
+                          sx={{
+                            mb: 1,
+                            display: "flex",
+                            borderRadius: "20px",
+                            cursor: "pointer",
+                            p: 1.5,
+                            textAlign: "center",
+                            whiteSpace: "nowrap",
+                            transition: "0.3s",
+                            backgroundColor:
+                              selectedRow === info.ws_pk_id ? "#fff" : "#fff",
+                            "&:hover": {
                               backgroundColor:
                                 selectedRow === info.ws_pk_id
-                                  ? "white"
-                                  : "white",
-                              "&:hover": {
-                                backgroundColor:
-                                  selectedRow === info.ws_pk_id
-                                    ? "#d7d7d7ff"
-                                    : "#F9FAFB",
-                              },
-                            }}
+                                  ? "#d7d7d7ff"
+                                  : "#F9FAFB",
+                            },
+                          }}
+                        >
+                          <Box sx={{ flex: 0.8, fontSize: "13px" }}>
+                            {serialNumber}
+                          </Box>
+                          <Box
+                            sx={{ flex: 2, fontSize: "13px", fontWeight: 500 }}
                           >
-                            <Box
-                              sx={{
-                                flex: 0.8,
-                                fontFamily: "Roboto,sans-serif",
-                                fontSize: "13px",
-                                fontWeight: 50,
-                              }}
-                            >
-                              {serialNumber}
-                            </Box>
-                            <Box
-                              sx={{
-                                flex: 2,
-                                fontFamily: "Roboto,sans-serif",
-                                fontSize: "13px",
-                                fontWeight: 500,
-                              }}
-                            >
-                              {info.Workshop_name}
-                            </Box>
-                            <Box
-                              sx={{
-                                flex: 2,
-                                fontFamily: "Roboto,sans-serif",
-                                fontSize: "13px",
-                                fontWeight: 500,
-                              }}
-                            >
-                              {info.registration_no}
-                            </Box>
-                          </Card>
-                        );
-                      })}
+                            {info.Workshop_name}
+                          </Box>
+                          <Box
+                            sx={{ flex: 2, fontSize: "13px", fontWeight: 500 }}
+                          >
+                            {info.registration_no}
+                          </Box>
+                        </Card>
+                      );
+                    })}
                   </Box>
                 </Box>
               )}
@@ -1841,12 +1880,6 @@ const AddSource = () => {
                 labelDisplayedRows={({ from, to }) =>
                   `${from}–${to} | Page ${page + 1} of ${totalPages}`
                 }
-                sx={{
-                  "& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows":
-                    {
-                      fontSize: "0.875rem",
-                    },
-                }}
               />
             </Box>
           </Box>

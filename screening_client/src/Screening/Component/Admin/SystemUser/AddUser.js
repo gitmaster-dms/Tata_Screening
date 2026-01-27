@@ -37,6 +37,7 @@ import {
   Alert,
   Snackbar,
   Tooltip,
+  TableContainer,
 } from "@mui/material";
 import { API_URL } from "../../../../Config/api";
 
@@ -59,8 +60,8 @@ const AddUser = () => {
       p.modules_submodule.some(
         (m) =>
           m.moduleName === "System User" &&
-          m.selectedSubmodules.some((s) => s.submoduleName === "Add")
-      )
+          m.selectedSubmodules.some((s) => s.submoduleName === "Add"),
+      ),
     );
     setCanAddUser(hasAddCitizenPermission);
     // Check if the user has permission for the "Delete" submodule
@@ -68,8 +69,8 @@ const AddUser = () => {
       p.modules_submodule.some(
         (m) =>
           m.moduleName === "System User" &&
-          m.selectedSubmodules.some((s) => s.submoduleName === "Delete")
-      )
+          m.selectedSubmodules.some((s) => s.submoduleName === "Delete"),
+      ),
     );
     setCanDelete(hasDeletePermission);
 
@@ -78,8 +79,8 @@ const AddUser = () => {
       p.modules_submodule.some(
         (m) =>
           m.moduleName === "System User" &&
-          m.selectedSubmodules.some((s) => s.submoduleName === "Edit")
-      )
+          m.selectedSubmodules.some((s) => s.submoduleName === "Edit"),
+      ),
     );
     setCanEdit(hasEditPermission);
 
@@ -88,8 +89,8 @@ const AddUser = () => {
       p.modules_submodule.some(
         (m) =>
           m.moduleName === "System User" &&
-          m.selectedSubmodules.some((s) => s.submoduleName === "View")
-      )
+          m.selectedSubmodules.some((s) => s.submoduleName === "View"),
+      ),
     );
     setCanView(hasViewPermission);
   }, []);
@@ -138,7 +139,7 @@ const AddUser = () => {
 
   const [sourceOptionNav, setSourceOptionNav] = useState([]);
   const [selectedSourceeNav, setSelectedSourceeNav] = useState(
-    SourceUrlId || ""
+    SourceUrlId || "",
   );
 
   const [stateOptionsNav, setStateOptionsNav] = useState([]);
@@ -179,6 +180,8 @@ const AddUser = () => {
   const [updateModel, setUpdateModel] = useState(false); ////////////// Mandotory Fields
   const [existModel, setExistModel] = useState(false); ////////////// ExistFields
   const [formEnabled, setFormEnabled] = useState(false); ////////// disabled
+  console.log(formEnabled, "formEnabled");
+
   const [loading, setLoading] = useState(true);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
 
@@ -266,7 +269,7 @@ const AddUser = () => {
         .catch((error) => {
           console.error(
             "Error fetching Source Name against Taluka data:",
-            error
+            error,
           );
         });
     }
@@ -381,7 +384,7 @@ const AddUser = () => {
         .catch((error) => {
           console.error(
             "Error fetching Source Name against Taluka data:",
-            error
+            error,
           );
         });
     }
@@ -418,7 +421,7 @@ const AddUser = () => {
         .catch((error) => {
           console.error(
             "Error fetching Source Name against Taluka data:",
-            error
+            error,
           );
         });
     }
@@ -435,7 +438,7 @@ const AddUser = () => {
             headers: {
               Authorization: `Bearer ${accessToken}`,
             },
-          }
+          },
         );
         setTableData(response.data);
         // console.log(tableData);
@@ -655,8 +658,8 @@ const AddUser = () => {
 
     if (!formData.clg_mobile_no) {
       tempErrors.clg_mobile_no = "Mobile Number is required";
-    } else if (formData.clg_mobile_no.length !== 10) {
-      tempErrors.clg_mobile_no = "Mobile must be 10 digits";
+      // } else if (formData.clg_mobile_no.length !== 10) {
+      //   tempErrors.clg_mobile_no = "Mobile must be 10 digits";
     }
 
     if (!formData.clg_email) {
@@ -679,7 +682,7 @@ const AddUser = () => {
     // ❌ Form invalid → Mandatory Modal + Snackbar
     if (!validateForm()) {
       setMandotoryModel(true);
-      showSnackbar("Please fix the errors!", "error");
+      showSnackbar("Please fix the Mandatory Fields!", "error");
       return;
     }
 
@@ -799,9 +802,7 @@ const AddUser = () => {
 
       console.log("Fetched Data:", data);
       console.log(data.source_id, "hhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
-      setFormAction("edit");
       setGetid(data.pk);
-      setFormEnabled(true);
       setFormData((prev) => ({
         ...prev,
         clg_ref_id: data.clg_ref_id,
@@ -933,18 +934,23 @@ const AddUser = () => {
     const q = searchQuery.toLowerCase();
     return tableData.filter((row) =>
       Object.values(row).some(
-        (val) => val && val.toString().toLowerCase().includes(q)
-      )
+        (val) => val && val.toString().toLowerCase().includes(q),
+      ),
     );
   }, [tableData, searchQuery]);
 
   const startIndex = page * rowsPerPage;
   const paginatedData = filteredData.slice(
     startIndex,
-    startIndex + rowsPerPage
+    startIndex + rowsPerPage,
   );
 
   const [formAction, setFormAction] = useState("");
+  useEffect(() => {
+    if (formAction === "view") {
+      setFormEnabled(false);
+    }
+  }, [formAction]);
   const startAddMode = () => {
     // 1️⃣ Full form reset
     resetForm();
@@ -962,7 +968,7 @@ const AddUser = () => {
 
   return (
     <Box sx={{ p: 1.5, m: "0em 0em 0 2.6em" }}>
-      <Snackbar
+      {/* <Snackbar
         open={snackbar.open}
         autoHideDuration={3000}
         onClose={() => setSnackbar({ ...snackbar, open: false })}
@@ -976,7 +982,7 @@ const AddUser = () => {
         >
           {snackbar.message}
         </Alert>
-      </Snackbar>
+      </Snackbar> */}
       <Card
         sx={{
           borderRadius: 3,
@@ -1221,13 +1227,22 @@ const AddUser = () => {
                         p: 0.1,
                       }}
                     >
-                      <IconButton color="primary" onClick={startAddMode}>
+                      <IconButton
+                        color="primary"
+                        onClick={(e) => {
+                          e.stopPropagation(); // 🔥
+                          startAddMode();
+                          setFormEnabled(true);
+                          setFormAction("add");
+                        }}
+                      >
                         <Add />
                       </IconButton>
 
                       <IconButton
                         color="primary"
-                        onClick={() => {
+                        onClick={(e) => {
+                          e.stopPropagation(); // 🔥 VERY IMPORTANT
                           setUpdateSrc(true);
                           setFormEnabled(true);
                           setFormAction("update");
@@ -1253,6 +1268,7 @@ const AddUser = () => {
                         <FormControl fullWidth>
                           <InputLabel>Workshop</InputLabel>
                           <Select
+                            disabled={!formEnabled}
                             sx={{
                               minWidth: 120,
                               "& .MuiInputBase-input.MuiSelect-select": {
@@ -1268,7 +1284,6 @@ const AddUser = () => {
                             onChange={handleChange}
                             label="Source"
                             error={!!errors.clg_source}
-                            disabled={!formEnabled}
                             helperText={errors.clg_source}
                           >
                             <MenuItem value="">
@@ -1312,6 +1327,7 @@ const AddUser = () => {
                             value={selectedState}
                             onChange={handleChange}
                             label="Source State"
+                            disabled={!formEnabled}
                           >
                             <MenuItem value="">
                               {formData.state_name || "Select State"}
@@ -1348,6 +1364,7 @@ const AddUser = () => {
                               },
                             }}
                             size="small"
+                            disabled={!formEnabled}
                             name="clg_district_id"
                             value={selectedDistrict}
                             onChange={handleChange}
@@ -1388,6 +1405,7 @@ const AddUser = () => {
                               },
                             }}
                             size="small"
+                            disabled={!formEnabled}
                             name="clg_tehsil_id"
                             value={selectedTaluka}
                             onChange={handleChange}
@@ -1419,6 +1437,7 @@ const AddUser = () => {
                           <InputLabel>Workshop Name</InputLabel>
                           <Select
                             size="small"
+                            disabled={!formEnabled}
                             name="clg_source_name"
                             value={formData.clg_source_name || ""}
                             onChange={handleChange}
@@ -1469,6 +1488,7 @@ const AddUser = () => {
                               },
                             }}
                             size="small"
+                            disabled={!formEnabled}
                             name="grp_id"
                             value={selectedRole}
                             onChange={handleChange}
@@ -1508,6 +1528,7 @@ const AddUser = () => {
                             },
                           }}
                           size="small"
+                          disabled={!formEnabled}
                           label="Name"
                           name="clg_ref_id"
                           value={formData.clg_ref_id}
@@ -1533,6 +1554,7 @@ const AddUser = () => {
                               },
                             }}
                             size="small"
+                            disabled={!formEnabled}
                             name="clg_gender"
                             value={formData.clg_gender}
                             onChange={handleChange}
@@ -1574,6 +1596,7 @@ const AddUser = () => {
                             },
                           }}
                           size="small"
+                          disabled={!formEnabled}
                           label="DOB"
                           name="clg_Date_of_birth"
                           type="date"
@@ -1600,6 +1623,7 @@ const AddUser = () => {
                             },
                           }}
                           size="small"
+                          disabled={!formEnabled}
                           label="Mobile Number"
                           name="clg_mobile_no"
                           value={formData.clg_mobile_no}
@@ -1629,6 +1653,7 @@ const AddUser = () => {
                             },
                           }}
                           size="small"
+                          disabled={!formEnabled}
                           label="Email ID"
                           name="clg_email"
                           value={formData.clg_email}
@@ -1652,6 +1677,7 @@ const AddUser = () => {
                             },
                           }}
                           size="small"
+                          disabled={!formEnabled}
                           label="Address"
                           name="clg_address"
                           value={formData.clg_address}
@@ -1693,55 +1719,67 @@ const AddUser = () => {
 
           <Grid item xs={12} md={showForm ? 6 : 12}>
             <Card elevation={4}>
-              <CardContent>
-                <Grid
-                  container
-                  spacing={2}
-                  alignItems="end"
-                  justifyContent="end"
-                  sx={{ mb: 1 }}
-                >
-                  <Grid container alignItems="center" sx={{ mt: 1 }}>
-                    {/* Empty space that pushes search field to the right */}
-                    <Grid item xs />
-
-                    {/* Search field at the end */}
-                    <Grid item xs={12} sm={6} md={3}>
-                      <TextField
-                        sx={{
-                          minWidth: 120,
-                          "& .MuiInputBase-input.MuiSelect-select": {
-                            color: "#000 !important",
-                          },
-                          "& .MuiSvgIcon-root": {
-                            color: "#000",
-                          },
-                        }}
-                        size="small"
-                        label="Search User"
-                        fullWidth
-                        value={searchQuery}
-                        onChange={(e) => {
-                          setSearchQuery(e.target.value);
-                          setPage(0); //  new search → always go to first page (0)
-                        }}
-                      />
-                    </Grid>
-                  </Grid>
+              <Grid
+                container
+                spacing={2}
+                alignItems="end"
+                justifyContent="end"
+                sx={{ mb: 1 }}
+              >
+                <Grid container alignItems="center" sx={{ mt: 1 }}>
+                  {/* Empty space that pushes search field to the right */}
+                  <Grid item xs />
                 </Grid>
+              </Grid>
+            </Card>
 
-                {loading ? (
+            {/* Search field at the end */}
+            <Grid item xs={12} sm={6} md={3} sx={{ mb: 1 }}>
+              <TextField
+                sx={{
+                  minWidth: 120,
+                  "& .MuiInputBase-input.MuiSelect-select": {
+                    color: "#000 !important",
+                  },
+                  "& .MuiSvgIcon-root": {
+                    color: "#000",
+                  },
+                }}
+                size="small"
+                label="Search User"
+                fullWidth
+                value={searchQuery}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setPage(0); //  new search → always go to first page (0)
+                }}
+              />
+            </Grid>
+
+            {loading ? (
+              <Box
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                height="50vh"
+              >
+                <CircularProgress />
+              </Box>
+            ) : (
+              <>
+                {/* 🔥 RESPONSIVE HORIZONTAL SCROLL WRAPPER */}
+                <Box
+                  sx={{
+                    width: "100%",
+                    overflowX: { xs: "auto", md: "hidden" }, // small screen only
+                  }}
+                >
                   <Box
-                    display="flex"
-                    justifyContent="center"
-                    alignItems="center"
-                    height="50vh"
+                    sx={{
+                      minWidth: { xs: 750, md: "100%" }, // force scroll on mobile
+                    }}
                   >
-                    <CircularProgress />
-                  </Box>
-                ) : (
-                  <>
-                    {/* TABLE HEADER */}
+                    {/* ================= TABLE HEADER ================= */}
                     <Table
                       size="small"
                       sx={{
@@ -1749,34 +1787,36 @@ const AddUser = () => {
                         borderSpacing: 0,
                         borderRadius: "20px",
                         overflow: "hidden",
+                        whiteSpace: "nowrap",
                       }}
                     >
                       <TableHead>
                         <TableRow
                           sx={{
                             display: "flex",
-                            alignItems: "center", // 🔥 vertical center
+                            alignItems: "center",
                             background:
                               "linear-gradient(90deg, #2FB3F5 0%, #1439A4 100%)",
-                            minHeight: 40, // 🔥 reduce header height
+                            minHeight: 35,
                           }}
                         >
                           <CardContent
                             sx={{
                               flex: 0.5,
-                              py: 0.5, // 🔥 reduce padding
-                              px: 1,
                               textAlign: "center",
                               borderRight: "1px solid #fff",
+                              p: "0px !important",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
                             }}
                           >
                             <Typography
                               sx={{
-                                fontFamily: "Roboto, sans-serif",
                                 fontSize: "13px",
                                 fontWeight: 550,
                                 color: "#fff",
-                                lineHeight: 1.2,
+                                fontFamily: "Roboto",
                               }}
                             >
                               Sr No
@@ -1786,19 +1826,19 @@ const AddUser = () => {
                           <CardContent
                             sx={{
                               flex: 2,
-                              py: 0.5,
-                              px: 1,
                               textAlign: "center",
                               borderRight: "1px solid #fff",
+                              p: "0px !important",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
                             }}
                           >
                             <Typography
                               sx={{
-                                fontFamily: "Roboto, sans-serif",
                                 fontSize: "13px",
                                 fontWeight: 550,
                                 color: "#fff",
-                                lineHeight: 1.2,
                               }}
                             >
                               Name
@@ -1808,19 +1848,19 @@ const AddUser = () => {
                           <CardContent
                             sx={{
                               flex: 1.5,
-                              py: 0.5,
-                              // px: 1,
                               textAlign: "center",
                               borderRight: "1px solid #fff",
+                              p: "0px !important",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
                             }}
                           >
                             <Typography
                               sx={{
-                                fontFamily: "Roboto, sans-serif",
                                 fontSize: "13px",
                                 fontWeight: 550,
                                 color: "#fff",
-                                lineHeight: 1.2,
                               }}
                             >
                               Mobile Number
@@ -1830,19 +1870,18 @@ const AddUser = () => {
                           <CardContent
                             sx={{
                               flex: 1,
-                              py: 0.5,
-                              // px: 1,
                               textAlign: "center",
+                              p: "0px !important",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
                             }}
                           >
                             <Typography
                               sx={{
-                                fontFamily: "Roboto, sans-serif",
                                 fontSize: "13px",
                                 fontWeight: 550,
                                 color: "#fff",
-                                // px: 1,
-                                // lineHeight: 1.2,
                               }}
                             >
                               Email Id
@@ -1852,34 +1891,29 @@ const AddUser = () => {
                       </TableHead>
                     </Table>
 
+                    {/* ================= TABLE BODY ================= */}
                     <Box
                       sx={{
+                        mt: 1,
                         overflowY: "auto",
-                        // Responsive heights for different breakpoints
+                        whiteSpace: "nowrap",
                         maxHeight: {
-                          xs: 200, // small screens
-                          sm: 250, // tablets
-                          md: 269, // desktop
+                          xs: 200,
+                          sm: 250,
+                          md: 269,
                         },
                       }}
                     >
                       {paginatedData.length > 0 ? (
                         paginatedData.map((item, index) => {
                           const serialNumber = startIndex + index + 1;
-                          const isSelected = selectedRowIndex === item.pk;
 
                           return (
                             <Card
-                              // key={item.pk ?? index}
-                              // elevation={isSelected ? 6 : 2}
+                              key={item.pk}
                               sx={{
                                 mb: 1,
                                 height: "40px",
-                                // p: 1,
-                                // cursor: "pointer",
-                                // bgcolor: isSelected ? "#E3F2FD" : "#fff",
-                                // transition: "all 0.2s ease-in-out",
-                                // "&:hover": { boxShadow: 6 },
                                 borderRadius: "2px",
                                 fontSize: "13px",
                                 fontWeight: 500,
@@ -1888,64 +1922,39 @@ const AddUser = () => {
                               onClick={() => {
                                 handleTableRowClick(item.pk);
                                 setFormAction("view");
+                                setFormEnabled(false);
                               }}
                             >
-                              <CardContent sx={{ p: 1 }}>
-                                <Grid
-                                  container
-                                  textAlign="center"
-                                  justifyContent={"center"}
-                                >
+                              <CardContent sx={{ p: "6px !important" }}>
+                                <Grid container textAlign="center">
                                   <Grid item sx={{ flex: 0.5 }}>
-                                    <Typography
-                                      sx={{
-                                        fontSize: "14px",
-                                        fontWeight: 500,
-                                        fontFamily: "Roboto,sans-serif",
-                                      }}
-                                    >
+                                    <Typography fontSize="13px">
                                       {serialNumber}
                                     </Typography>
                                   </Grid>
 
                                   <Grid item sx={{ flex: 2 }}>
-                                    <Typography
-                                      sx={{
-                                        fontSize: "13px",
-                                        fontWeight: 500,
-                                        fontFamily: "Roboto,sans-serif",
-                                      }}
-                                    >
+                                    <Typography fontSize="13px">
                                       {item.clg_ref_id}
                                     </Typography>
                                   </Grid>
 
-                                  <Grid item sx={{ flex: 2 }}>
-                                    <Typography
-                                      sx={{
-                                        fontSize: "13px",
-                                        fontWeight: 500,
-                                        fontFamily: "Roboto,sans-serif",
-                                      }}
-                                    >
+                                  <Grid item sx={{ flex: 1.5 }}>
+                                    <Typography fontSize="13px">
                                       {item.clg_mobile_no}
                                     </Typography>
                                   </Grid>
 
-                                  <Grid item sx={{ flex: showForm ? 1 : 1 }}>
+                                  <Grid item sx={{ flex: 1 }}>
                                     <Tooltip title={item.clg_email || ""} arrow>
                                       <Typography
                                         sx={{
-                                          textAlign: "center",
                                           fontSize: "13px",
-                                          fontWeight: 500,
-                                          fontFamily: "Roboto",
-                                          maxWidth: showForm ? 60 : 150, // 👈 control visible width
                                           overflow: "hidden",
-                                          textOverflow: "ellipsis", // 👈 half email show
+                                          textOverflow: "ellipsis",
                                           whiteSpace: "nowrap",
-                                          cursor: "pointer",
-                                          px: 1,
+                                          maxWidth: 150,
+                                          margin: "0 auto",
                                         }}
                                       >
                                         {item.clg_email}
@@ -1958,35 +1967,31 @@ const AddUser = () => {
                           );
                         })
                       ) : (
-                        <Typography
-                          align="center"
-                          sx={{ mt: 2, textAlign: "center" }}
-                        >
+                        <Typography align="center" sx={{ mt: 2 }}>
                           No data found
                         </Typography>
                       )}
                     </Box>
+                  </Box>
+                </Box>
 
-                    <Box display="flex" justifyContent="flex-end" mt={1}>
-                      <TablePagination
-                        component="div"
-                        count={filteredData.length}
-                        page={page}
-                        onPageChange={handleChangePage}
-                        rowsPerPage={rowsPerPage}
-                        onRowsPerPageChange={handleChangeRowsPerPage}
-                        rowsPerPageOptions={[5, 10, 20]}
-                        labelDisplayedRows={({ from, to, count, page }) =>
-                          `${from}–${to}  (Page ${page + 1})`
-                        }
-                      />
-                    </Box>
-
-                    {/* PAGINATION */}
-                  </>
-                )}
-              </CardContent>
-            </Card>
+                {/* ================= PAGINATION ================= */}
+                <Box display="flex" justifyContent="flex-end" mt={1}>
+                  <TablePagination
+                    component="div"
+                    count={filteredData.length}
+                    page={page}
+                    onPageChange={handleChangePage}
+                    rowsPerPage={rowsPerPage}
+                    onRowsPerPageChange={handleChangeRowsPerPage}
+                    rowsPerPageOptions={[5, 10, 20]}
+                    labelDisplayedRows={({ from, to }) =>
+                      `${from}–${to} (Page ${page + 1})`
+                    }
+                  />
+                </Box>
+              </>
+            )}
           </Grid>
         </Grid>
 

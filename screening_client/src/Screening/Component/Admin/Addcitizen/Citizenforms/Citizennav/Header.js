@@ -240,7 +240,7 @@ const Header = () => {
     }, []);
 
     return (
-        <Box sx={{ p: 2, m: "0em 0em 0 3.5em" }}>
+        <Box sx={{ p: 2, m: "0em 0em 0 2.5em" }}>
             <Paper elevation={3} sx={{ p: 3, borderRadius: 3 }}>
                 <Grid container alignItems="center" spacing={1} sx={{ mb: 2 }}>
                     <Grid item>

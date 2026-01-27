@@ -45,6 +45,7 @@ import {
   Paper,
   TableFooter,
 } from "@mui/material";
+import { API_URL } from "../../../../../Config/api";
 
 const HealthList = () => {
   const Port = process.env.REACT_APP_API_KEY;
@@ -91,7 +92,7 @@ const HealthList = () => {
     selectedStateNav,
     selectedDistrictNav,
     selectedTehsilNav,
-    selectedName
+    selectedName,
   );
   ///////////// scheudle API
   const [scheduleData, setScheduleData] = useState([]);
@@ -114,10 +115,11 @@ const HealthList = () => {
   const [auditory, setAuditory] = useState(null);
   const [vision, setVision] = useState(null);
   console.log(citizen, "citizencitizen....");
+  const [searchText, setSearchText] = useState("");
 
   const [isDataFetched, setIsDataFetched] = useState(false);
   const [selectedForm, setSelectedForm] = useState("");
-
+  const [selectedTalukaNav, setSelectedTalukaNav] = useState("");
   const handleFormClick = (formVital) => {
     console.log("Clicked form:", formVital); // Debugging: Check what gets passed
     setSelectedForm(formVital);
@@ -152,7 +154,7 @@ const HealthList = () => {
               headers: {
                 Authorization: `Bearer ${accessToken}`,
               },
-            }
+            },
           );
           const data = await res.json();
           setDistrictOptions(data);
@@ -182,6 +184,31 @@ const HealthList = () => {
     fetchStateNavOptions();
   }, []);
 
+  const [sourceNameNav, setSourceNameNav] = useState([]);
+  const [selectedNameNav, setSelectedNameNav] = useState("");
+  const [workshopList, setWorkshopList] = useState([]);
+  useEffect(() => {
+    if (!selectedTehsilNav) return;
+    const fetchData = async () => {
+      if (!selectedTehsilNav) return;
+      try {
+        const response = await fetch(
+          `${Port}/Screening/Workshop_list_get/${selectedTehsilNav}/`,
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          },
+        );
+        const data = await response.json();
+        setWorkshopList(data);
+      } catch (error) {
+        console.log("Error fetching source data", error);
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, [selectedTehsilNav]);
   //// Soure Tehsil against selected source District/////////
   useEffect(() => {
     const fetchTehsilNavOptions = async () => {
@@ -193,7 +220,7 @@ const HealthList = () => {
               headers: {
                 Authorization: `Bearer ${accessToken}`,
               },
-            }
+            },
           );
           const data = await res.json();
           setSourceTehsilNav(data);
@@ -206,40 +233,40 @@ const HealthList = () => {
   }, [selectedDistrictNav]);
 
   //// Soure Name against selected source district
-  useEffect(() => {
-    const fetchSourceNameOptions = async () => {
-      if (
-        selectedSource &&
-        selectedStateNav &&
-        selectedDistrictNav &&
-        selectedTehsilNav
-      ) {
-        try {
-          const res = await fetch(
-            `${Port}/Screening/Tehsil_Get/?SNid=${selectedTehsilNav}&So=${selectedSource}&source_pk_id=${SourceNameUrlId}`,
-            {
-              headers: {
-                Authorization: `Bearer ${accessToken}`,
-              },
-            }
-          );
-          const data = await res.json();
-          setSourceName(data);
-        } catch (error) {
-          console.error(
-            "Error fetching Source Name against Tehsil data:",
-            error
-          );
-        }
-      }
-    };
-    fetchSourceNameOptions();
-  }, [
-    selectedSource,
-    selectedStateNav,
-    selectedDistrictNav,
-    selectedTehsilNav,
-  ]);
+  // useEffect(() => {
+  //   const fetchSourceNameOptions = async () => {
+  //     if (
+  //       selectedSource &&
+  //       selectedStateNav &&
+  //       selectedDistrictNav &&
+  //       selectedTehsilNav
+  //     ) {
+  //       try {
+  //         const res = await fetch(
+  //           `${Port}/Screening/Tehsil_Get/?SNid=${selectedTehsilNav}&So=${selectedSource}&source_pk_id=${SourceNameUrlId}`,
+  //           {
+  //             headers: {
+  //               Authorization: `Bearer ${accessToken}`,
+  //             },
+  //           }
+  //         );
+  //         const data = await res.json();
+  //         setSourceName(data);
+  //       } catch (error) {
+  //         console.error(
+  //           "Error fetching Source Name against Tehsil data:",
+  //           error
+  //         );
+  //       }
+  //     }
+  //   };
+  //   fetchSourceNameOptions();
+  // }, [
+  //   selectedSource,
+  //   selectedStateNav,
+  //   selectedDistrictNav,
+  //   selectedTehsilNav,
+  // ]);
 
   ////////////// search API
   const [id, setId] = useState("");
@@ -352,7 +379,7 @@ const HealthList = () => {
   const handleFitness = async () => {
     if (!scheduleData || !selectedScheduleCount) {
       console.error(
-        "No data available for download or no schedule count selected"
+        "No data available for download or no schedule count selected",
       );
       return;
     }
@@ -364,7 +391,7 @@ const HealthList = () => {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
-        }
+        },
       );
       console.log(response);
 
@@ -410,7 +437,7 @@ const HealthList = () => {
           15,
           imageWidth,
           imageHeight,
-          borderRadius
+          borderRadius,
         ); // Adjust the coordinates, dimensions, and border radius as needed
       } else {
         // Show the default image if imageShows is not available
@@ -428,7 +455,7 @@ const HealthList = () => {
           20,
           19,
           defaultImageWidth,
-          defaultImageHeight
+          defaultImageHeight,
         ); // Adjust the coordinates and dimensions as needed
       }
 
@@ -513,7 +540,7 @@ const HealthList = () => {
         bmiCardHeight,
         borderRadius,
         borderRadius,
-        "F"
+        "F",
       );
 
       pdf.setTextColor(49, 55, 116); // RGB values corresponding to #313774
@@ -524,17 +551,17 @@ const HealthList = () => {
       pdf.text(
         `This is To certify that ${name} has Undergone the medical examination with us`,
         cardX1 + 5,
-        cardY1 + 14
+        cardY1 + 14,
       );
       pdf.text(
         `${currentDate} based on examination and investigation results is free from infection`,
         cardX1 + 5,
-        cardY1 + 21
+        cardY1 + 21,
       );
       pdf.text(
         `disease for which diagnostic tests have been carried out and is medically fit to continue duties.`,
         cardX1 + 5,
-        cardY1 + 28
+        cardY1 + 28,
       );
       pdf.setFont(fontSettings.font, "normal");
       pdf.setTextColor(0, 0, 0);
@@ -558,7 +585,7 @@ const HealthList = () => {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
-        }
+        },
       );
       const data = await response.json();
       setScheduleData(data);
@@ -597,6 +624,7 @@ const HealthList = () => {
   const [basicInfo2Data, setBasicInfo2Data] = useState([]);
   const [sourceOption, setSourceOption] = useState([]);
   const [selectedSourcee, setSelectedSourcee] = useState("");
+  const [selectedCitizen, setSelectedCitizen] = useState(null);
 
   const [stateOptions, setStateOptions] = useState([]);
   const [selectedState, setSelectedState] = useState("");
@@ -607,6 +635,36 @@ const HealthList = () => {
   const [talukaOptions, setTalukaOptions] = useState([]);
   const [selectedTaluka, setSelectedTaluka] = useState("");
 
+  const handleEyeClick1 = async (citizenId) => {
+    try {
+      const response = await axios.get(
+        `${API_URL}/Screening/healthcard_citizen_list/`,
+        {
+          params: {
+            source: selectedSource,
+            state_id: selectedStateNav || "",
+            district: selectedDistrictNav || "",
+            tehsil: selectedTehsilNav || "",
+            source_name: selectedName || "",
+            location: 1,
+          },
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        },
+      );
+
+      // citizen_id ke basis pe exact record nikalo
+      const citizen = response.data.find(
+        (item) => item.citizen_id === citizenId,
+      );
+
+      setSelectedCitizen(citizen || null);
+    } catch (error) {
+      console.error("Error fetching citizen details", error);
+    }
+  };
+
   const fetchCitizenVital = async (iddddddddddd) => {
     try {
       const res = await fetch(
@@ -615,7 +673,7 @@ const HealthList = () => {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
-        }
+        },
       );
       console.log("API RESPONSE", res);
       const data = await res.json();
@@ -785,8 +843,8 @@ const HealthList = () => {
     scheduleData && scheduleData?.Citizen_info?.[0]?.gender;
 
   const [searchQuery, setSearchQuery] = useState("");
-  const [filteredResults, setFilteredResults] = useState(searchResults);
-
+  const [filteredResult, setFilteredResults] = useState([]);
+  const [results, setResults] = useState([]);
   // new code
   // useEffect(() => {
   //   const filtered = searchResults.filter(
@@ -809,7 +867,7 @@ const HealthList = () => {
       (result) =>
         (result.name &&
           result.name.toLowerCase().includes(searchQuery.toLowerCase())) ||
-        (result.aadhar_id && result.aadhar_id.includes(searchQuery))
+        (result.aadhar_id && result.aadhar_id.includes(searchQuery)),
     );
 
     setFilteredResults(filtered);
@@ -819,10 +877,24 @@ const HealthList = () => {
     setSearchQuery(event.target.value);
   };
 
+  const filteredResults = results.filter((item) => {
+    const query = searchQuery.trim().toLowerCase();
+
+    if (!query) return true; // 🔥 show all when empty
+
+    return (
+      item.name?.toLowerCase().includes(query) ||
+      item.aadhar_id?.toString().includes(query)
+    );
+  });
+
   const slicedResults = filteredResults.slice(
     page * rowsPerPage,
-    page * rowsPerPage + rowsPerPage
+    page * rowsPerPage + rowsPerPage,
   );
+  useEffect(() => {
+    setPage(0);
+  }, [searchQuery]);
 
   const handleDownload = async () => {
     try {
@@ -835,14 +907,14 @@ const HealthList = () => {
           headers: {
             Authorization: `Bearer ${accessToken}`,
           },
-        }
+        },
       );
 
       console.log("API call response:", response);
 
       if (!response.ok) {
         throw new Error(
-          `Failed to fetch data: ${response.status} ${response.statusText}`
+          `Failed to fetch data: ${response.status} ${response.statusText}`,
         );
       }
 
@@ -960,7 +1032,7 @@ const HealthList = () => {
               headers: {
                 Authorization: `Bearer ${accessToken}`,
               },
-            }
+            },
           );
           const data = await response.json();
           if (data && data[0]) {
@@ -997,6 +1069,51 @@ const HealthList = () => {
   //     fetchForm();
   // }, []);
 
+  const fetchCitizenList = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get(
+        `${API_URL}/Screening/healthcard_citizen_list/`,
+        {
+          params: {
+            source: selectedSource || "",
+            state_id: selectedStateNav || "",
+            district: selectedDistrictNav || "",
+            tehsil: selectedTehsilNav || "",
+            source_name: selectedName || "",
+            location: 1, // if static
+          },
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        },
+      );
+
+      setResults(response.data || []);
+    } catch (error) {
+      console.error("Error fetching citizen list", error);
+      setResults([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+  const handleSearch = async (e) => {
+    fetchCitizenList();
+  };
+
+  useEffect(
+    () => {
+      fetchCitizenList();
+    },
+    [
+      // selectedSource,
+      // selectedStateNav,
+      // selectedDistrictNav,
+      // selectedTehsilNav,
+      // selectedName,
+    ],
+  );
+
   return (
     <Box sx={{ m: "0.1em 1em 0 3.5em" }}>
       <Card
@@ -1027,25 +1144,29 @@ const HealthList = () => {
             {/* Source */}
             <Grid item xs={12} sm={6} md={2}>
               <TextField
-                sx={{
-                  minWidth: 120,
-                  "& .MuiInputBase-input.MuiSelect-select": {
-                    color: "#000 !important",
-                  },
-                  "& .MuiSvgIcon-root": {
-                    color: "#000",
-                  },
-                }}
                 select
                 fullWidth
                 size="small"
                 label="Source"
                 value={selectedSource}
                 onChange={(e) => setSelectedSource(e.target.value)}
+                sx={{
+                  minWidth: 120,
+                  "& .MuiInputBase-input.MuiSelect-select": {
+                    color: "#000",
+                  },
+                  "& .MuiSvgIcon-root": {
+                    color: "#000",
+                  },
+                }}
               >
                 <MenuItem value="">Select Workshop</MenuItem>
+
                 {sourceNav.map((drop) => (
-                  <MenuItem key={drop.clg_source} value={drop.source_pk_id}>
+                  <MenuItem
+                    key={drop.clg_source}
+                    value={String(drop.source_pk_id)}
+                  >
                     {drop.source}
                   </MenuItem>
                 ))}
@@ -1156,16 +1277,25 @@ const HealthList = () => {
                 size="small"
                 label="Workshop Name"
                 variant="outlined"
-                value={selectedName}
-                onChange={(e) => setSelectedName(e.target.value)}
+                value={selectedNameNav}
+                onChange={(e) => setSelectedNameNav(e.target.value)}
                 InputLabelProps={{
                   style: { fontWeight: 100, fontSize: "14px" },
                 }}
+                sx={{
+                  minWidth: 120,
+                  "& .MuiInputBase-input.MuiSelect-select": {
+                    color: "#000 !important",
+                  },
+                  "& .MuiSvgIcon-root": {
+                    color: "#000",
+                  },
+                }}
               >
                 <MenuItem value="">Select Name</MenuItem>
-                {sourceName.map((drop) => (
-                  <MenuItem key={drop.source_pk_id} value={drop.source_pk_id}>
-                    {drop.source_names}
+                {workshopList.map((drop) => (
+                  <MenuItem key={drop.ws_pk_id} value={drop.ws_pk_id}>
+                    {drop.Workshop_name}
                   </MenuItem>
                 ))}
               </TextField>
@@ -1184,7 +1314,7 @@ const HealthList = () => {
               <Button
                 variant="contained"
                 size="small"
-                onClick={handlesubmit}
+                onClick={handleSearch}
                 sx={{
                   backgroundColor: "#0A70B7",
                   "&:hover": { backgroundColor: "#0A70B7" },
@@ -1200,23 +1330,12 @@ const HealthList = () => {
         </Box>
       </Card>
 
-      {/* <Grid container>
-        <Grid item xs={12} sm={8} md={4} sx={{ mt: 2 }}>
-          <input
-            className="form-control"
-            placeholder="Search Citizen..."
-            value={searchQuery}
-            onChange={handleSearchChange}
-          />
-        </Grid>
-      </Grid> */}
-
       <Box
         sx={{
           width: "100%",
           maxWidth: "100vw",
           overflowX: "hidden",
-          px: { xs: 1, sm: 2 },
+          // px: { xs: 1, sm: 2 },
         }}
       >
         <Grid container sx={{ mt: 1.5 }}>
@@ -1225,119 +1344,228 @@ const HealthList = () => {
             <Grid container spacing={1}>
               {/* ===== SEARCH HEADER (SAME HEIGHT AS TABLE HEADER) ===== */}
               <Grid item xs={12}>
-                <Box sx={{ width: { xs: "100%", sm: "80%" } }}>
-                  <input
+                <Box
+                  sx={{ width: { xs: "100%", sm: "80%", md: "60%" }, px: 1.5 }}
+                >
+                  <TextField
+                    size="small"
                     className="form-control"
                     placeholder="Search Citizen..."
-                    style={{ height: 36 }}
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
                   />
                 </Box>
               </Grid>
 
               {/* ===== TABLE (UNCHANGED) ===== */}
               <Grid item xs={12}>
-                <TableContainer>
-                  <Table
-                    size="small"
+                {/* 🔥 RESPONSIVE HORIZONTAL SCROLL (ONLY SMALL SCREEN) */}
+                <Box
+                  sx={{
+                    width: "100%",
+                    overflowX: { xs: "auto", md: "hidden" },
+                    WebkitOverflowScrolling: "touch",
+                  }}
+                >
+                  <Box
                     sx={{
-                      borderCollapse: "separate",
-                      borderSpacing: "0 1px",
-                      px: 1,
+                      minWidth: { xs: 750, md: "100%" }, // 👈 force scroll only on small screen
                     }}
                   >
-                    <TableHead>
-                      <TableRow>
-                        <TableCell
-                          colSpan={4}
-                          sx={{ p: 0, borderBottom: "none" }}
-                        >
-                          <Card
-                            sx={{
-                              background:
-                                "linear-gradient(90deg, #2FB3F5 0%, #1439A4 100%)",
-                              borderRadius: 20,
-                              height: 40, // 🔥 SAME HEIGHT
-                            }}
-                          >
-                            <Box
-                              sx={{
-                                display: "flex",
-                                alignItems: "center",
-                                height: "100%",
-                                px: 1,
-                              }}
+                    <TableContainer>
+                      <Table
+                        size="small"
+                        sx={{
+                          borderCollapse: "separate",
+                          borderSpacing: "0 1px",
+                          px: 1,
+                          whiteSpace: "nowrap", // 🔥 important
+                        }}
+                      >
+                        <TableHead>
+                          <TableRow>
+                            <TableCell
+                              colSpan={4}
+                              sx={{ p: 0, borderBottom: "none" }}
                             >
-                              <Typography sx={{ flex: 1.2, color: "#fff" }}>
-                                Citizen Name
-                              </Typography>
-                              <Typography
+                              <Card
                                 sx={{
-                                  flex: 1.5,
-                                  color: "#fff",
-                                  textAlign: "center",
+                                  background:
+                                    "linear-gradient(90deg, #2FB3F5 0%, #1439A4 100%)",
+                                  borderRadius: 20,
+                                  height: 35,
                                 }}
                               >
-                                Aadhar ID
-                              </Typography>
-                              <Typography
-                                sx={{
-                                  flex: 0.8,
-                                  color: "#fff",
-                                  textAlign: "center",
-                                }}
-                              >
-                                Action
-                              </Typography>
-                            </Box>
-                          </Card>
-                        </TableCell>
-                      </TableRow>
-                    </TableHead>
+                                <Box
+                                  sx={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    height: "100%",
+                                    px: 1,
+                                  }}
+                                >
+                                  <Typography
+                                    sx={{
+                                      flex: 0.5,
+                                      color: "#fff",
+                                      fontWeight: 600,
+                                      fontSize: "14px",
+                                      fontFamily: "Roboto, sans-serif",
+                                      textAlign: "center",
+                                      borderRight: "1px solid #fff",
+                                    }}
+                                  >
+                                    Sr.No
+                                  </Typography>
 
-                    <TableBody>
-                      {loading ? (
-                        <TableRow>
-                          <TableCell colSpan={3} align="center">
-                            <CircularProgress size={22} />
-                          </TableCell>
-                        </TableRow>
-                      ) : slicedResults.length === 0 ? (
-                        <TableRow>
-                          <TableCell colSpan={3} align="center">
-                            No data found
-                          </TableCell>
-                        </TableRow>
-                      ) : (
-                        slicedResults.map((result, index) => (
-                          <TableRow
-                            key={index}
-                            hover
-                            sx={{ cursor: "pointer" }}
-                            onClick={() => handleEyeClick(result.citizen_id)}
-                          >
-                            <TableCell>{result.name}</TableCell>
-                            <TableCell>{result.aadhar_id}</TableCell>
-                            <TableCell align="center">
-                              <RemoveRedEyeOutlinedIcon />
+                                  <Typography
+                                    sx={{
+                                      flex: 2,
+                                      color: "#fff",
+                                      fontWeight: 600,
+                                      fontSize: "14px",
+                                      fontFamily: "Roboto, sans-serif",
+                                      textAlign: "center",
+                                      borderRight: "1px solid #fff",
+                                    }}
+                                  >
+                                    Citizen Name
+                                  </Typography>
+
+                                  <Typography
+                                    sx={{
+                                      flex: 1.5,
+                                      color: "#fff",
+                                      fontWeight: 600,
+                                      fontSize: "14px",
+                                      fontFamily: "Roboto, sans-serif",
+                                      textAlign: "center",
+                                      borderRight: "1px solid #fff",
+                                    }}
+                                  >
+                                    Aadhar ID
+                                  </Typography>
+
+                                  <Typography
+                                    sx={{
+                                      flex: 0.5,
+                                      color: "#fff",
+                                      fontWeight: 600,
+                                      fontSize: "14px",
+                                      fontFamily: "Roboto, sans-serif",
+                                      textAlign: "center",
+                                    }}
+                                  >
+                                    Action
+                                  </Typography>
+                                </Box>
+                              </Card>
                             </TableCell>
                           </TableRow>
-                        ))
-                      )}
-                    </TableBody>
 
-                    <TableFooter>
-                      <TableRow>
-                        <TablePagination
-                          count={filteredResults.length}
-                          page={page}
-                          onPageChange={handleChangePage}
-                          rowsPerPage={rowsPerPage}
-                          onRowsPerPageChange={handleChangeRowsPerPage}
-                        />
-                      </TableRow>
-                    </TableFooter>
-                  </Table>
-                </TableContainer>
+                          {/* GAP BELOW HEADER */}
+                          <TableRow>
+                            <TableCell
+                              colSpan={4}
+                              sx={{ height: 8, p: 0, borderBottom: "none" }}
+                            />
+                          </TableRow>
+                        </TableHead>
+
+                        <TableBody>
+                          {loading ? (
+                            <TableRow>
+                              <TableCell colSpan={4} align="center">
+                                <CircularProgress size={22} />
+                              </TableCell>
+                            </TableRow>
+                          ) : slicedResults.length === 0 ? (
+                            <TableRow>
+                              <TableCell colSpan={4} align="center">
+                                No data found
+                              </TableCell>
+                            </TableRow>
+                          ) : (
+                            slicedResults.map((result, index) => (
+                              <TableRow
+                                key={index}
+                                sx={{ borderBottom: "none" }}
+                              >
+                                <TableCell
+                                  colSpan={4}
+                                  sx={{ p: 0, borderBottom: "none" }}
+                                >
+                                  <Card
+                                    sx={{
+                                      mb: 1,
+                                      borderRadius: 2,
+                                      cursor: "pointer",
+                                      "&:hover": { boxShadow: 3 },
+                                    }}
+                                    onClick={() =>
+                                      handleEyeClick(result.citizen_id)
+                                    }
+                                  >
+                                    <Box
+                                      sx={{
+                                        display: "flex",
+                                        alignItems: "center",
+                                        py: 0.5,
+                                      }}
+                                    >
+                                      <Box
+                                        sx={{ flex: 0.5, textAlign: "center" }}
+                                      >
+                                        {page * rowsPerPage + index + 1}
+                                      </Box>
+
+                                      <Box
+                                        sx={{ flex: 2, textAlign: "center" }}
+                                      >
+                                        {result.name}
+                                      </Box>
+
+                                      <Box
+                                        sx={{ flex: 1.5, textAlign: "center" }}
+                                      >
+                                        {result.aadhar_id || "N/A"}
+                                      </Box>
+
+                                      <Box
+                                        sx={{
+                                          flex: 0.5,
+                                          textAlign: "center",
+                                          cursor: "pointer",
+                                        }}
+                                        onClick={() =>
+                                          handleEyeClick1(result.citizen_id)
+                                        }
+                                      >
+                                        <RemoveRedEyeOutlinedIcon />
+                                      </Box>
+                                    </Box>
+                                  </Card>
+                                </TableCell>
+                              </TableRow>
+                            ))
+                          )}
+                        </TableBody>
+
+                        <TableFooter>
+                          <TableRow>
+                            <TablePagination
+                              count={filteredResults.length}
+                              page={page}
+                              onPageChange={handleChangePage}
+                              rowsPerPage={rowsPerPage}
+                              onRowsPerPageChange={handleChangeRowsPerPage}
+                            />
+                          </TableRow>
+                        </TableFooter>
+                      </Table>
+                    </TableContainer>
+                  </Box>
+                </Box>
               </Grid>
             </Grid>
           </Grid>
@@ -1357,14 +1585,14 @@ const HealthList = () => {
                       Citizen Name :
                     </Grid>
                     <Grid item xs={7} className="healthresponsetitle">
-                      {scheduleData.Citizen_info?.[0]?.name}
+                      {selectedCitizen?.name}
                     </Grid>
 
                     <Grid item xs={5} sm={4} className="titlehealth1">
                       Citizen ID :
                     </Grid>
                     <Grid item xs={7} className="healthresponsetitle1">
-                      {scheduleData.Citizen_info?.[0]?.citizen_id}
+                      {selectedCitizen?.citizen_id}
                     </Grid>
                   </Grid>
 
@@ -1385,82 +1613,92 @@ const HealthList = () => {
                       {scheduleData.Citizen_info?.[0]?.gender}
                     </Grid>
                     <Grid item xs={4} className="ealthcardtitle1">
-                      {scheduleData.Citizen_info?.[0]?.dob}
+                      {selectedCitizen?.dob}
                     </Grid>
                     <Grid item xs={4} className="ealthcardtitle1">
-                      {scheduleData.Citizen_info?.[0]?.year}
+                      {selectedCitizen?.year}
                     </Grid>
                   </Grid>
                 </Grid>
 
                 {/* RIGHT SIDE – DROPDOWN + BUTTON */}
-           <Grid item xs={12} md={5}>
-  <Box
-    sx={{
-      display: "flex",
-      flexWrap: { xs: "wrap", sm: "nowrap" }, // stack on mobile
-      // gap: 1,
-      width: "100%",
-      alignItems: "center", // center vertically
-    }}
-  >
-    {/* SELECT */}
-    <Box sx={{ width: { xs: "100%", sm: "60%" ,md:"80%"}, minWidth: 0 }}>
-      <TextField
-        select
-        fullWidth
-        label="Select Schedule Count"
-        // className="form-control screedropdown"
-        size="small"
-        style={{
-          width: "100%",
-          height: "42px", // same height as button
-          boxSizing: "border-box",
-        }}
-        onChange={(e) => {
-          fetchCitizenVital(e.target.value);
-          setSelectedScheduleCount(e.target.value);
-        }}
-      >
-        <MenuItem>Select Schedule Count</MenuItem>
-        {totalCount.map((option) => (
-          <MenuItem key={option} value={option}>
-            {option}
-          </MenuItem>
-        ))}
-      </TextField>
-    </Box>
+                <Grid item xs={12} md={5}>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      flexWrap: { xs: "wrap", sm: "nowrap" }, // stack on mobile
+                      // gap: 1,
+                      width: "100%",
+                      alignItems: "center", // center vertically
+                    }}
+                  >
+                    {/* SELECT */}
+                    <Box
+                      sx={{
+                        width: { xs: "100%", sm: "60%", md: "80%" },
+                        minWidth: 0,
+                      }}
+                    >
+                      <TextField
+                        select
+                        fullWidth
+                        label="Select Schedule Count"
+                        // className="form-control screedropdown"
+                        size="small"
+                        style={{
+                          width: "100%",
+                          height: "42px", // same height as button
+                          boxSizing: "border-box",
+                        }}
+                        onChange={(e) => {
+                          fetchCitizenVital(e.target.value);
+                          setSelectedScheduleCount(e.target.value);
+                        }}
+                      >
+                        <MenuItem>Select Schedule Count</MenuItem>
+                        {totalCount.map((option) => (
+                          <MenuItem key={option} value={option}>
+                            {option}
+                          </MenuItem>
+                        ))}
+                      </TextField>
+                    </Box>
 
-    {/* BUTTON */}
-    <Box sx={{ width: { xs: "100%", sm: "35%" ,md:"40%",} ,px: 1, mt: { xs: 1, sm: 0,md:0 } }}>
-      <button
-        className="downloadhealthcardddddddddddddddddddddddddddd"
-        style={{
-          width: "100%",
-          height: "42px",
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          whiteSpace: "nowrap",
-        }}
-        onClick={handleDownload}
-      >
-        Healthcard
-      </button>
-    </Box>
-  </Box>
+                    {/* BUTTON */}
+                    <Box
+                      sx={{
+                        width: { xs: "100%", sm: "35%", md: "40%" },
+                        px: 1,
+                        mt: { xs: 1, sm: 0, md: 0 },
+                      }}
+                    >
+                      <button
+                        className="downloadhealthcardddddddddddddddddddddddddddd"
+                        style={{
+                          width: "100%",
+                          height: "42px",
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
+                          whiteSpace: "nowrap",
+                        }}
+                        onClick={handleDownload}
+                      >
+                        Healthcard
+                      </button>
+                    </Box>
+                  </Box>
 
-  {/* SCHEDULE ID */}
-  <Grid container spacing={1} mt={1}>
-    <Grid item xs={5} className="idddddddd">
-      Schedule ID -
-    </Grid>
-    <Grid item xs={7} className="scheduledidhealthcard">
-      {scheduleId}
-    </Grid>
-  </Grid>
-</Grid>
-
+                  {/* SCHEDULE ID */}
+                  <Grid container spacing={1} mt={1}>
+                    <Grid item xs={5} className="idddddddd">
+                      Schedule ID -
+                    </Grid>
+                    <Grid item xs={7} className="scheduledidhealthcard">
+                      {scheduleId}
+                    </Grid>
+                  </Grid>
+                </Grid>
               </Grid>
             </Box>
 
@@ -1483,7 +1721,7 @@ const HealthList = () => {
                         .filter(
                           (form) =>
                             form.screening_list !== "Investigation" &&
-                            form.screening_list !== "Immunisation "
+                            form.screening_list !== "Immunisation ",
                         )
                         .map((form, index) => (
                           <Box
@@ -1679,7 +1917,7 @@ const HealthList = () => {
                   style={{ marginBottom: "1em", fontSize: "12px" }}
                 >
                   <Typography color="white" style={{ fontSize: "13px" }}>
-                    Citizen Name: {citizenName || "No Citizen Name Available"}
+                    Citizen Name: {scheduleIDD?.name || "-"}
                   </Typography>
                   <Typography color="white" style={{ fontSize: "13px" }}>
                     Gender:{gender || "No Citizen Name Available"}
@@ -2587,10 +2825,11 @@ const HealthList = () => {
                             ? fetchedData.dental_info[0].oral_hygiene === "1"
                               ? "Good"
                               : fetchedData.dental_info[0].oral_hygiene === "2"
-                              ? "Fair"
-                              : fetchedData.dental_info[0].oral_hygiene === "3"
-                              ? "Poor"
-                              : "N/A"
+                                ? "Fair"
+                                : fetchedData.dental_info[0].oral_hygiene ===
+                                    "3"
+                                  ? "Poor"
+                                  : "N/A"
                             : "N/A"}
                         </Grid>
                       </Grid>
@@ -2620,10 +2859,11 @@ const HealthList = () => {
                             ? fetchedData.dental_info[0].gum_condition === "1"
                               ? "Good"
                               : fetchedData.dental_info[0].gum_condition === "2"
-                              ? "Fair"
-                              : fetchedData.dental_info[0].gum_condition === "3"
-                              ? "Poor"
-                              : "N/A"
+                                ? "Fair"
+                                : fetchedData.dental_info[0].gum_condition ===
+                                    "3"
+                                  ? "Poor"
+                                  : "N/A"
                             : "N/A"}
                         </Grid>
                       </Grid>
@@ -2653,8 +2893,8 @@ const HealthList = () => {
                             ? fetchedData.dental_info[0].oral_ulcers === "1"
                               ? "No"
                               : fetchedData.dental_info[0].oral_ulcers === "2"
-                              ? "Yes"
-                              : "N/A"
+                                ? "Yes"
+                                : "N/A"
                             : "N/A"}
                         </Grid>
                       </Grid>
@@ -2684,8 +2924,8 @@ const HealthList = () => {
                             ? fetchedData.dental_info[0].gum_bleeding === "1"
                               ? "No"
                               : fetchedData.dental_info[0].gum_bleeding === "2"
-                              ? "Yes"
-                              : "N/A"
+                                ? "Yes"
+                                : "N/A"
                             : "N/A"}
                         </Grid>
                       </Grid>
@@ -2716,9 +2956,9 @@ const HealthList = () => {
                                 .discoloration_of_teeth === "1"
                               ? "No"
                               : fetchedData.dental_info[0]
-                                  .discoloration_of_teeth === "2"
-                              ? "Yes"
-                              : "N/A"
+                                    .discoloration_of_teeth === "2"
+                                ? "Yes"
+                                : "N/A"
                             : "N/A"}
                         </Grid>
                       </Grid>
@@ -2748,9 +2988,9 @@ const HealthList = () => {
                             ? fetchedData.dental_info[0].food_impaction === "1"
                               ? "No"
                               : fetchedData.dental_info[0].food_impaction ===
-                                "2"
-                              ? "Yes"
-                              : "N/A"
+                                  "2"
+                                ? "Yes"
+                                : "N/A"
                             : "N/A"}
                         </Grid>
                       </Grid>
@@ -2780,8 +3020,8 @@ const HealthList = () => {
                             ? fetchedData.dental_info[0].carious_teeth === "1"
                               ? "No"
                               : fetchedData.dental_info[0].carious_teeth === "2"
-                              ? "Yes"
-                              : "N/A"
+                                ? "Yes"
+                                : "N/A"
                             : "N/A"}
                         </Grid>
                       </Grid>
@@ -2811,8 +3051,8 @@ const HealthList = () => {
                             ? fetchedData.dental_info[0].carious_teeth === "1"
                               ? "No"
                               : fetchedData.dental_info[0].carious_teeth === "2"
-                              ? "Yes"
-                              : "N/A"
+                                ? "Yes"
+                                : "N/A"
                             : "N/A"}
                         </Grid>
                       </Grid>
@@ -2842,9 +3082,9 @@ const HealthList = () => {
                             ? fetchedData.dental_info[0].extraction_done === "1"
                               ? "No"
                               : fetchedData.dental_info[0].extraction_done ===
-                                "2"
-                              ? "Yes"
-                              : "N/A"
+                                  "2"
+                                ? "Yes"
+                                : "N/A"
                             : "N/A"}
                         </Grid>
                       </Grid>
@@ -2874,8 +3114,8 @@ const HealthList = () => {
                             ? fetchedData.dental_info[0].fluorosis === "1"
                               ? "No"
                               : fetchedData.dental_info[0].fluorosis === "2"
-                              ? "Yes"
-                              : "N/A"
+                                ? "Yes"
+                                : "N/A"
                             : "N/A"}
                         </Grid>
                       </Grid>
@@ -2907,12 +3147,12 @@ const HealthList = () => {
                                 .tooth_brushing_frequency === "1"
                               ? "<1 Day"
                               : fetchedData.dental_info[0]
-                                  .tooth_brushing_frequency === "2"
-                              ? "2/day"
-                              : fetchedData.dental_info[0]
-                                  .tooth_brushing_frequency === "3"
-                              ? "1/day"
-                              : "N/A"
+                                    .tooth_brushing_frequency === "2"
+                                ? "2/day"
+                                : fetchedData.dental_info[0]
+                                      .tooth_brushing_frequency === "3"
+                                  ? "1/day"
+                                  : "N/A"
                             : "N/A"}
                         </Grid>
                       </Grid>
@@ -2942,9 +3182,9 @@ const HealthList = () => {
                             ? fetchedData.dental_info[0].sensitive_teeth === "1"
                               ? "No"
                               : fetchedData.dental_info[0].sensitive_teeth ===
-                                "2"
-                              ? "Yes"
-                              : "N/A"
+                                  "2"
+                                ? "Yes"
+                                : "N/A"
                             : "N/A"}
                         </Grid>
                       </Grid>
@@ -2974,8 +3214,8 @@ const HealthList = () => {
                             ? fetchedData.dental_info[0].malalignment === "1"
                               ? "No"
                               : fetchedData.dental_info[0].malalignment === "2"
-                              ? "Yes"
-                              : "N/A"
+                                ? "Yes"
+                                : "N/A"
                             : "N/A"}
                         </Grid>
                       </Grid>
@@ -3006,9 +3246,9 @@ const HealthList = () => {
                                 .orthodontic_treatment === "1"
                               ? "No"
                               : fetchedData.dental_info[0]
-                                  .orthodontic_treatment === "2"
-                              ? "Yes"
-                              : "N/A"
+                                    .orthodontic_treatment === "2"
+                                ? "Yes"
+                                : "N/A"
                             : "N/A"}
                         </Grid>
                       </Grid>

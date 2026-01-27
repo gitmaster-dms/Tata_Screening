@@ -181,7 +181,7 @@ const Corporate = (props) => {
               headers: {
                 Authorization: `Bearer ${accessToken}`,
               },
-            }
+            },
           );
           const data = await res.json();
           setDistrictOptions(data);
@@ -203,7 +203,7 @@ const Corporate = (props) => {
               headers: {
                 Authorization: `Bearer ${accessToken}`,
               },
-            }
+            },
           );
           const data = await res.json();
           setTalukaOptions(data);
@@ -232,57 +232,7 @@ const Corporate = (props) => {
     fetchSource();
   }, []);
 
-  // const handleStateChange = (event) => {
-  //   const stateId = event.target.value;
-  //   setSelectedState(stateId);
-  //   setSelectedStateId(stateId);
-
-  //   // Clear error message for state if it exists
-  //   if (errorMessages.state) {
-  //     setErrorMessages((prevErrors) => ({
-  //       ...prevErrors,
-  //       state: '',
-  //     }));
-  //   }
-  // };
-
-  ///// district
-  // const { selectedDistrict, setSelectedDistrict } = useSourceContext();
-  // const [selectedDistrictId, setSelectedDistrictId] = useState(District || '');
-
-  // const handleDistrictChange = (event) => {
-  //   const districtId = event.target.value;
-  //   setSelectedDistrict(districtId);
-  //   setSelectedDistrictId(districtId);
-
-  //   // Clear error message for state if it exists
-  //   if (errorMessages.district) {
-  //     setErrorMessages((prevErrors) => ({
-  //       ...prevErrors,
-  //       district: '',
-  //     }));
-  //   }
-  // }
-
-  // ///// tehsil
-  // const { selectedTehsil, setSelectedTehsil } = useSourceContext();
-  // const [selectedTehsilId, setSelectedTehsilId] = useState(Tehsil || '');
-
-  // const handleTehsilChange = (event) => {
-  //   const tehsilId = event.target.value;
-  //   setSelectedTehsil(tehsilId);
-  //   setSelectedTehsilId(tehsilId);
-
-  //   // Clear error message for state if it exists
-  //   if (errorMessages.tehsil) {
-  //     setErrorMessages((prevErrors) => ({
-  //       ...prevErrors,
-  //       tehsil: '',
-  //     }));
-  //   }
-  // }
-
-  //////// source Name
+ 
   const { selectedName, setSelectedName } = useSourceContext();
   const [selectedNameId, setSelectedNameId] = useState("");
   const { selectedSource, setSelectedSource } = useSourceContext();
@@ -290,7 +240,7 @@ const Corporate = (props) => {
   const handleSourceChange = (e) => {
     const selectedId = e.target.value;
     const selectedOption = dropdownSource.find(
-      (opt) => opt.source_pk_id === selectedId
+      (opt) => opt.source_pk_id === selectedId,
     );
 
     setCorporateForm((prev) => ({
@@ -334,16 +284,16 @@ const Corporate = (props) => {
     const ageInMilliseconds = currentDate - selectedDOB;
 
     const years = Math.floor(
-      ageInMilliseconds / (365.25 * 24 * 60 * 60 * 1000)
+      ageInMilliseconds / (365.25 * 24 * 60 * 60 * 1000),
     );
     const months = Math.floor(
       (ageInMilliseconds % (365.25 * 24 * 60 * 60 * 1000)) /
-        (30.44 * 24 * 60 * 60 * 1000)
+        (30.44 * 24 * 60 * 60 * 1000),
     );
     const days = Math.floor(
       ((ageInMilliseconds % (365.25 * 24 * 60 * 60 * 1000)) %
         (30.44 * 24 * 60 * 60 * 1000)) /
-        (24 * 60 * 60 * 1000)
+        (24 * 60 * 60 * 1000),
     );
 
     setAge({ year: years, months: months, days: days });
@@ -397,7 +347,7 @@ const Corporate = (props) => {
               Authorization: `Bearer ${accessToken}`,
               "Content-Type": "application/json",
             },
-          }
+          },
         );
         const data = await response.json();
         setDepartment(data);
@@ -443,7 +393,7 @@ const Corporate = (props) => {
                 Authorization: `Bearer ${accessToken}`,
                 "Content-Type": "application/json",
               },
-            }
+            },
           );
           const data = await response.json();
           setDesignation(data);
@@ -548,12 +498,16 @@ const Corporate = (props) => {
   const [workshop, setWorkshop] = useState([]);
   const [selectedWorkshop, setSelectedWorkshop] = useState(null);
   const getworkshop = async () => {
+    if (!selectedTahsil) return;
     try {
-      const response = await fetch(`${Port}/Screening/Workshop_Get/`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
+      const response = await fetch(
+        `${Port}/Screening/Workshop_list_get/${selectedTahsil}/`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
         },
-      });
+      );
       const data = await response.json();
       setWorkshop(data);
       console.log(data);
@@ -563,14 +517,11 @@ const Corporate = (props) => {
   };
   useEffect(() => {
     getworkshop();
-  }, []);
+  }, [selectedTahsil]);
 
   const handleSubmit = async (e, confirmed = false) => {
     e.preventDefault();
 
-    // const confirmed = window.confirm(
-    //   "Are you sure you want to submit the form?"
-    // );
     if (!validateForm()) {
       setSnackbar({
         open: true,
@@ -623,7 +574,7 @@ const Corporate = (props) => {
         "child_count",
         maritalStatus === "Widow" || maritalStatus === "Married"
           ? childrenCount
-          : null
+          : null,
       );
 
       const newErrorMessages = {};
@@ -694,11 +645,23 @@ const Corporate = (props) => {
         if (response.status === 201) {
           navigate("/mainscreen/Citizen");
         } else if (response.status === 400) {
-          alert("Error Submitting the Form");
+          setSnackbar({
+            open: true,
+            message: "Error Submitting the Form",
+            severity: "error",
+          });
         } else if (response.status === 409) {
-          alert("Employee already exists with the given employee ID.");
+          setSnackbar({
+            open: true,
+            message: "Employee already exists with the given employee ID.",
+            severity: "warning",
+          });
         } else {
-          alert("Unexpected error occurred.");
+          setSnackbar({
+            open: true,
+            message: "Unexpected error occurred.",
+            severity: "error",
+          });
         }
       } catch (error) {
         console.error("Error:", error);
@@ -814,8 +777,9 @@ const Corporate = (props) => {
                 <FormControl
                   fullWidth
                   size="small"
+                  // required
                   variant="outlined"
-                  error={!!errors.prefix}
+                  error={!!errorMessages.prefix}
                   helperText={!!errors.prefix}
                 >
                   <InputLabel id="prefix-label">Prefix</InputLabel>
@@ -848,7 +812,7 @@ const Corporate = (props) => {
                 <TextField
                   size="small"
                   fullWidth
-                  label="Name"
+                  label="Name *"
                   name="name"
                   value={corporateForm.name}
                   onChange={handleChange}
@@ -861,14 +825,12 @@ const Corporate = (props) => {
               </Grid>
 
               <Grid item xs={12} sm={6} md={3}>
-                <FormControl
-                  fullWidth
-                  size="small"
-                  variant="outlined"
-                  error={!!errors.blood_groups}
-                >
-                  <InputLabel id="blood-group-label">Blood Group</InputLabel>
-                  <Select
+                
+                  <TextField
+                    size="small"
+                    fullWidth
+                    label="Blood Group *"
+                    select
                     sx={{
                       "& .MuiInputBase-input.MuiSelect-select": {
                         color: "#000 !important",
@@ -881,7 +843,8 @@ const Corporate = (props) => {
                     name="blood_groups"
                     value={corporateForm.blood_groups}
                     onChange={handleChange}
-                    label="Blood Group"
+                    error={!!errors.blood_groups}
+                    helperText={errors.blood_groups}
                   >
                     <MenuItem value="">Select Group</MenuItem>
                     {["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"].map(
@@ -889,12 +852,11 @@ const Corporate = (props) => {
                         <MenuItem key={grp} value={grp}>
                           {grp}
                         </MenuItem>
-                      )
+                      ),
                     )}
-                  </Select>
+                  </TextField>
 
                   {/* Error message display */}
-                </FormControl>
               </Grid>
 
               {/* Date of Birth */}
@@ -951,7 +913,7 @@ const Corporate = (props) => {
                 <TextField
                   size="small"
                   fullWidth
-                  label="Aadhar ID"
+                  label="Aadhar ID *"
                   name="aadhar_id"
                   value={corporateForm.aadhar_id || ""}
                   onChange={(e) => {
@@ -989,8 +951,7 @@ const Corporate = (props) => {
                 <TextField
                   size="small"
                   fullWidth
-                  label="Mobile Number"
-                  type="number"
+                  label="Mobile Number *"
                   name="mobile_no"
                   value={corporateForm.mobile_no}
                   onChange={handleChange}
@@ -1392,7 +1353,7 @@ const Corporate = (props) => {
                   type="number"
                   value={heightValue}
                   onChange={handleHeightChange}
-                  inputProps={{ min: 0 }}
+                  inputProps={{ min: 0,minLength:2 }}
                 />
               </Grid>
 
@@ -1406,6 +1367,7 @@ const Corporate = (props) => {
                   value={weightValue}
                   onChange={handleWeightChange}
                   inputProps={{ min: 0 }}
+                  minLength={2}
                 />
               </Grid>
 
@@ -1423,12 +1385,12 @@ const Corporate = (props) => {
                         bmi === null
                           ? "white"
                           : bmi < 18.5
-                          ? "orange"
-                          : bmi < 25
-                          ? "green"
-                          : bmi < 30
-                          ? "red"
-                          : "darkred",
+                            ? "orange"
+                            : bmi < 25
+                              ? "green"
+                              : bmi < 30
+                                ? "red"
+                                : "darkred",
                       color: bmi === null || bmi > 30 ? "black" : "white",
                     },
                   }}
@@ -1475,82 +1437,98 @@ const Corporate = (props) => {
 
             <Grid container spacing={2}>
               <Grid item xs={12} sm={6}>
-                <FormControl fullWidth size="small" error={!!errors.state}>
-                  <InputLabel>State *</InputLabel>
-                  <Select
-                    onChange={(e) => setSelectedState(e.target.value)}
-                    sx={{
-                      "& .MuiInputBase-input.MuiSelect-select": {
-                        color: "#000 !important",
-                      },
-                      "& .MuiSvgIcon-root": {
-                        color: "#000",
-                      },
-                    }}
-                  >
-                    <MenuItem value="">
-                      {corporateForm.state || "Select State"}
+                <TextField
+                  select
+                  size="small"
+                  fullWidth
+                  label="State *"
+                  name="state"
+                  value={selectedState}
+                  onChange={(e) => setSelectedState(e.target.value)}
+                  sx={{
+                    "& .MuiInputBase-input.MuiSelect-select": {
+                      color: "#000 !important",
+                    },
+                    "& .MuiSvgIcon-root": {
+                      color: "#000",
+                    },
+                  }}
+                  error={!!errors.state}
+                  helperText={errors.state}
+                >
+                  <MenuItem value="">
+                    {corporateForm.state || "Select State"}
+                  </MenuItem>
+                  {stateOptions.map((state) => (
+                    <MenuItem key={state.state_id} value={state.state_id}>
+                      {state.state_name}
                     </MenuItem>
-                    {stateOptions.map((state) => (
-                      <MenuItem key={state.state_id} value={state.state_id}>
-                        {state.state_name}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
+                  ))}
+                </TextField>
               </Grid>
 
               <Grid item xs={12} sm={6}>
-                <FormControl fullWidth size="small" error={!!errors.district}>
-                  <InputLabel>District *</InputLabel>
-                  <Select
-                    onChange={(e) => setSelectedDistrict(e.target.value)}
-                    sx={{
-                      "& .MuiInputBase-input.MuiSelect-select": {
-                        color: "#000 !important",
-                      },
-                      "& .MuiSvgIcon-root": {
-                        color: "#000",
-                      },
-                    }}
-                  >
-                    <MenuItem value="">
-                      {corporateForm.district || "Select District"}
+                <TextField
+                  select
+                  name="district"
+                  label="District *"
+                  value={selectedDistrict}
+                  size="small"
+                  fullWidth
+                  onChange={(e) => setSelectedDistrict(e.target.value)}
+                  sx={{
+                    "& .MuiInputBase-input.MuiSelect-select": {
+                      color: "#000 !important",
+                    },
+                    "& .MuiSvgIcon-root": {
+                      color: "#000",
+                    },
+                  }}
+                  error={!!errors.district}
+                  helperText={errors.district}
+                >
+                  <MenuItem value="">
+                    {corporateForm.district || "Select District"}
+                  </MenuItem>
+                  {districtOptions.map((district) => (
+                    <MenuItem key={district.dist_id} value={district.dist_id}>
+                      {district.dist_name}
                     </MenuItem>
-                    {districtOptions.map((district) => (
-                      <MenuItem key={district.dist_id} value={district.dist_id}>
-                        {district.dist_name}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
+                  ))}
+                </TextField>
               </Grid>
 
               <Grid item xs={12} sm={6}>
-                <FormControl fullWidth size="small" error={!!errors.tehsil}>
-                  <InputLabel>Tehsil *</InputLabel>
-                  <Select
-                    onChange={(e) => setSelectedTahsil(e.target.value)}
-                    sx={{
-                      "& .MuiInputBase-input.MuiSelect-select": {
-                        color: "#000 !important",
-                      },
-                      "& .MuiSvgIcon-root": {
-                        color: "#000",
-                      },
-                    }}
-                  >
-                    <MenuItem value="">
-                      {corporateForm.tehsil || "Select Tehsil"}
+                <TextField
+                  select
+                  name="taluka "
+                  value={selectedTahsil}
+                  size="small"
+                  label="Tehsil *"
+                  fullWidth
+                  onChange={(e) => setSelectedTahsil(e.target.value)}
+                  sx={{
+                    "& .MuiInputBase-input.MuiSelect-select": {
+                      color: "#000 !important",
+                    },
+                    "& .MuiSvgIcon-root": {
+                      color: "#000",
+                    },
+                  }}
+                  error={!!errors.tehsil}
+                  helperText={errors.tehsil}
+                >
+                  <MenuItem value="">
+                    {corporateForm.tehsil || "Select Tehsil"}
+                  </MenuItem>
+                  {talukaOptions.map((taluka) => (
+                    <MenuItem key={taluka.tal_id} value={taluka.tal_id}>
+                      {taluka.tahsil_name}
                     </MenuItem>
-                    {talukaOptions.map((taluka) => (
-                      <MenuItem key={taluka.tal_id} value={taluka.tal_id}>
-                        {taluka.tahsil_name}
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
+                  ))}
+                </TextField>
               </Grid>
+
               {/* <Grid item xs={12} sm={6}>
                 <FormControl
                   fullWidth
@@ -1584,13 +1562,12 @@ const Corporate = (props) => {
               </Grid> */}
 
               <Grid item xs={12} sm={6}>
-                <FormControl
-                  fullWidth
-                  size="small"
-                  error={!!errorMessages.Workshop_name}
-                >
-                  <InputLabel>Workshop Name *</InputLabel>
-                  <Select
+               
+                  <TextField
+                    select
+                    size="small"
+                    fullWidth
+                    label="Workshop Name *"
                     name="Workshop_name"
                     value={corporateForm.Workshop_name}
                     onChange={(e) =>
@@ -1599,13 +1576,14 @@ const Corporate = (props) => {
                         Workshop_name: e.target.value, // store workshop ID
                       })
                     }
-                    label="Workshop Name"
                     sx={{
                       "& .MuiInputBase-input.MuiSelect-select": {
                         color: "#000 !important",
                       },
                       "& .MuiSvgIcon-root": { color: "#000" },
                     }}
+                    error={!!errors.Workshop_name}
+                    helperText={errors.Workshop_name}
                   >
                     <MenuItem value="">Select Workshop</MenuItem>
 
@@ -1614,8 +1592,7 @@ const Corporate = (props) => {
                         {ws.Workshop_name || "Unnamed Workshop"}
                       </MenuItem>
                     ))}
-                  </Select>
-                </FormControl>
+                  </TextField>
               </Grid>
 
               <Grid item xs={12} sm={6}>
@@ -1644,8 +1621,8 @@ const Corporate = (props) => {
                 <TextField
                   size="small"
                   fullWidth
-                  type="number"
-                  label="Pincode"
+                  // type="number"
+                  label="Pincode *"
                   name="pincode"
                   value={corporateForm.pincode}
                   onChange={handleChange}

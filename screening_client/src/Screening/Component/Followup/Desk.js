@@ -189,7 +189,7 @@ const handleChangeRowsPerPage = (event) => {
   const filterTableData = (data, searchQuery, selectedFollowUpStatus) => {
     if (!data || data.length === 0) return [];
 
-    const query = searchQuery?.toLowerCase().trim() || "";
+    const query = (searchQuery || "").toString().toLowerCase().trim();
 
     return data.filter((item) => {
       // Filter by follow-up status if selected
@@ -200,16 +200,16 @@ const handleChangeRowsPerPage = (event) => {
       // If no search query, include all
       if (!query) return true;
 
-      // Safely convert to string and trim
-      const citizenName = item.citizen_name?.toLowerCase().trim() || "";
-      // const citizenId = item.citizen_id?.toString().trim() || "";
-      // const mobileNumber = item.mobile_number?.toString().trim() || "";
-      const doctorName = item.doctor_name?.toLowerCase().trim() || "";
+      // Safely convert to string and trim for comparisons
+      const citizenName = (item.citizen_name || "").toString().toLowerCase().trim();
+      const citizenId = (item.citizen_id || "").toString().toLowerCase().trim();
+      const mobileNumber = (item.mobile_number || "").toString().toLowerCase().trim();
+      const doctorName = (item.doctor_name || "").toString().toLowerCase().trim();
 
       return (
         citizenName.includes(query) ||
-        // citizenId.includes(query) ||
-        // mobileNumber.includes(query) ||
+        citizenId.includes(query) ||
+        mobileNumber.includes(query) ||
         doctorName.includes(query)
       );
     });
@@ -383,9 +383,9 @@ const handleChangeRowsPerPage = (event) => {
           <Box>
             <Typography
               sx={{
-                mb: 1,
+                mb: 2,
                 fontWeight: 600,
-                fontSize: { xs: "16px", sm: "18px" },
+                fontSize: { xs: "16px", sm: "18px" ,md:"16px"},
                 fontFamily: "Roboto, sans-serif",
                 textAlign: "left",
                 color: "black",
