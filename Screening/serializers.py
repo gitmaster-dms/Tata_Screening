@@ -1589,7 +1589,7 @@ class Healthcard_Citizen_List_Serializer(serializers.ModelSerializer):
     
     name = serializers.CharField(source='citizen_pk_id.name')
     aadhar_id = serializers.CharField(source='citizen_pk_id.aadhar_id')
-    gender = serializers.CharField(source='citizen_pk_id.gender')
+    gender = serializers.CharField(source='citizen_pk_id.gender.gender')
     dob = serializers.DateField(source='citizen_pk_id.dob')
     year = serializers.CharField(source='citizen_pk_id.year')
     prefix = serializers.CharField(source='citizen_pk_id.prefix')
