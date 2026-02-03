@@ -236,7 +236,7 @@ urlpatterns = [
     path('Workshop_delete/<int:ws_pk_id>/', Workshop_Delete_API.as_view(), name='Workshop_delete'),
     path('Workshop_list_get/<int:ws_taluka>/', Workshop_list_get_api.as_view(), name='Workshop_list_get'),
 
-    
+     
     
     
     path('Start_Screening/<int:citizen_pk_id>/', CheckCitizenScreening.as_view(), name='Start_Screening'),   
@@ -337,8 +337,8 @@ urlpatterns = [
     path('Workshop_location_get/',WorkshopFilterAPIView.as_view(),name='Workshop_location_get'),
     
     path('healthcard_download/<str:citizen_id>/<int:screening_count>/', Healthcard_Download_API.as_view(), name='healthcard_download'),
-    
+
                  
 ]
-    
+
 

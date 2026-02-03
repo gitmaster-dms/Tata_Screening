@@ -1631,6 +1631,10 @@ class Dental_info_Healthcard(serializers.ModelSerializer):
         fields = '__all__'
         
 class Vital_info_Healthcard(serializers.ModelSerializer):
+    citizen_name = serializers.CharField(source='citizen_pk_id.name', allow_null=True)
+    age = serializers.CharField(source='citizen_pk_id.year', allow_null=True)
+    gender = serializers.CharField(source='citizen_pk_id.gender.gender', allow_null=True)
+
     class Meta:
         model = vital_info
         fields = '__all__'

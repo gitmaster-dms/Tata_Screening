@@ -4031,14 +4031,36 @@ class Workshop_Delete_API(APIView):
 
 
     
+# class Citizen_Get_Api(APIView):
+#     renderer_classes = [UserRenderer]
+#     authentication_classes = [CustomJWTAuthentication]
+#     permission_classes = [IsAuthenticated]
+#     def get(self, request):
+#         snippet = Citizen.objects.filter(is_deleted=False)
+#         serializers = Citizen_Get_Serializer(snippet, many=True)
+#         return Response(serializers.data, status=status.HTTP_200_OK)
+
+
+from rest_framework.pagination import PageNumberPagination
+from rest_framework.views import APIView
+from rest_framework.response import Response
+
+class CitizenLargePagination(PageNumberPagination):
+    page_size = 100
+    page_size_query_param = 'page_size'
+    max_page_size = 2000
+
+
 class Citizen_Get_Api(APIView):
-    renderer_classes = [UserRenderer]
-    authentication_classes = [CustomJWTAuthentication]
-    permission_classes = [IsAuthenticated]
     def get(self, request):
-        snippet = Citizen.objects.filter(is_deleted=False)
-        serializers = Citizen_Get_Serializer(snippet, many=True)
-        return Response(serializers.data, status=status.HTTP_200_OK)
+        queryset = Citizen.objects.filter(is_deleted=False).order_by('citizens_pk_id')
+        paginator = CitizenLargePagination()
+        page = paginator.paginate_queryset(queryset, request)
+
+        serializer = Citizen_Get_Serializer(page, many=True)
+        return paginator.get_paginated_response(serializer.data)
+
+
     
 
 class Category_Get_Api(APIView):
@@ -6997,9 +7019,9 @@ class WorkshopFilterAPIView(APIView):
 
 
 class Workshop_list_get_api(APIView):
-    renderer_classes = [UserRenderer]
-    authentication_classes = [CustomJWTAuthentication]
-    permission_classes = [IsAuthenticated]
+    # renderer_classes = [UserRenderer]
+    # authentication_classes = [CustomJWTAuthentication]
+    # permission_classes = [IsAuthenticated]
     def get(self, request,ws_taluka):
         workshop_qs = Workshop.objects.filter(ws_taluka=ws_taluka,is_deleted=False)
         serializer = Workshop_list_get_Serializer(workshop_qs, many=True)
