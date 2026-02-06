@@ -653,7 +653,7 @@ class img_analyse_data_get_Serializer(serializers.ModelSerializer):
 class Citizen_Post_Serializer(serializers.ModelSerializer):
     class Meta:
         model = Citizen
-        fields = ['citizens_pk_id', 'citizen_id', 'prefix', 'name', 'vehicle_number', 'blood_groups', 'dob', 'year', 'months', 'days', 'gender', 'source', 'category', 'aadhar_id', 'mobile_no', 'source_name', 'state', 'district', 'tehsil', 'pincode', 'address', 'height', 'weight', 'weight_for_age', 'height_for_age', 'weight_for_height', 'bmi', 'arm_size', 'symptoms', 'emergency_prefix', 'emergency_fullname', 'emergency_gender', 'emergency_contact', 'relationship_with_employee', 'emergency_address', 'is_deleted', 'added_by', 'added_date', 'modify_by', 'modify_date']
+        fields = ['citizens_pk_id', 'citizen_id', 'prefix', 'name', 'vehicle_number', 'blood_groups', 'dob', 'year', 'months', 'days', 'gender', 'source', 'category', 'aadhar_id', 'mobile_no', 'source_name', 'state', 'district', 'tehsil', 'pincode', 'address', 'height', 'weight', 'weight_for_age', 'height_for_age', 'weight_for_height', 'bmi', 'arm_size', 'symptoms', 'emergency_prefix', 'emergency_fullname', 'emergency_gender', 'emergency_contact', 'relationship_with_employee', 'emergency_address', 'is_deleted', 'added_by', 'added_date', 'modify_by', 'modify_date','photo']
 
 
 class Workshop_Post_Serializer(serializers.ModelSerializer):
@@ -724,6 +724,7 @@ class Citizen_Get_Serializer(serializers.ModelSerializer):
             'gender_name',
             'year',
             'dob',
+            'photo',
 
             'basic_info_form_submit',
             'emergency_info_form_submit',

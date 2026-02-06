@@ -1226,6 +1226,7 @@ class Citizen(models.Model):
     tehsil =  models.ForeignKey('agg_sc_tahsil', on_delete=models.CASCADE,blank=True, null=True)
     pincode = models.CharField(max_length=255,db_index=True)
     address = models.CharField(max_length=255,null=True,blank=True)
+    photo = models.FileField(upload_to='media_files/', null=True, blank=True)
 #___________GROWTH MONITORING________________
     height = models.FloatField(blank=True,null=True)
     weight = models.FloatField(blank=True,null=True)
