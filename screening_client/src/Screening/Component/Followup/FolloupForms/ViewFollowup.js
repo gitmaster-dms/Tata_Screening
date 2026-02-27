@@ -21,7 +21,7 @@ const ViewFollowup = () => {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get(`${Port}/Screening/followup_citizen_info_get/${citizenId}/`, {
+                const response = await axios.get(`${Port}/Screening/follow_up_citizen_info/${citizenId}/`, {
                     headers: {
                       Authorization: `Bearer ${accessToken}`
                     }
