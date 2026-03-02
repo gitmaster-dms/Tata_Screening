@@ -80,15 +80,28 @@ const Vitals = ({ vitalsData }) => {
     },
   ];
 
-  const maxValue = Math.max(
-    ...vitalsResult.map((item) => Number(item.value) || 0),
-    1 // fallback to avoid divide by 0
-  );
+ const rawMax = Math.max(
+  ...vitalsResult.map((item) => Number(item.value) || 0),
+  1
+);
 
-  const getProgressValue = (value) => {
-    if (!value || value <= 0) return 0;
-    return Math.round((value / maxValue) * 100);
-  };
+const logMax = Math.log10(rawMax + 1);
+
+
+const getProgressValue = (value) => {
+  if (!value || value <= 0) return 3;
+
+  if (value <= 5) return 8;       // very low
+  if (value <= 15) return 18;     // low
+  if (value <= 50) return 30;     // low-medium
+  if (value <= 100) return 42;    // medium  (🔥 71 yahin aayega)
+  if (value <= 500) return 55;    // medium-high
+  return 65;                      // high (never dominant)
+};
+
+
+
+
 
   return (
     <Box
@@ -212,6 +225,7 @@ const Vitals = ({ vitalsData }) => {
                 background: "#D9D9D9",
                 "& .MuiLinearProgress-bar": {
                   background: item.gradient,
+                   opacity: item.value === 0 ? 0 : 1, // 👈 hide fill only
                   transition: "transform 0.6s ease",
                 },
               }}
