@@ -221,16 +221,16 @@ const FamilyInfo = ({
                     emergency_gender: e.target.value,
                   })
                 }
-                sx={{
-                  bgcolor: "#fff", // background color
-                  color: "#c2da10ff !important", // selected text color
-                  "& .MuiOutlinedInput-input": {
-                    // targets displayed text
-                    color: "#000 !important",
-                  },
-                }}
+               sx={{
+                        "& .MuiInputBase-input.MuiSelect-select": {
+                          color: "#000 !important",
+                        },
+                        "& .MuiSvgIcon-root": {
+                          color: "#000",
+                        },
+                      }}
               >
-                {["Male", "Female", "Other"].map((opt) => (
+                {["male", "Female", "Other"].map((opt) => (
                   <MenuItem key={opt} value={opt}>
                     {opt}
                   </MenuItem>
@@ -287,14 +287,14 @@ const FamilyInfo = ({
 
                  sx={{
                   bgcolor: "#fff", // background color
-                  color: "#c2da10ff !important", // selected text color
+                  color: "#000 !important", // selected text color
                   "& .MuiOutlinedInput-input": {
                     // targets displayed text
                     color: "#000 !important",
                   },
                 }}
               >
-                {["Father", "Mother", "Brother", "Sister", "Friend"].map(
+                {["father", "Mother", "Brother", "Sister", "Friend"].map(
                   (opt) => (
                     <MenuItem key={opt} value={opt}>
                       {opt}

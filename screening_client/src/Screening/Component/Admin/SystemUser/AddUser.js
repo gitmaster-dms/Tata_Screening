@@ -38,6 +38,7 @@ import {
   Snackbar,
   Tooltip,
   TableContainer,
+  Paper,
 } from "@mui/material";
 import { API_URL } from "../../../../Config/api";
 
@@ -319,6 +320,7 @@ const AddUser = () => {
   }, []);
 
   //// Soure State against selected source
+  const [stateList, setstateList] = useState([]);
   useEffect(() => {
     axios
       .get(`${API_URL}/Screening/State_Get/`, {
@@ -328,6 +330,7 @@ const AddUser = () => {
       })
       .then((response) => {
         setStateOptions(response.data);
+        setstateList(response.data);
       })
       .catch((error) => {
         console.log("Error while fetching state data:", error);
@@ -380,6 +383,7 @@ const AddUser = () => {
         })
         .then((response) => {
           setSourceNameOptions(response.data);
+
         })
         .catch((error) => {
           console.error(
@@ -1011,9 +1015,9 @@ const AddUser = () => {
                   <IconButton
                     size="small"
                     sx={{
-                      bgcolor: "#1976d2",
+                      background: "linear-gradient(90deg, #2FB3F5 0%, #1439A4 100%)",
                       color: "white",
-                      "&:hover": { bgcolor: "#1565c0" },
+                      "&:hover": { bgcolor: "linear-gradient(90deg, #2FB3F5 0%, #1439A4 100%)" },
                     }}
                     onClick={() => {
                       handleClickCombined();
@@ -1034,7 +1038,7 @@ const AddUser = () => {
             alignItems="center"
             justifyContent="center"
           >
-            <Grid item xs={12} sm={6} md={2.5}>
+            <Grid item xs={12} sm={6} md={2.2}>
               <TextField
                 sx={{
                   minWidth: 120,
@@ -1061,7 +1065,7 @@ const AddUser = () => {
               </TextField>
             </Grid>
 
-            <Grid item xs={12} sm={6} md={2.5}>
+            <Grid item xs={12} sm={6} md={2.2}>
               <TextField
                 sx={{
                   minWidth: 120,
@@ -1089,7 +1093,7 @@ const AddUser = () => {
               </TextField>
             </Grid>
 
-            <Grid item xs={12} sm={6} md={2}>
+            <Grid item xs={12} sm={6} md={2.2}>
               <TextField
                 sx={{
                   minWidth: 120,
@@ -1117,7 +1121,7 @@ const AddUser = () => {
               </TextField>
             </Grid>
 
-            <Grid item xs={12} sm={6} md={2}>
+            <Grid item xs={12} sm={6} md={2.2}>
               <TextField
                 sx={{
                   minWidth: 120,
@@ -1152,7 +1156,7 @@ const AddUser = () => {
               </TextField>
             </Grid>
 
-            <Grid item xs={12} sm={6} md={2}>
+            <Grid item xs={12} sm={6} md={2.2}>
               <TextField
                 sx={{
                   minWidth: 120,
@@ -1188,8 +1192,13 @@ const AddUser = () => {
                 sx={{
                   textTransform: "none",
                   fontWeight: 500,
-                  bgcolor: "#1976d2",
-                  "&:hover": { bgcolor: "#1565c0" },
+                   background:
+                      "linear-gradient(90deg, #2FB3F5 0%, #1439A4 100%)",
+                    color: "white",
+                    "&:hover": {
+                      background:
+                        "linear-gradient(90deg, #2FB3F5 0%, #1439A4 100%)",
+                    },
                 }}
                 onClick={handleSearch}
               >
@@ -1236,7 +1245,7 @@ const AddUser = () => {
                           setFormAction("add");
                         }}
                       >
-                        <Add />
+                        <Add/>
                       </IconButton>
 
                       <IconButton
@@ -1918,6 +1927,9 @@ const AddUser = () => {
                                 fontSize: "13px",
                                 fontWeight: 500,
                                 fontFamily: "Roboto",
+                                boxShadow:"0px 1px 2px rgba(0, 0, 0, 0.2)",
+                                // cursor: "pointer",
+                                "&:hover": { backgroundColor: "#f5f5f5" },
                               }}
                               onClick={() => {
                                 handleTableRowClick(item.pk);

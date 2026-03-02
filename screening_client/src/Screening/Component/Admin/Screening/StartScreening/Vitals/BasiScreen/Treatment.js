@@ -299,24 +299,26 @@ const Treatment = ({
 
           {/* Referral */}
           <Grid item xs={12} md={4}>
-            <FormControl fullWidth size="small">
-              <InputLabel>Referral</InputLabel>
-              <Select
+              <TextField
+                fullWidth
+                select
+                size="small"
                 label="Referral"
                 name="referral"
                 value={treatmentForm.referral}
                 onChange={handleChange}
+                  sx={{"& .MuiInputBase-input.MuiSelect-select": {
+                  color: "#000",
+                  fontSize: "0.85rem",
+                },}}
               >
-                <MenuItem value="">
-                  <em>Select</em>
-                </MenuItem>
+                
                 {referral.map((drop) => (
                   <MenuItem key={drop.referral_id} value={drop.referral_id}>
                     {drop.referral}
                   </MenuItem>
                 ))}
-              </Select>
-            </FormControl>
+              </TextField>
           </Grid>
 
           {/* Reason For Referral */}

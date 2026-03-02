@@ -46,6 +46,9 @@ import {
   TableFooter,
 } from "@mui/material";
 import { API_URL } from "../../../../../Config/api";
+import "jspdf-autotable";
+import { pdf } from "@react-pdf/renderer";
+import HealthCardPDF from "./HealthcardPdf";
 
 const HealthList = () => {
   const Port = process.env.REACT_APP_API_KEY;
@@ -107,6 +110,7 @@ const HealthList = () => {
   const [bmiData, setBmiData] = useState(null);
   const [immunizationData, setImmunizationData] = useState(null);
   const [selectedCitizenId, setSelectedCitizenId] = useState(null);
+  console.log(selectedCitizenId, "selectedCitizenIdselectedCitizenId");
   const [basicScreenData, setBasicScreenData] = useState(null);
   const [citizen, setCitizen] = useState(null);
   const [family, setFamily] = useState(null);
@@ -120,6 +124,7 @@ const HealthList = () => {
   const [isDataFetched, setIsDataFetched] = useState(false);
   const [selectedForm, setSelectedForm] = useState("");
   const [selectedTalukaNav, setSelectedTalukaNav] = useState("");
+
   const handleFormClick = (formVital) => {
     console.log("Clicked form:", formVital); // Debugging: Check what gets passed
     setSelectedForm(formVital);
@@ -232,42 +237,6 @@ const HealthList = () => {
     fetchTehsilNavOptions();
   }, [selectedDistrictNav]);
 
-  //// Soure Name against selected source district
-  // useEffect(() => {
-  //   const fetchSourceNameOptions = async () => {
-  //     if (
-  //       selectedSource &&
-  //       selectedStateNav &&
-  //       selectedDistrictNav &&
-  //       selectedTehsilNav
-  //     ) {
-  //       try {
-  //         const res = await fetch(
-  //           `${Port}/Screening/Tehsil_Get/?SNid=${selectedTehsilNav}&So=${selectedSource}&source_pk_id=${SourceNameUrlId}`,
-  //           {
-  //             headers: {
-  //               Authorization: `Bearer ${accessToken}`,
-  //             },
-  //           }
-  //         );
-  //         const data = await res.json();
-  //         setSourceName(data);
-  //       } catch (error) {
-  //         console.error(
-  //           "Error fetching Source Name against Tehsil data:",
-  //           error
-  //         );
-  //       }
-  //     }
-  //   };
-  //   fetchSourceNameOptions();
-  // }, [
-  //   selectedSource,
-  //   selectedStateNav,
-  //   selectedDistrictNav,
-  //   selectedTehsilNav,
-  // ]);
-
   ////////////// search API
   const [id, setId] = useState("");
   console.log(id, "ididididididididididi");
@@ -336,7 +305,8 @@ const HealthList = () => {
     const seconds = String(now.getSeconds()).padStart(2, "0");
     return `${hours}:${minutes}:${seconds}`;
   }
-  const [selectedScheduleCount, setSelectedScheduleCount] = useState(null);
+  const [selectedScheduleCount, setSelectedScheduleCount] = useState(0);
+  console.log(selectedScheduleCount, "selectedScheduleCount");
 
   const [scheduleId, setScheduleId] = useState(null);
   const [image, setImage] = useState("");
@@ -577,44 +547,6 @@ const HealthList = () => {
   };
 
   //////////// handle table psycho
-  const handleEyeClick = async (citizenID) => {
-    try {
-      const response = await fetch(
-        `${Port}/Screening/schedule-count/?citizen_id=${citizenID}`,
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        },
-      );
-      const data = await response.json();
-      setScheduleData(data);
-      setIsDataFetched(true);
-
-      const options = data.schedule_count_sequence ?? [];
-      setTotalCount(options);
-      setSelectedCitizenId(citizenID);
-
-      // Set data for each type (vitals, bmi, immunization, etc.)
-      setVitalsData(data.vitalsData);
-      setBmiData(data.bmiData);
-      setImmunizationData(data.immunizationData);
-
-      setImage(data?.Citizen_info?.[0]?.photo);
-
-      console.log("API Schedule Response:", data);
-      console.log("Citizen Name:", data?.Citizen_info?.[0]?.name);
-      console.log("Citizen Idddddd:", data?.Citizen_info?.[0]?.citizen_id);
-      console.log("Total Count:", options);
-      setNewID(data?.Citizen_info?.[0]?.citizen_id);
-    } catch (error) {
-      console.error("Error Fetching Data", error);
-    }
-  };
-
-  useEffect(() => {
-    handleEyeClick();
-  }, []);
 
   const [citizenName, setCitizenName] = useState("");
   const [sourceNameFetched, setSourceNameFetched] = useState("");
@@ -654,14 +586,32 @@ const HealthList = () => {
         },
       );
 
-      // citizen_id ke basis pe exact record nikalo
-      const citizen = response.data.find(
+      const data = response.data || [];
+
+      // ✅ FILTER BY citizen_id (NOT pk_id)
+      const citizenRecords = data.filter(
         (item) => item.citizen_id === citizenId,
       );
 
-      setSelectedCitizen(citizen || null);
+      setResults(citizenRecords);
+      setSelectedCitizenId(citizenId);
+      setSelectedCitizen(citizenRecords[0] || null);
+
+      // ✅ MAX screening_count nikaalo
+      const maxCount = Math.max(
+        ...citizenRecords.map((i) => Number(i.screening_count || 0)),
+      );
+
+      // ✅ CREATE 1 → N COUNTS
+      const counts = Array.from({ length: maxCount }, (_, i) => i + 1);
+
+      setTotalCount(counts);
+      setSelectedScheduleCount(counts[0] ?? "");
     } catch (error) {
-      console.error("Error fetching citizen details", error);
+      console.error(error);
+      setResults([]);
+      setTotalCount([]);
+      setSelectedScheduleCount("");
     }
   };
 
@@ -835,10 +785,6 @@ const HealthList = () => {
     }
   };
 
-  useEffect(() => {
-    fetchCitizenVital();
-  }, []);
-
   const isGenderAvailable =
     scheduleData && scheduleData?.Citizen_info?.[0]?.gender;
 
@@ -894,15 +840,20 @@ const HealthList = () => {
   );
   useEffect(() => {
     setPage(0);
-  }, [searchQuery]);
+  }, [searchQuery,filteredResults.length]);
 
-  const handleDownload = async () => {
+
+
+
+  const downloadHealthCard = async (citizenId, scheduleCount) => {
+    if (!citizenId || !scheduleCount) {
+      console.log("Citizen ID or Schedule Count missing");
+      return;
+    }
+
     try {
-      console.log("Starting handleDownload function");
-
-      // Fetch data from the API
       const response = await fetch(
-        `${Port}/Screening/citizen-download/${selectedCitizenId}/${selectedScheduleCount}/`,
+        `${Port}/Screening/healthcard_download/${citizenId}/${scheduleCount}/`,
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
@@ -910,46 +861,27 @@ const HealthList = () => {
         },
       );
 
-      console.log("API call response:", response);
-
-      if (!response.ok) {
-        throw new Error(
-          `Failed to fetch data: ${response.status} ${response.statusText}`,
-        );
-      }
+      if (!response.ok) throw new Error("API error");
 
       const data = await response.json();
-      console.log("Fetched data:", data);
+      setPage(0); // Reset to first page on new download
 
-      // Set default values if null or empty
-      const processedData = {
-        psycho_info: data.psycho_info || [],
-        dental_info: data.dental_info || [],
-        vision_info: data.vision_info || [],
-        audit_info: data.audit_info || [],
-        immunization_info: data.immunization_info || [],
-        basic_info: data.basic_info || [],
-        bmi_info: data.bmi_info || [],
-        vital_info: data.vital_info || [],
-        pft_info: data.pft_info || [],
-        basic_info2: data.basic_info2 || [],
-      };
-      // Log the processed data
-      console.log("Processed data:", processedData);
+      // 🔥 PDF GENERATION
+      const blob = await pdf(<HealthCardPDF data={data} />).toBlob();
 
-      // Log specific data for basic_info2
-      console.log("Basic Info 2:", processedData.basic_info2);
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `HealthCard_${citizenId}_${scheduleCount}.pdf`;
+      a.click();
 
-      // Set the fetched data
-      setFetchedData(processedData);
+      URL.revokeObjectURL(url);
     } catch (error) {
-      console.error("Error fetching data", error);
+      console.error("Health card download failed", error);
     }
   };
 
-  useEffect(() => {
-    handleDownload();
-  }, []);
+
 
   useEffect(() => {
     if (fetchedData) {
@@ -1088,11 +1020,9 @@ const HealthList = () => {
           },
         },
       );
-
       setResults(response.data || []);
     } catch (error) {
       console.error("Error fetching citizen list", error);
-      setResults([]);
     } finally {
       setLoading(false);
     }
@@ -1503,7 +1433,7 @@ const HealthList = () => {
                                       "&:hover": { boxShadow: 3 },
                                     }}
                                     onClick={() =>
-                                      handleEyeClick(result.citizen_id)
+                                      handleEyeClick1(result.citizen_id)
                                     }
                                   >
                                     <Box
@@ -1537,9 +1467,10 @@ const HealthList = () => {
                                           textAlign: "center",
                                           cursor: "pointer",
                                         }}
-                                        onClick={() =>
-                                          handleEyeClick1(result.citizen_id)
-                                        }
+                                        onClick={(e) => {
+                                          e.stopPropagation();
+                                          handleEyeClick1(result.citizen_id);
+                                        }}
                                       >
                                         <RemoveRedEyeOutlinedIcon />
                                       </Box>
@@ -1610,7 +1541,7 @@ const HealthList = () => {
                     </Grid>
 
                     <Grid item xs={4} className="ealthcardtitle1">
-                      {scheduleData.Citizen_info?.[0]?.gender}
+                      {selectedCitizen?.gender}
                     </Grid>
                     <Grid item xs={4} className="ealthcardtitle1">
                       {selectedCitizen?.dob}
@@ -1643,27 +1574,34 @@ const HealthList = () => {
                         select
                         fullWidth
                         label="Select Schedule Count"
-                        // className="form-control screedropdown"
                         size="small"
-                        style={{
-                          width: "100%",
-                          height: "42px", // same height as button
-                          boxSizing: "border-box",
+                        value={selectedScheduleCount}
+                        sx={{
+                          color: "#000",
+                          "& .MuiSelect-select": {
+                            color: "#000 !important", // ✅ selected value color
+                          },
+                          "& .MuiInputLabel-root": {
+                            color: "#000", // optional: label color
+                          },
                         }}
                         onChange={(e) => {
-                          fetchCitizenVital(e.target.value);
-                          setSelectedScheduleCount(e.target.value);
+                          const value = e.target.value; // ✅ STRING
+                          setSelectedScheduleCount(value);
+                          fetchCitizenVital(Number(value)); // 👈 yaha number bhejo
                         }}
                       >
-                        <MenuItem>Select Schedule Count</MenuItem>
-                        {totalCount.map((option) => (
-                          <MenuItem key={option} value={option}>
-                            {option}
+                        <MenuItem value="">Select Schedule Count</MenuItem>
+
+                        {totalCount.map((count) => (
+                          <MenuItem key={count} value={String(count)}>
+                            {count}
                           </MenuItem>
                         ))}
                       </TextField>
                     </Box>
 
+                    {/* BUTTON */}
                     {/* BUTTON */}
                     <Box
                       sx={{
@@ -1682,7 +1620,13 @@ const HealthList = () => {
                           alignItems: "center",
                           whiteSpace: "nowrap",
                         }}
-                        onClick={handleDownload}
+                        disabled={!selectedCitizen || !selectedScheduleCount}
+                        onClick={() =>
+                          downloadHealthCard(
+                            selectedCitizen.citizen_id,
+                            selectedScheduleCount,
+                          )
+                        }
                       >
                         Healthcard
                       </button>

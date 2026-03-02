@@ -26,6 +26,7 @@ import {
 } from "@mui/material";
 
 import axios from "axios";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 
 const Corporate = (props) => {
   const Port = process.env.REACT_APP_API_KEY;
@@ -428,6 +429,9 @@ const Corporate = (props) => {
   const handleCloseSnackbar = () => {
     setSnackbar({ ...snackbar, open: false });
   };
+const [photoFile, setPhotoFile] = useState(null);
+const [photoPreview, setPhotoPreview] = useState(null);
+const [openPreview, setOpenPreview] = useState(false);
 
   const [corporateForm, setCorporateForm] = useState({
     prefix: "",
@@ -464,28 +468,46 @@ const Corporate = (props) => {
     doj: "",
   });
 
-  const handleChange = (e) => {
-    const { name, value, files } = e.target;
-    if (name === "photo") {
-      setCorporateForm((prevState) => ({
-        ...prevState,
-        [name]: files[0],
-      }));
-    } else {
-      setCorporateForm((prevState) => ({
-        ...prevState,
-        [name]: value,
-      }));
-    }
+ const handleChange = (e) => {
+  const { name, value, files, type } = e.target;
 
-    //// clear error message
-    if (errorMessages[name]) {
-      setErrorMessages((prevErrors) => ({
-        ...prevErrors,
-        [name]: "",
-      }));
-    }
-  };
+  // 👉 FILE INPUT
+  if (type === "file" && name === "photo") {
+    const file = files?.[0];
+    if (!file) return;
+
+    setCorporateForm((prev) => ({
+      ...prev,
+      photo: file,
+    }));
+
+    // preview ke liye
+    setPhotoPreview(URL.createObjectURL(file));
+  } 
+  // 👉 NORMAL INPUTS
+  else {
+    setCorporateForm((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  }
+
+  // 👉 clear error message
+  if (errorMessages[name]) {
+    setErrorMessages((prevErrors) => ({
+      ...prevErrors,
+      [name]: "",
+    }));
+  }
+};
+
+// const handleChange = (e) => {
+//   const file = e.target.files[0];
+//   if (!file) return;
+
+//   setPhotoFile(file);
+//   setPhotoPreview(URL.createObjectURL(file));
+// };
 
   const showError = (message) => {
     setSnackbar({
@@ -576,6 +598,9 @@ const Corporate = (props) => {
           ? childrenCount
           : null,
       );
+if (photoFile) {
+  formData.append("photo", photoFile);
+}
 
       const newErrorMessages = {};
 
@@ -801,7 +826,7 @@ const Corporate = (props) => {
                     <MenuItem value="">Select</MenuItem>
                     {["Mr", "Ms", "Mrs", "Adv", "Col", "Dr"].map((item) => (
                       <MenuItem key={item} value={item}>
-                        {item}.
+                        {item}
                       </MenuItem>
                     ))}
                   </Select>
@@ -1072,25 +1097,67 @@ const Corporate = (props) => {
 
               {/* Upload Photo */}
               <Grid item xs={12} sm={6} md={4}>
-                <Button
-                  variant="outlined"
-                  component="label"
-                  fullWidth
-                  sx={{
-                    textTransform: "none",
-                    borderColor: "#1A237E",
-                    color: "#1A237E",
-                    "&:hover": { borderColor: "#1A237E" },
-                  }}
-                >
-                  Upload Photo
-                  <input
-                    type="file"
-                    hidden
-                    name="photo"
-                    onChange={handleChange}
-                  />
-                </Button>
+           <Box
+  display="flex"
+  alignItems="center"
+  gap={1}
+  sx={{
+    border: "1px dashed #1A237E",
+    p: 1,
+    borderRadius: "8px",
+  }}
+>
+  {/* LEFT SIDE – photo / upload icon */}
+  <Box
+    component="label"
+    sx={{
+      cursor: "pointer",
+    }}
+  >
+    {photoPreview ? (
+      <Box
+        component="img"
+        src={photoPreview}
+        alt="uploaded"
+        onClick={() => setOpenPreview(true)}
+        sx={{
+          width: 40,
+          height: 40,
+          borderRadius: "10%",
+          objectFit: "cover",
+          border: "1px solid #ccc",
+        }}
+      />
+    ) : (
+      <CloudUploadIcon sx={{ fontSize: 25, color: "#1A237E" }} />
+    )}
+
+    <input
+      type="file"
+      hidden
+      accept="image/*"
+      name="photo"
+      onChange={handleChange}
+    />
+  </Box>
+
+  {/* RIGHT SIDE – file path / name */}
+  <Box>
+    <Typography variant="body2" sx={{ fontWeight: 500 }}>
+      {photoFile ? "File Selected:" : "No file selected"}
+    </Typography>
+
+    {photoFile && (
+      <Typography
+        variant="caption"
+        sx={{ color: "gray", wordBreak: "break-all" }}
+      >
+        {photoFile.name}
+      </Typography>
+    )}
+  </Box>
+</Box>
+
               </Grid>
 
               {/* DOJ */}

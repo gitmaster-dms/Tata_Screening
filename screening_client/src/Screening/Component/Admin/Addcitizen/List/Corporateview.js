@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useState,useEffect} from "react";
 import {
   Grid,
   Box,
@@ -10,10 +10,26 @@ import {
   FormControl,
   InputLabel,
   Card,
+  Button,
+  CardContent,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Snackbar,
+  Alert,
+  IconButton
 } from "@mui/material";
-
+import { API_URL } from "../../../../../Config/api";
+import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
+import CloseIcon from "@mui/icons-material/Close";
 const Corporate = ({ data }) => {
+
   const d = data || {};
+const [openPhotoPreview, setOpenPhotoPreview] = useState(false);
+const photoUrl = d.photo
+  ? `${API_URL}${d.photo}`
+  : null;
 
   return (
     <Box sx={{ p: 1 }}>
@@ -32,7 +48,7 @@ const Corporate = ({ data }) => {
               fontWeight={500}
               sx={{ fontFamily: "Roboto", mb: 2 }}
             >
-              Employee Details
+              Citizen Details
             </Typography>
 
             <Grid container spacing={2}>
@@ -151,6 +167,96 @@ const Corporate = ({ data }) => {
                   InputProps={{ readOnly: true }}
                 />
               </Grid>
+             <Grid item xs={12} sm={4}>
+
+    <Box
+      sx={{
+        border: "1px solid rgba(0,0,0,0.23)", // MUI TextField border
+        borderRadius: "4px",
+        height: "45px",
+        px: 1.5,
+        display: "flex",
+        alignItems: "center",
+        gap: 2,
+        cursor: photoUrl ? "pointer" : "default",
+      }}
+      onClick={() => photoUrl && setOpenPhotoPreview(true)}
+    >
+      {/* LEFT – Avatar */}
+      {photoUrl ? (
+        <Box
+          component="img"
+          src={photoUrl}
+          alt="Citizen"
+          sx={{
+            width: 30,
+            height: 30,
+            borderRadius: "10%",
+            objectFit: "cover",
+            border: "1px solid #ccc",
+          }}
+        />
+      ) : (
+        <AccountCircleOutlinedIcon
+          sx={{ fontSize: 36, color: "rgba(0,0,0,0.38)" }}
+        />
+      )}
+
+      {/* RIGHT – Text */}
+      <Typography
+        variant="body2"
+        sx={{
+          color: photoUrl ? "text.primary" : "text.secondary",
+          whiteSpace: "nowrap",
+          overflow: "hidden",
+          textOverflow: "ellipsis",
+        }}
+      >
+        {photoUrl ? "View Image Photo" : "No photo available"}
+      </Typography>
+    </Box>
+</Grid>
+<Dialog
+  open={openPhotoPreview}
+  onClose={() => setOpenPhotoPreview(false)}
+  maxWidth="sm"
+  fullWidth
+>
+  <DialogTitle
+    sx={{
+      m: 0,
+      p: 2,
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+    }}
+  >
+    Photo Preview
+
+    <IconButton
+      aria-label="close"
+      onClick={() => setOpenPhotoPreview(false)}
+      sx={{
+        color: (theme) => theme.palette.grey[600],
+      }}
+    >
+      <CloseIcon />
+    </IconButton>
+  </DialogTitle>
+
+  <DialogContent dividers>
+    <Box
+      component="img"
+      src={photoUrl}
+      alt="Preview"
+      sx={{
+        width: "100%",
+        borderRadius: "8px",
+      }}
+    />
+  </DialogContent>
+</Dialog>
+
 
               {/* <Grid item xs={12} sm={4}>
                                   <TextField size="small"
@@ -289,6 +395,7 @@ const Corporate = ({ data }) => {
 
               <Grid item xs={12} sm={6}>
                 <TextField
+                
                   size="small"
                   label="Present Address"
                   fullWidth
@@ -296,6 +403,38 @@ const Corporate = ({ data }) => {
                   InputProps={{ readOnly: true }}
                 />
               </Grid>
+                 <Grid item xs={12} sm={6}>   
+                                <TextField
+                                  fullWidth
+                                  size="small"
+                                  label="Relationship with Employee"
+                                  value={d.relationship_with_employee || ""}
+                                  InputProps={{ readOnly: true }}
+                                select
+                                  sx={{
+                                    "& .MuiInputBase-input.MuiSelect-select": {
+                                      color: "#000 !important",
+                                    },
+                                    "& .MuiSvgIcon-root": {
+                                      color: "#000",
+                                    },
+                                  }}
+                                  labelId="relationship-label"
+                                  name="relationship_with_employee"
+                                  // onChange={handleChange}
+                                >
+                                  <MenuItem value="" disabled>Select Relationship</MenuItem>
+                                  <MenuItem value="father">Father</MenuItem>
+                                  <MenuItem value="mother">Mother</MenuItem>
+                                  <MenuItem value="brother">Brother</MenuItem>
+                                  <MenuItem value="sister">Sister</MenuItem>
+                                  <MenuItem value="spouse">Spouse</MenuItem>
+                                  <MenuItem value="son">Son</MenuItem>
+                                  <MenuItem value="daughter">Daughter</MenuItem>
+                                </TextField>
+              
+                              
+                            </Grid>
             </Grid>
           </Card>
         </Grid>

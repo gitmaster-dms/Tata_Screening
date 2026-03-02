@@ -197,6 +197,9 @@ const Citizenlist = () => {
   const [divisionList, setDivisionList] = useState([]); //// class API
 
   const [tableFetch, setTableFetch] = useState([]); ///////////////// table Data
+  const [isFiltered, setIsFiltered] = useState(false); // search applied or not
+
+  console.log("tableFetch", tableFetch);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   ///////// Loader
@@ -215,23 +218,23 @@ const Citizenlist = () => {
   };
 
   useEffect(() => {
-    handleActive("today");
+    handleActive();
   }, []);
 
   //today till filter
   const handleActive = async (type) => {
     setLoading(true);
+  setIsFiltered(false); // 👈 IMPORTANT
 
     try {
       const accessToken = localStorage.getItem("token");
-      // const response = await axios.get(`${Port}/Screening/filter-citizens/?date_filter=${type}&source=${SourceUrlId}&source_name=${SourceNameUrlId}`, {
       const response = await axios.get(`${Port}/Screening/Citizen_Get/`, {
         headers: {
           Authorization: `Bearer ${accessToken}`,
           "Content-Type": "application/json",
         },
       });
-      setTableFetch(response.data);
+    setTableFetch(response.data?.results || []);
       console.log(response.data);
     } catch (error) {
       console.log("Error while fetching data", error);

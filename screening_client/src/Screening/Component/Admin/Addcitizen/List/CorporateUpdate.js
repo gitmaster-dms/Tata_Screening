@@ -14,9 +14,20 @@ import {
   Card,
   Snackbar,
   Alert,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  CardContent,
+  RadioGroup,
+  FormControlLabel,
+  Radio,
+  IconButton,
 } from "@mui/material";
 import { API_URL } from "../../../../../Config/api";
-
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import CloseIcon from "@mui/icons-material/Close";
+import AccountCircleOutlinedIcon from "@mui/icons-material/AccountCircleOutlined";
 const CorporateUpdate = (props) => {
   // const API_URL = process.env.REACT_APP_API_KEY;
   const userID = localStorage.getItem("userID");
@@ -27,6 +38,9 @@ const CorporateUpdate = (props) => {
   const [snackOpen, setSnackOpen] = useState(false);
   const [snackMessage, setSnackMessage] = useState("");
   const [snackSeverity, setSnackSeverity] = useState("success"); // success | error | warning | info
+const [photoPreview, setPhotoPreview] = useState(null);
+const [openPhotoPreview, setOpenPhotoPreview] = useState(false);
+const [openUploadDialog, setOpenUploadDialog] = useState(false);
 
   //// access the source from local storage
   const SourceUrlId = localStorage.getItem("loginSource");
@@ -161,8 +175,21 @@ const CorporateUpdate = (props) => {
   }, [props.data]);
 
   const handleInputChange = (event) => {
-    const { name, value } = event.target;
+    const { name, value ,files,type} = event.target;
 
+
+      if (type === "file" && name === "photo") {
+    const file = files?.[0];
+    if (!file) return;
+
+    setUpdatedData((prev) => ({
+      ...prev,
+      photo: file, // ✅ SAME KEY
+    }));
+
+    setPhotoPreview(URL.createObjectURL(file));
+    return;
+  }
     if (name === "dob") {
       const selectedDOB = new Date(value);
       const currentDate = new Date();
@@ -211,8 +238,15 @@ const CorporateUpdate = (props) => {
         added_by: userID,
         source_name: updatedData.source_name,
         tehsil: updatedData.tehsil,
+        
       };
+          const formData = new FormData();
 
+  Object.entries(updatedDataWithDepartment).forEach(([key, value]) => {
+      if (value !== null && value !== undefined && value !== "") {
+        formData.append(key, value);
+      }
+    });
       const response = await axios.put(
         `${API_URL}/Screening/Citizen_Put_api/${corporateData.citizens_pk_id}/`,
         updatedDataWithDepartment, // ✅ DATA
@@ -246,40 +280,7 @@ const CorporateUpdate = (props) => {
     }
   };
 
-  // const handleUpdate = async (e) => {
-  //     e.preventDefault();
-
-  //     const isConfirmed = window.confirm('Are you sure you want to update employee details?');
-  //     if (isConfirmed) {
-  //         try {
-  //             const updatedDataWithDepartment = {
-  //                 ...updatedData,
-  //                 department_id: selectedDepartmentId,
-  //                 age: mainCorporate.age.id,
-  //                 gender: mainCorporate.gender.id,
-  //                 source: mainCorporate.source.id,
-  //                 type: mainCorporate.type.id,
-  //                 disease: mainCorporate.disease.id,
-  //                 modify_by: userID
-  //             };
-
-  //             const response = await axios.put(`${API_URL}/Screening/add_employee_put/${corporateData.citizens_pk_id}/`, updatedDataWithDepartment, {
-  //                 headers: {
-  //                     'Authorization': `Bearer ${accessToken}`,
-  //                     'Content-Type': 'application/json'
-  //                 }
-  //             });
-  //             navigate('/mainscreen/Citizen');
-  //             console.log('Data updated successfully:', response.data);
-  //         } catch (error) {
-  //             console.error('Error updating data:', error);
-  //         }
-  //     } else {
-  //         console.log('Update cancelled by user.');
-  //     }
-  // };
-
-  ////////////////////////////////// GET API
+ 
   const [departments, setDepartments] = useState([]);
   const [selectedDepartmentId, setSelectedDepartmentId] = useState("");
 
@@ -594,7 +595,7 @@ const CorporateUpdate = (props) => {
                 />
               </Grid>
 
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={4}>
                 <TextField
                   fullWidth
                   size="small"
@@ -620,7 +621,7 @@ const CorporateUpdate = (props) => {
                 />
               </Grid>
 
-              <Grid item xs={12} sm={6}>
+              <Grid item xs={12} sm={4}>
                 <TextField
                   fullWidth
                   size="small"
@@ -646,90 +647,112 @@ const CorporateUpdate = (props) => {
                 />
               </Grid>
 
-              {/* <Grid item xs={12} sm={6}>
-                                <FormControl fullWidth size="small">
-                                    <InputLabel>Department</InputLabel>
-                                    <Select sx={{
-                                        "& .MuiInputBase-input.MuiSelect-select": {
-                                            color: "#000 !important",
-                                        },
-                                        "& .MuiSvgIcon-root": {
-                                            color: "#000",
-                                        },
-                                    }}
-                                        value={updatedData.department || ""}
-                                        onChange={handleDepartmentChange}
-                                        label="Department"
-                                    >
-                                        <MenuItem value="">Select</MenuItem>
-                                        {departments.map((dept) => (
-                                            <MenuItem
-                                                key={dept.department_id}
-                                                value={dept.department_id}
-                                            >
-                                                {dept.department}
-                                            </MenuItem>
-                                        ))}
-                                    </Select>
-                                </FormControl>
-                            </Grid>
+             
+<Grid item xs={12} sm={4}>
 
-                            <Grid item xs={12} sm={6}>
-                                <FormControl fullWidth size="small">
-                                    <InputLabel>Designation</InputLabel>
-                                    <Select sx={{
-                                        "& .MuiInputBase-input.MuiSelect-select": {
-                                            color: "#000 !important",
-                                        },
-                                        "& .MuiSvgIcon-root": {
-                                            color: "#000",
-                                        },
-                                    }}
-                                        value={updatedData.designation || ""}
-                                        onChange={(e) =>
-                                            handleInputChange({
-                                                target: {
-                                                    name: "designation",
-                                                    value: e.target.value,
-                                                },
-                                            })
-                                        }
-                                        label="Designation"
-                                    >
-                                        <MenuItem value="">Select</MenuItem>
-                                        {designation.map((design) => (
-                                            <MenuItem
-                                                key={design.designation_id}
-                                                value={design.designation_id}
-                                            >
-                                                {design.designation}
-                                            </MenuItem>
-                                        ))}
-                                    </Select>
-                                </FormControl>
-                            </Grid> */}
+    <Box
+      sx={{
+        border: "1px solid rgba(0,0,0,0.23)",
+        borderRadius: "4px",
+        height: "50px",
+        px: 1.5,
+        display: "flex",
+        alignItems: "center",
+        gap: 2,
+        cursor: "pointer",
+        "&:hover": { borderColor: "#1976d2" },
+      }}
+      onClick={() => setOpenUploadDialog(true)}
+    >
+      {/* Thumbnail */}
+      {photoPreview ? (
+        <Box
+          component="img"
+          src={photoPreview}
+          alt="photo"
+          sx={{
+            width: 30,
+            height: 30,
+            borderRadius: "10%",
+            objectFit: "cover",
+            border: "1px solid #ccc",
+          }}
+        />
+      ) : (
+        <AccountCircleOutlinedIcon
+          sx={{ fontSize: 36, color: "rgba(0,0,0,0.38)" }}
+        />
+      )}
 
-              <Grid item xs={12} sm={4}>
-                <TextField
-                  fullWidth
-                  size="small"
-                  label="Employee ID"
-                  name="employee_id"
-                  value={updatedData.employee_id || ""}
-                  onChange={handleInputChange}
-                />
-              </Grid>
+      <Typography
+        variant="body2"
+        sx={{
+          color: photoPreview ? "text.primary" : "text.secondary",
+        }}
+      >
+        {photoPreview ? "Change / View Photo" : "Upload Photo"}
+      </Typography>
+    </Box>
+</Grid>
 
-              <Grid item xs={12} sm={4}>
-                <TextField
-                  fullWidth
-                  size="small"
-                  label="DOJ"
-                  name="doj"
-                  value={updatedData.doj || ""}
-                  onChange={handleInputChange}
-                />
-              </Grid>
+            <Dialog
+  open={openUploadDialog}
+  onClose={() => setOpenUploadDialog(false)}
+  maxWidth="sm"
+  fullWidth
+>
+  <DialogTitle
+    sx={{
+      display: "flex",
+      justifyContent: "space-between",
+      alignItems: "center",
+    }}
+  >
+    Upload Photo
+    <IconButton onClick={() => setOpenUploadDialog(false)}>
+      <CloseIcon />
+    </IconButton>
+  </DialogTitle>
+
+  <DialogContent dividers>
+    {/* Preview */}
+    {photoPreview && (
+      <Box
+        component="img"
+        src={photoPreview}
+        alt="preview"
+        sx={{
+          width: "100%",
+          maxHeight: 300,
+          objectFit: "contain",
+          borderRadius: "8px",
+          mb: 2,
+        }}
+      />
+    )}
+
+    {/* Upload Button */}
+    <Button
+      variant="outlined"
+      component="label"
+      startIcon={<CloudUploadIcon />}
+      fullWidth
+    >
+      Choose Photo
+      <input
+        type="file"
+        hidden
+        accept="image/*"
+        name="photo"
+        onChange={(e) => {
+          handleInputChange(e); // same handler
+          setOpenUploadDialog(false);
+        }}
+      />
+    </Button>
+  </DialogContent>
+</Dialog>
+
             </Grid>
           </Card>
         </Grid>

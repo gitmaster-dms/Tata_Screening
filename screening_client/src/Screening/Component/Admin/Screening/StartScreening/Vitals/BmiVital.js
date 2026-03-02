@@ -39,11 +39,13 @@ const BmiVital = ({
   console.log(fetchVital, "Overall GET API");
   const [nextName, setNextName] = useState("");
   console.log(nextName, "nextName");
+  const [referredError, setReferredError] = useState(false);
+  const [doctorError, setDoctorError] = useState(false);
 
   useEffect(() => {
     if (fetchVital && selectedName) {
       const currentIndex = fetchVital.findIndex(
-        (item) => item.screening_list === selectedName
+        (item) => item.screening_list === selectedName,
       );
 
       console.log("Current Index:", currentIndex);
@@ -67,7 +69,7 @@ const BmiVital = ({
   console.log(pkid, "pkiddddddddddddddddddddddddddddddddddddddddd");
   console.log(
     scheduleID,
-    "scheduleIDdddddddddddddddddddddddddddddddddddddddddddd"
+    "scheduleIDdddddddddddddddddddddddddddddddddddddddddddd",
   );
 
   //// access the source from local storage
@@ -134,6 +136,23 @@ const BmiVital = ({
   });
   console.log(bmiData);
 
+  useEffect(() => {
+    const { height, weight } = bmiData.citizen_info;
+
+    if (!height || !weight) return;
+
+    const h = height / 100;
+    const bmi = Number((weight / (h * h)).toFixed(1));
+
+    setBmiData((prev) => ({
+      ...prev,
+      citizen_info: {
+        ...prev.citizen_info,
+        bmi,
+      },
+    }));
+  }, [bmiData.citizen_info.height, bmiData.citizen_info.weight]);
+
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: "",
@@ -182,7 +201,7 @@ const BmiVital = ({
             added_by: userID,
             modify_by: userID,
           }),
-        }
+        },
       );
 
       const data = await response.json();
@@ -226,51 +245,50 @@ const BmiVital = ({
   }, []);
 
   const updateDataInDatabase = async (confirmationStatus) => {
-  try {
-    const response = await fetch(
-      `${API_URL}/Screening/Citizen_growth_monitoring_put/${growthId}/`,
-      {
-        method: "PUT",
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          "Content-Type": "application/json",
+    try {
+      const response = await fetch(
+        `${API_URL}/Screening/Citizen_growth_monitoring_put/${growthId}/`,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            // 👇 FLAT FIELDS (IMPORTANT)
+            dob: bmiData.citizen_info.dob,
+            gender: bmiData.citizen_info.gender,
+            height: bmiData.citizen_info.height,
+            weight: bmiData.citizen_info.weight,
+            year: bmiData.citizen_info.year,
+            months: bmiData.citizen_info.months,
+            days: bmiData.citizen_info.days,
+            arm_size: bmiData.citizen_info.arm_size,
+
+            symptoms: bmiData.symptoms_if_any,
+            remark: bmiData.remark,
+
+            refer_doctor: selectedDoctor,
+            reffered_to_specialist: referredToSpecialist,
+            form_submit: confirmationStatus,
+
+            added_by: userID,
+            modify_by: userID,
+          }),
         },
-        body: JSON.stringify({
-          // 👇 FLAT FIELDS (IMPORTANT)
-          dob: bmiData.citizen_info.dob,
-          gender: bmiData.citizen_info.gender,
-          height: bmiData.citizen_info.height,
-          weight: bmiData.citizen_info.weight,
-          year: bmiData.citizen_info.year,
-          months: bmiData.citizen_info.months,
-          days: bmiData.citizen_info.days,
-          arm_size: bmiData.citizen_info.arm_size,
+      );
 
-          symptoms: bmiData.symptoms_if_any,
-          remark: bmiData.remark,
-
-          refer_doctor: selectedDoctor,
-          reffered_to_specialist: referredToSpecialist,
-          form_submit: confirmationStatus,
-
-          added_by: userID,
-          modify_by: userID,
-        }),
+      if (response.ok) {
+        const res = await response.json();
+        openSnackbar("Data updated successfully!", "success");
+        onAcceptClick(nextName);
+      } else {
+        openSnackbar("Update failed", "error");
       }
-    );
-
-    if (response.ok) {
-      const res = await response.json();
-      openSnackbar("Data updated successfully!", "success");
-      onAcceptClick(nextName);
-    } else {
-      openSnackbar("Update failed", "error");
+    } catch (error) {
+      console.error(error);
     }
-  } catch (error) {
-    console.error(error);
-  }
-};
-
+  };
 
   const [openConfirm, setOpenConfirm] = useState(false);
 
@@ -385,15 +403,15 @@ const BmiVital = ({
 
         const ageInMilliseconds = currentDate - selectedDOB;
         const ageInYears = Math.floor(
-          ageInMilliseconds / (365.25 * 24 * 60 * 60 * 1000)
+          ageInMilliseconds / (365.25 * 24 * 60 * 60 * 1000),
         );
         const ageInMonths = Math.floor(
           (ageInMilliseconds % (365.25 * 24 * 60 * 60 * 1000)) /
-            (30.44 * 24 * 60 * 60 * 1000)
+            (30.44 * 24 * 60 * 60 * 1000),
         );
         const ageInDays = Math.floor(
           (ageInMilliseconds % (30.44 * 24 * 60 * 60 * 1000)) /
-            (24 * 60 * 60 * 1000)
+            (24 * 60 * 60 * 1000),
         );
 
         // Update the state with the calculated values
@@ -588,7 +606,7 @@ const BmiVital = ({
                       onChange={(e) => {
                         const newValue = Math.min(
                           Math.max(parseInt(e.target.value)),
-                          221
+                          221,
                         );
 
                         setBmiData({
@@ -644,9 +662,30 @@ const BmiVital = ({
                     <Typography variant="body2">Arm</Typography>
                   </Grid>
                   <Grid item xs={5}>
-                    <Typography variant="body2">
+                    {/* <Typography variant="body2">
                       {bmiData.citizen_info.arm_size || "-"}
-                    </Typography>
+                    </Typography> */}
+                    <TextField
+                      fullWidth
+                      size="small"
+                      type="number"
+                      value={bmiData.citizen_info.arm_size || ""}
+                      onChange={(e) => {
+                        let newValue = parseInt(e.target.value);
+
+                        newValue = Math.min(newValue, 400);
+                        newValue =
+                          isNaN(newValue) || newValue < 0 ? 0 : newValue;
+
+                        setBmiData({
+                          ...bmiData,
+                          citizen_info: {
+                            ...bmiData.citizen_info,
+                            arm_size: newValue,
+                          },
+                        });
+                      }}
+                    />
                   </Grid>
                 </Grid>
               </Card>
@@ -676,10 +715,10 @@ const BmiVital = ({
                     {bmiData.citizen_info.bmi < 18.5
                       ? "You are Underweight."
                       : bmiData.citizen_info.bmi < 25
-                      ? "You are Normal."
-                      : bmiData.citizen_info.bmi < 30
-                      ? "You are Overweight."
-                      : "Obese."}
+                        ? "You are Normal."
+                        : bmiData.citizen_info.bmi < 30
+                          ? "You are Overweight."
+                          : "Obese."}
                   </Typography>
 
                   <Divider sx={{ my: 2 }} />
@@ -725,7 +764,7 @@ const BmiVital = ({
                         >
                           {label}
                         </Typography>
-                      )
+                      ),
                     )}
                   </Grid>
                 </Card>
@@ -838,75 +877,75 @@ const BmiVital = ({
             <Grid container spacing={2} alignItems="center" sx={{ mt: 2 }}>
               {/* Radio Group */}
               <Grid item xs={12} sm={6}>
-                <FormControl component="fieldset" fullWidth>
-                  <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                    Referred To Specialist
+                <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                  Referred To Specialist *
+                </Typography>
+
+                <RadioGroup
+                  row
+                  value={referredToSpecialist}
+                  onChange={(e) => {
+                    setReferredToSpecialist(Number(e.target.value));
+                    setReferredError(false); // error clear on select
+                  }}
+                  error={referredError}
+                  helpertext={referredError ? "This field is required" : ""}
+                >
+                  <FormControlLabel value={1} control={<Radio />} label="Yes" />
+                  <FormControlLabel value={2} control={<Radio />} label="No" />
+                </RadioGroup>
+
+                {referredError && (
+                  <Typography variant="caption" color="error">
+                    This field is required
                   </Typography>
-                  <RadioGroup
-                    row
-                    value={referredToSpecialist}
-                    onChange={(e) =>
-                      setReferredToSpecialist(Number(e.target.value))
-                    }
-                  >
-                    <FormControlLabel
-                      value={1}
-                      control={<Radio />}
-                      label="Yes"
-                    />
-                    <FormControlLabel
-                      value={2}
-                      control={<Radio />}
-                      label="No"
-                    />
-                  </RadioGroup>
-                </FormControl>
+                )}
               </Grid>
 
               {/* Dropdown (only show if Yes) */}
               {referredToSpecialist === 1 && (
                 <Grid item xs={12} sm={6}>
-                  <FormControl fullWidth size="small">
-                    <InputLabel>Choose Doctor</InputLabel>
-                    <Select
-                      label="Choose Specialist"
-                      value={selectedDoctor}
-                      onChange={(e) =>
-                        setSelectedDoctor(Number(e.target.value))
-                      }
-                      disabled={loadingDoctors}
-                      sx={{
-                        "& .MuiInputBase-input.MuiSelect-select": {
-                          color: "#000 !important",
-                          fontSize: "0.85rem", // smaller font to fit nicely
-                        },
-                        "& .MuiSvgIcon-root": {
-                          color: "#000",
-                        },
-                      }}
-                    >
-                      {loadingDoctors && (
-                        <MenuItem value="">
-                          <em>Loading...</em>
-                        </MenuItem>
-                      )}
+                  <TextField
+                    select
+                    fullWidth
+                    size="small"
+                    label="Choose Doctor"
+                    value={selectedDoctor}
+                    onChange={(e) => setSelectedDoctor(Number(e.target.value))}
+                    disabled={loadingDoctors}
+                    error={!doctorError}
+                    helperText={!doctorError ? "Please select a doctor" : ""}
+                    sx={{
+                      "& .MuiInputBase-input.MuiSelect-select": {
+                        color: "#000 !important",
+                        fontSize: "0.85rem", // smaller font to fit nicely
+                      },
+                      "& .MuiSvgIcon-root": {
+                        color: "#000",
+                      },
+                    }}
+                  >
+                    {loadingDoctors && (
+                      <MenuItem value="">
+                        <em>Loading...</em>
+                      </MenuItem>
+                    )}
 
-                      {doctorList.length > 0
-                        ? doctorList.map((doc) => (
-                            <MenuItem
-                              key={doc.doctor_pk_id}
-                              value={doc.doctor_pk_id}
-                            >
-                              {doc.doctor_name}
-                            </MenuItem>
-                          ))
-                        : !loadingDoctors && (
-                            <MenuItem value="">
-                              <em>No Doctors Found</em>
-                            </MenuItem>
-                          )}
-                    </Select>
-                  </FormControl>
+                    {doctorList.length > 0
+                      ? doctorList.map((doc) => (
+                          <MenuItem
+                            key={doc.doctor_pk_id}
+                            value={doc.doctor_pk_id}
+                          >
+                            {doc.doctor_name}
+                          </MenuItem>
+                        ))
+                      : !loadingDoctors && (
+                          <MenuItem value="">
+                            <em>No Doctors Found</em>
+                          </MenuItem>
+                        )}
+                  </TextField>
                 </Grid>
               )}
             </Grid>

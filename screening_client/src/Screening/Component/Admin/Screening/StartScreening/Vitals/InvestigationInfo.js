@@ -95,17 +95,39 @@ const InvestigationInfo = ({
 
     // File from API (string)
     if (typeof filePath === "string") {
-      const ext = filePath.split(".").pop().toLowerCase();
+      // derive extension safely (remove query params)
+      const name = filePath.split("/").pop() || filePath;
+      const cleanName = name.split("?")[0];
+      const ext = (cleanName.split(".").pop() || "").toLowerCase();
 
-      // ❌ Excel / Word → preview not supported
       if (["xlsx", "xls", "doc", "docx"].includes(ext)) {
         alert("Preview not supported for this file type");
         return;
       }
 
-      setPreviewFile(`${API_URL}${filePath}`);
-      setPreviewType(ext);
-      setPreviewOpen(true);
+      // fetch the file with Authorization if needed, then create blob URL
+      (async () => {
+        try {
+          const res = await fetch(`${API_URL}${filePath}`, {
+            headers: { Authorization: `Bearer ${accessToken}` },
+          });
+          if (!res.ok) {
+            throw new Error(`Preview fetch failed: ${res.status}`);
+          }
+          const blob = await res.blob();
+          const url = URL.createObjectURL(blob);
+          setPreviewFile(url);
+          setPreviewType(ext === "pdf" ? "pdf" : ext);
+          setPreviewOpen(true);
+        } catch (err) {
+          console.error("Preview error:", err);
+          setSnackbar({
+            open: true,
+            message: "Unable to preview file",
+            severity: "error",
+          });
+        }
+      })();
     }
   };
 
@@ -139,14 +161,18 @@ const InvestigationInfo = ({
           if (data?.length > 0) {
             const item = data[0];
 
+            const toArray = (val) => {
+              if (!val) return [];
+              if (Array.isArray(val)) return val;
+              return [val];
+            };
+
             setSelectedChecks(item.selected_submodules || []);
             setInvestData({
-              investigation_report: item.investigation_report
-                ? [item.investigation_report]
-                : [],
-              urine_report: item.urine_report ? [item.urine_report] : [],
-              ecg_report: item.ecg_report ? [item.ecg_report] : [],
-              x_ray_report: item.x_ray_report ? [item.x_ray_report] : [],
+              investigation_report: toArray(item.investigation_report),
+              urine_report: toArray(item.urine_report),
+              ecg_report: toArray(item.ecg_report),
+              x_ray_report: toArray(item.x_ray_report),
             });
           }
         }
@@ -199,8 +225,15 @@ const InvestigationInfo = ({
     setOpenDialog(false);
 
     const formData = new FormData();
+    // investData fields are arrays; append each File if present
     Object.entries(investData).forEach(([key, value]) => {
-      if (value instanceof File) {
+      if (Array.isArray(value)) {
+        value.forEach((v) => {
+          if (v instanceof File) {
+            formData.append(key, v);
+          }
+        });
+      } else if (value instanceof File) {
         formData.append(key, value);
       }
     });

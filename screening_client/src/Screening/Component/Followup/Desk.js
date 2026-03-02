@@ -28,15 +28,34 @@ import {
   DialogContent,
   DialogActions,
   TablePagination,
+  Select,
+  InputLabel,
+  FormControl,
+  RadioGroup,
+  FormControlLabel,
+  Radio,
+  useTheme,
+  useMediaQuery,
 } from "@mui/material";
 
 const Desk = () => {
   const Port = process.env.REACT_APP_API_KEY;
+      const userID = localStorage.getItem('userID');
   const accessToken = localStorage.getItem("token");
   const newToken = localStorage.getItem("refreshToken");
+  const theme = useTheme();
+  const fullScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   const [canView, setCanView] = useState(false);
   const [canEdit, setCanEdit] = useState(false);
+  const [openFollowUpModal, setOpenFollowUpModal] = useState(false);
+  const [selectedCitizen, setSelectedCitizen] = useState(null);
+  // console.log(selectedCitizen, "selectedCitizen");
+  
+  const [callStatus, setCallStatus] = useState(null);
+  const [conversationalRemark, setConversationalRemark] = useState("");
+  const [status, setStatus] = useState(null);
+  const [followUp, setFollowUp] = useState("");
 
   useEffect(() => {
     const storedPermissions = localStorage.getItem("permissions");
@@ -50,8 +69,8 @@ const Desk = () => {
       p.modules_submodule.some(
         (m) =>
           m.moduleName === "Follow-Up" &&
-          m.selectedSubmodules.some((s) => s.submoduleName === "Edit")
-      )
+          m.selectedSubmodules.some((s) => s.submoduleName === "Edit"),
+      ),
     );
     setCanEdit(hasEditPermission);
 
@@ -59,8 +78,8 @@ const Desk = () => {
       p.modules_submodule.some(
         (m) =>
           m.moduleName === "Follow-Up" &&
-          m.selectedSubmodules.some((s) => s.submoduleName === "View")
-      )
+          m.selectedSubmodules.some((s) => s.submoduleName === "View"),
+      ),
     );
     setCanView(hasViewPermission);
   }, []);
@@ -88,13 +107,13 @@ const Desk = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const handleChangePage = (event, newPage) => {
-  setPage(newPage);
-};
+    setPage(newPage);
+  };
 
-const handleChangeRowsPerPage = (event) => {
-  setRowsPerPage(parseInt(event.target.value, 10));
-  setPage(0); // reset to first page
-};
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(parseInt(event.target.value, 10));
+    setPage(0); // reset to first page
+  };
 
   const fetchFollowUpFor = async () => {
     try {
@@ -121,7 +140,7 @@ const handleChangeRowsPerPage = (event) => {
             headers: {
               Authorization: `Bearer ${accessToken}`,
             },
-          }
+          },
         );
         if (response.ok) {
           const data = await response.json();
@@ -201,10 +220,19 @@ const handleChangeRowsPerPage = (event) => {
       if (!query) return true;
 
       // Safely convert to string and trim for comparisons
-      const citizenName = (item.citizen_name || "").toString().toLowerCase().trim();
+      const citizenName = (item.citizen_name || "")
+        .toString()
+        .toLowerCase()
+        .trim();
       const citizenId = (item.citizen_id || "").toString().toLowerCase().trim();
-      const mobileNumber = (item.mobile_number || "").toString().toLowerCase().trim();
-      const doctorName = (item.doctor_name || "").toString().toLowerCase().trim();
+      const mobileNumber = (item.mobile_number || "")
+        .toString()
+        .toLowerCase()
+        .trim();
+      const doctorName = (item.doctor_name || "")
+        .toString()
+        .toLowerCase()
+        .trim();
 
       return (
         citizenName.includes(query) ||
@@ -300,7 +328,7 @@ const handleChangeRowsPerPage = (event) => {
       // 🔥 Followup For (DYNAMIC KEY)
       if (selectedFollowUpFor) {
         const selectedObj = followUpFor.find(
-          (item) => item.followupfor_pk_id === selectedFollowUpFor
+          (item) => item.followupfor_pk_id === selectedFollowUpFor,
         );
 
         if (selectedObj?.follow_up_for) {
@@ -358,12 +386,61 @@ const handleChangeRowsPerPage = (event) => {
     textAlign: "center",
   };
 
+  const handleSubmitFollowUp = async () => {
+  try {
+    const payload = {
+      citizen_id: selectedCitizen?.citizen_pk_id,           // 👈 citizen
+      screening_citizen_id: selectedCitizen?.screening_citizen_id,
+      call_status:
+        callStatus === 1 ? "Connected" : "Not Connected",
+      conversational_remarks: conversationalRemark || "",
+      visit_status:
+        status === 1 ? "Visited" : status === 2 ? "Not Visited" : "",
+       follow_up:
+    followUp === "Follow Up Continued" ? 1 : 2, // ✅ PK only
+      remark: conversationalRemark || "",
+      added_by: userID, // or userID
+    };
+
+    const response = await axios.post(
+      `${Port}/Screening/followup_save/${selectedCitizen.follow_up_pk_id}/`,
+      payload,
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (response.status === 200 || response.status === 201) {
+      setSnackbar({
+        open: true,
+        message: "Follow up saved successfully",
+        severity: "success",
+      });
+
+      setOpenFollowUpModal(false);
+      handleSearch(); // 🔥 refresh table
+    }
+  } catch (error) {
+    console.error("Follow-up save error:", error);
+
+    setSnackbar({
+      open: true,
+      message: "Failed to save follow up",
+      severity: "error",
+    });
+  }
+};
+
+
   return (
     <div>
       <Box
         sx={{
-          p: { xs: 1, sm: 2 },
-          m: { xs: "0 0 0 0.5em", md: "0em 0em 0 2em" },
+          p: { xs: 1, sm: 2, md: 3 },
+          m: { xs: "0 0 0 0.5em", md: "0em 0em 0 1.5em" },
         }}
       >
         {/* Filter Card */}
@@ -385,7 +462,7 @@ const handleChangeRowsPerPage = (event) => {
               sx={{
                 mb: 2,
                 fontWeight: 600,
-                fontSize: { xs: "16px", sm: "18px" ,md:"16px"},
+                fontSize: { xs: "16px", sm: "18px", md: "16px" },
                 fontFamily: "Roboto, sans-serif",
                 textAlign: "left",
                 color: "black",
@@ -399,7 +476,7 @@ const handleChangeRowsPerPage = (event) => {
             <Box sx={{ mb: 1 }}>
               <Grid container spacing={1} alignItems="center">
                 {/* FollowUp Status */}
-                <Grid item xs={12} md={2} sm={6}>
+                <Grid item xs={12} md={2.5} sm={6}>
                   <TextField
                     select
                     fullWidth
@@ -442,7 +519,7 @@ const handleChangeRowsPerPage = (event) => {
                 </Grid>
 
                 {/* Followup For */}
-                <Grid item xs={12} md={2} sm={6}>
+                <Grid item xs={12} md={2.5} sm={6}>
                   <TextField
                     select
                     fullWidth
@@ -487,7 +564,7 @@ const handleChangeRowsPerPage = (event) => {
                 </Grid>
 
                 {/* Source Name */}
-                <Grid item xs={12} md={3} sm={6}>
+                <Grid item xs={12} md={2.5} sm={6}>
                   <TextField
                     select
                     fullWidth
@@ -530,7 +607,7 @@ const handleChangeRowsPerPage = (event) => {
                   </TextField>
                 </Grid>
 
-                <Grid item xs={12} md={2} sm={6}>
+                <Grid item xs={12} md={2.5} sm={6}>
                   <TextField
                     select
                     fullWidth
@@ -572,7 +649,7 @@ const handleChangeRowsPerPage = (event) => {
                   </TextField>
                 </Grid>
                 {/* Search Button */}
-                <Grid item xs={12} md={3} display="flex" alignItems="center">
+                <Grid item xs={12} md={2} display="flex" alignItems="center">
                   <Button
                     variant="contained"
                     size="small"
@@ -751,16 +828,33 @@ const handleChangeRowsPerPage = (event) => {
                   </TableHead>
 
                   <TableBody>
-                    {filterTableData(
-                      tableData,
-                      searchQuery,
-                      selectedFollowUpStatus
-                    ).length > 0 ? (
-                      filterTableData(
+                    {(() => {
+                      // 1️⃣ Filter the data first
+                      const filteredData = filterTableData(
                         tableData,
                         searchQuery,
-                        selectedFollowUpStatus
-                      ).map((item, index) => (
+                        selectedFollowUpStatus,
+                      );
+
+                      // 2️⃣ Apply pagination (slice based on page and rowsPerPage)
+                      const paginatedData = filteredData.slice(
+                        page * rowsPerPage,
+                        page * rowsPerPage + rowsPerPage,
+                      );
+
+                      // 3️⃣ Check if there’s data to display
+                      if (paginatedData.length === 0) {
+                        return (
+                          <TableRow>
+                            <TableCell align="center">
+                              <Typography>No records found</Typography>
+                            </TableCell>
+                          </TableRow>
+                        );
+                      }
+
+                      // 4️⃣ Render paginated data
+                      return paginatedData.map((item, index) => (
                         <TableRow
                           key={item.follow_up_pk_id}
                           sx={{
@@ -768,7 +862,6 @@ const handleChangeRowsPerPage = (event) => {
                             "&:hover": { backgroundColor: "#f9f9f9" },
                           }}
                         >
-                          {/* 🔹 SINGLE TABLE CELL */}
                           <TableCell>
                             <Box
                               sx={{
@@ -783,19 +876,20 @@ const handleChangeRowsPerPage = (event) => {
                                 sx={{
                                   flex: 0.5,
                                   fontSize: "14px",
-                                  fontFamily: "Roboto sans-serif",
+                                  fontFamily: "Roboto, sans-serif",
                                   fontWeight: 500,
                                   textAlign: "center",
                                 }}
                               >
-                                {index + 1}
+                                {/* Correct serial number across pages */}
+                                {page * rowsPerPage + index + 1}
                               </Typography>
 
                               <Typography
                                 sx={{
                                   flex: 2,
                                   fontSize: "14px",
-                                  fontFamily: "Roboto sans-serif",
+                                  fontFamily: "Roboto, sans-serif",
                                   fontWeight: 500,
                                   textAlign: "center",
                                 }}
@@ -807,7 +901,7 @@ const handleChangeRowsPerPage = (event) => {
                                 sx={{
                                   flex: 1.5,
                                   fontSize: "14px",
-                                  fontFamily: "Roboto sans-serif",
+                                  fontFamily: "Roboto, sans-serif",
                                   fontWeight: 500,
                                   textAlign: "center",
                                 }}
@@ -819,7 +913,7 @@ const handleChangeRowsPerPage = (event) => {
                                 sx={{
                                   flex: 1.5,
                                   fontSize: "14px",
-                                  fontFamily: "Roboto sans-serif",
+                                  fontFamily: "Roboto, sans-serif",
                                   fontWeight: 500,
                                   textAlign: "center",
                                 }}
@@ -831,7 +925,7 @@ const handleChangeRowsPerPage = (event) => {
                                 sx={{
                                   flex: 1.2,
                                   fontSize: "14px",
-                                  fontFamily: "Roboto sans-serif",
+                                  fontFamily: "Roboto, sans-serif",
                                   fontWeight: 500,
                                   textAlign: "center",
                                 }}
@@ -843,7 +937,7 @@ const handleChangeRowsPerPage = (event) => {
                                 sx={{
                                   flex: 1.2,
                                   fontSize: "14px",
-                                  fontFamily: "Roboto sans-serif",
+                                  fontFamily: "Roboto, sans-serif",
                                   fontWeight: 500,
                                   textAlign: "center",
                                 }}
@@ -855,7 +949,7 @@ const handleChangeRowsPerPage = (event) => {
                                 sx={{
                                   flex: 1.2,
                                   fontSize: "14px",
-                                  fontFamily: "Roboto sans-serif",
+                                  fontFamily: "Roboto, sans-serif",
                                   fontWeight: 500,
                                   textAlign: "center",
                                 }}
@@ -868,15 +962,22 @@ const handleChangeRowsPerPage = (event) => {
                                   flex: 0.5,
                                   textAlign: "center",
                                   fontSize: "14px",
-                                  fontFamily: "Roboto sans-serif",
+                                  fontFamily: "Roboto, sans-serif",
                                   fontWeight: 500,
                                 }}
                               >
                                 {canView && (
+                                  // <IconButton
+                                  //   component={Link}
+                                  //   to={`/mainscreen/Follow-Up/viewFollowup/${item.citizen_id}`}
+                                  //   size="small"
+                                  // >
                                   <IconButton
-                                    component={Link}
-                                    to={`/mainscreen/Follow-Up/viewFollowup/${item.citizen_id}`}
                                     size="small"
+                                    onClick={() => {
+                                      setSelectedCitizen(item);
+                                      setOpenFollowUpModal(true);
+                                    }}
                                   >
                                     <RemoveRedEyeOutlinedIcon
                                       sx={{ color: "#000" }}
@@ -887,36 +988,31 @@ const handleChangeRowsPerPage = (event) => {
                             </Box>
                           </TableCell>
                         </TableRow>
-                      ))
-                    ) : (
-                      <TableRow>
-                        <TableCell align="center">
-                          <Typography>No records found</Typography>
-                        </TableCell>
-                      </TableRow>
-                    )}
+                      ));
+                    })()}
                   </TableBody>
                 </Table>
+
                 <TablePagination
                   component="div"
                   count={
                     filterTableData(
                       tableData,
                       searchQuery,
-                      selectedFollowUpStatus
+                      selectedFollowUpStatus,
                     ).length
                   } // filtered total
-                  page={page} // current page
-                  onPageChange={handleChangePage} // handler for page change
-                  rowsPerPage={rowsPerPage} // current rows per page
-                  onRowsPerPageChange={handleChangeRowsPerPage} // handler for rows per page change
-                  rowsPerPageOptions={[10, 25, 50]}
+                  page={page}
+                  onPageChange={handleChangePage}
+                  rowsPerPage={rowsPerPage}
+                  onRowsPerPageChange={handleChangeRowsPerPage}
+                  rowsPerPageOptions={[5, 25, 50]}
                   labelDisplayedRows={({ from, to, count }) =>
                     `${from}–${to}  (Page ${page + 1})`
                   }
                   sx={{
                     "& .MuiTablePagination-toolbar": {
-                      flexWrap: { xs: "wrap", sm: "nowrap" }, // responsive wrap on small screens
+                      flexWrap: { xs: "wrap", sm: "nowrap" },
                     },
                     "& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows":
                       {
@@ -930,6 +1026,322 @@ const handleChangeRowsPerPage = (event) => {
               </TableContainer>
             )}
           </Box>
+
+          <Dialog
+            open={openFollowUpModal}
+            fullWidth
+            maxWidth="md"
+            fullScreen={fullScreen}
+            disableEnforceFocus
+            disableAutoFocus
+            disableRestoreFocus
+          >
+            {/* HEADER */}
+            <DialogTitle sx={{ background: "linear-gradient(90deg, #2FB3F5 0%, #1439A4 100%)",
+color: "#fff" }}>
+  <Typography sx={{ fontWeight: 600,fontSize: "15px", fontFamily: "Roboto, sans-serif" }}>
+              Add Follow Up Details
+
+  </Typography>
+            </DialogTitle>
+
+            <DialogContent sx={{ mt: 2 }}>
+              {/* CITIZEN DETAILS */}
+              <Box sx={{                 background: "linear-gradient(90deg, #2FB3F5 0%, #1439A4 100%)",
+ color: "#fff", p: 2, mb: 2 }}>
+                <Grid container spacing={2}>
+                  <Grid item xs={12} md={6}>
+                    <Typography sx={{ fontWeight: 500,fontSize: "15px", fontFamily: "Roboto, sans-serif" }}>
+                      Citizen ID: {selectedCitizen?.citizen_id}
+                    </Typography>
+                    <Typography sx={{ fontWeight: 500,fontSize: "15px", fontFamily: "Roboto, sans-serif" }}>
+                      Name: {selectedCitizen?.citizen_name}
+                    </Typography>
+                    <Typography sx={{ fontWeight: 500,fontSize: "15px", fontFamily: "Roboto, sans-serif" }}>
+                      DOB: {selectedCitizen?.dob || "N/A"}
+                    </Typography>
+                    <Typography sx={{ fontWeight: 500,fontSize: "15px", fontFamily: "Roboto, sans-serif" }}>
+                      District: {selectedCitizen?.district}
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={12} md={6}>
+                    <Typography sx={{ fontWeight: 500,fontSize: "15px", fontFamily: "Roboto, sans-serif" }}>
+                      Screening Count: {selectedCitizen?.screening_count}
+                    </Typography>
+                    <Typography sx={{ fontWeight: 500,fontSize: "15px", fontFamily: "Roboto, sans-serif" }}>
+                      Mobile: {selectedCitizen?.mobile_number}
+                    </Typography>
+                    <Typography sx={{ fontWeight: 500,fontSize: "15px", fontFamily: "Roboto, sans-serif" }}>
+                      State: {selectedCitizen?.state}
+                    </Typography>
+                    <Typography sx={{ fontWeight: 500,fontSize: "15px", fontFamily: "Roboto, sans-serif" }}>
+                      Tehsil: {selectedCitizen?.tehsil}
+                    </Typography>
+                  </Grid>
+                </Grid>
+              </Box>
+
+              <Typography fontWeight={600} mb={1}>
+                Conversation Status
+              </Typography>
+
+              <Grid container spacing={2}>
+                {/* CALL STATUS */}
+                <Grid item xs={12} md={4}>
+                  <TextField
+                    select
+                    size="small"
+                    fullWidth
+                    label="Call Status"
+                    value={callStatus}
+                    onChange={(e) => setCallStatus(e.target.value)}
+                    sx={{
+                      color: "#000",
+                      "& .MuiSelect-select": { color: "#000 !important" },
+                    }}
+                  >
+                    <MenuItem value={1}>Connected</MenuItem>
+                    <MenuItem value={2}>Not Connected</MenuItem>
+                  </TextField>
+                </Grid>
+
+                {/* CONNECTED FLOW */}
+                {/* {callStatus === 1 && ( */}
+                  <>
+                    <Grid item xs={12} md={4}>
+                      <TextField
+                        select
+                        size="small"
+                        fullWidth
+                        label="Conversational Remarks"
+                        value={conversationalRemark}
+                        onChange={(e) =>
+                          setConversationalRemark(e.target.value)
+                        }
+                        sx={{
+                          color: "#000",
+                          "& .MuiSelect-select": { color: "#000 !important" },
+                        }}
+                      >
+                        <MenuItem value="Answered">Answered</MenuItem>
+                        <MenuItem value="Reschedule Call">
+                          Reschedule Call
+                        </MenuItem>
+                      </TextField>
+                    </Grid>
+
+                    {/* ANSWERED */}
+                    {conversationalRemark === "Answered" && (
+                      <>
+                        <Grid item xs={12} md={4}>
+                          <TextField
+                            select
+                            size="small"
+                            fullWidth
+                            label="Status"
+                            value={status}
+                            onChange={(e) => setStatus(e.target.value)}
+                            sx={{
+                              color: "#000",
+                              "& .MuiSelect-select": {
+                                color: "#000 !important",
+                              },
+                            }}
+                          >
+                            <MenuItem value={1}>Visited</MenuItem>
+                            <MenuItem value={2}>Not Visited</MenuItem>
+                          </TextField>
+                        </Grid>
+
+                        {/* VISITED */}
+                        {status === 1 && (
+                          <>
+                            {[
+                              "Condition Improved",
+                              "Weight Gain Status",
+                              "Forward To",
+                              "Priority",
+                            ].map((label) => (
+                              <Grid item xs={12} md={3} key={label}>
+                                <Typography>{label}</Typography>
+                                <RadioGroup row>
+                                  <FormControlLabel
+                                    value="Yes"
+                                    control={<Radio />}
+                                    label="Yes"
+                                  />
+                                  <FormControlLabel
+                                    value="No"
+                                    control={<Radio />}
+                                    label="No"
+                                  />
+                                </RadioGroup>
+                              </Grid>
+                            ))}
+
+                            <Grid item xs={12} md={4}>
+                              <TextField
+                                label="Visited"
+                                select
+                                size="small"
+                                fullWidth
+                                sx={{
+                                  color: "#000",
+                                  "& .MuiSelect-select": {
+                                    color: "#000 !important",
+                                  },
+                                }}
+                              >
+                                <MenuItem value="DOA">DOA</MenuItem>
+                              </TextField>
+                            </Grid>
+                          </>
+                        )}
+
+                        {/* NOT VISITED */}
+                        {status === 2 && (
+                          <>
+                            {[
+                              "Condition Improved",
+                              "Weight Gain Status",
+                              "Forward To",
+                              "Priority",
+                            ].map((label) => (
+                              <Grid item xs={12} md={3} key={label}>
+                                <Typography>{label}</Typography>
+                                <RadioGroup row>
+                                  <FormControlLabel
+                                    value="Yes"
+                                    control={<Radio />}
+                                    label="Yes"
+                                  />
+                                  <FormControlLabel
+                                    value="No"
+                                    control={<Radio />}
+                                    label="No"
+                                  />
+                                </RadioGroup>
+                              </Grid>
+                            ))} 
+                          <Grid item xs={12} md={4}>
+                            <TextField
+                              label="Not Visited Reason"
+                              select
+                              size="small"
+                              fullWidth
+                              sx={{
+                                color: "#000",
+                                "& .MuiSelect-select": {
+                                  color: "#000 !important",
+                                },
+                              }}
+                            >
+                              <MenuItem value="Reschedule Call">
+                                Reschedule Call
+                              </MenuItem>
+                            </TextField>
+                          </Grid>
+                          </>
+                        )}
+                      </>
+                 )} 
+
+                    {/* RESCHEDULE */}
+                    {conversationalRemark === "Reschedule Call" && (
+                      <Grid item xs={12} md={4}>
+                        <TextField
+                          type="datetime-local"
+                          label="Schedule Date"
+                          InputLabelProps={{ shrink: true }}
+                          fullWidth
+                          size="small"
+                          sx={{
+                            color: "#000",
+                            "& .MuiSelect-select": { color: "#000 !important" },
+                          }}
+                        />
+                      </Grid>
+                    )} 
+                  </>
+                {/* // )} */}
+
+                {/* NOT CONNECTED FLOW */}
+                {callStatus === 2 && (
+                  <Grid item xs={12} md={4}>
+                    <TextField
+                      label="Not Connected Reason"
+                      select
+                      size="small"
+                      fullWidth
+                      sx={{
+                        color: "#000",
+                        "& .MuiSelect-select": { color: "#000 !important" },
+                      }}
+                    >
+                      <MenuItem value={1}>Answered</MenuItem>
+                      <MenuItem value={2}>Not Answered</MenuItem>
+                      <MenuItem value={3}>Not Reachable</MenuItem>
+                      <MenuItem value={4}>Out of Network</MenuItem>
+                    </TextField>
+                  </Grid>
+                )}
+
+                {/* FOLLOW UP (COMMON) */}
+                {callStatus && (
+                  <>
+                    <Grid item xs={12} md={4}>
+                      <TextField
+                        fullWidth
+                        size="small"
+                        select
+                        label="Follow Up"
+                        value={followUp}
+                        onChange={(e) => setFollowUp(e.target.value)}
+                        sx={{
+                          color: "#000",
+                          "& .MuiSelect-select": { color: "#000 !important" },
+                        }}
+                      >
+                        <MenuItem value="Reschedule Call">
+                          Reschedule Call
+                        </MenuItem>
+                        <MenuItem value="Follow Up Closed">
+                          Follow Up Closed
+                        </MenuItem>
+                        <MenuItem value="Follow Up Continued">
+                          Follow Up Continued
+                        </MenuItem>
+                      </TextField>
+                    </Grid>
+
+                    <Grid item xs={12} md={4}>
+                      <TextField
+                        fullWidth
+                        size="small"
+                        label="Remark"
+                        sx={{
+                          color: "#000",
+                          "& .MuiSelect-select": { color: "#000 !important" },
+                        }}
+                      />
+                    </Grid>
+                  </>
+                )}
+              </Grid>
+            </DialogContent>
+
+            <DialogActions>
+              <Button onClick={() => setOpenFollowUpModal(false)}>
+                Cancel
+              </Button>
+              <Button variant="contained"
+                  onClick={handleSubmitFollowUp}
+             >Submit</Button>
+            </DialogActions>
+          </Dialog>
+
+          
+          {/* ---------------------------------------------- */}
           <Dialog
             open={openMenuModal}
             onClose={() => setOpenMenuModal(false)}

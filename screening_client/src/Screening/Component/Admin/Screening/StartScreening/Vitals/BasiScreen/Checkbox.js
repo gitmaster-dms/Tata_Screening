@@ -262,7 +262,7 @@ setOpenDialog(true);
                     
                                 <DialogContent>
                                   <Typography>
-                                    Are you sure you want to submit this General Examination form?
+                                    Are you sure you want to submit this Check Box Examination form?
                                   </Typography>
                                 </DialogContent>
                     

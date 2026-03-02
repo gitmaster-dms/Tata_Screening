@@ -84,10 +84,13 @@ const Vital = ({
   // const API_URL = process.env.REACT_APP_API_KEY;
   //////// pulse
   const [pulseValue, setPulseValue] = useState(null);
+  console.log(pulseValue, "pulsepulsepulse");
   const [pulseResponse, setPulseResponse] = useState("");
+  
   const [showErrorModal, setShowErrorModal] = useState(false);
   /////// sys
   const [sys, setSys] = useState(null);
+  console.log(sys, "syssyssys");
   const [sysResponse, setSysResponse] = useState("");
   const [showErrorSys, setShowErrorSys] = useState(false);
   /////// dys
@@ -118,6 +121,7 @@ const Vital = ({
   const [doctorList, setDoctorList] = useState([]);
   const [loadingDoctors, setLoadingDoctors] = useState(false);
   const [selectedDoctor, setSelectedDoctor] = useState("");
+  const [ screeningId , setScreeningId] = useState(null);
 
   useEffect(() => {
     if (referredToSpecialist === 1) {
@@ -128,57 +132,57 @@ const Vital = ({
   }, [referredToSpecialist]);
 
   const fetchDoctors = async () => {
-    try {
-      setLoadingDoctors(true);
+     try {
+       setLoadingDoctors(true);
+ 
+       const res = await fetch(`${API_URL}/Screening/Doctor_List/`, {
+         headers: {
+           Authorization: `Bearer ${accessToken}`,
+         },
+       });
+ 
+       const data = await res.json();
+       setDoctorList(data || []);
+     } catch (error) {
+       console.error("Error fetching doctors:", error);
+     } finally {
+       setLoadingDoctors(false);
+     }
+   };
+   console.log("Selected doctor:", selectedDoctor);
+ 
+   ////pulse
+   useEffect(() => {
+     if (pulseValue !== "") {
+       const fetchData = async () => {
+         try {
+           const response = await fetch(
+             `${API_URL}/Screening/pulse_get_api/${year}/${pulseValue}/`,
+             {
+               method: "GET",
+               headers: {
+                 "Content-Type": "application/json",
+                 Authorization: `Bearer ${accessToken}`, // Include the authorization header
+               },
+             }
+           );
+ 
+           if (!response.ok) {
+             throw new Error("Network response was not ok");
+           }
+ 
+           const data = await response.json();
+           setPulseResponse(data.message);
+         } catch (error) {
+           console.error("Error fetching data:", error);
+         }
+       };
+       fetchData();
+     }
+   }, [pulseValue]);
 
-      const res = await fetch(`${API_URL}/Screening/Doctor_List/`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
-
-      const data = await res.json();
-      setDoctorList(data || []);
-    } catch (error) {
-      console.error("Error fetching doctors:", error);
-    } finally {
-      setLoadingDoctors(false);
-    }
-  };
-  console.log("Selected doctor:", selectedDoctor);
-
-  ////pulse
-  useEffect(() => {
-    if (pulseValue !== "") {
-      const fetchData = async () => {
-        try {
-          const response = await fetch(
-            `${API_URL}/Screening/pulse_get_api/${year}/${pulseValue}/`,
-            {
-              method: "GET",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${accessToken}`, // Include the authorization header
-              },
-            }
-          );
-
-          if (!response.ok) {
-            throw new Error("Network response was not ok");
-          }
-
-          const data = await response.json();
-          setPulseResponse(data.message);
-        } catch (error) {
-          console.error("Error fetching data:", error);
-        }
-      };
-      fetchData();
-    }
-  }, [pulseValue]);
-
-  ///// sys
-  useEffect(() => {
+  //  /// sys
+useEffect(() => {
     if (sys !== "") {
       const fetchData = async () => {
         try {
@@ -238,66 +242,66 @@ const Vital = ({
   }, [dys]);
 
   ///// rr
-  useEffect(() => {
-    if (rr !== "") {
-      const fetchData = async () => {
-        try {
-          const response = await fetch(
-            `${API_URL}/Screening/rr_get_api/${year}/${rr}/`,
-            {
-              method: "GET",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${accessToken}`, // Include the authorization header
-              },
-            }
-          );
+   useEffect(() => {
+     if (rr !== "") {
+       const fetchData = async () => {
+         try {
+           const response = await fetch(
+             `${API_URL}/Screening/rr_get_api/${year}/${rr}/`,
+             {
+               method: "GET",
+               headers: {
+                 "Content-Type": "application/json",
+                 Authorization: `Bearer ${accessToken}`, // Include the authorization header
+               },
+             }
+           );
+ 
+           if (!response.ok) {
+             throw new Error("Network response was not ok");
+           }
+ 
+           const data = await response.json();
+           setRrResponse(data.message);
+         } catch (error) {
+           console.error("Error fetching data:", error);
+         }
+       };
+       fetchData();
+     }
+   }, [rr]);
+ 
+   ///// sats
+   useEffect(() => {
+     if (sats !== "") {
+       const fetchData = async () => {
+         try {
+           const response = await fetch(
+             `${API_URL}/Screening/o2sat_get_api/${year}/${sats}/`,
+             {
+               method: "GET",
+               headers: {
+                 "Content-Type": "application/json",
+                 Authorization: `Bearer ${accessToken}`, // Include the authorization header
+               },
+             }
+           );
+ 
+           if (!response.ok) {
+             throw new Error("Network response was not ok");
+           }
+ 
+           const data = await response.json();
+           setSatsResponse(data.message);
+         } catch (error) {
+           console.error("Error fetching data:", error);
+         }
+       };
+       fetchData();
+     }
+   }, [sats]);
 
-          if (!response.ok) {
-            throw new Error("Network response was not ok");
-          }
-
-          const data = await response.json();
-          setRrResponse(data.message);
-        } catch (error) {
-          console.error("Error fetching data:", error);
-        }
-      };
-      fetchData();
-    }
-  }, [rr]);
-
-  ///// sats
-  useEffect(() => {
-    if (sats !== "") {
-      const fetchData = async () => {
-        try {
-          const response = await fetch(
-            `${API_URL}/Screening/o2sat_get_api/${year}/${sats}/`,
-            {
-              method: "GET",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${accessToken}`, // Include the authorization header
-              },
-            }
-          );
-
-          if (!response.ok) {
-            throw new Error("Network response was not ok");
-          }
-
-          const data = await response.json();
-          setSatsResponse(data.message);
-        } catch (error) {
-          console.error("Error fetching data:", error);
-        }
-      };
-      fetchData();
-    }
-  }, [sats]);
-
-  ///// temp
+ ///// temp
   useEffect(() => {
     if (temp !== "") {
       const fetchData = async () => {
@@ -327,35 +331,36 @@ const Vital = ({
     }
   }, [temp]);
 
-  ///// hb
-  useEffect(() => {
-    if (hb !== "") {
-      const fetchData = async () => {
-        try {
-          const response = await fetch(
-            `${API_URL}/Screening/hb_get_api/${gender}/${year}/${hb}/`,
-            {
-              method: "GET",
-              headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${accessToken}`, // Include the authorization header
-              },
+
+   ///// hb
+    useEffect(() => {
+      if (hb !== "") {
+        const fetchData = async () => {
+          try {
+            const response = await fetch(
+              `${API_URL}/Screening/hb_get_api/${gender}/${year}/${hb}/`,
+              {
+                method: "GET",
+                headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${accessToken}`, // Include the authorization header
+                },
+              }
+            );
+  
+            if (!response.ok) {
+              throw new Error("Network response was not ok");
             }
-          );
-
-          if (!response.ok) {
-            throw new Error("Network response was not ok");
+  
+            const data = await response.json();
+            setHbResponse(data.message);
+          } catch (error) {
+            console.error("Error fetching data:", error);
           }
-
-          const data = await response.json();
-          setHbResponse(data.message);
-        } catch (error) {
-          console.error("Error fetching data:", error);
-        }
-      };
-      fetchData();
-    }
-  }, [hb]);
+        };
+        fetchData();
+      }
+    }, [hb]);
 
   const handlePulseInputChange = (event) => {
     const inputValue = event.target.value.replace(/[^0-9]/g, "");
@@ -408,7 +413,7 @@ const Vital = ({
     setShowErrorSys(false);
   };
 
-  const handleDysInputChange = (event) => {
+   const handleDysInputChange = (event) => {
     const inputValue = event.target.value;
 
     if (inputValue !== "") {
@@ -433,7 +438,7 @@ const Vital = ({
   };
 
   // RR
-  const handleRrInputChange = (event) => {
+ const handleRrInputChange = (event) => {
     const inputValue = event.target.value;
 
     if (inputValue !== "") {
@@ -453,7 +458,7 @@ const Vital = ({
     }
   };
 
-  const handleCloseErrorRr = () => {
+    const handleCloseErrorRr = () => {
     setShowErrorRr(false);
   };
 
@@ -507,7 +512,7 @@ const Vital = ({
   //     setLoading(false);
   // };
 
-  const fetchDatapulse = async (paramValue) => {
+const fetchDatapulse = async (paramValue) => {
     setLoading(true);
     try {
       const response = await fetch(
@@ -616,11 +621,13 @@ const Vital = ({
     }
   };
 
+
   const handleCloseErrorTemp = () => {
     setShowErrorTemp(false);
   };
 
   // Hb
+  
   const handleHbInputChange = (event) => {
     const inputValue = event.target.value;
 
@@ -649,7 +656,6 @@ const Vital = ({
   const handleVitalForm = () => {
     setShowVitalForm(false);
   };
-
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: "",
@@ -660,7 +666,7 @@ const Vital = ({
     setSnackbar({ open: true, message, severity });
   };
 
-  const handleSubmit = () => {
+const handleSubmit = () => {
     // const isConfirmed = window.confirm('Submit Vital Form');
     const confirmationStatus = "True";
 
@@ -704,9 +710,9 @@ const Vital = ({
             onAcceptClick(nextName);
             return response.json();
           } else if (response.status === 400) {
-            openSnackbar("Fill the Required marked Field");
+            alert("Fill the * marked Field");
           } else if (response.status === 500) {
-            openSnackbar("Error");
+            alert("Error");
           } else if (response.status === 200) {
             onAcceptClick(nextName);
           }
@@ -723,107 +729,108 @@ const Vital = ({
     }
   };
 
+
   const fetchCitizenVitalInfo = () => {
-    fetch(`${API_URL}/Screening/Vital_Info_Get/${pkid}/`, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`, // Include the authorization header
-        "Content-Type": "application/json", // Ensure correct content type
-      },
-    })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Failed to fetch data");
-        }
-
-        return response.json();
-      })
-      .then((data) => {
-        if (data && data.length > 0) {
-          const firstRecord = data[0];
-          console.log("First Record:", firstRecord);
-          if (
-            firstRecord.reffered_to_specialist !== undefined &&
-            firstRecord.reffered_to_specialist !== null
-          ) {
-            setReferredToSpecialist(firstRecord.reffered_to_specialist);
-            console.log(
-              "Referred to Specialist:",
-              firstRecord.reffered_to_specialist
-            );
-          } else {
-            console.log("Referred to Specialist is undefined or null");
-          }
-          // Prefill doctor dropdown
-          if (
-            firstRecord.refer_doctor !== undefined &&
-            firstRecord.refer_doctor !== null
-          ) {
-            setSelectedDoctor(Number(firstRecord.refer_doctor));
-            console.log("Prefilled Doctor ID:", firstRecord.refer_doctor);
-          }
-
-          // Log all fields in the console
-          Object.keys(firstRecord).forEach((field) => {
-            console.log(`${field}:`, firstRecord[field]);
-          });
-
-          // Set state variables for each field
-          setPulseValue(
-            firstRecord.pulse !== null ? String(firstRecord.pulse) : ""
-          );
-          setPulseResponse(
-            firstRecord.pulse_conditions !== null
-              ? firstRecord.pulse_conditions
-              : ""
-          );
-          setSys(firstRecord.sys_mm !== null ? String(firstRecord.sys_mm) : "");
-          setSysResponse(
-            firstRecord.sys_mm_conditions !== null
-              ? firstRecord.sys_mm_conditions
-              : ""
-          );
-          setDys(firstRecord.dys_mm !== null ? String(firstRecord.dys_mm) : "");
-          setDysResponse(
-            firstRecord.dys_mm_mm_conditions !== null
-              ? firstRecord.dys_mm_mm_conditions
-              : ""
-          );
-          setHb(firstRecord.hb !== null ? String(firstRecord.hb) : "");
-          setHbResponse(
-            firstRecord.hb_conditions !== null ? firstRecord.hb_conditions : ""
-          );
-          setSats(
-            firstRecord.oxygen_saturation !== null
-              ? String(firstRecord.oxygen_saturation)
-              : ""
-          );
-          setSatsResponse(
-            firstRecord.oxygen_saturation_conditions !== null
-              ? firstRecord.oxygen_saturation_conditions
-              : ""
-          );
-          setRr(firstRecord.rr !== null ? String(firstRecord.rr) : "");
-          setRrResponse(
-            firstRecord.rr_conditions !== null ? firstRecord.rr_conditions : ""
-          );
-          setTemp(firstRecord.temp !== null ? String(firstRecord.temp) : "");
-          setTempResponse(
-            firstRecord.temp_conditions !== null
-              ? firstRecord.temp_conditions
-              : ""
-          );
-        } else {
-          console.warn("Data is empty or not in the expected format.");
-        }
-      })
-      .catch((error) => console.error("Error:", error.message));
-  };
-
-  useEffect(() => {
-    if (pkid) {
-      fetchCitizenVitalInfo();
-    }
-  }, [pkid]);
+     fetch(`${API_URL}/Screening/Vital_Info_Get/${pkid}/`, {
+       headers: {
+         Authorization: `Bearer ${accessToken}`, // Include the authorization header
+         "Content-Type": "application/json", // Ensure correct content type
+       },
+     })
+       .then((response) => {
+         if (!response.ok) {
+           throw new Error("Failed to fetch data");
+         }
+ 
+         return response.json();
+       })
+       .then((data) => {
+         if (data && data.length > 0) {
+           const firstRecord = data[0];
+           console.log("First Record:", firstRecord);
+           if (
+             firstRecord.reffered_to_specialist !== undefined &&
+             firstRecord.reffered_to_specialist !== null
+           ) {
+             setReferredToSpecialist(firstRecord.reffered_to_specialist);
+             console.log(
+               "Referred to Specialist:",
+               firstRecord.reffered_to_specialist
+             );
+           } else {
+             console.log("Referred to Specialist is undefined or null");
+           }
+           // Prefill doctor dropdown
+           if (
+             firstRecord.refer_doctor !== undefined &&
+             firstRecord.refer_doctor !== null
+           ) {
+             setSelectedDoctor(Number(firstRecord.refer_doctor));
+             console.log("Prefilled Doctor ID:", firstRecord.refer_doctor);
+           }
+ 
+           // Log all fields in the console
+           Object.keys(firstRecord).forEach((field) => {
+             console.log(`${field}:`, firstRecord[field]);
+           });
+ 
+           // Set state variables for each field
+           setPulseValue(
+             firstRecord.pulse !== null ? String(firstRecord.pulse) : ""
+           );
+           setPulseResponse(
+             firstRecord.pulse_conditions !== null
+               ? firstRecord.pulse_conditions
+               : ""
+           );
+           setSys(firstRecord.sys_mm !== null ? String(firstRecord.sys_mm) : "");
+           setSysResponse(
+             firstRecord.sys_mm_conditions !== null
+               ? firstRecord.sys_mm_conditions
+               : ""
+           );
+           setDys(firstRecord.dys_mm !== null ? String(firstRecord.dys_mm) : "");
+           setDysResponse(
+             firstRecord.dys_mm_mm_conditions !== null
+               ? firstRecord.dys_mm_mm_conditions
+               : ""
+           );
+           setHb(firstRecord.hb !== null ? String(firstRecord.hb) : "");
+           setHbResponse(
+             firstRecord.hb_conditions !== null ? firstRecord.hb_conditions : ""
+           );
+           setSats(
+             firstRecord.oxygen_saturation !== null
+               ? String(firstRecord.oxygen_saturation)
+               : ""
+           );
+           setSatsResponse(
+             firstRecord.oxygen_saturation_conditions !== null
+               ? firstRecord.oxygen_saturation_conditions
+               : ""
+           );
+           setRr(firstRecord.rr !== null ? String(firstRecord.rr) : "");
+           setRrResponse(
+             firstRecord.rr_conditions !== null ? firstRecord.rr_conditions : ""
+           );
+           setTemp(firstRecord.temp !== null ? String(firstRecord.temp) : "");
+           setTempResponse(
+             firstRecord.temp_conditions !== null
+               ? firstRecord.temp_conditions
+               : ""
+           );
+         } else {
+           console.warn("Data is empty or not in the expected format.");
+         }
+       })
+       .catch((error) => console.error("Error:", error.message));
+   };
+ 
+   useEffect(() => {
+     if (pkid) {
+       fetchCitizenVitalInfo();
+     }
+   }, [pkid]);
 
   return (
     <Box sx={{ p: 1 }}>
@@ -862,426 +869,280 @@ const Vital = ({
         </Typography>
       </Card>
 
-      <Box
-        sx={{
-          maxHeight: "70vh",
-          overflowY: "auto",
-          pr: 1,
-        }}
-      >
-        <Card sx={{ p: 2, borderRadius: "20px", mb: 1 }}>
-          <Grid container spacing={1}>
-            <Grid item xs={12} md={4}>
-              <Card sx={{ p: 1 }}>
-                <Grid container spacing={1} alignItems="center">
-                  <Grid item xs={3}>
-                    <Box
-                      component="img"
-                      src={redheart}
-                      sx={{
-                        width: 40,
-                        bgcolor: "#FBF0F3",
-                        borderRadius: "12px",
-                        p: 1,
-                      }}
-                    />
-                  </Grid>
-                  <Grid item xs={9} display="flex" justifyContent="center">
-                    <Typography
-                      variant="subtitle2"
-                      sx={{
-                        display: "inline-block",
-                        px: 1, // thoda padding text ke around
-                        bgcolor: "#FCF6EA", // bgcolor only when text exists
-                        borderRadius: "4px",
-                      }}
-                    >
-                      Pulse - beats/min
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Box display="flex" justifyContent="center">
-                      <TextField
-                        fullWidth
-                        size="small"
-                        value={pulseValue || ""}
-                        onChange={handlePulseInputChange}
-                        sx={{
-                          width: "50px",
-                          "& .MuiOutlinedInput-root": {
-                            backgroundColor: "#FCF6EA",
-                            height: "32px", // line short issue fix
-                          },
-                          "& input": {
-                            textAlign: "center",
-                            padding: "6px",
-                          },
-                        }}
-                        inputProps={{
-                          maxLength: 3,
-                        }}
-                      />
-                    </Box>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Typography
-                      sx={{
-                        fontWeight: 500,
-                        bgcolor: "#FBF0F3",
-                        color: "black",
-                        fontFamily: "Mulish",
-                        borderRadius: "2px",
-                        p: 0.2,
-                        textAlign: "center",
-                      }}
-                    >
-                      {pulseResponse}
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <IconButton
-                      onClick={() => fetchDatapulse("SPO2")}
-                      disabled={loading}
-                    >
-                      <NotStartedIcon sx={{ fontSize: 30, color: "black" }} />
-                    </IconButton>
-                  </Grid>
-                </Grid>
-              </Card>
+     <Box
+  sx={{
+    maxHeight: "70vh",
+    overflowY: "auto",
+    pr: 1,
+  }}
+>
+  <Card sx={{ p: 2, borderRadius: "20px", mb: 1 }}>
+    {/* ================= TOP ROW ================= */}
+    <Grid container spacing={1} alignItems="stretch">
+      {/* Pulse */}
+      <Grid item xs={12} md={4}>
+        <Card sx={{ p: 1, height: "100%", display: "flex", flexDirection: "column" }}>
+          <Grid container spacing={1} alignItems="center" sx={{ flexGrow: 1 }}>
+            <Grid item xs={3}>
+              <Box
+                component="img"
+                src={redheart}
+                sx={{ width: 40, bgcolor: "#FBF0F3", borderRadius: "12px", p: 1 }}
+              />
+            </Grid>
+            <Grid item xs={9} display="flex" justifyContent="center">
+              <Typography
+                variant="subtitle2"
+                sx={{ px: 1, bgcolor: "#FCF6EA", borderRadius: "4px" }}
+              >
+                Pulse - beats/min
+              </Typography>
             </Grid>
 
-            {/* BP Sys */}
-            <Grid item xs={12} md={4}>
-              <Card sx={{ p: 1 }}>
-                <Grid container spacing={1} alignItems="center">
-                  <Grid item xs={3}>
-                    <Box component="img" src={greenheart} sx={{ width: 40 }} />
-                  </Grid>
-                  <Grid item xs={9}>
-                    <Typography variant="subtitle2">
-                      BP - mm Hg (Sys)
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Box display="flex" justifyContent={"center"}>
-                      <TextField
-                        fullWidth
-                        size="small"
-                        value={sys || ""}
-                        onChange={handleSysInputChange}
-                        sx={{ width: "50px", bgcolor: "#D0FBFF" }}
-                        inputProps={{
-                          maxLength: 3,
-                        }}
-                      />
-                    </Box>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Typography
-                      sx={{
-                        fontWeight: 500,
-                        fontFamily: "Mulish",
-                        fontSize: "14px",
-                        bgcolor: "#D0FBFF",
-                        p: 0.5,
-                        textAlign: "center",
-                      }}
-                    >
-                      {sysResponse}
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <IconButton
-                      onClick={() => fetchDatasys("BP")}
-                      disabled={loading}
-                    >
-                      <NotStartedIcon sx={{ fontSize: 30, color: "black" }} />
-                    </IconButton>
-                  </Grid>
-                </Grid>
-              </Card>
+            <Grid item xs={12}>
+              <Box display="flex" justifyContent="center">
+                <TextField
+                  size="small"
+                  value={pulseValue || ""}
+                  onChange={handlePulseInputChange}
+                  sx={{
+                    width: "50px",
+                    "& .MuiOutlinedInput-root": {
+                      backgroundColor: "#FCF6EA",
+                      height: 32,
+                    },
+                    "& input": { textAlign: "center", p: "6px" },
+                  }}
+                  inputProps={{ maxLength: 3 }}
+                />
+              </Box>
             </Grid>
 
-            {/* BP Dys */}
-            <Grid item xs={12} md={4}>
-              <Card sx={{ p: 1 }}>
-                <Grid container spacing={1} alignItems="center">
-                  <Grid item xs={3}>
-                    <Box component="img" src={greenheart} sx={{ width: 40 }} />
-                  </Grid>
-                  <Grid item xs={9}>
-                    <Typography variant="subtitle2">
-                      BP - mm Hg (Dys)
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Box sx={{ display: "flex", justifyContent: "center" }}>
-                      <TextField
-                        fullWidth
-                        size="small"
-                        value={dys || ""}
-                        onChange={handleDysInputChange}
-                        sx={{
-                          bgcolor: "#D0FBFF",
-                          width: "50px",
-                        }}
-                        inputProps={{
-                          maxLength: 3,
-                        }}
-                      />
-                    </Box>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Typography
-                      sx={{
-                        fontWeight: 500,
-                        fontSize: "14px",
-                        bgcolor: "#D0FBFF",
-                        fontFamily: "Mulish",
-                        p: 0.5,
-                        textAlign: "center",
-                      }}
-                    >
-                      {dysResponse}
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <IconButton
-                      onClick={() => fetchDatadys("BP")}
-                      disabled={loading}
-                    >
-                      <NotStartedIcon sx={{ fontSize: 30, color: "black" }} />
-                    </IconButton>
-                  </Grid>
-                </Grid>
-              </Card>
+            <Grid item xs={6}>
+              <Typography
+                sx={{
+                  fontWeight: 500,
+                  bgcolor: pulseResponse ? "#FCF6EA" : "transparent",
+                  textAlign: "center",
+                }}
+              >
+                {pulseResponse}
+              </Typography>
+            </Grid>
+            <Grid item xs={6}>
+              <IconButton onClick={() => fetchDatapulse("SPO2")} disabled={loading}>
+                <NotStartedIcon sx={{ fontSize: 30, color: "black" }} />
+              </IconButton>
             </Grid>
           </Grid>
-
-          {/* RR, O2, Temp */}
-          <Grid container spacing={1} sx={{ mt: 1 }}>
-            {/* RR */}
-            <Grid item xs={12} md={4}>
-              <Card sx={{ p: 1, height: "100%" }}>
-                <Grid container spacing={1}>
-                  <Grid item xs={3}>
-                    <Box component="img" src={blueheart} sx={{ width: 40 }} />
-                  </Grid>
-                  <Grid item xs={9}>
-                    <Typography variant="subtitle2">RR - per min</Typography>
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Box sx={{ display: "flex", justifyContent: "center" }}>
-                      <TextField
-                        fullWidth
-                        size="small"
-                        value={rr || ""}
-                        onChange={handleRrInputChange}
-                        sx={{ width: "50px", bgcolor: "#F5F4FC" }}
-                        inputProps={{
-                          maxLength: 3,
-                        }}
-                      />
-                    </Box>
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Typography
-                      sx={{
-                        bgcolor: "#F5F4FC",
-                        fontFamily: "Mulish",
-                        fontSize: "14px",
-                        textAlign: "center",
-                        p: "0.5",
-                      }}
-                    >
-                      {rrResponse}
-                    </Typography>
-                  </Grid>
-                </Grid>
-              </Card>
-            </Grid>
-
-            {/* O2 */}
-            <Grid item xs={12} md={4}>
-              <Card sx={{ p: 2 }}>
-                <Grid container spacing={1}>
-                  <Grid item xs={3}>
-                    <Box
-                      component="img"
-                      src={darkgreeneheart}
-                      sx={{ width: 40 }}
-                    />
-                  </Grid>
-                  <Grid item xs={9}>
-                    <Typography variant="subtitle2">O2 Sats</Typography>
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Box sx={{ display: "flex", justifyContent: "center" }}>
-                      <TextField
-                        fullWidth
-                        size="small"
-                        value={sats || ""}
-                        sx={{ width: "50px", bgcolor: "#E9F4EE" }}
-                        onChange={handleSatsInputChange}
-                        inputProps={{
-                          maxLength: 3,
-                        }}
-                      />
-                    </Box>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Typography
-                      sx={{
-                        font: "Mulish",
-                        fontSize: "14px",
-                        fontWeight: 500,
-                        textAlign: "center",
-                        bgcolor: "#E9F4EE",
-                      }}
-                    >
-                      {satsResponse}
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <IconButton
-                      onClick={() => fetchDataspo2("SPO2")}
-                      disabled={loading}
-                    >
-                      <NotStartedIcon sx={{ fontSize: 30, color: "black" }} />
-                    </IconButton>
-                  </Grid>
-                </Grid>
-              </Card>
-            </Grid>
-
-            {/* Temp */}
-            <Grid item xs={12} md={4}>
-              <Card sx={{ p: 2 }}>
-                <Grid container spacing={1}>
-                  <Grid item xs={3}>
-                    <Box component="img" src={temperature} sx={{ width: 40 }} />
-                  </Grid>
-                  <Grid item xs={9}>
-                    <Typography variant="subtitle2">Temperature</Typography>
-                  </Grid>
-                  <Grid item xs={12}>
-                    <Box sx={{ display: "flex", justifyContent: "center" }}>
-                      <TextField
-                        fullWidth
-                        size="small"
-                        value={temp || ""}
-                        onChange={handleTempInputChange}
-                        sx={{ width: "50px", bgcolor: "#FCF6EA" }}
-                        inputProps={{
-                          maxLength: 3,
-                        }}
-                      />
-                    </Box>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Typography
-                      sx={{
-                        font: "Mulish",
-                        fontSize: "14px",
-                        fontWeight: 500,
-                        textAlign: "center",
-                        bgcolor: "#FCF6EA",
-                      }}
-                    >
-                      {tempResponse}
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <IconButton
-                      onClick={() => fetchDataTemp("TEMPERATURE")}
-                      disabled={loading}
-                    >
-                      <NotStartedIcon sx={{ fontSize: 30, color: "black" }} />
-                    </IconButton>
-                  </Grid>
-                </Grid>
-              </Card>
-            </Grid>
-          </Grid>
-
-          <Grid container spacing={2} alignItems="center" sx={{ mt: 2 }}>
-            {/* Left Side → Radio Group */}
-            <Grid item xs={12} sm={6}>
-              <FormControl component="fieldset" fullWidth>
-                <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                  Referred To Specialist
-                </Typography>
-                <RadioGroup
-                  row
-                  value={referredToSpecialist}
-                  onChange={(e) =>
-                    setReferredToSpecialist(Number(e.target.value))
-                  }
-                >
-                  <FormControlLabel value={1} control={<Radio />} label="Yes" />
-                  <FormControlLabel value={2} control={<Radio />} label="No" />
-                </RadioGroup>
-              </FormControl>
-            </Grid>
-
-            {/* Right Side → Dropdown (Visible only if Yes) */}
-            {referredToSpecialist === 1 && (
-              <Grid item xs={12} sm={6}>
-                <FormControl fullWidth size="small">
-                  <InputLabel sx={{ fontSize: "0.8rem" }}>
-                    Choose Doctor
-                  </InputLabel>
-                  <Select
-                    label="Choose Doctor"
-                    value={selectedDoctor}
-                    onChange={(e) => setSelectedDoctor(Number(e.target.value))}
-                    disabled={loadingDoctors}
-                    sx={{
-                      "& .MuiInputBase-input.MuiSelect-select": {
-                        color: "#000 !important",
-                      },
-                      "& .MuiSvgIcon-root": {
-                        color: "#000",
-                      },
-                    }}
-                  >
-                    {loadingDoctors && (
-                      <MenuItem value="">
-                        <em>Loading...</em>
-                      </MenuItem>
-                    )}
-                    {doctorList.length > 0
-                      ? doctorList.map((doc) => (
-                          <MenuItem
-                            key={doc.doctor_pk_id}
-                            value={doc.doctor_pk_id}
-                            sx={{ fontSize: "0.8rem" }}
-                          >
-                            {doc.doctor_name}
-                          </MenuItem>
-                        ))
-                      : !loadingDoctors && (
-                          <MenuItem value="" sx={{ fontSize: "0.8rem" }}>
-                            <em>No Doctors Found</em>
-                          </MenuItem>
-                        )}
-                  </Select>
-                </FormControl>
-              </Grid>
-            )}
-          </Grid>
-
-          <Box sx={{ textAlign: "center", mt: 1, mb: 2 }}>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={() => setOpenConfirmDialog(true)}
-            >
-              Submit
-            </Button>
-          </Box>
         </Card>
-      </Box>
+      </Grid>
+
+      {/* BP SYS */}
+      <Grid item xs={12} md={4}>
+        <Card sx={{ p: 1, height: "100%", display: "flex", flexDirection: "column" }}>
+          <Grid container spacing={1} alignItems="center" sx={{ flexGrow: 1 }}>
+            <Grid item xs={3}>
+              <Box component="img" src={greenheart} sx={{ width: 40 }} />
+            </Grid>
+            <Grid item xs={9}>
+              <Typography variant="subtitle2">BP - mm Hg (Sys)</Typography>
+            </Grid>
+
+            <Grid item xs={12}>
+              <Box display="flex" justifyContent="center">
+                <TextField
+                  size="small"
+                  value={sys || ""}
+                  onChange={handleSysInputChange}
+                  sx={{ width: "50px", bgcolor: "#D0FBFF" }}
+                  inputProps={{ maxLength: 3 }}
+                />
+              </Box>
+            </Grid>
+
+            <Grid item xs={6}>
+              <Typography
+                sx={{
+                  fontWeight: 500,
+                  bgcolor: sysResponse ? "#D0FBFF" : "transparent",
+                  textAlign: "center",
+                }}
+              >
+                {sysResponse}
+              </Typography>
+            </Grid>
+            <Grid item xs={6}>
+              <IconButton onClick={() => fetchDatasys("BP")} disabled={loading}>
+                <NotStartedIcon sx={{ fontSize: 30, color: "black" }} />
+              </IconButton>
+            </Grid>
+          </Grid>
+        </Card>
+      </Grid>
+
+      {/* BP DYS */}
+      <Grid item xs={12} md={4}>
+        <Card sx={{ p: 1, height: "100%", display: "flex", flexDirection: "column" }}>
+          <Grid container spacing={1} alignItems="center" sx={{ flexGrow: 1 }}>
+            <Grid item xs={3}>
+              <Box component="img" src={greenheart} sx={{ width: 40 }} />
+            </Grid>
+            <Grid item xs={9}>
+              <Typography variant="subtitle2">BP - mm Hg (Dys)</Typography>
+            </Grid>
+
+            <Grid item xs={12}>
+              <Box display="flex" justifyContent="center">
+                <TextField
+                  size="small"
+                  value={dys || ""}
+                  onChange={handleDysInputChange}
+                  sx={{ width: "50px", bgcolor: "#D0FBFF" }}
+                  inputProps={{ maxLength: 3 }}
+                />
+              </Box>
+            </Grid>
+
+            <Grid item xs={6}>
+              <Typography
+                sx={{
+                  fontWeight: 500,
+                  bgcolor: dysResponse ? "#D0FBFF" : "transparent",
+                  textAlign: "center",
+                }}
+              >
+                {dysResponse}
+              </Typography>
+            </Grid>
+            <Grid item xs={6}>
+              <IconButton onClick={() => fetchDatadys("BP")} disabled={loading}>
+                <NotStartedIcon sx={{ fontSize: 30, color: "black" }} />
+              </IconButton>
+            </Grid>
+          </Grid>
+        </Card>
+      </Grid>
+    </Grid>
+
+    {/* ================= SECOND ROW ================= */}
+    <Grid container spacing={1} alignItems="stretch" sx={{ mt: 1 }}>
+      {/* RR */}
+      <Grid item xs={12} md={4}>
+        <Card sx={{ p: 1, height: "100%", display: "flex", flexDirection: "column" }}>
+          <Grid container spacing={1} sx={{ flexGrow: 1 }}>
+            <Grid item xs={3}>
+              <Box component="img" src={blueheart} sx={{ width: 40 }} />
+            </Grid>
+            <Grid item xs={9}>
+              <Typography variant="subtitle2">RR - per min</Typography>
+            </Grid>
+
+            <Grid item xs={12}>
+              <Box display="flex" justifyContent="center">
+                <TextField
+                  size="small"
+                  value={rr || ""}
+                  onChange={handleRrInputChange}
+                  sx={{ width: "50px", bgcolor: "#F5F4FC" }}
+                  inputProps={{ maxLength: 3 }}
+                />
+              </Box>
+            </Grid>
+
+            <Grid item xs={6}>
+              <Typography sx={{ bgcolor: "#F5F4FC", textAlign: "center" }}>
+                {rrResponse}
+              </Typography>
+            </Grid>
+          </Grid>
+        </Card>
+      </Grid>
+
+      {/* O2 */}
+      <Grid item xs={12} md={4}>
+        <Card sx={{ p: 1, height: "100%", display: "flex", flexDirection: "column" }}>
+          <Grid container spacing={1} sx={{ flexGrow: 1 }}>
+            <Grid item xs={3}>
+              <Box component="img" src={darkgreeneheart} sx={{ width: 40 }} />
+            </Grid>
+            <Grid item xs={9}>
+              <Typography variant="subtitle2">O2 Sats</Typography>
+            </Grid>
+
+            <Grid item xs={12}>
+              <Box display="flex" justifyContent="center">
+                <TextField
+                  size="small"
+                  value={sats || ""}
+                  onChange={handleSatsInputChange}
+                  sx={{ width: "50px", bgcolor: "#E9F4EE" }}
+                  inputProps={{ maxLength: 3 }}
+                />
+              </Box>
+            </Grid>
+
+            <Grid item xs={6}>
+              <Typography sx={{ bgcolor: "#E9F4EE", textAlign: "center" }}>
+                {satsResponse}
+              </Typography>
+            </Grid>
+            <Grid item xs={6}>
+              <IconButton onClick={() => fetchDataspo2("SPO2")} disabled={loading}>
+                <NotStartedIcon sx={{ fontSize: 30 }} />
+              </IconButton>
+            </Grid>
+          </Grid>
+        </Card>
+      </Grid>
+
+      {/* TEMP */}
+      <Grid item xs={12} md={4}>
+        <Card sx={{ p: 1, height: "100%", display: "flex", flexDirection: "column" }}>
+          <Grid container spacing={1} sx={{ flexGrow: 1 }}>
+            <Grid item xs={3}>
+              <Box component="img" src={temperature} sx={{ width: 40 }} />
+            </Grid>
+            <Grid item xs={9}>
+              <Typography variant="subtitle2">Temperature</Typography>
+            </Grid>
+
+            <Grid item xs={12}>
+              <Box display="flex" justifyContent="center">
+                <TextField
+                  size="small"
+                  value={temp || ""}
+                  onChange={handleTempInputChange}
+                  sx={{ width: "50px", bgcolor: "#FCF6EA" }}
+                  inputProps={{ maxLength: 3 }}
+                />
+              </Box>
+            </Grid>
+
+            <Grid item xs={6}>
+              <Typography sx={{ bgcolor: "#FCF6EA", textAlign: "center" }}>
+                {tempResponse}
+              </Typography>
+            </Grid>
+            <Grid item xs={6}>
+              <IconButton onClick={() => fetchDataTemp("TEMPERATURE")} disabled={loading}>
+                <NotStartedIcon sx={{ fontSize: 30 }} />
+              </IconButton>
+            </Grid>
+          </Grid>
+        </Card>
+      </Grid>
+    </Grid>
+
+    {/* ================= SUBMIT ================= */}
+    <Box sx={{ textAlign: "center", mt: 2 }}>
+      <Button variant="contained" onClick={() => setOpenConfirmDialog(true)}>
+        Submit
+      </Button>
+    </Box>
+  </Card>
+</Box>
+
 
       <Dialog
         open={openConfirmDialog}

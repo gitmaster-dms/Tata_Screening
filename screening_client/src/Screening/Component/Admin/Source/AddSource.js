@@ -122,7 +122,7 @@ const AddSource = () => {
   const [tableinfo, setTableInfo] = useState([]); /// data in table variable
   console.log(tableinfo, "tableinfor");
   const [workshopList, setWorkshopList] = useState([]);
-  console.log("workshopList", workshopList);
+  console.log("workshopListaaaaaaa", workshopList);
 
   const [selectedWorkshopId, setSelectedWorkshopId] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -176,6 +176,11 @@ const AddSource = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    console.log(" LOADING STATE CHANGED:", loading);
+  }, [loading]);
+  const [tableLoading, setTableLoading] = useState(false);
+  const [dropdownLoading, setDropdownLoading] = useState(false);
 
   //_____________________________________VITALS API OF DROPDOWN_______________________________
   const [screeningVitals, setScreeningVitals] = useState([]);
@@ -186,6 +191,9 @@ const AddSource = () => {
   const [selectedSubVitals, setSelectedSubVitals] = useState([]);
   console.log(selectedSubVitals, "selected sub vitals name");
   const [selectedVitalId, setSelectedVitalId] = useState(null);
+  const [filterState, setFilterState] = useState("");
+  const [filterDistrict, setFilterDistrict] = useState("");
+  const [filterTaluka, setFilterTaluka] = useState("");
 
   //// GIS Address
   const { isLoaded } = useJsApiLoader({
@@ -373,25 +381,6 @@ const AddSource = () => {
       newErrors.ws_pincode = "Invalid Pincode";
     }
 
-    // if (!selectData.screening_vitals) {
-    //   newErrors.screening_vitals = "Screening Vitals is required";
-    // }
-    // else if (!/^\d{6}$/.test(selectData.source_pincode)) {
-    //     newErrors.source_pincode = 'Invalid pin code format.';
-    // }
-
-    // if (!selectData.ws_state) {
-    //   newErrors.ws_state = "State is required";
-    // }
-    // if (!selectData.ws_district) {
-    //   newErrors.ws_district = "District is required";
-    // }
-    // if (!selectData.ws_taluka) {
-    //   newErrors.ws_taluka = "Taluka is required";
-    // }
-    // if (!selectData.ws_address) {
-    //   newErrors.ws_address = "Address is required";
-    // }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -674,7 +663,7 @@ const AddSource = () => {
     }
     // }
     else {
-      setSnackbarMessage("Please fill  all required fields. ");
+      setSnackbarMessage("Please fill in all required fields. ");
       setSnackbarSeverity("warning");
       setSnackbarOpen(true);
     }
@@ -707,29 +696,32 @@ const AddSource = () => {
 
   const [getid, setidws] = useState([]);
   ///////// get API for Table //////////////
-useEffect(() => {
-  if (!selectedTehsilNav) return;
+  useEffect(() => {
+    if (!filterTaluka) return; // ✅ RIGHT
+    setDropdownLoading(true);
 
-  const fetchData = async () => {
-    try {
-      const response = await fetch(
-        `${Port}/Screening/Workshop_list_get/${selectedTehsilNav}/`,
-        {
-          headers: { Authorization: `Bearer ${accessToken}` },
-        }
-      );
-      const data = await response.json();
-      setTableInfo(Array.isArray(data) ? data : []);
-      setLoading(false);
-    } catch (error) {
-      console.log("Error fetching workshop table data", error);
-      setLoading(false);
-    }
-  };
+    const fetchData = async () => {
+      try {
+        const response = await fetch(
+          `${Port}/Screening/Workshop_list_get/${filterTaluka}/`,
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`,
+            },
+          },
+        );
 
-  fetchData();
-}, [selectedTehsilNav]); // ✅ ONLY NAV STATE
+        const data = await response.json();
+        setWorkshopList(data);
+      } catch (error) {
+        console.log("Error fetching source data", error);
+      } finally {
+        setDropdownLoading(false);
+      }
+    };
 
+    fetchData();
+  }, [filterTaluka]);
 
   //////////////////// Delete
   const handleDelete = async () => {
@@ -812,7 +804,6 @@ useEffect(() => {
   }, []);
 
   const [stateList, setStateList] = useState([]);
-  //// Soure State against selected source
   useEffect(() => {
     const fetchStates = async () => {
       try {
@@ -829,7 +820,6 @@ useEffect(() => {
     fetchStates();
   }, []);
 
-  //// Soure District against selected source state/////////
   const [distList, setDistList] = useState([]);
   useEffect(() => {
     console.log("Selected State changed:", selectedState);
@@ -853,6 +843,28 @@ useEffect(() => {
     fetchDistricts();
   }, [selectedState]);
 
+  // Filter District based on selected State
+  useEffect(() => {
+    const filterDistrict = async () => {
+      if (!filterState) return; // wait until a state is selected
+      try {
+        const res = await fetch(
+          `${Port}/Screening/District_Get/${filterState}/`,
+          {
+            headers: { Authorization: `Bearer ${accessToken}` },
+          },
+        );
+        const data = await res.json();
+        console.log("Fetched Districts:", data);
+        setDistrictOptions(data);
+        setDistList(data); // ✅ sets options for nav dropdown
+      } catch (err) {
+        console.error("Error fetching districts:", err);
+      }
+    };
+    filterDistrict();
+  }, [filterState]);
+
   //// Soure Tehsil against selected source District/////////
   const [tehList, setTehList] = useState([]);
   useEffect(() => {
@@ -875,47 +887,43 @@ useEffect(() => {
     fetchTehsils();
   }, [selectedDistrict]);
 
-  //// Soure Name against selected source district
-  // useEffect(() => {
-  //     const fetchSourceNameOptions = async () => {
-  //         if ( selectedStateNav && selectedDistrictNav && selectedTehsilNav) {
-  //             try {
-  //                 const res = await fetch(`${Port}/Screening/Tehsil_Get/${selectedDistrictNav}/${selectedTehsilNav}`, {
-  //                     headers: {
-  //                         'Authorization': `Bearer ${accessToken}`,
-  //                     },
-  //                 });
-  //                 const data = await res.json();
-  //                 setSourceName(data);
-  //             } catch (error) {
-  //                 console.error("Error fetching Source Name against Tehsil data:", error);
-  //             }
-  //         }
-  //     };
-  //     fetchSourceNameOptions();
-  // }, [selectedTehsilNav, selectedStateNav, selectedDistrictNav, selectedTehsilNav]);
+  // Filter Tehsil based on selected District
+  useEffect(() => {
+    const FilterTaluka = async () => {
+      if (!filterDistrict) return; // wait until a district is selected
+      try {
+        const res = await fetch(
+          `${Port}/Screening/Tehsil_Get/${filterDistrict}/`,
+          {
+            headers: { Authorization: `Bearer ${accessToken}` },
+          },
+        );
+        const data = await res.json();
+        setTalukaOptions(data);
+        setTehList(data); // ✅ sets options for nav dropdown
+      } catch (err) {
+        console.error("Error fetching tehsils:", err);
+      }
+    };
+    FilterTaluka();
+  }, [filterDistrict]);
 
-  ///////// State, District, Tehsil Form Dropdown /////////////
-
-  ////////////////////// search Filter
   useEffect(() => {
     handleSearch();
   }, []);
 
   const handleSearch = async () => {
     try {
+      setTableLoading(true);
+
       const params = new URLSearchParams();
 
-      // 🔥 backend ke exact params
       if (selectedWorkshopId) params.append("ws_pk_id", selectedWorkshopId);
-      if (selectedStateNav) params.append("ws_state", selectedStateNav);
-      if (selectedDistrictNav)
-        params.append("ws_district", selectedDistrictNav);
-      if (selectedTehsilNav) params.append("ws_tehsil", selectedTehsilNav);
+      if (filterState) params.append("ws_state", filterState);
+      if (filterDistrict) params.append("ws_district", filterDistrict);
+      if (filterTaluka) params.append("ws_taluka", filterTaluka);
 
       const apiUrl = `${Port}/Screening/workshop_filter_api/?${params.toString()}`;
-
-      const accessToken = localStorage.getItem("token");
 
       const response = await axios.get(apiUrl, {
         headers: {
@@ -924,17 +932,17 @@ useEffect(() => {
       });
 
       setTableInfo(Array.isArray(response.data) ? response.data : []);
-      console.log("Filtered data:", response.data);
     } catch (error) {
       console.log("Error while fetching data", error);
       setTableInfo([]);
+    } finally {
+      setTableLoading(false);
     }
   };
 
   const [selectedSourceId, setSelectedSourceId] = useState("");
   const [selectedRow, setSelectedRow] = useState(null);
 
-  
   const handleTableRowClick = (info) => {
     setSelectedSourceId(info.ws_pk_id);
     setSelectedRow(info.ws_pk_id);
@@ -1007,23 +1015,6 @@ useEffect(() => {
     }
   }, [selectedRow]);
 
-  useEffect(() => {
-    if (stateOptions.length && editData?.ws_state) {
-      setSelectedState(editData.ws_state);
-    }
-  }, [stateOptions]);
-  useEffect(() => {
-    if (districtOptions.length && editData?.ws_district) {
-      setSelectedDistrict(Number(editData.ws_district));
-    }
-  }, [districtOptions]);
-
-  useEffect(() => {
-    if (talukaOptions.length && editData?.ws_taluka) {
-      setSelectedTahsil(Number(editData.ws_taluka));
-    }
-  }, [talukaOptions]);
-
   return (
     <div>
       <Snackbar
@@ -1082,11 +1073,11 @@ useEffect(() => {
                   fullWidth
                   select
                   size="small"
-                  label="State"
+                  label=" State"
                   name="ws_state"
                   variant="outlined"
-                  value={selectedState}
-                  onChange={(event) => setSelectedState(event.target.value)}
+                  value={filterState}
+                  onChange={(event) => setFilterState(event.target.value)}
                   InputLabelProps={{
                     style: { fontWeight: "100", fontSize: "14px" },
                   }}
@@ -1099,6 +1090,7 @@ useEffect(() => {
                     },
                   }}
                 >
+                  <MenuItem value="">Workshop State</MenuItem>
                   {stateList.map((drop) => (
                     <MenuItem key={drop.state_id} value={drop.state_id}>
                       {drop.state_name}
@@ -1115,8 +1107,8 @@ useEffect(() => {
                   label=" District"
                   variant="outlined"
                   name="ws_district"
-                  value={selectedDistrict}
-                  onChange={(event) => setSelectedDistrict(event.target.value)}
+                  value={filterDistrict}
+                  onChange={(event) => setFilterDistrict(event.target.value)}
                   InputLabelProps={{
                     style: { fontWeight: "100", fontSize: "14px" },
                   }}
@@ -1148,8 +1140,8 @@ useEffect(() => {
                   label=" Tehsil"
                   variant="outlined"
                   name="ws_tehsil"
-                  value={selectedTahsil}
-                  onChange={(event) => setSelectedTahsil(event.target.value)}
+                  value={filterTaluka}
+                  onChange={(event) => setFilterTaluka(event.target.value)}
                   InputLabelProps={{
                     style: { fontWeight: "100", fontSize: "14px" },
                   }}
@@ -1402,9 +1394,10 @@ useEffect(() => {
                       fullWidth
                       label="Email ID *"
                       name="email_id"
+                      disabled={!isFormEnabled}
                       value={selectData.email_id}
                       onChange={handleChange}
-                      onBlur={handleEmailBlur} // 🔥 validation here
+                      onBlur={handleEmailBlur} //  validation
                       size="small"
                       type="email"
                       error={
@@ -1764,8 +1757,14 @@ useEffect(() => {
               </Grid>
             </Grid>
 
-            <Box>
-              {loading ? (
+            <Box
+              sx={{
+                // height: 450, // 🔥 Fixed height for table + rows area
+                display: "flex",
+                flexDirection: "column",
+              }}
+            >
+              {tableLoading ? (
                 <Box
                   display="flex"
                   justifyContent="center"
@@ -1779,18 +1778,16 @@ useEffect(() => {
                   No results found
                 </Box>
               ) : (
-                // 🔥 Horizontal Scroll Wrapper
+                // 🔥 Horizontal scroll wrapper
                 <Box
                   sx={{
                     width: "100%",
-                    overflowX: {
-                      xs: "auto", // 📱 mobile → scroll
-                      sm: "auto", // tablets (optional)
-                      md: "hidden", // 💻 desktop → no scroll
-                    },
+                    overflowX: { xs: "auto", sm: "auto", md: "hidden" },
+                    display: "flex",
+                    flexDirection: "column",
+                    flex: 1, // 🔹 Take full height inside parent Box
                   }}
                 >
-                  {/* Minimum width forces scroll on small screens */}
                   <Box sx={{ minWidth: 600 }}>
                     {/* Header */}
                     <Box
@@ -1803,7 +1800,7 @@ useEffect(() => {
                         borderRadius: "20px",
                         px: 1,
                         py: 1,
-                        mb: 2,
+                        mb: 1,
                         fontFamily: "Roboto,sans-serif",
                         fontSize: "13px",
                         fontWeight: 550,
@@ -1820,50 +1817,66 @@ useEffect(() => {
                       <Box sx={{ flex: 2 }}>Registration Number</Box>
                     </Box>
 
-                    {/* Rows */}
-                    {paginatedData.map((info, index) => {
-                      const serialNumber = index + 1 + page * rowsPerPage;
+                    {/* 🔥 Scrollable rows */}
+                    <Box
+                       sx={{
+            flex: 1,
+            overflowY: "auto",
+            maxHeight: 300,  // 🔹 Reduced scroll height
+            scrollbarWidth: "none", // Firefox
+            "&::-webkit-scrollbar": { display: "none" }, // Chrome/Safari/Edge
+          }}
+                    >
+                      {paginatedData.map((info, index) => {
+                        const serialNumber = index + 1 + page * rowsPerPage;
 
-                      return (
-                        <Card
-                          key={info.ws_pk_id}
-                          onClick={() => handleTableRowClick(info)}
-                          elevation={0}
-                          sx={{
-                            mb: 1,
-                            display: "flex",
-                            borderRadius: "20px",
-                            cursor: "pointer",
-                            p: 1.5,
-                            textAlign: "center",
-                            whiteSpace: "nowrap",
-                            transition: "0.3s",
-                            backgroundColor:
-                              selectedRow === info.ws_pk_id ? "#fff" : "#fff",
-                            "&:hover": {
-                              backgroundColor:
-                                selectedRow === info.ws_pk_id
-                                  ? "#d7d7d7ff"
-                                  : "#F9FAFB",
-                            },
-                          }}
-                        >
-                          <Box sx={{ flex: 0.8, fontSize: "13px" }}>
-                            {serialNumber}
-                          </Box>
-                          <Box
-                            sx={{ flex: 2, fontSize: "13px", fontWeight: 500 }}
+                        return (
+                          <Card
+                            key={info.ws_pk_id}
+                            onClick={() => handleTableRowClick(info)}
+                            elevation={0}
+                            sx={{
+                              mb: 1,
+                              display: "flex",
+                              borderRadius: "20px",
+                              cursor: "pointer",
+                              p: 1.5,
+                              textAlign: "center",
+                              whiteSpace: "nowrap",
+                              transition: "0.3s",
+                              "&:hover": {
+                                backgroundColor:
+                                  selectedRow === info.ws_pk_id
+                                    ? "#d7d7d7ff"
+                                    : "#F9FAFB",
+                              },
+                            }}
                           >
-                            {info.Workshop_name}
-                          </Box>
-                          <Box
-                            sx={{ flex: 2, fontSize: "13px", fontWeight: 500 }}
-                          >
-                            {info.registration_no}
-                          </Box>
-                        </Card>
-                      );
-                    })}
+                            <Box sx={{ flex: 0.8, fontSize: "13px" }}>
+                              {serialNumber}
+                            </Box>
+                            <Box
+                              sx={{
+                                flex: 2,
+                                fontSize: "13px",
+                                fontWeight: 500,
+                              }}
+                            >
+                              {info.Workshop_name}
+                            </Box>
+                            <Box
+                              sx={{
+                                flex: 2,
+                                fontSize: "13px",
+                                fontWeight: 500,
+                              }}
+                            >
+                              {info.registration_no}
+                            </Box>
+                          </Card>
+                        );
+                      })}
+                    </Box>
                   </Box>
                 </Box>
               )}
