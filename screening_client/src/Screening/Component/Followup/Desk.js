@@ -10,6 +10,7 @@ import { Link } from "react-router-dom";
 import AddIcon from "@mui/icons-material/Add";
 import RemoveRedEyeOutlinedIcon from "@mui/icons-material/RemoveRedEyeOutlined";
 import axios from "axios";
+import CloseIcon from "@mui/icons-material/Close";
 import {
   Grid,
   Typography,
@@ -40,7 +41,7 @@ import {
 
 const Desk = () => {
   const Port = process.env.REACT_APP_API_KEY;
-      const userID = localStorage.getItem('userID');
+  const userID = localStorage.getItem("userID");
   const accessToken = localStorage.getItem("token");
   const newToken = localStorage.getItem("refreshToken");
   const theme = useTheme();
@@ -50,12 +51,16 @@ const Desk = () => {
   const [canEdit, setCanEdit] = useState(false);
   const [openFollowUpModal, setOpenFollowUpModal] = useState(false);
   const [selectedCitizen, setSelectedCitizen] = useState(null);
-  // console.log(selectedCitizen, "selectedCitizen");
-  
+  console.log("selectedCitizen:", selectedCitizen);
+
+  console.log("follow_up_pk_id:", selectedCitizen?.follow_up_pk_id);
+  console.log("citizen_pk_id:", selectedCitizen?.citizen_pk_id);
   const [callStatus, setCallStatus] = useState(null);
   const [conversationalRemark, setConversationalRemark] = useState("");
   const [status, setStatus] = useState(null);
-  const [followUp, setFollowUp] = useState("");
+  const [followUp, setFollowUp] = useState(null);
+  const [conversationalStatus, setConversationalStatus] = useState("");
+  const [remark, setRemark] = useState("");
 
   useEffect(() => {
     const storedPermissions = localStorage.getItem("permissions");
@@ -106,6 +111,16 @@ const Desk = () => {
 
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [scheduleDate, setScheduleDate] = useState(null);
+  const [notConnectedReason, setNotConnectedReason] = useState("");
+  const [visitedStatus, setVisitedStatus] = useState("");
+  const [weightGainStatus, setWeightGainStatus] = useState("");
+  const [forwardTo, setForwardTo] = useState("");
+  const [priority, setPriority] = useState("");
+  const [notVisitedReason, setNotVisitedReason] = useState("");
+  const [rescheduleDate1, setRescheduleDate1] = useState(null);
+  const [rescheduleDate2, setRescheduleDate2] = useState(null);
+  const [conditionImproved, setConditionImproved] = useState("");
   const handleChangePage = (event, newPage) => {
     setPage(newPage);
   };
@@ -387,54 +402,157 @@ const Desk = () => {
   };
 
   const handleSubmitFollowUp = async () => {
-  try {
-    const payload = {
-      citizen_id: selectedCitizen?.citizen_pk_id,           // 👈 citizen
-      screening_citizen_id: selectedCitizen?.screening_citizen_id,
-      call_status:
-        callStatus === 1 ? "Connected" : "Not Connected",
-      conversational_remarks: conversationalRemark || "",
-      visit_status:
-        status === 1 ? "Visited" : status === 2 ? "Not Visited" : "",
-       follow_up:
-    followUp === "Follow Up Continued" ? 1 : 2, // ✅ PK only
-      remark: conversationalRemark || "",
-      added_by: userID, // or userID
-    };
+    try {
+      const payload = {
+        citizen_id: selectedCitizen?.citizen_id,
+        screening_citizen_id: selectedCitizen?.screening_citizen_id,
+        name: selectedCitizen?.citizen_name || "",
+        dob: selectedCitizen?.dob || "",
+        parents_no: selectedCitizen?.mobile_number || "",
+        state: selectedCitizen?.state || "",
+        tehsil: selectedCitizen?.tehsil || "",
+        district: selectedCitizen?.district || "",
+        source_name: selectedCitizen?.source_name || "",
 
-    const response = await axios.post(
-      `${Port}/Screening/followup_save/${selectedCitizen.follow_up_pk_id}/`,
-      payload,
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
+        call_status: callStatus === 1 ? "Connected" : "Not Connected",
+        conversational_remarks: conversationalRemark || "",
 
-    if (response.status === 200 || response.status === 201) {
-      setSnackbar({
-        open: true,
-        message: "Follow up saved successfully",
-        severity: "success",
+        schedule_date: scheduleDate || null,
+
+        not_connected_reason: notConnectedReason || "",
+        visit_status:
+          status === 1 ? "Visited" : status === 2 ? "Not Visited" : "Pending",
+
+        visited_status: visitedStatus || "",
+        condition_improved: conditionImproved || "",
+        weight_gain_status: weightGainStatus || "",
+        forward_to: forwardTo || "",
+        priority: priority || "",
+
+        not_visited_reason: notVisitedReason || "",
+        reschedule_date1: rescheduleDate1 || null,
+        reschedule_date2: rescheduleDate2 || null,
+
+        follow_up: followUp,
+        remark: remark || "",
+
+        added_by: userID,
+      };
+
+      const url = `${Port}/Screening/followup_save/${selectedCitizen?.follow_up_pk_id}/`;
+
+      console.log("About to POST followup", {
+        url,
+        payload,
+        Port,
+        follow_up_pk_id: selectedCitizen?.follow_up_pk_id,
+        accessToken,
       });
 
-      setOpenFollowUpModal(false);
-      handleSearch(); // 🔥 refresh table
+      if (!Port) {
+        console.error(
+          "API base URL (Port) is undefined. Check .env and restart dev server.",
+        );
+        setSnackbar({
+          open: true,
+          message: "API base URL not configured",
+          severity: "error",
+        });
+        return;
+      }
+
+      if (!selectedCitizen?.follow_up_pk_id) {
+        console.error(
+          "Missing follow_up_pk_id on selectedCitizen. Cannot POST.",
+        );
+        setSnackbar({
+          open: true,
+          message: "No follow-up selected",
+          severity: "warning",
+        });
+        return;
+      }
+
+      const tokenToUse = accessToken || newToken;
+      if (!tokenToUse) {
+        console.error(
+          "No auth token present in localStorage (token or refreshToken)",
+        );
+        setSnackbar({
+          open: true,
+          message: "Not authenticated",
+          severity: "error",
+        });
+        return;
+      }
+
+      const response = await axios.post(url, payload, {
+        headers: {
+          Authorization: `Bearer ${tokenToUse}`,
+          "Content-Type": "application/json",
+        },
+      });
+      console.log("FULL RESPONSE OBJECT:", response);
+      console.log("RESPONSE STATUS:", response?.status);
+      console.log("RESPONSE DATA:", response?.data);
+
+      if (response.status === 200 || response.status === 201) {
+        setSnackbar({
+          open: true,
+          message: "Follow up saved successfully",
+          severity: "success",
+        });
+        resetFollowUpForm();
+
+        setOpenFollowUpModal(false);
+        handleSearch(); // 🔥 refresh table
+      }
+    } catch (error) {
+      console.error("Follow-up save error:", error);
+      // show backend validation errors when available
+      const backendMsg = error?.response?.data
+        ? JSON.stringify(error.response.data)
+        : error.message;
+      console.error("Backend response:", error?.response);
+
+      setSnackbar({
+        open: true,
+        message: `Failed to save follow up: ${backendMsg}`,
+        severity: "error",
+      });
     }
-  } catch (error) {
-    console.error("Follow-up save error:", error);
+  };
 
-    setSnackbar({
-      open: true,
-      message: "Failed to save follow up",
-      severity: "error",
-    });
-  }
-};
+  const [followUpData, setFollowUpData] = useState(null);
+  const getCitizenFollowUpInfo = async (citizenId) => {
+    try {
+      const response = await axios.get(
+        `${Port}/Screening/follow_up_citizen_info/${citizenId}/`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        },
+      );
 
+      console.log("GET Response:", response.data);
 
+      setFollowUpData(response.data); // 🔥 IMPORTANT LINE
+    } catch (error) {
+      console.error("GET Error:", error);
+    }
+  };
+  const resetFollowUpForm = () => {
+    setCallStatus(null);
+    setConversationalRemark("");
+    setStatus(null);
+    setFollowUp("");
+  };
+  useEffect(() => {
+    if (openFollowUpModal) {
+      resetFollowUpForm();
+    }
+  }, [selectedCitizen]);
   return (
     <div>
       <Box
@@ -971,11 +1089,13 @@ const Desk = () => {
                                   //   component={Link}
                                   //   to={`/mainscreen/Follow-Up/viewFollowup/${item.citizen_id}`}
                                   //   size="small"
-                                  // >
                                   <IconButton
                                     size="small"
-                                    onClick={() => {
+                                    onClick={async () => {
                                       setSelectedCitizen(item);
+                                      await getCitizenFollowUpInfo(
+                                        item.citizen_id,
+                                      ); // 🔥 ID wise GET here
                                       setOpenFollowUpModal(true);
                                     }}
                                   >
@@ -1037,44 +1157,124 @@ const Desk = () => {
             disableRestoreFocus
           >
             {/* HEADER */}
-            <DialogTitle sx={{ background: "linear-gradient(90deg, #2FB3F5 0%, #1439A4 100%)",
-color: "#fff" }}>
-  <Typography sx={{ fontWeight: 600,fontSize: "15px", fontFamily: "Roboto, sans-serif" }}>
-              Add Follow Up Details
+            <DialogTitle
+              sx={{
+                background: "linear-gradient(90deg, #2FB3F5 0%, #1439A4 100%)",
+                color: "#fff",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                padding: "2px 10px",
+              }}
+            >
+              <Typography
+                sx={{
+                  fontWeight: 600,
+                  fontSize: "15px",
+                  fontFamily: "Roboto, sans-serif",
+                }}
+              >
+                Add Follow Up Details
+              </Typography>
 
-  </Typography>
+              <IconButton
+                onClick={() => {
+                  setOpenFollowUpModal(false);
+                  resetFollowUpForm();
+                }}
+                sx={{
+                  color: "#fff",
+                }}
+              >
+                <CloseIcon />
+              </IconButton>
             </DialogTitle>
 
             <DialogContent sx={{ mt: 2 }}>
               {/* CITIZEN DETAILS */}
-              <Box sx={{                 background: "linear-gradient(90deg, #2FB3F5 0%, #1439A4 100%)",
- color: "#fff", p: 2, mb: 2 }}>
+              <Box
+                sx={{
+                  background:
+                    "linear-gradient(90deg, #2FB3F5 0%, #1439A4 100%)",
+                  color: "#fff",
+                  p: 2,
+                  mb: 2,
+                }}
+              >
                 <Grid container spacing={2}>
                   <Grid item xs={12} md={6}>
-                    <Typography sx={{ fontWeight: 500,fontSize: "15px", fontFamily: "Roboto, sans-serif" }}>
+                    <Typography
+                      sx={{
+                        fontWeight: 500,
+                        fontSize: "15px",
+                        fontFamily: "Roboto, sans-serif",
+                      }}
+                    >
                       Citizen ID: {selectedCitizen?.citizen_id}
                     </Typography>
-                    <Typography sx={{ fontWeight: 500,fontSize: "15px", fontFamily: "Roboto, sans-serif" }}>
+                    <Typography
+                      sx={{
+                        fontWeight: 500,
+                        fontSize: "15px",
+                        fontFamily: "Roboto, sans-serif",
+                      }}
+                    >
                       Name: {selectedCitizen?.citizen_name}
                     </Typography>
-                    <Typography sx={{ fontWeight: 500,fontSize: "15px", fontFamily: "Roboto, sans-serif" }}>
+                    <Typography
+                      sx={{
+                        fontWeight: 500,
+                        fontSize: "15px",
+                        fontFamily: "Roboto, sans-serif",
+                      }}
+                    >
                       DOB: {selectedCitizen?.dob || "N/A"}
                     </Typography>
-                    <Typography sx={{ fontWeight: 500,fontSize: "15px", fontFamily: "Roboto, sans-serif" }}>
+                    <Typography
+                      sx={{
+                        fontWeight: 500,
+                        fontSize: "15px",
+                        fontFamily: "Roboto, sans-serif",
+                      }}
+                    >
                       District: {selectedCitizen?.district}
                     </Typography>
                   </Grid>
                   <Grid item xs={12} md={6}>
-                    <Typography sx={{ fontWeight: 500,fontSize: "15px", fontFamily: "Roboto, sans-serif" }}>
+                    <Typography
+                      sx={{
+                        fontWeight: 500,
+                        fontSize: "15px",
+                        fontFamily: "Roboto, sans-serif",
+                      }}
+                    >
                       Screening Count: {selectedCitizen?.screening_count}
                     </Typography>
-                    <Typography sx={{ fontWeight: 500,fontSize: "15px", fontFamily: "Roboto, sans-serif" }}>
+                    <Typography
+                      sx={{
+                        fontWeight: 500,
+                        fontSize: "15px",
+                        fontFamily: "Roboto, sans-serif",
+                      }}
+                    >
                       Mobile: {selectedCitizen?.mobile_number}
                     </Typography>
-                    <Typography sx={{ fontWeight: 500,fontSize: "15px", fontFamily: "Roboto, sans-serif" }}>
+                    <Typography
+                      sx={{
+                        fontWeight: 500,
+                        fontSize: "15px",
+                        fontFamily: "Roboto, sans-serif",
+                      }}
+                    >
                       State: {selectedCitizen?.state}
                     </Typography>
-                    <Typography sx={{ fontWeight: 500,fontSize: "15px", fontFamily: "Roboto, sans-serif" }}>
+                    <Typography
+                      sx={{
+                        fontWeight: 500,
+                        fontSize: "15px",
+                        fontFamily: "Roboto, sans-serif",
+                      }}
+                    >
                       Tehsil: {selectedCitizen?.tehsil}
                     </Typography>
                   </Grid>
@@ -1094,7 +1294,7 @@ color: "#fff" }}>
                     fullWidth
                     label="Call Status"
                     value={callStatus}
-                    onChange={(e) => setCallStatus(e.target.value)}
+                    onChange={(e) => setCallStatus(Number(e.target.value))}
                     sx={{
                       color: "#000",
                       "& .MuiSelect-select": { color: "#000 !important" },
@@ -1107,122 +1307,187 @@ color: "#fff" }}>
 
                 {/* CONNECTED FLOW */}
                 {/* {callStatus === 1 && ( */}
-                  <>
-                    <Grid item xs={12} md={4}>
-                      <TextField
-                        select
-                        size="small"
-                        fullWidth
-                        label="Conversational Remarks"
-                        value={conversationalRemark}
-                        onChange={(e) =>
-                          setConversationalRemark(e.target.value)
-                        }
-                        sx={{
-                          color: "#000",
-                          "& .MuiSelect-select": { color: "#000 !important" },
-                        }}
-                      >
-                        <MenuItem value="Answered">Answered</MenuItem>
-                        <MenuItem value="Reschedule Call">
-                          Reschedule Call
-                        </MenuItem>
-                      </TextField>
-                    </Grid>
+                <>
+                  <Grid item xs={12} md={4}>
+                    <TextField
+                      select
+                      size="small"
+                      fullWidth
+                      label="Conversational Remarks"
+                      value={conversationalRemark || ""}
+                      onChange={(e) => setConversationalRemark(e.target.value)}
+                      sx={{
+                        color: "#000",
+                        "& .MuiSelect-select": { color: "#000 !important" },
+                      }}
+                    >
+                      <MenuItem value="Answered">Answered</MenuItem>
+                      <MenuItem value="Reschedule Call">
+                        Reschedule Call
+                      </MenuItem>
+                    </TextField>
+                  </Grid>
 
-                    {/* ANSWERED */}
-                    {conversationalRemark === "Answered" && (
-                      <>
-                        <Grid item xs={12} md={4}>
-                          <TextField
-                            select
-                            size="small"
-                            fullWidth
-                            label="Status"
-                            value={status}
-                            onChange={(e) => setStatus(e.target.value)}
-                            sx={{
-                              color: "#000",
-                              "& .MuiSelect-select": {
-                                color: "#000 !important",
-                              },
-                            }}
-                          >
-                            <MenuItem value={1}>Visited</MenuItem>
-                            <MenuItem value={2}>Not Visited</MenuItem>
-                          </TextField>
-                        </Grid>
+                  {/* ANSWERED */}
+                  {conversationalRemark === "Answered" && (
+                    <>
+                      <Grid item xs={12} md={4}>
+                        <TextField
+                          select
+                          size="small"
+                          fullWidth
+                          label="Status"
+                          value={status}
+                          onChange={(e) => setStatus(e.target.value)}
+                          sx={{
+                            color: "#000",
+                            "& .MuiSelect-select": {
+                              color: "#000 !important",
+                            },
+                          }}
+                        >
+                          <MenuItem value={1}>Visited</MenuItem>
+                          <MenuItem value={2}>Not Visited</MenuItem>
+                        </TextField>
+                      </Grid>
 
-                        {/* VISITED */}
-                        {status === 1 && (
-                          <>
-                            {[
-                              "Condition Improved",
-                              "Weight Gain Status",
-                              "Forward To",
-                              "Priority",
-                            ].map((label) => (
-                              <Grid item xs={12} md={3} key={label}>
-                                <Typography>{label}</Typography>
-                                <RadioGroup row>
-                                  <FormControlLabel
-                                    value="Yes"
-                                    control={<Radio />}
-                                    label="Yes"
-                                  />
-                                  <FormControlLabel
-                                    value="No"
-                                    control={<Radio />}
-                                    label="No"
-                                  />
-                                </RadioGroup>
-                              </Grid>
-                            ))}
+                      {/* VISITED */}
+                      {status === 1 && (
+                        <>
+                          <Grid item xs={12} md={3}>
+                            <Typography>Condition Improved</Typography>
+                            <RadioGroup
+                              row
+                              value={conditionImproved}
+                              onChange={(e) =>
+                                setConditionImproved(e.target.value)
+                              }
+                            >
+                              <FormControlLabel
+                                value="Yes"
+                                control={<Radio />}
+                                label="Yes"
+                              />
+                              <FormControlLabel
+                                value="No"
+                                control={<Radio />}
+                                label="No"
+                              />
+                            </RadioGroup>
+                          </Grid>
 
-                            <Grid item xs={12} md={4}>
-                              <TextField
-                                label="Visited"
-                                select
-                                size="small"
-                                fullWidth
-                                sx={{
-                                  color: "#000",
-                                  "& .MuiSelect-select": {
-                                    color: "#000 !important",
-                                  },
-                                }}
-                              >
-                                <MenuItem value="DOA">DOA</MenuItem>
-                              </TextField>
+                          <Grid item xs={12} md={3}>
+                            <Typography>Weight Gain Status</Typography>
+                            <RadioGroup
+                              row
+                              value={weightGainStatus}
+                              onChange={(e) =>
+                                setWeightGainStatus(e.target.value)
+                              }
+                            >
+                              <FormControlLabel
+                                value="Yes"
+                                control={<Radio />}
+                                label="Yes"
+                              />
+                              <FormControlLabel
+                                value="No"
+                                control={<Radio />}
+                                label="No"
+                              />
+                            </RadioGroup>
+                          </Grid>
+
+                          <Grid item xs={12} md={3}>
+                            <Typography>Forward To</Typography>
+                            <RadioGroup
+                              row
+                              value={forwardTo}
+                              onChange={(e) => setForwardTo(e.target.value)}
+                            >
+                              <FormControlLabel
+                                value="Yes"
+                                control={<Radio />}
+                                label="Yes"
+                              />
+                              <FormControlLabel
+                                value="No"
+                                control={<Radio />}
+                                label="No"
+                              />
+                            </RadioGroup>
+                          </Grid>
+
+                          <Grid item xs={12} md={3}>
+                            <Typography>Priority</Typography>
+                            <RadioGroup
+                              row
+                              value={priority}
+                              onChange={(e) => setPriority(e.target.value)}
+                            >
+                              <FormControlLabel
+                                value="High"
+                                control={<Radio />}
+                                label="High"
+                              />
+                              <FormControlLabel
+                                value="Normal"
+                                control={<Radio />}
+                                label="Normal"
+                              />
+                            </RadioGroup>
+                          </Grid>
+
+                          <Grid item xs={12} md={4}>
+                            <TextField
+                              label="Visited"
+                              select
+                              size="small"
+                              fullWidth
+                              sx={{
+                                color: "#000",
+                                "& .MuiSelect-select": {
+                                  color: "#000 !important",
+                                },
+                              }}
+                            >
+                              <MenuItem value="DOA">DOA</MenuItem>
+                              <MenuItem value="Under Treatment">
+                                Under Treatment
+                              </MenuItem>
+                              <MenuItem value="Recovered">
+                                Recovered
+                              </MenuItem>
+                            </TextField>
+                          </Grid>
+                        </>
+                      )}
+
+                      {/* NOT VISITED */}
+                      {status === 2 && (
+                        <>
+                          {[
+                            "Condition Improved",
+                            "Weight Gain Status",
+                            "Forward To",
+                            "Priority",
+                          ].map((label) => (
+                            <Grid item xs={12} md={3} key={label}>
+                              <Typography>{label}</Typography>
+                              <RadioGroup row>
+                                <FormControlLabel
+                                  value="Yes"
+                                  control={<Radio />}
+                                  label="Yes"
+                                />
+                                <FormControlLabel
+                                  value="No"
+                                  control={<Radio />}
+                                  label="No"
+                                />
+                              </RadioGroup>
                             </Grid>
-                          </>
-                        )}
-
-                        {/* NOT VISITED */}
-                        {status === 2 && (
-                          <>
-                            {[
-                              "Condition Improved",
-                              "Weight Gain Status",
-                              "Forward To",
-                              "Priority",
-                            ].map((label) => (
-                              <Grid item xs={12} md={3} key={label}>
-                                <Typography>{label}</Typography>
-                                <RadioGroup row>
-                                  <FormControlLabel
-                                    value="Yes"
-                                    control={<Radio />}
-                                    label="Yes"
-                                  />
-                                  <FormControlLabel
-                                    value="No"
-                                    control={<Radio />}
-                                    label="No"
-                                  />
-                                </RadioGroup>
-                              </Grid>
-                            ))} 
+                          ))}
                           <Grid item xs={12} md={4}>
                             <TextField
                               label="Not Visited Reason"
@@ -1241,28 +1506,26 @@ color: "#fff" }}>
                               </MenuItem>
                             </TextField>
                           </Grid>
-                          </>
-                        )}
-                      </>
-                 )} 
+                        </>
+                      )}
+                    </>
+                  )}
 
-                    {/* RESCHEDULE */}
-                    {conversationalRemark === "Reschedule Call" && (
-                      <Grid item xs={12} md={4}>
-                        <TextField
-                          type="datetime-local"
-                          label="Schedule Date"
-                          InputLabelProps={{ shrink: true }}
-                          fullWidth
-                          size="small"
-                          sx={{
-                            color: "#000",
-                            "& .MuiSelect-select": { color: "#000 !important" },
-                          }}
-                        />
-                      </Grid>
-                    )} 
-                  </>
+                  {/* RESCHEDULE */}
+                  {conversationalRemark === "Reschedule Call" && (
+                    <Grid item xs={12} md={4}>
+                      <TextField
+                        type="datetime-local"
+                        label="Schedule Date"
+                        value={scheduleDate || ""}
+                        onChange={(e) => setScheduleDate(e.target.value)}
+                        InputLabelProps={{ shrink: true }}
+                        fullWidth
+                        size="small"
+                      />
+                    </Grid>
+                  )}
+                </>
                 {/* // )} */}
 
                 {/* NOT CONNECTED FLOW */}
@@ -1296,21 +1559,15 @@ color: "#fff" }}>
                         select
                         label="Follow Up"
                         value={followUp}
-                        onChange={(e) => setFollowUp(e.target.value)}
                         sx={{
                           color: "#000",
                           "& .MuiSelect-select": { color: "#000 !important" },
                         }}
+                        onChange={(e) => setFollowUp(Number(e.target.value))}
                       >
-                        <MenuItem value="Reschedule Call">
-                          Reschedule Call
-                        </MenuItem>
-                        <MenuItem value="Follow Up Closed">
-                          Follow Up Closed
-                        </MenuItem>
-                        <MenuItem value="Follow Up Continued">
-                          Follow Up Continued
-                        </MenuItem>
+                        <MenuItem value={1}>Follow Up Continued</MenuItem>
+                        <MenuItem value={2}>Follow Up Closed</MenuItem>
+                        <MenuItem value={3}>Reschedule Call</MenuItem>
                       </TextField>
                     </Grid>
 
@@ -1319,10 +1576,8 @@ color: "#fff" }}>
                         fullWidth
                         size="small"
                         label="Remark"
-                        sx={{
-                          color: "#000",
-                          "& .MuiSelect-select": { color: "#000 !important" },
-                        }}
+                        value={remark}
+                        onChange={(e) => setRemark(e.target.value)}
                       />
                     </Grid>
                   </>
@@ -1334,15 +1589,18 @@ color: "#fff" }}>
               <Button onClick={() => setOpenFollowUpModal(false)}>
                 Cancel
               </Button>
-              <Button variant="contained"
-                  onClick={handleSubmitFollowUp}
-             >Submit</Button>
+              <Button
+                variant="contained"
+                type="button" // 👈 ensure this
+                onClick={handleSubmitFollowUp}
+              >
+                Submit
+              </Button>
             </DialogActions>
           </Dialog>
 
-          
           {/* ---------------------------------------------- */}
-          <Dialog
+          {/* <Dialog
             open={openMenuModal}
             onClose={() => setOpenMenuModal(false)}
             fullWidth
@@ -1358,7 +1616,7 @@ color: "#fff" }}>
             <DialogActions>
               <Button onClick={() => setOpenMenuModal(false)}>Close</Button>
             </DialogActions>
-          </Dialog>
+          </Dialog> */}
 
           {/* )} */}
           {/* {canView && ( */}

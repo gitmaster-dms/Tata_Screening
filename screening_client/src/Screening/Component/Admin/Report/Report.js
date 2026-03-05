@@ -19,6 +19,7 @@ import {
   Typography,
   Card,
   Button,
+  CardContent,
 } from "@mui/material";
 const Report = () => {
   const Port = process.env.REACT_APP_API_KEY;
@@ -211,43 +212,43 @@ const Report = () => {
 
                 {/* Type */}
                 <Grid item xs={12} sm={6} md={2}>
-                   <TextField
-                      select
-                      fullWidth
-                      size="small"
-                      label="Category"
-                      value={selectedCategory}
-                      onChange={(e) => setSelectedCategory(e.target.value)}
-                      InputLabelProps={{
-                        sx: {
-                          fontWeight: 100,
-                          fontSize: "14px",
-                          color: "black !important",
-                        },
-                      }}
-                      SelectProps={{
-                        MenuProps: {
-                          classes: { paper: "custom-menu-paper" },
-                        },
-                      }}
-                      sx={{
-                        "& .MuiInputBase-input": { color: "black" },
-                        "& .MuiSelect-select": { color: "black !important" }, // <-- FIXEDss
-                        "& .MuiOutlinedInput-root": {
-                          "& fieldset": { borderColor: "black" },
-                          "&:hover fieldset": { borderColor: "black" },
-                          "&.Mui-focused fieldset": { borderColor: "black" },
-                        },
-                        "& .MuiSvgIcon-root": { color: "black" },
-                      }}
-                    >
-                      <MenuItem value="">Select Category</MenuItem>
-                      {screeningFor.map((drop) => (
-                        <MenuItem key={drop.pk_id} value={drop.pk_id}>
-                          {drop.category}
-                        </MenuItem>
-                      ))}
-                    </TextField>
+                  <TextField
+                    select
+                    fullWidth
+                    size="small"
+                    label="Category"
+                    value={selectedCategory}
+                    onChange={(e) => setSelectedCategory(e.target.value)}
+                    InputLabelProps={{
+                      sx: {
+                        fontWeight: 100,
+                        fontSize: "14px",
+                        color: "black !important",
+                      },
+                    }}
+                    SelectProps={{
+                      MenuProps: {
+                        classes: { paper: "custom-menu-paper" },
+                      },
+                    }}
+                    sx={{
+                      "& .MuiInputBase-input": { color: "black" },
+                      "& .MuiSelect-select": { color: "black !important" }, // <-- FIXEDss
+                      "& .MuiOutlinedInput-root": {
+                        "& fieldset": { borderColor: "black" },
+                        "&:hover fieldset": { borderColor: "black" },
+                        "&.Mui-focused fieldset": { borderColor: "black" },
+                      },
+                      "& .MuiSvgIcon-root": { color: "black" },
+                    }}
+                  >
+                    <MenuItem value="">Select Category</MenuItem>
+                    {screeningFor.map((drop) => (
+                      <MenuItem key={drop.pk_id} value={drop.pk_id}>
+                        {drop.category}
+                      </MenuItem>
+                    ))}
+                  </TextField>
                 </Grid>
 
                 {/* Class (Conditional) */}
@@ -316,68 +317,81 @@ const Report = () => {
         </Box>
       </Box>
 
+      <Box mt={2} mb={1.5 } ml={0.5}></Box>
       {/* TABLE – SOURCE 1 */}
-      {selectedSourceNav === 1 && showTable && (
-        <Box p={2}>
-          <TableContainer component={Paper} elevation={3}>
-            <Table>
-              <TableHead>
-                <TableRow sx={{ backgroundColor: "#0f1830" }}>
+      {/* {selectedSourceNav === 1 && showTable && ( */}
+      <Box sx={{ m: "0.0em 0.4em 0 3.2em", borderRadius: "16px" }}>
+        <TableContainer  >
+          <Table>
+            <TableHead sx={{ borderBottom: "10px solid #f4f6f8",bgcolor:"#f4f6f8" }}>
+              <TableRow
+                sx={{
+                  background:
+                    "linear-gradient(135deg, #2B7FFF 0%, #0092B8 100%)",
+                  color: "#fff",
+                  "&:hover": {
+                    background:
+                      "linear-gradient(135deg, #2B7FFF 0%, #0092B8 100%)",
+                  },
+                }}
+              >
+                {[
+                  "Sr No.",
+                  "Citizen Name",
+                  "Citizen Details",
+                  "Family Information",
+                  "BMI",
+                  "Basic Screening",
+                  "Immunization",
+                  "Auditory",
+                  "Dental CheckUp",
+                  "Vision",
+                  "Psychological",
+                ].map((head) => (
+                  <TableCell
+                    key={head}
+                    sx={{ color: "#fff", fontWeight: "bold" }}
+                  >
+                    {head}
+                  </TableCell>
+                ))}
+              </TableRow>
+              
+            </TableHead>
+
+            <TableBody sx={{bgcolor:" #ffffff","&:hover":{background:"#ffffff"}}}>
+              
+              {data.map((row, index) => (
+                <TableRow key={index} hover>
+                  <TableCell>{index + 1}</TableCell>
+                  <TableCell>{row.citizenName}</TableCell>
+
                   {[
-                    "Sr No.",
-                    "Citizen Name",
-                    "Citizen Details",
-                    "Family Information",
-                    "BMI",
-                    "Basic Screening",
-                    "Immunization",
-                    "Auditory",
-                    "Dental CheckUp",
-                    "Vision",
-                    "Psychological",
-                  ].map((head) => (
-                    <TableCell
-                      key={head}
-                      sx={{ color: "#fff", fontWeight: "bold" }}
-                    >
-                      {head}
+                    row.citizenDetails,
+                    row.familyInformation,
+                    row.bmi,
+                    row.basicScreening,
+                    row.immunization,
+                    row.auditory,
+                    row.dentalCheckUp,
+                    row.vision,
+                    row.psychological,
+                  ].map((val, i) => (
+                    <TableCell key={i}>
+                      {val === "1" ? (
+                        <CheckIcon color="success" />
+                      ) : (
+                        <CloseIcon color="error" />
+                      )}
                     </TableCell>
                   ))}
                 </TableRow>
-              </TableHead>
-
-              <TableBody>
-                {data.map((row, index) => (
-                  <TableRow key={index} hover>
-                    <TableCell>{index + 1}</TableCell>
-                    <TableCell>{row.citizenName}</TableCell>
-
-                    {[
-                      row.citizenDetails,
-                      row.familyInformation,
-                      row.bmi,
-                      row.basicScreening,
-                      row.immunization,
-                      row.auditory,
-                      row.dentalCheckUp,
-                      row.vision,
-                      row.psychological,
-                    ].map((val, i) => (
-                      <TableCell key={i}>
-                        {val === "1" ? (
-                          <CheckIcon color="success" />
-                        ) : (
-                          <CloseIcon color="error" />
-                        )}
-                      </TableCell>
-                    ))}
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-        </Box>
-      )}
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Box>
+      {/* // )} */}
 
       {/* MODAL */}
       {showModal && (
