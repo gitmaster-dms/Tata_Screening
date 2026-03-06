@@ -384,14 +384,17 @@ pipeline {
                 dir("${REACT_DIR}") {
                     sh '''
                     echo "🧹 Cleaning old node_modules..."
-                    sudo rm -rf node_modules
-                    sudo rm -f package-lock.json
+                    rm -rf node_modules
+                    rm -f package-lock.json
 
                     echo "🔧 Fixing permissions..."
                     sudo chown -R jenkins:jenkins .
 
                     echo "📦 Installing dependencies..."
                     npm install --legacy-peer-deps
+
+                    echo "🛠 Fixing AJV dependency mismatch..."
+                    npm install ajv@8.12.0 ajv-keywords@5.1.0 --save --legacy-peer-deps
 
                     echo "🏗️ Building React app..."
                     CI=false npm run build
