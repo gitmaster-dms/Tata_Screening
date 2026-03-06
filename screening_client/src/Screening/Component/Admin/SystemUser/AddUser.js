@@ -498,7 +498,7 @@ const AddUser = () => {
     clg_states_id: "",
     clg_district_id: "",
     clg_tehsil_id: "",
-    clg_source_name_id: "",
+    // clg_source_name_id: "",
     clg_grppp_id: "",
     clg_genderr_id: "",
   });
@@ -690,11 +690,29 @@ const AddUser = () => {
       return;
     }
 
+    // const userData = {
+    //   ...formData,
+    //   password: "1234",
+    //   password2: "1234",
+    //   clg_added_by: userID,
+    // };
+
     const userData = {
-      ...formData,
+      clg_ref_id: formData.clg_ref_id,
+      grp_id: formData.grp_id,
+      clg_email: formData.clg_email,
+      clg_mobile_no: Number(formData.clg_mobile_no),
+      clg_gender: formData.clg_gender,
+      clg_address: formData.clg_address,
+      clg_state: formData.clg_states_id,
+      clg_district: formData.clg_district_id,
+      clg_Date_of_birth: formData.clg_Date_of_birth,
+      clg_source: formData.clg_source_id,
+      clg_tahsil: formData.clg_tehsil_id,
+      clg_source_name: formData.clg_source_name,
+      clg_added_by: userID,
       password: "1234",
       password2: "1234",
-      clg_added_by: userID,
     };
 
     if (updateSrc) {
@@ -788,6 +806,7 @@ const AddUser = () => {
       showSnackbar("Network error! Check connection.", "error");
     }
   };
+
   const handleAddClick = () => {
     resetForm();
     setFormEnabled(true);
@@ -1192,13 +1211,13 @@ const AddUser = () => {
                 sx={{
                   textTransform: "none",
                   fontWeight: 500,
-                   background:
+                  background:
+                    "linear-gradient(90deg, #2FB3F5 0%, #1439A4 100%)",
+                  color: "white",
+                  "&:hover": {
+                    background:
                       "linear-gradient(90deg, #2FB3F5 0%, #1439A4 100%)",
-                    color: "white",
-                    "&:hover": {
-                      background:
-                        "linear-gradient(90deg, #2FB3F5 0%, #1439A4 100%)",
-                    },
+                  },
                 }}
                 onClick={handleSearch}
               >
@@ -1245,7 +1264,7 @@ const AddUser = () => {
                           setFormAction("add");
                         }}
                       >
-                        <Add/>
+                        <Add />
                       </IconButton>
 
                       <IconButton
@@ -1927,7 +1946,7 @@ const AddUser = () => {
                                 fontSize: "13px",
                                 fontWeight: 500,
                                 fontFamily: "Roboto",
-                                boxShadow:"0px 1px 2px rgba(0, 0, 0, 0.2)",
+                                boxShadow: "0px 1px 2px rgba(0, 0, 0, 0.2)",
                                 // cursor: "pointer",
                                 "&:hover": { backgroundColor: "#f5f5f5" },
                               }}
