@@ -383,11 +383,14 @@ pipeline {
             steps {
                 dir("${REACT_DIR}") {
                     sh '''
-                    echo "⚙️ Setting permissions..."
-                    sudo chown -R $USER:$USER ${REACT_DIR}
-                    sudo chmod -R 775 ${REACT_DIR}
+                    echo "🧹 Cleaning old node_modules..."
+                    sudo rm -rf node_modules
+                    sudo rm -f package-lock.json
 
-                    echo "📦 Installing npm dependencies..."
+                    echo "🔧 Fixing permissions..."
+                    sudo chown -R jenkins:jenkins .
+
+                    echo "📦 Installing dependencies..."
                     npm install --legacy-peer-deps
 
                     echo "🏗️ Building React app..."
@@ -396,7 +399,7 @@ pipeline {
                 }
             }
         }
- 
+        
         // 6️⃣ Collect Static Files
         stage('Collect Static Files') {
             steps {
