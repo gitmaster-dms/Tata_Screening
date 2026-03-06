@@ -338,6 +338,8 @@ urlpatterns = [
     
     path('healthcard_download/<str:citizen_id>/<int:screening_count>/', Healthcard_Download_API.as_view(), name='healthcard_download'),
 
+    path('start_screening_info/', Start_Screening_get_API.as_view(), name='start_screening_info'),
+
                  
 ]
 

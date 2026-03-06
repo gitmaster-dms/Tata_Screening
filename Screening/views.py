@@ -1436,6 +1436,69 @@ class Workshop_get_APi2(APIView):
 
 
 
+# class follow_up_refer_citizen(APIView):
+#     def get(self, request):
+
+#         qs = follow_up.objects.filter(is_deleted=False)
+
+#         # ----------------- MAIN FILTERS -----------------
+#         follow_up_param = request.GET.get("follow_up")
+#         workshop_id = request.GET.get("workshop_id")    # FK ID
+#         refer_doctor = request.GET.get("refer_doctor")
+
+#         if follow_up_param is not None:
+#             qs = qs.filter(follow_up=follow_up_param)
+
+#         if workshop_id:
+#             qs = qs.filter(citizen_pk_id__source_name=workshop_id)
+        
+#         if refer_doctor:
+#             qs = qs.filter(refer_doctor=refer_doctor)
+
+#         # ----------------- REFER FILTERS -----------------
+#         vital_refer = request.GET.get("vital_refer")
+#         basic_screening_refer = request.GET.get("basic_screening_refer")
+#         auditory_refer = request.GET.get("auditory_refer")
+#         dental_refer = request.GET.get("dental_refer")
+#         vision_refer = request.GET.get("vision_refer")
+#         pycho_refer = request.GET.get("pycho_refer")
+#         reffered_to_sam_mam = request.GET.get("reffered_to_sam_mam")
+#         weight_for_height = request.GET.get("weight_for_height")
+
+#         # Apply filters only if parameter exists (this supports 0, 1, null correctly)
+#         if vital_refer is not None:
+#             qs = qs.filter(vital_refer=vital_refer)
+
+#         if basic_screening_refer is not None:
+#             qs = qs.filter(basic_screening_refer=basic_screening_refer)
+
+#         if auditory_refer is not None:
+#             qs = qs.filter(auditory_refer=auditory_refer)
+
+#         if dental_refer is not None:
+#             qs = qs.filter(dental_refer=dental_refer)
+
+#         if vision_refer is not None:
+#             qs = qs.filter(vision_refer=vision_refer)
+
+#         if pycho_refer is not None:
+#             qs = qs.filter(pycho_refer=pycho_refer)
+
+#         if reffered_to_sam_mam is not None:
+#             qs = qs.filter(reffered_to_sam_mam=reffered_to_sam_mam)
+
+#         if weight_for_height:
+#             qs = qs.filter(weight_for_height=weight_for_height)
+
+#         # ------------------- RESPONSE -------------------
+#         serializer = followup_refer_to_specalist_citizens_infoSerializer(qs, many=True)
+#         return Response(serializer.data)
+
+
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+
 class follow_up_refer_citizen(APIView):
     def get(self, request):
 
@@ -1443,17 +1506,34 @@ class follow_up_refer_citizen(APIView):
 
         # ----------------- MAIN FILTERS -----------------
         follow_up_param = request.GET.get("follow_up")
-        workshop_id = request.GET.get("workshop_id")    # FK ID
+        workshop_id = request.GET.get("workshop_id")
         refer_doctor = request.GET.get("refer_doctor")
-
-        if follow_up_param is not None:
-            qs = qs.filter(follow_up=follow_up_param)
 
         if workshop_id:
             qs = qs.filter(citizen_pk_id__source_name=workshop_id)
-        
+
         if refer_doctor:
             qs = qs.filter(refer_doctor=refer_doctor)
+
+        # ----------------- FOLLOW UP MAPPING (UI → DB) -----------------
+        # UI / URL value        → Database field
+        FOLLOW_UP_MAP = {
+            "vital refer": "vital_refer",
+            "vision refer": "vision_refer",
+            "dental refer": "dental_refer",
+            "auditory refer": "auditory_refer",
+            "basic screening refer": "basic_screening_refer",
+
+            # also supports numeric follow_up
+            "1": "vital_refer",
+            "2": "vision_refer",
+            "3": "dental_refer",
+            "4": "auditory_refer",
+            "5": "basic_screening_refer",
+        }
+
+        if follow_up_param in FOLLOW_UP_MAP:
+            qs = qs.filter(**{FOLLOW_UP_MAP[follow_up_param]: 1})
 
         # ----------------- REFER FILTERS -----------------
         vital_refer = request.GET.get("vital_refer")
@@ -1465,7 +1545,6 @@ class follow_up_refer_citizen(APIView):
         reffered_to_sam_mam = request.GET.get("reffered_to_sam_mam")
         weight_for_height = request.GET.get("weight_for_height")
 
-        # Apply filters only if parameter exists (this supports 0, 1, null correctly)
         if vital_refer is not None:
             qs = qs.filter(vital_refer=vital_refer)
 
@@ -7105,3 +7184,35 @@ class Workshop_filter_APIView(APIView):
                 {"error": str(e)},
                 status=status.HTTP_400_BAD_REQUEST
             )
+
+
+
+class Start_Screening_get_API(APIView):
+    renderer_classes = [UserRenderer]
+    authentication_classes = [CustomJWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+
+    def get(self, request):
+
+        source = request.GET.get('source')
+        source_name = request.GET.get('source_name')
+        category = request.GET.get('category')
+        screening_count = request.GET.get('screening_count')
+
+        snippet = Screening_citizen.objects.all()
+
+        if source:
+            snippet = snippet.filter(citizen_pk_id__source=source)
+
+        if source_name:
+            snippet = snippet.filter(citizen_pk_id__source_name=source_name)
+
+        if category:
+            snippet = snippet.filter(citizen_pk_id__category=category)
+        
+        if screening_count:
+            snippet = snippet.filter(screening_count=screening_count)
+
+        serializer = Start_Screening_info(snippet, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
