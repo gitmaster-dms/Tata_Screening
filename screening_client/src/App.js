@@ -17,6 +17,7 @@ import ViewFollowup from "./Screening/Component/Followup/FolloupForms/ViewFollow
 import AddFollowUp from "./Screening/Component/Followup/FolloupForms/AddFollowUp";
 import DentalAssesment from "./Screening/Component/Admin/Screening/StartScreening/Vitals/AI/DentalAssesment";
 import { useParams } from "react-router-dom";
+import AddDriver from "./Screening/Component/Admin/CitizenRegisteration/AddDriver";
 
 // Lazy imports
 const Citizenlist = lazy(() => import("./Screening/Component/Admin/Addcitizen/List/Citizenlist"));
@@ -69,9 +70,11 @@ console.log("1111111", citizens_pk_id);
                     path="/"
                     element={<Login onLogin={handleLogin} isLoggedIn={isLoggedIn} />}
                   />
+                  
                   <Route path="/mainscreen/Dashboard" element={<Main />} />
                   <Route path="/mainscreen/Citizen" element={<Citizenlist />} />
-                  <Route path="/mainscreen/Citizenheader" element={<Header />} />
+                  <Route path="/mainscreen/Citizenheader" element={<AddDriver />} />
+                  {/* <Route path="/mainscreen/Citizenheader" element={<Header />} /> */}
                   <Route path="/mainscreen/System User" element={<AddUser />} />
                   <Route path="/mainscreen/Schedule Screening" element={<ScheduleScreening />} />
                   <Route path="/mainscreen/Screening" element={<ScreeningList />} />

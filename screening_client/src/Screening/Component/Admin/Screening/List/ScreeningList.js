@@ -26,7 +26,7 @@ const ScreeningList = () => {
   const [sourceNav, setSourceNav] = useState([]);
   const [selectedSource, setSelectedSource] = useState(SourceUrlId);
   const [sourceType, setSourceType] = useState([]);
-  const [selectedType, setSelectedType] = useState(3);
+  const [selectedType, setSelectedType] = useState(null);
   const [sourceClass, setSourceClass] = useState([]);
   const [selectedClass, setSelectedClass] = useState("");
   const [selectedCount, setSelectedCount] = useState("");
@@ -162,21 +162,18 @@ const ScreeningList = () => {
     try {
       let apiUrl = `${Port}/Screening/start_screening_info/?`;
       apiUrl += `source=${SourceUrlId}&source_name=${SourceNameUrlId}&`;
-      if (selectedSource) {
-        apiUrl += `source_id=${selectedSource}&`;
+      if (selectedCategory) {
+        apiUrl += `category=${selectedCategory}`;
       }
-      if (selectedType) {
-        apiUrl += `type_id=${selectedType}&`;
-      }
-      if (selectedClass) {
-        apiUrl += `class_id=${selectedClass}&`;
-      }
-      if (selectedCount) {
-        apiUrl += `schedule_count=${selectedCount}&`;
-      }
-      if (selectedDepartment) {
-        apiUrl += `department_id=${selectedDepartment}&`;
-      }
+      // if (selectedClass) {
+      //   apiUrl += `class_id=${selectedClass}&`;
+      // }
+      // if (selectedCount) {
+      //   apiUrl += `schedule_count=${selectedCount}&`;
+      // }
+      // if (selectedDepartment) {
+      //   apiUrl += `department_id=${selectedDepartment}&`;
+      // }
 
       setLoading(true);
 
@@ -208,7 +205,7 @@ const ScreeningList = () => {
 
   const [department, setDepartmenet] = useState([]);
   const [selectedDepartment, setSelectedDepartment] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState(null);
 
   const [screeningFor, setScreeningFor] = useState([]);
 

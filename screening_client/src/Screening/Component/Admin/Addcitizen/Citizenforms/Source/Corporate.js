@@ -761,6 +761,7 @@ if (photoFile) {
   //   // Format the minAllowedDate to be compatible with input[type='date']
   //   return minAllowedDate.toISOString().split('T')[0];
   // };
+  
 
   return (
     <Box component="form" onSubmit={handleSubmit} encType="multipart/form-data">
