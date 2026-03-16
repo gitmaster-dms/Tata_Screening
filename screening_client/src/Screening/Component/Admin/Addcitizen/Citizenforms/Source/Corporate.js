@@ -991,6 +991,28 @@ if (photoFile) {
                 />
               </Grid>
 
+                  <Grid item xs={12} sm={6}>
+                <TextField
+                  size="small"
+                  fullWidth
+                  label="Residential Address"
+                  name="address"
+                  value={corporateForm.address}
+                  onChange={handleChange}
+                />
+              </Grid>
+
+              <Grid item xs={12} sm={6}>
+                <TextField
+                  size="small"
+                  fullWidth
+                  label="Permanent Addresssssss"
+                  name="permanant_address"
+                  value={corporateForm.permanant_address}
+                  onChange={handleChange}
+                />
+              </Grid>
+
               {/* <Grid item xs={12} sm={6} md={4}>
                 <TextField
                   size="small"
@@ -1661,28 +1683,6 @@ if (photoFile) {
                       </MenuItem>
                     ))}
                   </TextField>
-              </Grid>
-
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  size="small"
-                  fullWidth
-                  label="Residential Address"
-                  name="address"
-                  value={corporateForm.address}
-                  onChange={handleChange}
-                />
-              </Grid>
-
-              <Grid item xs={12} sm={6}>
-                <TextField
-                  size="small"
-                  fullWidth
-                  label="Permanent Address"
-                  name="permanant_address"
-                  value={corporateForm.permanant_address}
-                  onChange={handleChange}
-                />
               </Grid>
 
               <Grid item xs={12} sm={6}>

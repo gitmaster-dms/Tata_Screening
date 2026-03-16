@@ -806,7 +806,8 @@ const Corporate = (props) => {
                     activeStep={activeStep}
                     alternativeLabel
                     sx={{
-                        mb: 4,
+                        mb: 2,
+                        mt:1,
                         "& .MuiStepLabel-label": {
                             fontWeight: 500,
                             fontSize: "14px",
@@ -1086,6 +1087,28 @@ const Corporate = (props) => {
                                                 }}
                                                 error={!!errors.mobile_no}
                                                 helperText={errors.mobile_no}
+                                            />
+                                        </Grid>
+
+                                        <Grid item xs={12} sm={4}>
+                                            <TextField
+                                                size="small"
+                                                fullWidth
+                                                label="Residential Address"
+                                                name="address"
+                                                value={corporateForm.address}
+                                                onChange={handleChange}
+                                            />
+                                        </Grid>
+
+                                        <Grid item xs={12} sm={4}>
+                                            <TextField
+                                                size="small"
+                                                fullWidth
+                                                label="Permanent Address"
+                                                name="permanant_address"
+                                                value={corporateForm.permanant_address}
+                                                onChange={handleChange}
                                             />
                                         </Grid>
 
@@ -1835,28 +1858,6 @@ const Corporate = (props) => {
                                                     </MenuItem>
                                                 ))}
                                             </TextField>
-                                        </Grid>
-
-                                        <Grid item xs={12} sm={6}>
-                                            <TextField
-                                                size="small"
-                                                fullWidth
-                                                label="Residential Address"
-                                                name="address"
-                                                value={corporateForm.address}
-                                                onChange={handleChange}
-                                            />
-                                        </Grid>
-
-                                        <Grid item xs={12} sm={6}>
-                                            <TextField
-                                                size="small"
-                                                fullWidth
-                                                label="Permanent Address"
-                                                name="permanant_address"
-                                                value={corporateForm.permanant_address}
-                                                onChange={handleChange}
-                                            />
                                         </Grid>
 
                                         <Grid item xs={12} sm={6}>

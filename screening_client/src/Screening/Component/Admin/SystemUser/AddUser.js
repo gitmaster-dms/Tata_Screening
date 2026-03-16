@@ -877,8 +877,8 @@ const AddUser = () => {
       apiUrl += `clg_tahsil=${selectedTalukaNav}&`;
     }
 
-    if (selectedName) {
-      apiUrl += `clg_source_name=${selectedName}&`;
+    if (selectedNameNav) {
+      apiUrl += `clg_source_name=${selectedNameNav}`;
     }
 
     try {

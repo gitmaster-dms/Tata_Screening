@@ -7,29 +7,20 @@ import {
   Button,
   TextField,
   IconButton,
-  Table,
-  TableHead,
-  TableBody,
-  TableRow,
-  TableCell,
-  TableContainer,
   TablePagination,
   CircularProgress,
-  Paper,
   Typography,
   MenuItem,
-  InputLabel,
   Card,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
   ListItemText,
+  Fade,
+  Backdrop,
 } from "@mui/material";
 import SearchOutlinedIcon from "@mui/icons-material/SearchOutlined";
-import { Modal } from "react-bootstrap";
-import FormControl from "@mui/material/FormControl";
-import Select from "@mui/material/Select";
 import { Checkbox } from "@mui/material";
 import {
   DriveFileRenameOutlineOutlined,
@@ -38,6 +29,12 @@ import {
 } from "@mui/icons-material";
 import { useJsApiLoader, Autocomplete } from "@react-google-maps/api";
 import { Snackbar, Alert } from "@mui/material";
+import { InputAdornment } from "@mui/material";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import LockIcon from '@mui/icons-material/Lock';
+import { Modal } from "@mui/material";
+import CloseIcon from "@mui/icons-material/Close";
 
 const libraries = ["places"];
 const iconBlue = {
@@ -55,64 +52,47 @@ const AddSource = () => {
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSeverity, setSnackbarSeverity] = useState("info");
-
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const handleCloseSnackbar = () => {
     setSnackbarOpen(false);
   };
-
   const userID = localStorage.getItem("userID");
   console.log(userID);
-  //// access the source from local storage
   const SourceUrlId = localStorage.getItem("loginSource");
-  const SourceNameUrlId = localStorage.getItem("SourceNameFetched");
-  /// State District Tehsil
-  const State = localStorage.getItem("StateLogin");
-  const District = localStorage.getItem("DistrictLogin");
-  const Tehsil = localStorage.getItem("TehsilLogin");
 
   //permission code start
+  // permission code start
+
   const [canAddSource, setCanAddSource] = useState(false);
   const [canDelete, setCanDelete] = useState(false);
   const [canEdit, setCanEdit] = useState(false);
 
   useEffect(() => {
     const storedPermissions = localStorage.getItem("permissions");
-    console.log("Stored Permissions:", storedPermissions);
+
     const parsedPermissions = storedPermissions
       ? JSON.parse(storedPermissions)
       : [];
-    console.log("parsedPermissions Permissions:", parsedPermissions);
-    // Check if the user has permission to add a citizen with 'Edit' submodule
-    const hasAddCitizenPermission = parsedPermissions.some((p) =>
-      p.modules_submodule.some(
-        (m) =>
-          m.moduleName === "Source" &&
-          m.selectedSubmodules.some((s) => s.submoduleName === "Add"),
-      ),
-    );
-    setCanAddSource(hasAddCitizenPermission);
-    // Check if the user has permission for the "Delete" submodule
-    const hasDeletePermission = parsedPermissions.some((p) =>
-      p.modules_submodule.some(
-        (m) =>
-          m.moduleName === "Source" &&
-          m.selectedSubmodules.some((s) => s.submoduleName === "Delete"),
-      ),
-    );
-    setCanDelete(hasDeletePermission);
 
-    // Check if the user has permission for the "edit" submodule
+    console.log("Parsed Permissions:", parsedPermissions);
 
-    const hasEditPermission = parsedPermissions.some((p) =>
-      p.modules_submodule.some(
-        (m) =>
-          m.moduleName === "Source" &&
-          m.selectedSubmodules.some((s) => s.submoduleName === "Edit"),
-      ),
-    );
-    setCanEdit(hasEditPermission);
+    // reusable permission checker
+    const getPermission = (module, action) => {
+      return parsedPermissions.some((p) =>
+        p.modules_submodule?.some(
+          (m) =>
+            m.moduleName === module &&
+            m.selectedSubmodules?.some((s) => s.submoduleName === action)
+        )
+      );
+    };
+
+    // set permissions
+    setCanAddSource(getPermission("Workshop", "Add"));
+    setCanEdit(getPermission("Workshop", "Edit"));
+    setCanDelete(getPermission("Workshop", "Delete"));
   }, []);
-  //permission code end
 
   const Port = process.env.REACT_APP_API_KEY;
   const accessToken = localStorage.getItem("token");
@@ -129,43 +109,15 @@ const AddSource = () => {
   ////////////////////// Form Dropdown /////////////////
   const [dropdownSource, setDropdownSource] = useState([]);
   const [stateOptions, setStateOptions] = useState([]);
-  console.log(stateOptions, "stateoptions");
-
   const [districtOptions, setDistrictOptions] = useState([]);
-  console.log(districtOptions, "districtOptions");
   const [talukaOptions, setTalukaOptions] = useState([]);
   const [selectedState, setSelectedState] = useState("");
   const [selectedDistrict, setSelectedDistrict] = useState("");
   const [selectedTahsil, setSelectedTahsil] = useState("");
   ////////////////////////////////////////////////////////////
-
   const [isFormEnabled, setFormEnabled] = useState(false); //Form Disable
   //////////////////////////// Nav Dropdown //////////////////////////
   const [sourceNav, setSourceNav] = useState([]); // State for source options
-  const [selectedSource, setSelectedSource] = useState(SourceUrlId || ""); // State to store selected source
-
-  const [sourceStateNav, setSourceStateNav] = useState([]); // State for source state options
-  const [selectedStateNav, setSelectedStateNav] = useState("");
-  console.log(sourceStateNav, "sourceStateNav");
-
-  const [sourceDistrictNav, setSourceDistrictNav] = useState([]); // State for source district options
-  const [selectedDistrictNav, setSelectedDistrictNav] = useState("");
-  console.log(selectedDistrictNav, "selectedDistrictNav");
-
-  const [sourceTehsilNav, setSourceTehsilNav] = useState([]); // District for source Tehsil options
-  const [selectedTehsilNav, setSelectedTehsilNav] = useState("");
-
-  const [sourceName, setSourceName] = useState([]);
-  const [selectedName, setSelectedName] = useState("");
-
-  console.log(
-    selectedSource,
-    selectedStateNav,
-    selectedDistrictNav,
-    selectedTehsilNav,
-    selectedName,
-  );
-
   const [updateSrc, setUpdateSrc] = useState(true);
   const [deleteSrc, setDeleteSrc] = useState(true);
 
@@ -176,6 +128,7 @@ const AddSource = () => {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     console.log(" LOADING STATE CHANGED:", loading);
   }, [loading]);
@@ -189,7 +142,6 @@ const AddSource = () => {
   console.log(selectedVitals, "vitals name fetching......");
 
   const [selectedSubVitals, setSelectedSubVitals] = useState([]);
-  console.log(selectedSubVitals, "selected sub vitals name");
   const [selectedVitalId, setSelectedVitalId] = useState(null);
   const [filterState, setFilterState] = useState("");
   const [filterDistrict, setFilterDistrict] = useState("");
@@ -235,6 +187,7 @@ const AddSource = () => {
       console.log("Longitude:", formattedLng);
     }
   };
+
   // Fetching screening vitals
   useEffect(() => {
     const fetchScreeningVitals = async () => {
@@ -311,11 +264,11 @@ const AddSource = () => {
 
   const filteredData = Array.isArray(tableinfo)
     ? tableinfo.filter((data) =>
-        Object.values(data)
-          .join(" ")
-          .toLowerCase()
-          .includes(searchQuery.toLowerCase()),
-      )
+      Object.values(data)
+        .join(" ")
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase()),
+    )
     : [];
   const paginatedData = filteredData.slice(
     page * rowsPerPage,
@@ -327,8 +280,6 @@ const AddSource = () => {
   useEffect(() => {
     setPage(0);
   }, [searchQuery]);
-
-  const [selectedFile, setSelectedFile] = useState(null);
 
   const [errors, setErrors] = useState({
     source: "",
@@ -342,6 +293,8 @@ const AddSource = () => {
     ws_district: "",
     ws_taluka: "",
     screening_vitals: "",
+    password: "",
+    confirm_password: "",
   });
 
   const validateForm = () => {
@@ -381,9 +334,19 @@ const AddSource = () => {
       newErrors.ws_pincode = "Invalid Pincode";
     }
 
+    if (!selectData.password) {
+      newErrors.password = "Password is required";
+    }
+
+    if (!selectData.confirm_password) {
+      newErrors.confirm_password = "Confirm Password is required";
+    }
+
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
+
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   const handleEmailBlur = (e) => {
@@ -414,7 +377,39 @@ const AddSource = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    // 🔥 MULTIPLE SELECT HANDLING
+    // Strong Password Regex
+    const passwordRegex =
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+    // Password Validation
+    if (name === "password") {
+      let error = "";
+
+      if (!passwordRegex.test(value)) {
+        error =
+          "Password must be 8+ chars with Uppercase, Lowercase, Number & Special Character";
+      }
+
+      setErrors((prev) => ({
+        ...prev,
+        password: error,
+      }));
+    }
+
+    // Confirm Password Validation
+    if (name === "confirm_password") {
+      let error = "";
+
+      if (value !== selectData.password) {
+        error = "Passwords do not match";
+      }
+
+      setErrors((prev) => ({
+        ...prev,
+        confirm_password: error,
+      }));
+    }
+
     if (name === "sub_screening_vitals") {
       const normalized = Array.isArray(value)
         ? value.map(Number)
@@ -428,7 +423,6 @@ const AddSource = () => {
       return;
     }
 
-    // parent vitals
     if (name === "screening_vitals") {
       const normalized = Array.isArray(value)
         ? value.map(Number)
@@ -442,7 +436,6 @@ const AddSource = () => {
       return;
     }
 
-    // other fields
     setSelectData((prev) => ({
       ...prev,
       [name]: value,
@@ -482,17 +475,16 @@ const AddSource = () => {
   };
 
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [distList, setDistList] = useState([]);
 
   //////// POST API for source /////////////
   const [selectData, setSelectData] = useState({
-    // Pass static community/source id 6 to backend (hidden on frontend)
     pk_id: "",
     source: "6",
     Workshop_name: "",
     registration_no: "",
     mobile_no: "",
     email_id: "",
-    // Registration_details: null, // Assuming Registration_details is a File object
     ws_pincode: "",
     ws_address: "",
     pk_id: "",
@@ -505,8 +497,9 @@ const AddSource = () => {
     source_district: "",
     source_taluka: "",
     Registration_details: null,
+    password: "",
+    confirm_password: ""
   });
-  console.log(selectData, "selectedData");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -669,32 +662,6 @@ const AddSource = () => {
     }
   };
 
-  /////////////// modal
-  const handleCloseModal = () => {
-    setShowModal(false);
-  };
-
-  ////////////// modal  missing
-  const handleMissing = () => {
-    setShowModalMissing(false);
-  };
-
-  ////////////// modal  Exist
-  const handleExist = () => {
-    setShowModalExist(false);
-  };
-
-  ////////////// Update  missing
-  const handleUpdate = () => {
-    setUpdateModel(false);
-  };
-
-  ////////////// Delete  missing
-  const handleDeleteModel = () => {
-    setDeleteModel(false);
-  };
-
-  const [getid, setidws] = useState([]);
   ///////// get API for Table //////////////
   useEffect(() => {
     if (!filterTaluka) return; // ✅ RIGHT
@@ -762,12 +729,6 @@ const AddSource = () => {
     }
   };
 
-  //////////////// Form Disable ////////////////
-  const handleClicked = () => {
-    setFormEnabled(true);
-    setUpdateSrc(true);
-  };
-
   ////////////// Source Dropdown //////////////
   useEffect(() => {
     const fetchSource = async () => {
@@ -787,7 +748,6 @@ const AddSource = () => {
   }, []);
 
   ////////////////////////////// navbar value dropdown get ///////////////////////////////
-  ///// source Dropdown
   useEffect(() => {
     fetch(`${Port}/Screening/Source_Get/?source_pk_id=${SourceUrlId}`, {
       headers: {
@@ -811,8 +771,8 @@ const AddSource = () => {
           headers: { Authorization: `Bearer ${accessToken}` },
         });
         const data = await res.json();
-        setStateOptions(data); // ✅ sets options for form dropdown
-        setStateList(data); // ✅ sets options for nav dropdown
+        setStateOptions(data);
+        setStateList(data);
       } catch (err) {
         console.error("Error fetching states:", err);
       }
@@ -820,7 +780,6 @@ const AddSource = () => {
     fetchStates();
   }, []);
 
-  const [distList, setDistList] = useState([]);
   useEffect(() => {
     console.log("Selected State changed:", selectedState);
     const fetchDistricts = async () => {
@@ -1014,6 +973,68 @@ const AddSource = () => {
       fetchData1();
     }
   }, [selectedRow]);
+
+  //////////////////////// Password
+  const [open, setOpen] = useState(false);
+
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmNewPassword, setConfirmNewPassword] = useState("");
+
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
+
+  const [errorsNew, setErrorsNew] = useState({});
+
+  const style = {
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    transform: "translate(-50%, -50%)",
+    width: 380,
+    bgcolor: "#fff",
+    boxShadow: "0 20px 60px rgba(0,0,0,0.2)",
+    borderRadius: "12px",
+    p: 3,
+    outline: "none"
+  };
+
+  const validatePassword = () => {
+    let newErrors = {};
+
+    // minimum 8 chars + must contain @
+    const passwordRegex = /^(?=.*[@]).{8,}$/;
+
+    if (!newPassword) {
+      newErrors.newPassword = "Password is required";
+    }
+    else if (!passwordRegex.test(newPassword)) {
+      newErrors.newPassword =
+        "Password must be at least 8 characters and contain '@'";
+    }
+
+    if (!confirmNewPassword) {
+      newErrors.confirmNewPassword = "Confirm password is required";
+    }
+    else if (newPassword !== confirmNewPassword) {
+      newErrors.confirmNewPassword = "Passwords do not match";
+    }
+
+    setErrorsNew(newErrors);
+
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleUpdate = () => {
+    if (validatePassword()) {
+
+      console.log("Updated Password:", newPassword);
+
+      setOpen(false);
+      setNewPassword("");
+      setConfirmNewPassword("");
+      setErrorsNew({});
+    }
+  };
 
   return (
     <div>
@@ -1249,55 +1270,69 @@ const AddSource = () => {
                 </Typography>
 
                 <Box>
-                  <Add
-                    sx={iconBlue}
-                    onClick={() => {
-                      setFormEnabled(true);
-                      setUpdateSrc(true); // ✅ ADD MODE
-                      resetForm();
-                    }}
-                  />
-                  {/* {canEdit && selectedRow && ( */}
-                  <DriveFileRenameOutlineOutlined
-                    sx={{
-                      background: "rgba(10, 112, 183, 1)",
-                      cursor: "pointer",
-                      borderRadius: "6px",
-                      color: "#fff",
-                      p: "2px",
-                      mr: 1,
-                      "&:hover": {
-                        opacity: 0.8,
-                      },
-                    }}
+                  <LockIcon
+                    sx={{ cursor: "pointer", marginRight: "0.3em" }}
                     onClick={(e) => {
-                      e.stopPropagation(); // 🔥 MOST IMPORTANT
-                      setFormEnabled(true);
-                      setUpdateSrc(false);
-                      fetchData1(); // 🔥 explicitly fetch data
+                      e.stopPropagation();
+                      console.log("Lock icon clicked");
+                      setOpen(true);
                     }}
                   />
-                  {/* )} */}
-                  {/* {canDelete && ( */}
-                  <DeleteOutlineOutlined
-                    sx={{
-                      background: "rgba(246, 92, 138, 1)",
-                      cursor: "pointer",
-                      borderRadius: "6px",
-                      color: "#fff",
-                      p: "2px",
-                      "&:hover": {
-                        opacity: 0.8,
-                      },
-                    }}
-                    onClick={(e) => {
-                      e.stopPropagation(); // 🔥 card click se bachne ke liye
-                      setDeleteSrc(false);
-                      setOpenDeleteDialog(true); // ✅ open confirmation dialog
-                    }}
-                  />
-                  {/* )} */}
+
+                  {canAddSource && (
+                    <Add
+                      sx={iconBlue}
+                      onClick={() => {
+                        setFormEnabled(true);
+                        setUpdateSrc(true); // ✅ ADD MODE
+                        resetForm();
+                      }}
+                    />
+                  )}
+
+                  {canEdit && selectedRow && (
+                    <DriveFileRenameOutlineOutlined
+                      sx={{
+                        background: "rgba(10, 112, 183, 1)",
+                        cursor: "pointer",
+                        borderRadius: "6px",
+                        color: "#fff",
+                        p: "2px",
+                        mr: 1,
+                        "&:hover": {
+                          opacity: 0.8,
+                        },
+                      }}
+                      onClick={(e) => {
+                        e.stopPropagation(); // 🔥 MOST IMPORTANT
+                        setFormEnabled(true);
+                        setUpdateSrc(false);
+                        fetchData1(); // 🔥 explicitly fetch data
+                      }}
+                    />
+                  )}
+
+                  {canDelete && (
+                    <DeleteOutlineOutlined
+                      sx={{
+                        background: "rgba(246, 92, 138, 1)",
+                        cursor: "pointer",
+                        borderRadius: "6px",
+                        color: "#fff",
+                        p: "2px",
+                        "&:hover": {
+                          opacity: 0.8,
+                        },
+                      }}
+                      onClick={(e) => {
+                        e.stopPropagation(); // 🔥 card click se bachne ke liye
+                        setDeleteSrc(false);
+                        setOpenDeleteDialog(true); // ✅ open confirmation dialog
+                      }}
+                    />
+                  )}
                 </Box>
+
                 <Dialog
                   open={openDeleteDialog}
                   onClose={() => setOpenDeleteDialog(false)}
@@ -1328,6 +1363,108 @@ const AddSource = () => {
                   </DialogActions>
                 </Dialog>
               </Grid>
+
+              <Modal
+                open={open}
+                onClose={() => setOpen(false)}
+                closeAfterTransition
+                BackdropComponent={Backdrop}
+                BackdropProps={{ timeout: 400 }}
+              >
+                <Fade in={open}>
+                  <Box sx={style}>
+
+                    {/* Header */}
+                    <Box
+                      sx={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        mb: 2
+                      }}
+                    >
+                      <Typography fontWeight={600} fontSize={18}>
+                        Update Password
+                      </Typography>
+
+                      <IconButton size="small" onClick={() => setOpen(false)}>
+                        <CloseIcon />
+                      </IconButton>
+                    </Box>
+
+                    <TextField
+                      fullWidth
+                      size="small"
+                      label="New Password"
+                      type={showNewPassword ? "text" : "password"}
+                      value={newPassword}
+                      error={Boolean(errorsNew.newPassword)}
+                      helperText={errorsNew.newPassword}
+                      sx={{ mb: 2 }}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <IconButton
+                              onClick={() => setShowNewPassword(!showNewPassword)}
+                            >
+                              {showNewPassword ? <VisibilityOff /> : <Visibility />}
+                            </IconButton>
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+
+                    <TextField
+                      fullWidth
+                      size="small"
+                      label="Confirm Password"
+                      type={showConfirm ? "text" : "password"}
+                      value={confirmNewPassword}
+                      error={Boolean(errorsNew.confirmNewPassword)}
+                      helperText={errorsNew.confirmNewPassword}
+                      sx={{ mb: 3 }}
+                      onChange={(e) => setConfirmNewPassword(e.target.value)}
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <IconButton
+                              onClick={() => setShowConfirm(!showConfirm)}
+                            >
+                              {showConfirm ? <VisibilityOff /> : <Visibility />}
+                            </IconButton>
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+
+                    <Box
+                      sx={{
+                        display: "flex",
+                        justifyContent: "flex-end",
+                        gap: 1
+                      }}
+                    >
+                      <Button
+                        variant="outlined"
+                        size="small"
+                        onClick={() => setOpen(false)}
+                      >
+                        Cancel
+                      </Button>
+
+                      <Button
+                        variant="contained"
+                        size="small"
+                        onClick={handleUpdate}
+                      >
+                        Update
+                      </Button>
+                    </Box>
+
+                  </Box>
+                </Fade>
+              </Modal>
 
               <Box component="form" onSubmit={handleSubmit}>
                 <Grid container spacing={2}>
@@ -1444,15 +1581,15 @@ const AddSource = () => {
                           selected.length === 0
                             ? ""
                             : selected
-                                .map((val) => {
-                                  const vital = screeningVitals.find(
-                                    (v) =>
-                                      Number(v.sc_list_pk_id) === Number(val),
-                                  );
-                                  return vital?.screening_list;
-                                })
-                                .filter(Boolean)
-                                .join(", "),
+                              .map((val) => {
+                                const vital = screeningVitals.find(
+                                  (v) =>
+                                    Number(v.sc_list_pk_id) === Number(val),
+                                );
+                                return vital?.screening_list;
+                              })
+                              .filter(Boolean)
+                              .join(", "),
                       }}
                     >
                       {screeningVitals.map((vital) => (
@@ -1488,16 +1625,16 @@ const AddSource = () => {
                             selected.length === 0
                               ? ""
                               : selected
-                                  .map((val) => {
-                                    const subVital = subScreening.find(
-                                      (v) =>
-                                        Number(v.sc_sub_list_pk_id) ===
-                                        Number(val),
-                                    );
-                                    return subVital?.sub_list;
-                                  })
-                                  .filter(Boolean)
-                                  .join(", "),
+                                .map((val) => {
+                                  const subVital = subScreening.find(
+                                    (v) =>
+                                      Number(v.sc_sub_list_pk_id) ===
+                                      Number(val),
+                                  );
+                                  return subVital?.sub_list;
+                                })
+                                .filter(Boolean)
+                                .join(", "),
                         }}
                         sx={{
                           "& .MuiSelect-select": {
@@ -1542,8 +1679,8 @@ const AddSource = () => {
                           color: "#000",
                         },
                       }}
-                      // error={!!errors.ws_state}
-                      // helperText={errors.ws_state}
+                    // error={!!errors.ws_state}
+                    // helperText={errors.ws_state}
                     >
                       <MenuItem value="">
                         {selectData.add_state_id || "Select State"}
@@ -1573,8 +1710,8 @@ const AddSource = () => {
                           color: "#000",
                         },
                       }}
-                      // error={!!errors.ws_district}
-                      // helperText={errors.ws_district}
+                    // error={!!errors.ws_district}
+                    // helperText={errors.ws_district}
                     >
                       <MenuItem value="">
                         {selectData.add_district_id || "Select District"}
@@ -1660,6 +1797,68 @@ const AddSource = () => {
                     )}
                   </Grid>
 
+                  <Grid item xs={12} sm={6}>
+                    <TextField
+                      fullWidth
+                      label="Password *"
+                      name="password"
+                      type={showPassword ? "text" : "password"}
+                      value={selectData.password || ""}
+                      onChange={handleChange}
+                      size="small"
+                      disabled={!isFormEnabled}
+                      error={!!errors.password}
+                      helperText={errors.password}
+                      onCopy={(e) => e.preventDefault()}
+                      onPaste={(e) => e.preventDefault()}
+                      onCut={(e) => e.preventDefault()}
+                      onContextMenu={(e) => e.preventDefault()}
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <IconButton
+                              onClick={() => setShowPassword(!showPassword)}
+                              edge="end"
+                            >
+                              {showPassword ? <VisibilityOff /> : <Visibility />}
+                            </IconButton>
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+                  </Grid>
+
+                  <Grid item xs={12} sm={6}>
+                    <TextField
+                      fullWidth
+                      label="Confirm Password *"
+                      name="confirm_password"
+                      type={showConfirmPassword ? "text" : "password"}
+                      value={selectData.confirm_password || ""}
+                      onChange={handleChange}
+                      size="small"
+                      disabled={!isFormEnabled}
+                      error={!!errors.confirm_password}
+                      helperText={errors.confirm_password}
+                      onCopy={(e) => e.preventDefault()}
+                      onPaste={(e) => e.preventDefault()}
+                      onCut={(e) => e.preventDefault()}
+                      onContextMenu={(e) => e.preventDefault()}
+                      InputProps={{
+                        endAdornment: (
+                          <InputAdornment position="end">
+                            <IconButton
+                              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                              edge="end"
+                            >
+                              {showConfirmPassword ? <VisibilityOff /> : <Visibility />}
+                            </IconButton>
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+                  </Grid>
+
                   <Grid item xs={12}>
                     <Box display="flex" justifyContent="center">
                       <Button
@@ -1701,32 +1900,6 @@ const AddSource = () => {
         <Grid item xs={12} md={6}>
           <Box sx={{ p: 2 }}>
             <Grid container spacing={2} alignItems="center" sx={{ mb: 2 }}>
-              {canAddSource && (
-                <Grid item xs={12} sm={4}>
-                  <Button
-                    variant="contained"
-                    fullWidth
-                    size="small"
-                    onClick={() => {
-                      handleClicked();
-                      resetForm();
-                    }}
-                    sx={{
-                      background:
-                        "linear-gradient(90deg, #2FB3F5 0%, #1439A4 100%)",
-                      textTransform: "none",
-                      borderRadius: "10px",
-                      "&:hover": {
-                        background:
-                          "linear-gradient(90deg, #2FB3F5 0%, #1439A4 100%)",
-                      },
-                    }}
-                  >
-                    + Add New Workshop
-                  </Button>
-                </Grid>
-              )}
-
               <Grid item xs={12} sm={7}>
                 <Box sx={{ position: "relative", width: "100%" }}>
                   <TextField
@@ -1778,18 +1951,16 @@ const AddSource = () => {
                   No results found
                 </Box>
               ) : (
-                // 🔥 Horizontal scroll wrapper
                 <Box
                   sx={{
                     width: "100%",
                     overflowX: { xs: "auto", sm: "auto", md: "hidden" },
                     display: "flex",
                     flexDirection: "column",
-                    flex: 1, // 🔹 Take full height inside parent Box
+                    flex: 1,
                   }}
                 >
                   <Box sx={{ minWidth: 600 }}>
-                    {/* Header */}
                     <Box
                       sx={{
                         display: "flex",
@@ -1817,15 +1988,14 @@ const AddSource = () => {
                       <Box sx={{ flex: 2 }}>Registration Number</Box>
                     </Box>
 
-                    {/* 🔥 Scrollable rows */}
                     <Box
-                       sx={{
-            flex: 1,
-            overflowY: "auto",
-            maxHeight: 300,  // 🔹 Reduced scroll height
-            scrollbarWidth: "none", // Firefox
-            "&::-webkit-scrollbar": { display: "none" }, // Chrome/Safari/Edge
-          }}
+                      sx={{
+                        flex: 1,
+                        overflowY: "auto",
+                        maxHeight: 300,
+                        scrollbarWidth: "none",
+                        "&::-webkit-scrollbar": { display: "none" },
+                      }}
                     >
                       {paginatedData.map((info, index) => {
                         const serialNumber = index + 1 + page * rowsPerPage;

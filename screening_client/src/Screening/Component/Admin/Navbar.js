@@ -123,7 +123,7 @@ const Navbar = ({ onLogout }) => {
                   height: 36,
                 }}
               />
-              <Typography
+              {/* <Typography
                 variant="subtitle2"
                 sx={{
                   fontWeight: 600,
@@ -133,7 +133,7 @@ const Navbar = ({ onLogout }) => {
                 }}
               >
                 REGISTRATION
-              </Typography>
+              </Typography> */}
             </Box>
           </Stack>
 
