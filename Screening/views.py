@@ -4047,17 +4047,77 @@ class Citizen_Post_Api(APIView):
             return Response(Serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+# class Workshop_Post_Api(APIView):
+#     renderer_classes = [UserRenderer]
+#     authentication_classes = [CustomJWTAuthentication]
+#     permission_classes = [IsAuthenticated]
+#     def post(self, request):
+#         Serializer = Workshop_Post_Serializer(data=request.data)
+#         if Serializer.is_valid():
+#             Serializer.save()
+#             return Response(Serializer.data, status=status.HTTP_201_CREATED)
+#         else:
+#             return Response(Serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+
+from django.db import transaction
+
 class Workshop_Post_Api(APIView):
-    renderer_classes = [UserRenderer]
-    authentication_classes = [CustomJWTAuthentication]
-    permission_classes = [IsAuthenticated]
+
     def post(self, request):
-        Serializer = Workshop_Post_Serializer(data=request.data)
-        if Serializer.is_valid():
-            Serializer.save()
-            return Response(Serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return Response(Serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+        password = request.data.get("password")
+        password2 = request.data.get("password2")
+
+        if password != password2:
+            return Response(
+                {"error": "Password and Confirm Password does not match"},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        data = request.data.copy()
+        data.pop("password", None)
+        data.pop("password2", None)
+
+        serializer = Workshop_Post_Serializer(data=data)
+
+        if serializer.is_valid():
+            try:
+                with transaction.atomic():
+
+                    workshop = serializer.save()
+
+                    group = agg_mas_group.objects.get(pk=9)
+
+                    user = agg_com_colleague.objects.create_user(
+                        clg_ref_id=workshop.Workshop_name,
+                        grp_id=group,
+                        clg_email=workshop.email_id,
+                        clg_mobile_no=workshop.mobile_no,
+                        clg_gender=None,
+                        clg_address=workshop.ws_address,
+                        clg_state=workshop.ws_state,
+                        clg_district=workshop.ws_district,
+                        clg_Date_of_birth=None,
+                        clg_source=workshop.source,
+                        clg_tahsil=workshop.ws_taluka,
+                        clg_source_name=workshop,
+                        clg_added_by=workshop.added_by,
+                        password=password   # stored hashed
+                    )
+
+                    user.clg_Work_phone_number = workshop.mobile_no
+                    user.clg_work_email_id = workshop.email_id
+                    user.save()
+
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+            except Exception as e:
+                return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
 
 
 class Workshop_Get_Api(APIView):
@@ -7188,9 +7248,9 @@ class Workshop_filter_APIView(APIView):
 
 
 class Start_Screening_get_API(APIView):
-    renderer_classes = [UserRenderer]
-    authentication_classes = [CustomJWTAuthentication]
-    permission_classes = [IsAuthenticated]
+    # renderer_classes = [UserRenderer]
+    # authentication_classes = [CustomJWTAuthentication]
+    # permission_classes = [IsAuthenticated]
 
 
     def get(self, request):
