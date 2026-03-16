@@ -1812,7 +1812,8 @@ class Start_Screening_info(serializers.ModelSerializer):
     name = serializers.CharField(source='citizen_pk_id.name', allow_null=True)
     Category = serializers.IntegerField(source='citizen_pk_id.category.pk_id', allow_null=True)
     Mobile_no = serializers.CharField(source='citizen_pk_id.mobile_no', allow_null=True)
+    Source_name = serializers.IntegerField(source='citizen_pk_id.source_name.ws_pk_id', allow_null=True)
     
     class Meta:
         model = Screening_citizen
-        fields = ['pk_id','citizen_id','screening_count','citizen_pk_id','name','Category','Mobile_no']
+        fields = ['pk_id','citizen_id','screening_count','citizen_pk_id','name','Category','Mobile_no','Source_name']
