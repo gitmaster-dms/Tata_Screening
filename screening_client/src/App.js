@@ -18,6 +18,11 @@ import AddFollowUp from "./Screening/Component/Followup/FolloupForms/AddFollowUp
 import DentalAssesment from "./Screening/Component/Admin/Screening/StartScreening/Vitals/AI/DentalAssesment";
 import { useParams } from "react-router-dom";
 import AddDriver from "./Screening/Component/Admin/CitizenRegisteration/AddDriver";
+import InventoryList from "./Screening/Component/Admin/Inventory/InventoryList";
+import InventoryRequest from "./Screening/Component/Admin/Inventory/InventoryRequest";
+import WorkshopInvRequest from "./Screening/Component/Admin/Inventory/WorkshopInvRequest";
+import MedicineRegister from "./Screening/Component/Admin/Inventory/MedicineRegister";
+import Dispatch from "./Screening/Component/Admin/Inventory/Dispatch";
 
 // Lazy imports
 const Citizenlist = lazy(() => import("./Screening/Component/Admin/Addcitizen/List/Citizenlist"));
@@ -111,6 +116,26 @@ console.log("1111111", citizens_pk_id);
                   <Route
                     path="/mainscreen/viewFollowup"
                     element={<AddFollowUp />}
+                  />
+                  <Route
+                    path="/mainscreen/Medicine"
+                    element={<MedicineRegister />}
+                  />
+                  <Route
+                    path="/mainscreen/Inventory"
+                    element={<InventoryList />}
+                  />
+                  <Route
+                    path="/mainscreen/Request"
+                    element={<InventoryRequest />}
+                  />
+                  <Route
+                    path="/mainscreen/Dispatch"
+                    element={<Dispatch />}
+                  />
+                  <Route
+                    path="/mainscreen/Workshop-Inv-Request"
+                    element={<WorkshopInvRequest />}
                   />
                 </Routes>
               </SourceProvider>

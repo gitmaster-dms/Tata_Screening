@@ -148,45 +148,45 @@ const AddSource = () => {
   const [filterTaluka, setFilterTaluka] = useState("");
 
   //// GIS Address
-  const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
-    libraries: libraries,
-  });
+  // const { isLoaded } = useJsApiLoader({
+  //   googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
+  //   libraries: libraries,
+  // });
 
-  const [gisAddress, setGisAddress] = useState("");
-  const [lat, setLat] = useState(null);
-  const [long, setLong] = useState(null);
-  console.log(gisAddress, lat, long, "GIS Address details");
+  // const [gisAddress, setGisAddress] = useState("");
+  // const [lat, setLat] = useState(null);
+  // const [long, setLong] = useState(null);
+  // console.log(gisAddress, lat, long, "GIS Address details");
 
-  const addressRef = useRef();
+  // const addressRef = useRef();
 
-  const handlePlaceChanged = () => {
-    console.log("place select function hitting...");
-    if (addressRef.current) {
-      const place = addressRef.current.getPlace();
-      console.log("place object", place);
+  // const handlePlaceChanged = () => {
+  //   console.log("place select function hitting...");
+  //   if (addressRef.current) {
+  //     const place = addressRef.current.getPlace();
+  //     console.log("place object", place);
 
-      if (!place.geometry || !place.geometry.location) {
-        console.warn("No geometry found for the selected place");
-        return;
-      }
+  //     if (!place.geometry || !place.geometry.location) {
+  //       console.warn("No geometry found for the selected place");
+  //       return;
+  //     }
 
-      const lat = place.geometry.location.lat();
-      const lng = place.geometry.location.lng();
+  //     const lat = place.geometry.location.lat();
+  //     const lng = place.geometry.location.lng();
 
-      const formattedLat = parseFloat(lat.toFixed(6));
-      const formattedLng = parseFloat(lng.toFixed(6));
+  //     const formattedLat = parseFloat(lat.toFixed(6));
+  //     const formattedLng = parseFloat(lng.toFixed(6));
 
-      // Set the full formatted address
-      setGisAddress(place.formatted_address);
-      setLat(formattedLat);
-      setLong(formattedLng);
+  //     // Set the full formatted address
+  //     setGisAddress(place.formatted_address);
+  //     setLat(formattedLat);
+  //     setLong(formattedLng);
 
-      console.log("Selected Address:", place.formatted_address);
-      console.log("Latitude:", formattedLat);
-      console.log("Longitude:", formattedLng);
-    }
-  };
+  //     console.log("Selected Address:", place.formatted_address);
+  //     console.log("Latitude:", formattedLat);
+  //     console.log("Longitude:", formattedLng);
+  //   }
+  // };
 
   // Fetching screening vitals
   useEffect(() => {
@@ -294,7 +294,7 @@ const AddSource = () => {
     ws_taluka: "",
     screening_vitals: "",
     password: "",
-    confirm_password: "",
+    password2: "",
   });
 
   const validateForm = () => {
@@ -338,8 +338,8 @@ const AddSource = () => {
       newErrors.password = "Password is required";
     }
 
-    if (!selectData.confirm_password) {
-      newErrors.confirm_password = "Confirm Password is required";
+    if (!selectData.password2) {
+      newErrors.password2 = "Confirm Password is required";
     }
 
 
@@ -377,38 +377,38 @@ const AddSource = () => {
   const handleChange = (e) => {
     const { name, value } = e.target;
 
-    // Strong Password Regex
-    const passwordRegex =
-      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+    // // Strong Password Regex
+    // const passwordRegex =
+    //   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
-    // Password Validation
-    if (name === "password") {
-      let error = "";
+    // // Password Validation
+    // if (name === "password") {
+    //   let error = "";
 
-      if (!passwordRegex.test(value)) {
-        error =
-          "Password must be 8+ chars with Uppercase, Lowercase, Number & Special Character";
-      }
+    //   if (!passwordRegex.test(value)) {
+    //     error =
+    //       "Password must be 8+ chars with Uppercase, Lowercase, Number & Special Character";
+    //   }
 
-      setErrors((prev) => ({
-        ...prev,
-        password: error,
-      }));
-    }
+    //   setErrors((prev) => ({
+    //     ...prev,
+    //     password: error,
+    //   }));
+    // }
 
-    // Confirm Password Validation
-    if (name === "confirm_password") {
-      let error = "";
+    // // Confirm Password Validation
+    // if (name === "password2") {
+    //   let error = "";
 
-      if (value !== selectData.password) {
-        error = "Passwords do not match";
-      }
+    //   if (value !== selectData.password2) {
+    //     error = "Passwords do not match";
+    //   }
 
-      setErrors((prev) => ({
-        ...prev,
-        confirm_password: error,
-      }));
-    }
+    //   setErrors((prev) => ({
+    //     ...prev,
+    //     password2: error,
+    //   }));
+    // }
 
     if (name === "sub_screening_vitals") {
       const normalized = Array.isArray(value)
@@ -466,9 +466,9 @@ const AddSource = () => {
     setSelectedSubVitals([]);
 
     // Reset GIS
-    setGisAddress("");
-    setLat(null);
-    setLong(null);
+    // setGisAddress("");
+    // setLat(null);
+    // setLong(null);
 
     // Reset errors
     setErrors({});
@@ -497,8 +497,8 @@ const AddSource = () => {
     source_district: "",
     source_taluka: "",
     Registration_details: null,
-    password: "",
-    confirm_password: ""
+    "password": "",
+    "password2": ""
   });
 
   const handleSubmit = async (e) => {
@@ -520,7 +520,7 @@ const AddSource = () => {
       formData.append("mobile_no", selectData.mobile_no || "");
       formData.append("email_id", selectData.email_id || "");
       formData.append("ws_pincode", selectData.ws_pincode || "");
-      formData.append("ws_address", gisAddress || "");
+      // formData.append("ws_address", gisAddress || "");
       formData.append("pk_id", selectData.pk_id || "");
 
       if (selectedState) formData.append("ws_state", selectedState);
@@ -956,9 +956,9 @@ const AddSource = () => {
       setSelectedSubVitals(data.sub_screening_vitals || []);
 
       // ✅ GIS
-      setGisAddress(data.ws_address || "");
-      setLat(data.latitude || null);
-      setLong(data.longitude || null);
+      // setGisAddress(data.ws_address || "");
+      // setLat(data.latitude || null);
+      // setLong(data.longitude || null);
 
       // ✅ ENABLE FORM FOR EDIT
       setFormEnabled(true);
@@ -1773,6 +1773,22 @@ const AddSource = () => {
                   </Grid>
 
                   <Grid item xs={12} sm={6}>
+                    <TextField
+                      fullWidth
+                      label="Workshop Address"
+                      name="ws_address"
+                      // value={gisAddress}
+                      // onChange={(e) => setGisAddress(e.target.value)}
+                      // value={selectData.ws_address}
+                      // onChange={handleChange}
+                      size="small"
+                      disabled={!isFormEnabled}
+                      error={!!errors.ws_address}
+                      helperText={errors.ws_address}
+                    />
+                  </Grid>
+
+                  {/* <Grid item xs={12} sm={6}>
                     {isLoaded && (
                       <Autocomplete
                         onLoad={(autocomplete) =>
@@ -1784,8 +1800,8 @@ const AddSource = () => {
                           fullWidth
                           label="Workshop Address"
                           name="ws_address"
-                          value={gisAddress}
-                          onChange={(e) => setGisAddress(e.target.value)}
+                          // value={gisAddress}
+                          // onChange={(e) => setGisAddress(e.target.value)}
                           // value={selectData.ws_address}
                           // onChange={handleChange}
                           size="small"
@@ -1795,7 +1811,7 @@ const AddSource = () => {
                         />
                       </Autocomplete>
                     )}
-                  </Grid>
+                  </Grid> */}
 
                   <Grid item xs={12} sm={6}>
                     <TextField
@@ -1832,14 +1848,14 @@ const AddSource = () => {
                     <TextField
                       fullWidth
                       label="Confirm Password *"
-                      name="confirm_password"
+                      name="password2"
                       type={showConfirmPassword ? "text" : "password"}
-                      value={selectData.confirm_password || ""}
+                      value={selectData.password2 || ""}
                       onChange={handleChange}
                       size="small"
                       disabled={!isFormEnabled}
-                      error={!!errors.confirm_password}
-                      helperText={errors.confirm_password}
+                      error={!!errors.password2}
+                      helperText={errors.password2}
                       onCopy={(e) => e.preventDefault()}
                       onPaste={(e) => e.preventDefault()}
                       onCut={(e) => e.preventDefault()}
