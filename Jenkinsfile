@@ -472,7 +472,6 @@
 
 
 
-
 pipeline {
     agent any
 
@@ -491,14 +490,14 @@ pipeline {
 
     stages {
 
-        // ✅ 1. Clean workspace (FIXES git corruption issue)
+        // ✅ 1. Clean workspace
         stage('Clean Workspace') {
             steps {
                 deleteDir()
             }
         }
 
-        // ✅ 2. Checkout code (FIXED with credentials)
+        // ✅ 2. Checkout Code (no credentials needed if public repo)
         stage('Checkout Code') {
             steps {
                 checkout([
@@ -509,17 +508,17 @@ pipeline {
                         [$class: 'PruneStaleBranch']
                     ],
                     userRemoteConfigs: [[
-                        url: 'https://github.com/gitmaster-dms/Tata_Screening.git',
-                        credentialsId: 'github-token'   // 🔥 MUST CONFIGURE IN JENKINS
+                        url: 'https://github.com/gitmaster-dms/Tata_Screening.git'
                     ]]
                 ])
             }
         }
 
-        // ✅ 3. Deploy code safely (media protected)
+        // ✅ 3. Deploy Code
         stage('Deploy Code') {
             steps {
-                sh """
+                sh '''
+                #!/bin/bash
                 set -euxo pipefail
 
                 echo "🚀 Deploying code to ${PROJECT_DIR}"
@@ -534,14 +533,15 @@ pipeline {
 
                 sudo chown -R jenkins:jenkins ${PROJECT_DIR}
                 sudo chmod -R 775 ${PROJECT_DIR}
-                """
+                '''
             }
         }
 
-        // ✅ 4. Ensure Node.js 20
+        // ✅ 4. Ensure Node.js
         stage('Ensure Node.js') {
             steps {
                 sh '''
+                #!/bin/bash
                 set -euxo pipefail
 
                 if ! command -v node >/dev/null 2>&1 || [ "$(node -v | cut -d. -f1 | tr -d v)" -lt 20 ]; then
@@ -560,27 +560,29 @@ pipeline {
         stage('Setup Python') {
             steps {
                 dir("${DJANGO_DIR}") {
-                    sh """
+                    sh '''
+                    #!/bin/bash
                     set -euxo pipefail
 
                     if [ ! -d "venv" ]; then
-                        ${PYTHON} -m venv venv
+                        /usr/bin/python3 -m venv venv
                     fi
 
                     . venv/bin/activate
                     pip install --upgrade pip
                     pip install -r requirements.txt
                     pip install gunicorn
-                    """
+                    '''
                 }
             }
         }
 
-        // ✅ 6. Build React App (fixed dependency issues)
+        // ✅ 6. Build React App
         stage('Build React') {
             steps {
                 dir("${REACT_DIR}") {
                     sh '''
+                    #!/bin/bash
                     set -euxo pipefail
 
                     echo "🧹 Cleaning old files..."
@@ -589,13 +591,13 @@ pipeline {
                     echo "🔧 Fix permissions..."
                     sudo chown -R jenkins:jenkins .
 
-                    echo "📦 Install dependencies..."
+                    echo "📦 Installing dependencies..."
                     npm install --legacy-peer-deps
 
                     echo "🛠 Fix AJV issue..."
                     npm install ajv@8.12.0 ajv-keywords@5.1.0 --legacy-peer-deps
 
-                    echo "🏗 Build React..."
+                    echo "🏗 Building React..."
                     CI=false npm run build
                     '''
                 }
@@ -606,47 +608,51 @@ pipeline {
         stage('Collect Static') {
             steps {
                 dir("${DJANGO_DIR}") {
-                    sh """
+                    sh '''
+                    #!/bin/bash
                     set -euxo pipefail
 
                     . venv/bin/activate
                     python manage.py collectstatic --noinput
-                    """
+                    '''
                 }
             }
         }
 
-        // ✅ 8. Restart Gunicorn (systemd based)
+        // ✅ 8. Restart Gunicorn
         stage('Restart Gunicorn') {
             steps {
-                sh """
+                sh '''
+                #!/bin/bash
                 set -euxo pipefail
 
                 echo "🔄 Restarting Gunicorn..."
                 sudo systemctl restart gunicorn_tata
                 sudo systemctl status gunicorn_tata --no-pager | head -10
-                """
+                '''
             }
         }
 
         // ✅ 9. Fix Media Permissions
         stage('Fix Media Permissions') {
             steps {
-                sh """
+                sh '''
+                #!/bin/bash
                 set -euxo pipefail
 
                 echo "🔧 Fixing media permissions..."
 
                 sudo chown -R adminscr:adminscr ${PROJECT_DIR}/media || true
                 sudo chmod -R 775 ${PROJECT_DIR}/media || true
-                """
+                '''
             }
         }
 
         // ✅ 10. Restart Nginx
         stage('Restart Nginx') {
             steps {
-                sh """
+                sh '''
+                #!/bin/bash
                 set -euxo pipefail
 
                 echo "🔧 Testing Nginx..."
@@ -656,7 +662,7 @@ pipeline {
                 sudo systemctl restart nginx
 
                 sudo systemctl status nginx --no-pager | head -10
-                """
+                '''
             }
         }
     }
