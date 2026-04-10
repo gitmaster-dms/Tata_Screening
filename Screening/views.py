@@ -7434,246 +7434,246 @@ class Start_Screening_get_API(APIView):
 
 
 
-import base64
-import os
+# import base64
+# import os
 
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
+# from rest_framework.views import APIView
+# from rest_framework.response import Response
+# from rest_framework import status
 
-from cryptography.hazmat.primitives.asymmetric import x25519
-from cryptography.hazmat.primitives.kdf.hkdf import HKDF
-from cryptography.hazmat.primitives import hashes
-
-
-from cryptography.hazmat.primitives.asymmetric import x25519
-from cryptography.hazmat.primitives.kdf.hkdf import HKDF
-from cryptography.hazmat.primitives import hashes, serialization
-from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+# from cryptography.hazmat.primitives.asymmetric import x25519
+# from cryptography.hazmat.primitives.kdf.hkdf import HKDF
+# from cryptography.hazmat.primitives import hashes
 
 
-# 🔐 Generate Keys Function
-def generate_keys():
-    private_key = x25519.X25519PrivateKey.generate()
-    public_key = private_key.public_key()
-
-    private_bytes = private_key.private_bytes_raw()
-    public_bytes = public_key.public_bytes_raw()
-
-    nonce = os.urandom(32)
-
-    return {
-        "private_key": base64.b64encode(private_bytes).decode(),
-        "public_key": base64.b64encode(public_bytes).decode(),
-        "nonce": base64.b64encode(nonce).decode()
-    }
+# from cryptography.hazmat.primitives.asymmetric import x25519
+# from cryptography.hazmat.primitives.kdf.hkdf import HKDF
+# from cryptography.hazmat.primitives import hashes, serialization
+# from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 
 
-# 🔐 Generate keyToShare Function
-def generate_key_to_share(private_key_b64, hiu_public_key_b64, nonce_b64):
-    private_key = x25519.X25519PrivateKey.from_private_bytes(
-        base64.b64decode(private_key_b64)
-    )
+# # 🔐 Generate Keys Function
+# def generate_keys():
+#     private_key = x25519.X25519PrivateKey.generate()
+#     public_key = private_key.public_key()
 
-    hiu_public_key = x25519.X25519PublicKey.from_public_bytes(
-        base64.b64decode(hiu_public_key_b64)
-    )
+#     private_bytes = private_key.private_bytes_raw()
+#     public_bytes = public_key.public_bytes_raw()
 
-    shared_secret = private_key.exchange(hiu_public_key)
+#     nonce = os.urandom(32)
 
-    nonce = base64.b64decode(nonce_b64)
-
-    derived_key = HKDF(
-        algorithm=hashes.SHA256(),
-        length=32,
-        salt=nonce,
-        info=b'abdm-data-flow'
-    ).derive(shared_secret)
-
-    return base64.b64encode(derived_key).decode()
+#     return {
+#         "private_key": base64.b64encode(private_bytes).decode(),
+#         "public_key": base64.b64encode(public_bytes).decode(),
+#         "nonce": base64.b64encode(nonce).decode()
+#     }
 
 
-# ✅ 1. Generate Keys API
-class GenerateKeysAPIView(APIView):
+# # 🔐 Generate keyToShare Function
+# def generate_key_to_share(private_key_b64, hiu_public_key_b64, nonce_b64):
+#     private_key = x25519.X25519PrivateKey.from_private_bytes(
+#         base64.b64decode(private_key_b64)
+#     )
 
-    def get(self, request):
-        data = generate_keys()
+#     hiu_public_key = x25519.X25519PublicKey.from_public_bytes(
+#         base64.b64decode(hiu_public_key_b64)
+#     )
 
-        return Response({
-            "publicKey": data["public_key"],
-            "nonce": data["nonce"],
-            "privateKey": data["private_key"]  # ⚠️ remove in prod
-        }, status=status.HTTP_200_OK)
+#     shared_secret = private_key.exchange(hiu_public_key)
 
+#     nonce = base64.b64decode(nonce_b64)
 
-# ✅ 2. Generate keyToShare API
-class GenerateKeyToShareAPIView(APIView):
+#     derived_key = HKDF(
+#         algorithm=hashes.SHA256(),
+#         length=32,
+#         salt=nonce,
+#         info=b'abdm-data-flow'
+#     ).derive(shared_secret)
 
-    def post(self, request):
-        private_key = request.data.get("private_key")
-        hiu_public_key = request.data.get("hiu_public_key")
-        nonce = request.data.get("nonce")
-
-        if not all([private_key, hiu_public_key, nonce]):
-            return Response({
-                "error": "private_key, hiu_public_key, nonce are required"
-            }, status=status.HTTP_400_BAD_REQUEST)
-
-        try:
-            key_to_share = generate_key_to_share(
-                private_key,
-                hiu_public_key,
-                nonce
-            )
-
-            return Response({
-                "keyToShare": key_to_share
-            }, status=status.HTTP_200_OK)
-
-        except Exception as e:
-            return Response({
-                "error": str(e)
-            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+#     return base64.b64encode(derived_key).decode()
 
 
-# ✅ 3. Data Push API
-class DataPushAPIView(APIView):
+# # ✅ 1. Generate Keys API
+# class GenerateKeysAPIView(APIView):
 
-    def post(self, request):
-        encrypted_data = request.data.get("encrypted_data")
-        key = request.data.get("keyToShare")
-        nonce = request.data.get("nonce")
+#     def get(self, request):
+#         data = generate_keys()
 
-        if not all([encrypted_data, key, nonce]):
-            return Response({
-                "error": "encrypted_data, keyToShare, nonce required"
-            }, status=status.HTTP_400_BAD_REQUEST)
-
-        payload = {
-            "entries": [
-                {
-                    "content": encrypted_data,
-                    "key": key,
-                    "nonce": nonce
-                }
-            ]
-        }
-
-        return Response({
-            "message": "Data push payload ready",
-            "payload": payload
-        }, status=status.HTTP_200_OK)
-import base64
-import os
-import hashlib
-
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
-
-from cryptography.hazmat.primitives.asymmetric import x25519
-from cryptography.hazmat.primitives.kdf.hkdf import HKDF
-from cryptography.hazmat.primitives import hashes, serialization
-from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+#         return Response({
+#             "publicKey": data["public_key"],
+#             "nonce": data["nonce"],
+#             "privateKey": data["private_key"]  # ⚠️ remove in prod
+#         }, status=status.HTTP_200_OK)
 
 
-class EncryptDataAPIView(APIView):
+# # ✅ 2. Generate keyToShare API
+# class GenerateKeyToShareAPIView(APIView):
 
-    def post(self, request):
-        try:
-            receiver_public_key = request.data.get("receiverPublicKey")
-            receiver_nonce = request.data.get("receiverNonce")
-            plain_text = request.data.get("plainTextData")
+#     def post(self, request):
+#         private_key = request.data.get("private_key")
+#         hiu_public_key = request.data.get("hiu_public_key")
+#         nonce = request.data.get("nonce")
 
-            if not all([receiver_public_key, receiver_nonce, plain_text]):
-                return Response(
-                    {"error": "receiverPublicKey, receiverNonce, plainTextData required"},
-                    status=status.HTTP_400_BAD_REQUEST
-                )
+#         if not all([private_key, hiu_public_key, nonce]):
+#             return Response({
+#                 "error": "private_key, hiu_public_key, nonce are required"
+#             }, status=status.HTTP_400_BAD_REQUEST)
 
-            # =====================================================
-            # 🔐 STEP 1: Generate Sender Keys (Ephemeral)
-            # =====================================================
-            sender_private = x25519.X25519PrivateKey.generate()
-            sender_public = sender_private.public_key()
+#         try:
+#             key_to_share = generate_key_to_share(
+#                 private_key,
+#                 hiu_public_key,
+#                 nonce
+#             )
 
-            # ✅ DER encoded public key (ABDM requires this)
-            sender_public_bytes = sender_public.public_bytes(
-                encoding=serialization.Encoding.DER,
-                format=serialization.PublicFormat.SubjectPublicKeyInfo
-            )
+#             return Response({
+#                 "keyToShare": key_to_share
+#             }, status=status.HTTP_200_OK)
 
-            sender_nonce = os.urandom(32)
+#         except Exception as e:
+#             return Response({
+#                 "error": str(e)
+#             }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
-            # =====================================================
-            # 🔐 STEP 2: Decode Receiver Public Key
-            # =====================================================
-            receiver_bytes = base64.b64decode(receiver_public_key)
 
-            try:
-                # DER → RAW
-                loaded_key = serialization.load_der_public_key(receiver_bytes)
+# # ✅ 3. Data Push API
+# class DataPushAPIView(APIView):
 
-                receiver_raw = loaded_key.public_bytes(
-                    encoding=serialization.Encoding.Raw,
-                    format=serialization.PublicFormat.Raw
-                )
+#     def post(self, request):
+#         encrypted_data = request.data.get("encrypted_data")
+#         key = request.data.get("keyToShare")
+#         nonce = request.data.get("nonce")
 
-                receiver_key = x25519.X25519PublicKey.from_public_bytes(receiver_raw)
+#         if not all([encrypted_data, key, nonce]):
+#             return Response({
+#                 "error": "encrypted_data, keyToShare, nonce required"
+#             }, status=status.HTTP_400_BAD_REQUEST)
 
-            except Exception:
-                # fallback if already raw
-                receiver_key = x25519.X25519PublicKey.from_public_bytes(receiver_bytes[-32:])
+#         payload = {
+#             "entries": [
+#                 {
+#                     "content": encrypted_data,
+#                     "key": key,
+#                     "nonce": nonce
+#                 }
+#             ]
+#         }
 
-            # =====================================================
-            # 🔐 STEP 3: ECDH Key Exchange
-            # =====================================================
-            shared_secret = sender_private.exchange(receiver_key)
+#         return Response({
+#             "message": "Data push payload ready",
+#             "payload": payload
+#         }, status=status.HTTP_200_OK)
+# import base64
+# import os
+# import hashlib
 
-            # =====================================================
-            # 🔐 STEP 4: HKDF Key Derivation
-            # =====================================================
-            combined_nonce = sender_nonce + base64.b64decode(receiver_nonce)
+# from rest_framework.views import APIView
+# from rest_framework.response import Response
+# from rest_framework import status
 
-            derived_key = HKDF(
-                algorithm=hashes.SHA256(),
-                length=32,
-                salt=combined_nonce,
-                info=b''
-            ).derive(shared_secret)
+# from cryptography.hazmat.primitives.asymmetric import x25519
+# from cryptography.hazmat.primitives.kdf.hkdf import HKDF
+# from cryptography.hazmat.primitives import hashes, serialization
+# from cryptography.hazmat.primitives.ciphers.aead import AESGCM
 
-            # =====================================================
-            # 🔐 STEP 5: AES-GCM Encryption (CRITICAL FIX)
-            # =====================================================
 
-            # ✅ ABDM expects IV = first 12 bytes of senderNonce
-            iv = sender_nonce[:12]
+# class EncryptDataAPIView(APIView):
 
-            aesgcm = AESGCM(derived_key)
+#     def post(self, request):
+#         try:
+#             receiver_public_key = request.data.get("receiverPublicKey")
+#             receiver_nonce = request.data.get("receiverNonce")
+#             plain_text = request.data.get("plainTextData")
 
-            encrypted_bytes = aesgcm.encrypt(
-                iv,
-                plain_text.encode(),
-                None
-            )
+#             if not all([receiver_public_key, receiver_nonce, plain_text]):
+#                 return Response(
+#                     {"error": "receiverPublicKey, receiverNonce, plainTextData required"},
+#                     status=status.HTTP_400_BAD_REQUEST
+#                 )
 
-            # ❗ DO NOT include IV in response
-            encrypted_data = base64.b64encode(encrypted_bytes).decode()
+#             # =====================================================
+#             # 🔐 STEP 1: Generate Sender Keys (Ephemeral)
+#             # =====================================================
+#             sender_private = x25519.X25519PrivateKey.generate()
+#             sender_public = sender_private.public_key()
 
-            # =====================================================
-            # 🔐 STEP 6: Checksum
-            # =====================================================
-            checksum = hashlib.sha256(encrypted_data.encode()).hexdigest()
+#             # ✅ DER encoded public key (ABDM requires this)
+#             sender_public_bytes = sender_public.public_bytes(
+#                 encoding=serialization.Encoding.DER,
+#                 format=serialization.PublicFormat.SubjectPublicKeyInfo
+#             )
 
-            # =====================================================
-            # ✅ FINAL RESPONSE
-            # =====================================================
-            return Response({
-                "encryptedData": encrypted_data,
-                "checksum": checksum,
-                "senderPublicKey": base64.b64encode(sender_public_bytes).decode(),
-                "senderNonce": base64.b64encode(sender_nonce).decode()
-            })
+#             sender_nonce = os.urandom(32)
 
-        except Exception as e:
-            return Response({"error": str(e)}, status=500)
+#             # =====================================================
+#             # 🔐 STEP 2: Decode Receiver Public Key
+#             # =====================================================
+#             receiver_bytes = base64.b64decode(receiver_public_key)
+
+#             try:
+#                 # DER → RAW
+#                 loaded_key = serialization.load_der_public_key(receiver_bytes)
+
+#                 receiver_raw = loaded_key.public_bytes(
+#                     encoding=serialization.Encoding.Raw,
+#                     format=serialization.PublicFormat.Raw
+#                 )
+
+#                 receiver_key = x25519.X25519PublicKey.from_public_bytes(receiver_raw)
+
+#             except Exception:
+#                 # fallback if already raw
+#                 receiver_key = x25519.X25519PublicKey.from_public_bytes(receiver_bytes[-32:])
+
+#             # =====================================================
+#             # 🔐 STEP 3: ECDH Key Exchange
+#             # =====================================================
+#             shared_secret = sender_private.exchange(receiver_key)
+
+#             # =====================================================
+#             # 🔐 STEP 4: HKDF Key Derivation
+#             # =====================================================
+#             combined_nonce = sender_nonce + base64.b64decode(receiver_nonce)
+
+#             derived_key = HKDF(
+#                 algorithm=hashes.SHA256(),
+#                 length=32,
+#                 salt=combined_nonce,
+#                 info=b''
+#             ).derive(shared_secret)
+
+#             # =====================================================
+#             # 🔐 STEP 5: AES-GCM Encryption (CRITICAL FIX)
+#             # =====================================================
+
+#             # ✅ ABDM expects IV = first 12 bytes of senderNonce
+#             iv = sender_nonce[:12]
+
+#             aesgcm = AESGCM(derived_key)
+
+#             encrypted_bytes = aesgcm.encrypt(
+#                 iv,
+#                 plain_text.encode(),
+#                 None
+#             )
+
+#             # ❗ DO NOT include IV in response
+#             encrypted_data = base64.b64encode(encrypted_bytes).decode()
+
+#             # =====================================================
+#             # 🔐 STEP 6: Checksum
+#             # =====================================================
+#             checksum = hashlib.sha256(encrypted_data.encode()).hexdigest()
+
+#             # =====================================================
+#             # ✅ FINAL RESPONSE
+#             # =====================================================
+#             return Response({
+#                 "encryptedData": encrypted_data,
+#                 "checksum": checksum,
+#                 "senderPublicKey": base64.b64encode(sender_public_bytes).decode(),
+#                 "senderNonce": base64.b64encode(sender_nonce).decode()
+#             })
+
+#         except Exception as e:
+#             return Response({"error": str(e)}, status=500)
