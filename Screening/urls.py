@@ -340,6 +340,11 @@ urlpatterns = [
 
     path('start_screening_info/', Start_Screening_get_API.as_view(), name='start_screening_info'),
 
+
+    path('generate_keys/', GenerateKeysAPIView.as_view()),
+    path('generate_key_to_share/', GenerateKeyToShareAPIView.as_view()),
+    path('encrypt_data/', EncryptDataAPIView.as_view(), name='encrypt_data'),
+    path('data-push/', DataPushAPIView.as_view()),
                  
 ]
 

@@ -6542,23 +6542,168 @@ class Investigation_Info_Get_API(APIView):
     
 
 
+# class TotalDriverReg_Dashboard_API(APIView):
+    # renderer_classes = [UserRenderer]
+    # authentication_classes = [CustomJWTAuthentication]
+    # permission_classes = [IsAuthenticated]
+#     def get(self, request):
+#         try:
+#             dt = request.query_params.get('dt')
+#             total_driver_screened = 0
+#             total_driver_not_screened = 0
+
+#             today = now()
+
+#             common_filters = {"is_deleted": False}
+
+#             if dt == "1":
+#                 common_filters["added_date__date"] = today.date()
+#             elif dt == "2":
+#                 common_filters["added_date__month"] = today.month
+
+#             citizens = Citizen.objects.filter(**common_filters).order_by("citizens_pk_id")
+#             citizen_ids = citizens.values_list("citizens_pk_id", flat=True)
+
+#             total_drivers = citizens.filter(category=1)
+#             total_others = citizens.filter(category=2)
+#             print("Total Others Fetched:", total_others.count())
+
+#             referral_count = follow_up.objects.filter(citizen_pk_id__in=citizen_ids,**common_filters).count()
+#             print("Total Referral Count:", referral_count)
+
+#             follow_up_count = followup_save.objects.filter(citizen_pk_id__in=citizen_ids,**common_filters).distinct("citizen_pk_id").count()
+#             print("Total Follow-up Count:", follow_up_count)
+
+#             followup_done_count = follow_up.objects.filter(follow_up=1,citizen_pk_id__in=citizen_ids,**common_filters).distinct("citizen_pk_id").count()
+
+#             followup_inprogress_count = follow_up.objects.filter(follow_up=2,citizen_pk_id__in=citizen_ids,**common_filters).distinct("citizen_pk_id").count()
+
+#             followup_pending_count = follow_up.objects.filter(follow_up=3,citizen_pk_id__in=citizen_ids,**common_filters).distinct("citizen_pk_id").count()
+
+#             total_followup = (followup_done_count + followup_inprogress_count + followup_pending_count)
+
+#             print("Follow-ups- Done:", followup_done_count,"In Progress:", followup_inprogress_count,"Pending:", followup_pending_count,"Total:", total_followup)
+
+
+#             colleagues_filters = {"is_deleted": False, "grp_id": 10}
+#             print("1")
+#             if dt == "1":
+#                 colleagues_filters["clg_added_date__date"] = today.date()
+#                 print("2", colleagues_filters["clg_added_date__date"])
+#             elif dt == "2":
+#                 colleagues_filters["clg_added_date__month"] = today.month
+#                 print("3")
+#             print("4")
+#             try:
+#                 colleagues = agg_com_colleague.objects.filter(**colleagues_filters)
+#                 print("Total Colleagues Fetched:", colleagues.count())
+#                 avail_colleague_ids = colleagues.filter(clg_is_login=False).count()
+#                 notavail_colleague_ids = colleagues.filter(clg_is_login=True).count()
+#             except Exception as e:
+#                 print("Error fetching colleagues:", str(e))
+#                 avail_colleague_ids = 0
+#                 notavail_colleague_ids = 0
+
+#             date_filter = {}
+#             if dt == "today":
+#                 date_filter["added_date__date"] = today.date()
+#             elif dt == "this_month":
+#                 date_filter["added_date__month"] = today.month
+
+#             for driver in total_drivers:
+#                 citizen_id = driver.citizens_pk_id
+
+#                 # List of all querysets to check
+#                 tables = [
+#                     basic_info,
+#                     emergency_info,
+#                     growth_monitoring_info,
+#                     vital_info,
+#                     genral_examination,
+#                     systemic_exam,
+#                     female_screening,
+#                     disability_screening,
+#                     birth_defect,
+#                     childhood_diseases,
+#                     deficiencies,
+#                     skin_conditions,
+#                     diagnosis,
+#                     check_box_if_normal,
+#                     treatement,
+#                     auditory_info,
+#                     vision_info,
+#                     medical_history_info,
+#                     pft_info,
+#                     dental_info,
+#                     immunisation_info,
+#                     investigation_info,
+#                 ]
+
+#                 all_have_records = True  # assume all have records initially
+
+#                 for model in tables:
+#                     count = model.objects.filter(citizen_pk_id=citizen_id, form_submit=False, **date_filter).count()
+#                     # print(f"{model.__name__} count:", count)
+#                     if count == 0:
+#                         all_have_records = False
+#                         break  # no need to check further if any is missing
+
+#                 if all_have_records:
+#                     total_driver_screened += 1
+#                     # print(f"✅ Driver {citizen_id} counted as screened")
+#                 else:
+#                     total_driver_not_screened += 1
+#                 #     print(f"❌ Driver {citizen_id} not screened (one or more empty tables)")
+
+            
+#             driver_data = {
+#                 "Total_Drivers_Registered": total_drivers.count(),
+#                 "Total_Drivers_Added": total_drivers.count(),
+#                 "Total_Others_Added": total_others.count(),
+#                 "Total_Referrals_Made": referral_count,
+#                 "Followups_Done": followup_done_count,
+#                 "Followups_InProgress": followup_inprogress_count,
+#                 "Followups_Pending": followup_pending_count,
+#                 "Total_Followups": total_followup,
+#                 "Total_Drivers_Screened": total_driver_screened,
+#                 "Drivers_Pending_Screening": total_driver_not_screened,
+#                 "Total_Followups_Made": follow_up_count,
+#                 "Total_Medical_Staff": colleagues.count(),
+#                 "Medical_staff_Available": avail_colleague_ids,
+#                 "Medical_staff_NotAvailable": notavail_colleague_ids,
+#             }
+#             return Response(driver_data, status=status.HTTP_200_OK)
+#         except Exception as e:
+#             return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+
+
+from django.utils.timezone import now
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+
+
 class TotalDriverReg_Dashboard_API(APIView):
     renderer_classes = [UserRenderer]
     authentication_classes = [CustomJWTAuthentication]
     permission_classes = [IsAuthenticated]
+
     def get(self, request):
         try:
             dt = request.query_params.get('dt')
+
             total_driver_screened = 0
             total_driver_not_screened = 0
 
-            today = now()
+            today = now().date()   # ✅ directly use date
 
+            # ------------------ Citizen Filters ------------------
             common_filters = {"is_deleted": False}
 
-            if dt == "1":
-                common_filters["added_date__date"] = today.date()
-            elif dt == "2":
+            if dt == "1":  # today
+                common_filters["added_date"] = today
+            elif dt == "2":  # this month
                 common_filters["added_date__month"] = today.month
 
             citizens = Citizen.objects.filter(**common_filters).order_by("citizens_pk_id")
@@ -6566,96 +6711,105 @@ class TotalDriverReg_Dashboard_API(APIView):
 
             total_drivers = citizens.filter(category=1)
             total_others = citizens.filter(category=2)
-            print("Total Others Fetched:", total_others.count())
 
-            referral_count = follow_up.objects.filter(citizen_pk_id__in=citizen_ids,**common_filters).count()
-            print("Total Referral Count:", referral_count)
+            # ------------------ Referral & Followup ------------------
+            referral_count = follow_up.objects.filter(
+                citizen_pk_id__in=citizen_ids,
+                is_deleted=False
+            ).count()
 
-            follow_up_count = followup_save.objects.filter(citizen_pk_id__in=citizen_ids,**common_filters).distinct("citizen_pk_id").count()
-            print("Total Follow-up Count:", follow_up_count)
+            follow_up_count = followup_save.objects.filter(
+                citizen_pk_id__in=citizen_ids,
+                is_deleted=False
+            ).distinct("citizen_pk_id").count()
 
-            followup_done_count = follow_up.objects.filter(follow_up=1,citizen_pk_id__in=citizen_ids,**common_filters).distinct("citizen_pk_id").count()
+            followup_done_count = follow_up.objects.filter(
+                follow_up=1,
+                citizen_pk_id__in=citizen_ids,
+                is_deleted=False
+            ).distinct("citizen_pk_id").count()
 
-            followup_inprogress_count = follow_up.objects.filter(follow_up=2,citizen_pk_id__in=citizen_ids,**common_filters).distinct("citizen_pk_id").count()
+            followup_inprogress_count = follow_up.objects.filter(
+                follow_up=2,
+                citizen_pk_id__in=citizen_ids,
+                is_deleted=False
+            ).distinct("citizen_pk_id").count()
 
-            followup_pending_count = follow_up.objects.filter(follow_up=3,citizen_pk_id__in=citizen_ids,**common_filters).distinct("citizen_pk_id").count()
+            followup_pending_count = follow_up.objects.filter(
+                follow_up=3,
+                citizen_pk_id__in=citizen_ids,
+                is_deleted=False
+            ).distinct("citizen_pk_id").count()
 
-            total_followup = (followup_done_count + followup_inprogress_count + followup_pending_count)
+            total_followup = (
+                followup_done_count +
+                followup_inprogress_count +
+                followup_pending_count
+            )
 
-            print("Follow-ups- Done:", followup_done_count,"In Progress:", followup_inprogress_count,"Pending:", followup_pending_count,"Total:", total_followup)
+            # ------------------ Colleagues ------------------
+            colleagues_filters = {
+                "is_deleted": False,
+                "grp_id": 10
+            }
 
-
-            colleagues_filters = {"is_deleted": False, "grp_id": 10}
-            print("1")
             if dt == "1":
-                colleagues_filters["clg_added_date__date"] = today.date()
-                print("2", colleagues_filters["clg_added_date__date"])
+                colleagues_filters["clg_added_date"] = today
             elif dt == "2":
                 colleagues_filters["clg_added_date__month"] = today.month
-                print("3")
-            print("4")
-            try:
-                colleagues = agg_com_colleague.objects.filter(**colleagues_filters)
-                print("Total Colleagues Fetched:", colleagues.count())
-                avail_colleague_ids = colleagues.filter(clg_is_login=False).count()
-                notavail_colleague_ids = colleagues.filter(clg_is_login=True).count()
-            except Exception as e:
-                print("Error fetching colleagues:", str(e))
-                avail_colleague_ids = 0
-                notavail_colleague_ids = 0
 
-            date_filter = {}
-            if dt == "today":
-                date_filter["added_date__date"] = today.date()
-            elif dt == "this_month":
-                date_filter["added_date__month"] = today.month
+            colleagues = agg_com_colleague.objects.filter(**colleagues_filters)
 
+            avail_colleague_ids = colleagues.filter(clg_is_login=False).count()
+            notavail_colleague_ids = colleagues.filter(clg_is_login=True).count()
+
+            # ------------------ Screening Tables ------------------
+            tables = [
+                basic_info,
+                emergency_info,
+                growth_monitoring_info,
+                vital_info,
+                genral_examination,
+                systemic_exam,
+                female_screening,
+                disability_screening,
+                birth_defect,
+                childhood_diseases,
+                deficiencies,
+                skin_conditions,
+                diagnosis,
+                check_box_if_normal,
+                treatement,
+                auditory_info,
+                vision_info,
+                medical_history_info,
+                pft_info,
+                dental_info,
+                immunisation_info,
+                investigation_info,
+            ]
+
+            # ------------------ Driver Screening Logic ------------------
             for driver in total_drivers:
                 citizen_id = driver.citizens_pk_id
-
-                # List of all querysets to check
-                tables = [
-                    basic_info,
-                    emergency_info,
-                    growth_monitoring_info,
-                    vital_info,
-                    genral_examination,
-                    systemic_exam,
-                    female_screening,
-                    disability_screening,
-                    birth_defect,
-                    childhood_diseases,
-                    deficiencies,
-                    skin_conditions,
-                    diagnosis,
-                    check_box_if_normal,
-                    treatement,
-                    auditory_info,
-                    vision_info,
-                    medical_history_info,
-                    pft_info,
-                    dental_info,
-                    immunisation_info,
-                    investigation_info,
-                ]
-
-                all_have_records = True  # assume all have records initially
+                all_have_records = True
 
                 for model in tables:
-                    count = model.objects.filter(citizen_pk_id=citizen_id, form_submit=False, **date_filter).count()
-                    # print(f"{model.__name__} count:", count)
-                    if count == 0:
+                    exists = model.objects.filter(
+                        citizen_pk_id=citizen_id,
+                        form_submit=False
+                    ).exists()
+
+                    if not exists:
                         all_have_records = False
-                        break  # no need to check further if any is missing
+                        break
 
                 if all_have_records:
                     total_driver_screened += 1
-                    # print(f"✅ Driver {citizen_id} counted as screened")
                 else:
                     total_driver_not_screened += 1
-                #     print(f"❌ Driver {citizen_id} not screened (one or more empty tables)")
 
-            
+            # ------------------ Final Response ------------------
             driver_data = {
                 "Total_Drivers_Registered": total_drivers.count(),
                 "Total_Drivers_Added": total_drivers.count(),
@@ -6672,14 +6826,14 @@ class TotalDriverReg_Dashboard_API(APIView):
                 "Medical_staff_Available": avail_colleague_ids,
                 "Medical_staff_NotAvailable": notavail_colleague_ids,
             }
+
             return Response(driver_data, status=status.HTTP_200_OK)
+
         except Exception as e:
-            return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
-        
-
-
-
-
+            return Response(
+                {"error": str(e)},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR
+            )
 
 
 
@@ -7276,3 +7430,250 @@ class Start_Screening_get_API(APIView):
 
         serializer = Start_Screening_info(snippet, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+
+
+import base64
+import os
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+
+from cryptography.hazmat.primitives.asymmetric import x25519
+from cryptography.hazmat.primitives.kdf.hkdf import HKDF
+from cryptography.hazmat.primitives import hashes
+
+
+from cryptography.hazmat.primitives.asymmetric import x25519
+from cryptography.hazmat.primitives.kdf.hkdf import HKDF
+from cryptography.hazmat.primitives import hashes, serialization
+from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+
+
+# 🔐 Generate Keys Function
+def generate_keys():
+    private_key = x25519.X25519PrivateKey.generate()
+    public_key = private_key.public_key()
+
+    private_bytes = private_key.private_bytes_raw()
+    public_bytes = public_key.public_bytes_raw()
+
+    nonce = os.urandom(32)
+
+    return {
+        "private_key": base64.b64encode(private_bytes).decode(),
+        "public_key": base64.b64encode(public_bytes).decode(),
+        "nonce": base64.b64encode(nonce).decode()
+    }
+
+
+# 🔐 Generate keyToShare Function
+def generate_key_to_share(private_key_b64, hiu_public_key_b64, nonce_b64):
+    private_key = x25519.X25519PrivateKey.from_private_bytes(
+        base64.b64decode(private_key_b64)
+    )
+
+    hiu_public_key = x25519.X25519PublicKey.from_public_bytes(
+        base64.b64decode(hiu_public_key_b64)
+    )
+
+    shared_secret = private_key.exchange(hiu_public_key)
+
+    nonce = base64.b64decode(nonce_b64)
+
+    derived_key = HKDF(
+        algorithm=hashes.SHA256(),
+        length=32,
+        salt=nonce,
+        info=b'abdm-data-flow'
+    ).derive(shared_secret)
+
+    return base64.b64encode(derived_key).decode()
+
+
+# ✅ 1. Generate Keys API
+class GenerateKeysAPIView(APIView):
+
+    def get(self, request):
+        data = generate_keys()
+
+        return Response({
+            "publicKey": data["public_key"],
+            "nonce": data["nonce"],
+            "privateKey": data["private_key"]  # ⚠️ remove in prod
+        }, status=status.HTTP_200_OK)
+
+
+# ✅ 2. Generate keyToShare API
+class GenerateKeyToShareAPIView(APIView):
+
+    def post(self, request):
+        private_key = request.data.get("private_key")
+        hiu_public_key = request.data.get("hiu_public_key")
+        nonce = request.data.get("nonce")
+
+        if not all([private_key, hiu_public_key, nonce]):
+            return Response({
+                "error": "private_key, hiu_public_key, nonce are required"
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            key_to_share = generate_key_to_share(
+                private_key,
+                hiu_public_key,
+                nonce
+            )
+
+            return Response({
+                "keyToShare": key_to_share
+            }, status=status.HTTP_200_OK)
+
+        except Exception as e:
+            return Response({
+                "error": str(e)
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+
+# ✅ 3. Data Push API
+class DataPushAPIView(APIView):
+
+    def post(self, request):
+        encrypted_data = request.data.get("encrypted_data")
+        key = request.data.get("keyToShare")
+        nonce = request.data.get("nonce")
+
+        if not all([encrypted_data, key, nonce]):
+            return Response({
+                "error": "encrypted_data, keyToShare, nonce required"
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        payload = {
+            "entries": [
+                {
+                    "content": encrypted_data,
+                    "key": key,
+                    "nonce": nonce
+                }
+            ]
+        }
+
+        return Response({
+            "message": "Data push payload ready",
+            "payload": payload
+        }, status=status.HTTP_200_OK)
+import base64
+import os
+import hashlib
+
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from rest_framework import status
+
+from cryptography.hazmat.primitives.asymmetric import x25519
+from cryptography.hazmat.primitives.kdf.hkdf import HKDF
+from cryptography.hazmat.primitives import hashes, serialization
+from cryptography.hazmat.primitives.ciphers.aead import AESGCM
+
+
+class EncryptDataAPIView(APIView):
+
+    def post(self, request):
+        try:
+            receiver_public_key = request.data.get("receiverPublicKey")
+            receiver_nonce = request.data.get("receiverNonce")
+            plain_text = request.data.get("plainTextData")
+
+            if not all([receiver_public_key, receiver_nonce, plain_text]):
+                return Response(
+                    {"error": "receiverPublicKey, receiverNonce, plainTextData required"},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+
+            # =====================================================
+            # 🔐 STEP 1: Generate Sender Keys (Ephemeral)
+            # =====================================================
+            sender_private = x25519.X25519PrivateKey.generate()
+            sender_public = sender_private.public_key()
+
+            # ✅ DER encoded public key (ABDM requires this)
+            sender_public_bytes = sender_public.public_bytes(
+                encoding=serialization.Encoding.DER,
+                format=serialization.PublicFormat.SubjectPublicKeyInfo
+            )
+
+            sender_nonce = os.urandom(32)
+
+            # =====================================================
+            # 🔐 STEP 2: Decode Receiver Public Key
+            # =====================================================
+            receiver_bytes = base64.b64decode(receiver_public_key)
+
+            try:
+                # DER → RAW
+                loaded_key = serialization.load_der_public_key(receiver_bytes)
+
+                receiver_raw = loaded_key.public_bytes(
+                    encoding=serialization.Encoding.Raw,
+                    format=serialization.PublicFormat.Raw
+                )
+
+                receiver_key = x25519.X25519PublicKey.from_public_bytes(receiver_raw)
+
+            except Exception:
+                # fallback if already raw
+                receiver_key = x25519.X25519PublicKey.from_public_bytes(receiver_bytes[-32:])
+
+            # =====================================================
+            # 🔐 STEP 3: ECDH Key Exchange
+            # =====================================================
+            shared_secret = sender_private.exchange(receiver_key)
+
+            # =====================================================
+            # 🔐 STEP 4: HKDF Key Derivation
+            # =====================================================
+            combined_nonce = sender_nonce + base64.b64decode(receiver_nonce)
+
+            derived_key = HKDF(
+                algorithm=hashes.SHA256(),
+                length=32,
+                salt=combined_nonce,
+                info=b''
+            ).derive(shared_secret)
+
+            # =====================================================
+            # 🔐 STEP 5: AES-GCM Encryption (CRITICAL FIX)
+            # =====================================================
+
+            # ✅ ABDM expects IV = first 12 bytes of senderNonce
+            iv = sender_nonce[:12]
+
+            aesgcm = AESGCM(derived_key)
+
+            encrypted_bytes = aesgcm.encrypt(
+                iv,
+                plain_text.encode(),
+                None
+            )
+
+            # ❗ DO NOT include IV in response
+            encrypted_data = base64.b64encode(encrypted_bytes).decode()
+
+            # =====================================================
+            # 🔐 STEP 6: Checksum
+            # =====================================================
+            checksum = hashlib.sha256(encrypted_data.encode()).hexdigest()
+
+            # =====================================================
+            # ✅ FINAL RESPONSE
+            # =====================================================
+            return Response({
+                "encryptedData": encrypted_data,
+                "checksum": checksum,
+                "senderPublicKey": base64.b64encode(sender_public_bytes).decode(),
+                "senderNonce": base64.b64encode(sender_nonce).decode()
+            })
+
+        except Exception as e:
+            return Response({"error": str(e)}, status=500)
