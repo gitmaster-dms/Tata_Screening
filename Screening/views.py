@@ -659,7 +659,11 @@ class Tehsil_Get_Api(APIView):
         serializers = agg_sc_tahsil_serializer(Tehsil,many=True)
         return Response(serializers.data,status=status.HTTP_200_OK) 
 
-        
+class Workshop_list_get_api(APIView):
+    def get(self,request,ws_taluka):
+        workshop_list = Workshop.objects.filter(ws_taluka=ws_taluka).order_by('Workshop_name')
+        serializers = Workshop_Serializer(workshop_list,many=True)
+        return Response(serializers.data,status=status.HTTP_200_OK)  
 
 
 
@@ -6692,6 +6696,10 @@ class TotalDriverReg_Dashboard_API(APIView):
     def get(self, request):
         try:
             dt = request.query_params.get('dt')
+            state = request.query_params.get('state')
+            district = request.query_params.get('district')
+            tehsil = request.query_params.get('tehsil')
+            source_name = request.query_params.get('workshop')
 
             total_driver_screened = 0
             total_driver_not_screened = 0
@@ -6699,7 +6707,10 @@ class TotalDriverReg_Dashboard_API(APIView):
             today = now().date()   # ✅ directly use date
 
             # ------------------ Citizen Filters ------------------
-            common_filters = {"is_deleted": False}
+            common_filters = {"is_deleted": False, "state": state, "district": district, "tehsil": tehsil}
+
+            if source_name:
+                common_filters["source_name"] = source_name
 
             if dt == "1":  # today
                 common_filters["added_date"] = today

@@ -219,6 +219,7 @@ urlpatterns = [
     path('State_Get/',State_Get_Api.as_view(),name='State_Get'),
     path('District_Get/<int:state_name>/',District_Get_Api.as_view(),name='District_Get'),
     path('Tehsil_Get/<int:dist_name>/',Tehsil_Get_Api.as_view(),name='Tehsil_Get'),
+    path('workshop_list_get/<int:ws_taluka>/', Workshop_list_get_api.as_view(), name='workshop_list_get'),
     
     path('GET_Screening_List/', GET_Screening_List_View.as_view(), name='GET_Screening_List'),
     path('Screening_sub_list/', Screening_sub_list_Viewset.as_view(), name='Screening_sub_list'),
